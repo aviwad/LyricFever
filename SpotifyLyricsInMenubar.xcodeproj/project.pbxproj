@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
 		8FC8E94B2A704EEB00F69915 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E94A2A704EEB00F69915 /* ContentView.swift */; };
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lyricJsonStruct.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotifyLyricsInMenubar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94A2A704EEB00F69915 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */,
+				8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */,
 				8FC8E94A2A704EEB00F69915 /* ContentView.swift */,
 				8FC8E94C2A704EED00F69915 /* Assets.xcassets */,
 				8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8FC8E94B2A704EEB00F69915 /* ContentView.swift in Sources */,
 				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
 			);
@@ -184,7 +188,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -247,7 +251,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
