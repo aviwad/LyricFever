@@ -16,7 +16,7 @@ struct SpotifyLyricsInMenubarApp: App {
     @State var currentlyPlayingLyrics: [LyricLine]?
     @State var currentlyPlayingLyricsIndex: Int? = nil
     @State var currentMS: TimeInterval = 0
-//    @State var isPlaying: Bool = true
+    @State var isPlaying: Bool = true
 //    @State var playbackBasedTimer: Timer = Timer()
     @State var timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
     
@@ -25,11 +25,28 @@ struct SpotifyLyricsInMenubarApp: App {
     var body: some Scene {
         MenuBarExtra(content: {
             Text(menuBarTitleText())
-//            Button(isPlaying ? "Play" : "Pause") {
-//                withAnimation() {
-//                    isPlaying.toggle()
-//                }
-//            }
+            
+            if currentlyPlaying != nil {
+                Text(currentlyPlayingLyrics != nil ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
+    //            Button(isPlaying ? "Play" : "Pause") {
+    //                withAnimation() {
+    //                    isPlaying.toggle()
+    //                }
+    //            }
+                if currentlyPlayingLyrics == nil {
+                    Button("Check For Lyrics Again") {
+                        Task {
+                            if let lyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying) {
+                                currentlyPlayingLyrics = lyrics
+                                if isPlaying {
+                                    timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                                }
+                                //updateLyricsIndexPlaybackBased()
+                            }
+                        }
+                    }
+                }
+            }
             Divider()
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
@@ -48,36 +65,51 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged")), perform: { notification in
-                    
-                    if notification.userInfo?["Player State"] as? String == "Playing", currentlyPlayingLyrics != nil {
-                    //    isPlaying = true
+                    print("playback changed in spotify")
+                    if notification.userInfo?["Player State"] as? String == "Playing" {
+                        print("is playing")
+                        isPlaying = true
 //                        playbackBasedTimer.invalidate()
-                        timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                        if currentlyPlayingLyrics != nil {
+                            print("timer started for spotify change, lyrics not nil")
+                            timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                        }
                      //   updateLyricsIndexPlaybackBased()
                     } else {
-                    //    isPlaying = false
+                        print("paused. timer canceled")
+                        isPlaying = false
                         timer.upstream.connect().cancel()
                     }
                     currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
                     currentlyPlayingName = (notification.userInfo?["Name"] as? String)
                 })
                 .onChange(of: currentlyPlaying) { nowPlaying in
+                    print("song change")
                     currentlyPlayingLyrics = nil
-                    currentlyPlayingLyricsIndex = 0
+                    currentlyPlayingLyricsIndex = nil
+                    timer.upstream.connect().cancel()
                     Task {
+                        
                         if let lyrics = await lyricsFetcher().fetchLyrics(for: nowPlaying) {
                             currentlyPlayingLyrics = lyrics
+                            if isPlaying {
+                                timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                            }
                             //updateLyricsIndexPlaybackBased()
                         }
                     }
                 }
+//                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("kMRMediaRemoteNowPlayingInfoDidChangeNotification")), perform: { hi in
+//                    print(hi)
+//                })
                 // a timer is necessary to refresh the lyrics because we don't receive notifications for playback scrubbing
                 // (ie user scrubbing to new playback position whilst still playing)
                 .onReceive(timer, perform: { nih in
+                    print("lyrics exist: \(currentlyPlayingLyrics != nil)")
                     currentMS = player.playbackTime * 1000
                     print("timer: \(currentMS)")
                     currentlyPlayingLyricsIndex = currentlyPlayingLyrics?.lastIndex(where: {$0.startTimeMS < currentMS})
-                    print(currentlyPlayingLyricsIndex)
+                    print(currentlyPlayingLyricsIndex ?? "nil")
                 })
         })
     }
@@ -96,7 +128,7 @@ struct SpotifyLyricsInMenubarApp: App {
         } else if let currentlyPlayingName {
             return "Now Playing: \(currentlyPlayingName)"
         }
-        return "Loading"
+        return "Nothing Playing"
     }
     
 //    func updateLyricsIndexPlaybackBased() {
