@@ -6,12 +6,20 @@
 //
 
 import Foundation
+import CoreData
 
+extension CodingUserInfoKey {
+  static let managedObjectContext = CodingUserInfoKey(rawValue: "managedObjectContext")!
+}
 // MARK: - Welcome5
-struct LyricJson: Codable {
+struct LyricJson: Decodable {
     let error: Bool
     let syncType: String
     let lines: [LyricLine]?
+    
+    enum CodingKeys: String, CodingKey {
+        case error, syncType, lines
+    }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -25,30 +33,20 @@ struct LyricJson: Codable {
     }
 }
 
-// MARK: - Line
-struct LyricLine: Codable {
-    let startTimeMS: TimeInterval
-    let words: String
-  //  let syllables: [String]
-    //let endTimeMS: TimeInterval
-
-    enum CodingKeys: String, CodingKey {
-        case startTimeMS = "startTimeMs"
-        case words//, syllables
-   //     case endTimeMS = "endTimeMs"
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.startTimeMS = TimeInterval(try container.decode(String.self, forKey: .startTimeMS))!
-        self.words = try container.decode(String.self, forKey: .words)
- //       self.syllables = []
-   //     self.endTimeMS = TimeInterval(try container.decode(String.self, forKey: .endTimeMS))!
-    }
-}
-
-struct Song: Identifiable {
-    let title: String
-    let id: String
-    let lyrics: [LyricLine]
-}
+//// MARK: - Line
+//public class LyricLine: NSManagedObject, Decodable {
+//    @NSManaged var startTimeMS: TimeInterval
+//    @NSManaged var words: String
+//
+//    enum CodingKeys: String, CodingKey {
+//        case startTimeMS = "startTimeMs"
+//        case words
+//    }
+//    
+//    public required convenience init(from decoder: Decoder) throws {
+//        self.init()
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.startTimeMS = TimeInterval(try container.decode(String.self, forKey: .startTimeMS))!
+//        self.words = try container.decode(String.self, forKey: .words)
+//    }
+//}
