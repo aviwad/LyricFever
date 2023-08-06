@@ -10,10 +10,6 @@
 		8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */; };
 		8F4F494F2A7EC30400097888 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F494E2A7EC30400097888 /* PersistenceController.swift */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
-		8F4F49572A7EC6F800097888 /* LyricLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F49532A7EC6F800097888 /* LyricLine+CoreDataClass.swift */; };
-		8F4F49582A7EC6F800097888 /* LyricLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F49542A7EC6F800097888 /* LyricLine+CoreDataProperties.swift */; };
-		8F4F49592A7EC6F800097888 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F49552A7EC6F800097888 /* Song+CoreDataClass.swift */; };
-		8F4F495A2A7EC6F800097888 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F49562A7EC6F800097888 /* Song+CoreDataProperties.swift */; };
 		8FC1F4E32A7904EC0043D92A /* MusicPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC1F4E22A7904EC0043D92A /* MusicPlayer */; };
 		8FC1F4E62A7969C70043D92A /* LXMusicPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC1F4E52A7969C70043D92A /* LXMusicPlayer */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
@@ -26,10 +22,6 @@
 /* Begin PBXFileReference section */
 		8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lyricJsonStruct.swift; sourceTree = "<group>"; };
 		8F4F494E2A7EC30400097888 /* PersistenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		8F4F49532A7EC6F800097888 /* LyricLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LyricLine+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8F4F49542A7EC6F800097888 /* LyricLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LyricLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		8F4F49552A7EC6F800097888 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8F4F49562A7EC6F800097888 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotifyLyricsInMenubar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -62,10 +54,6 @@
 		8FC8E93C2A704EEB00F69915 = {
 			isa = PBXGroup;
 			children = (
-				8F4F49532A7EC6F800097888 /* LyricLine+CoreDataClass.swift */,
-				8F4F49542A7EC6F800097888 /* LyricLine+CoreDataProperties.swift */,
-				8F4F49552A7EC6F800097888 /* Song+CoreDataClass.swift */,
-				8F4F49562A7EC6F800097888 /* Song+CoreDataProperties.swift */,
 				8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */,
 				8FC8E9462A704EEB00F69915 /* Products */,
 				8FC1F4E42A7969C70043D92A /* Frameworks */,
@@ -184,12 +172,8 @@
 				8F4F49522A7EC32D00097888 /* (null) in Sources */,
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8FF59E2B2A79871D00F0A382 /* lyricsFetcher.swift in Sources */,
-				8F4F495A2A7EC6F800097888 /* Song+CoreDataProperties.swift in Sources */,
-				8F4F49572A7EC6F800097888 /* LyricLine+CoreDataClass.swift in Sources */,
 				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
 				8F4F494F2A7EC30400097888 /* PersistenceController.swift in Sources */,
-				8F4F49582A7EC6F800097888 /* LyricLine+CoreDataProperties.swift in Sources */,
-				8F4F49592A7EC6F800097888 /* Song+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

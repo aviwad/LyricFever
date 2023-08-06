@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22189.1" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="LyricLine" representedClassName="LyricLine" syncable="YES">
-        <attribute name="startTimeMS" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="words" attributeType="String"/>
-    </entity>
     <entity name="Song" representedClassName="Song" syncable="YES">
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lyrics" optional="YES" attributeType="Transformable" customClassName="[LyricLine]"/>
