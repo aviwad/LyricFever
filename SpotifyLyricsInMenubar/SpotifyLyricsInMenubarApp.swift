@@ -54,8 +54,6 @@ struct SpotifyLyricsInMenubarApp: App {
         } , label: {
             Text(menuBarText())
            // Text("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-                .lineLimit(1)
-                .truncationMode(.tail)
                 .onAppear {
                     print("Application just started. lets check whats playing")
                     if let currentTrack = player.currentTrack {
