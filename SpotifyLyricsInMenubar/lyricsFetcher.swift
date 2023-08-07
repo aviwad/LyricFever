@@ -15,28 +15,30 @@ actor lyricsFetcher {
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = persistanceController.container.viewContext
     }
     
-    func fetchLyrics(for trackID: String?) async -> [LyricLine]? {
-        guard let trackID else {
-            return nil
-        }
+    func fetchLyrics(for trackID: String, _ trackName: String) async -> [LyricLine] {
+//        guard let trackID, let trackName else {
+//            return []
+//        }
         if let lyrics = fetchFromCoreData(for: trackID) {
             print("got lyrics from core data :D")
             return lyrics
         }
         print("no lyrics from core data, going to download from internet")
+//        else if let lyrics = fetchFromNetwork(for: trackID, trackName) {
+//            print("got lyrics from network :D")
+//            return lyrics
+//        } else {
+//            return []
+//        }
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
+        decoder.userInfo[CodingUserInfoKey.trackName] = trackName
         if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)"), let urlResponseAndData = try? await URLSession.shared.data(from: url), let songObject = try? decoder.decode(SongObject.self, from: urlResponseAndData.0) {
-//            if let lines = lyrics.lines {
-//                saveLyricsToCoreData(for: lines)
-//            }
-            if let startTimesArray = songObject.lyricsTimestamps, let wordsArray = songObject.lyricsWords {
-                // Found the SongObject with the matching trackID
-                let lyricsArray = zip(startTimesArray, wordsArray).map { LyricLine(startTime: $0, words: $1) }
-                persistanceController.save()
-                return lyricsArray
-            }
+            print("downloaded from internet successfully")
+            persistanceController.save()
+            let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            return lyricsArray
         }
-        return nil
+        return []
     }
     
     func fetchFromCoreData(for trackID: String) -> [LyricLine]? {
@@ -45,9 +47,9 @@ actor lyricsFetcher {
 
         do {
             let results = try persistanceController.container.viewContext.fetch(fetchRequest)
-            if let songObject = results.first, let startTimesArray = songObject.lyricsTimestamps, let wordsArray = songObject.lyricsWords {
+            if let songObject = results.first {
                 // Found the SongObject with the matching trackID
-                let lyricsArray = zip(startTimesArray, wordsArray).map { LyricLine(startTime: $0, words: $1) }
+                let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
                 print("Found SongObject with ID:", songObject.id)
                 return lyricsArray
             } else {

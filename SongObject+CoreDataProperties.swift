@@ -16,9 +16,11 @@ extension SongObject {
         return NSFetchRequest<SongObject>(entityName: "SongObject")
     }
 
+    @NSManaged public var downloadDate: Date
     @NSManaged public var id: String
-    @NSManaged public var lyricsWords: [String]?
-    @NSManaged public var lyricsTimestamps: [TimeInterval]?
+    @NSManaged public var title: String
+    @NSManaged public var lyricsWords: [String]
+    @NSManaged public var lyricsTimestamps: [TimeInterval]
 
 }
 

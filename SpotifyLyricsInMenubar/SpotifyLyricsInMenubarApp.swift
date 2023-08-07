@@ -10,14 +10,12 @@ import MusicPlayer
 
 @main
 struct SpotifyLyricsInMenubarApp: App {
-    
     @State var currentlyPlaying: String?
     @State var currentlyPlayingName: String?
-    @State var currentlyPlayingLyrics: [LyricLine]?
-    @State var currentlyPlayingLyricsIndex: Int? = nil
+    @State var currentlyPlayingLyrics: [LyricLine] = []
+    @State var currentlyPlayingLyricsIndex: Int?
     @State var currentMS: TimeInterval = 0
     @State var isPlaying: Bool = true
-//    @State var playbackBasedTimer: Timer = Timer()
     @State var timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
     
     var player = MusicPlayers.Scriptable(name: .spotify)!
@@ -26,22 +24,14 @@ struct SpotifyLyricsInMenubarApp: App {
         MenuBarExtra(content: {
             Text(menuBarTitleText())
             
-            if currentlyPlaying != nil {
-                Text(currentlyPlayingLyrics != nil ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
-    //            Button(isPlaying ? "Play" : "Pause") {
-    //                withAnimation() {
-    //                    isPlaying.toggle()
-    //                }
-    //            }
-                if currentlyPlayingLyrics == nil {
+            if let currentlyPlaying, let currentlyPlayingName {
+                Text(!currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
+                if currentlyPlayingLyrics.isEmpty {
                     Button("Check For Lyrics Again") {
                         Task {
-                            if let lyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying) {
-                                currentlyPlayingLyrics = lyrics
-                                if isPlaying {
-                                    timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
-                                }
-                                //updateLyricsIndexPlaybackBased()
+                            currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)
+                            if isPlaying, !currentlyPlayingLyrics.isEmpty {
+                                timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                             }
                         }
                     }
@@ -68,7 +58,7 @@ struct SpotifyLyricsInMenubarApp: App {
                         print("is playing")
                         isPlaying = true
 //                        playbackBasedTimer.invalidate()
-                        if currentlyPlayingLyrics != nil {
+                        if !currentlyPlayingLyrics.isEmpty {
                             print("timer started for spotify change, lyrics not nil")
                             timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                         }
@@ -83,37 +73,29 @@ struct SpotifyLyricsInMenubarApp: App {
                 })
                 .onChange(of: currentlyPlaying) { nowPlaying in
                     print("song change")
-                    currentlyPlayingLyrics = nil
+                    currentlyPlayingLyrics = []
                     currentlyPlayingLyricsIndex = nil
                     timer.upstream.connect().cancel()
-                    Task {
-                        
-                        if let lyrics = await lyricsFetcher().fetchLyrics(for: nowPlaying) {
-                            currentlyPlayingLyrics = lyrics
-                            if isPlaying {
+                    if let nowPlaying, let currentlyPlayingName {
+                        Task {
+                           currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)
+                            if isPlaying, !currentlyPlayingLyrics.isEmpty {
                                 timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                             }
-                            //updateLyricsIndexPlaybackBased()
                         }
                     }
                 }
-//                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("kMRMediaRemoteNowPlayingInfoDidChangeNotification")), perform: { hi in
-//                    print(hi)
-//                })
-                // a timer is necessary to refresh the lyrics because we don't receive notifications for playback scrubbing
-                // (ie user scrubbing to new playback position whilst still playing)
                 .onReceive(timer, perform: { nih in
-                    print("lyrics exist: \(currentlyPlayingLyrics != nil)")
+                    print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
                     currentMS = player.playbackTime * 1000
                     print("timer: \(currentMS)")
-                    currentlyPlayingLyricsIndex = currentlyPlayingLyrics?.lastIndex(where: {$0.startTimeMS < currentMS})
+                    currentlyPlayingLyricsIndex = currentlyPlayingLyrics.lastIndex(where: {$0.startTimeMS < currentMS})
                     print(currentlyPlayingLyricsIndex ?? "nil")
                 })
         })
     }
     
     func menuBarTitleText() -> String {
-        //currentlyPlayingName ?? "Nothing Playing"
         if let currentlyPlayingName {
             return "Now Playing: \(currentlyPlayingName)"
         }
@@ -121,41 +103,11 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     func menuBarText() -> String {
-        if let currentlyPlayingLyrics, let currentlyPlayingLyricsIndex {
+        if isPlaying, let currentlyPlayingLyricsIndex {
             return currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words
         } else if let currentlyPlayingName {
-            return "Now Playing: \(currentlyPlayingName)"
+            return "Now \(isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
         return "Nothing Playing"
     }
-    
-//    func updateLyricsIndexPlaybackBased() {
-//        currentMS = player.playbackTime * 1000
-//        print("update called on current playtime \(currentMS.magnitude)")
-//        if let currentlyPlayingLyrics {
-//            print("current lyrics available")
-//            if let nextMS = currentlyPlayingLyrics.first(where: {$0.startTimeMS > currentMS}) {
-//                let diff = (nextMS.startTimeMS - currentMS) / 1000
-//                print("next subtitle renders at playtime \(nextMS.startTimeMS.magnitude)")
-//                print("different is \(diff)")
-////                DispatchQueue.main.asyncAfter(deadline: .now() + diff) {
-////                    currentlyPlayingLyricsIndex += 1
-////                    updateLyricsIndexPlaybackBased()
-////                }
-//                DispatchQueue.main.asyncAfter(deadline: <#T##DispatchTime#>, execute: <#T##DispatchWorkItem#>)
-//                playbackBasedTimer = Timer.scheduledTimer(withTimeInterval: diff, repeats: false) { timer in
-//                    currentlyPlayingLyricsIndex += 1
-//                    updateLyricsIndexPlaybackBased()
-//                }
-////                playbackBasedTimer = Timer.scheduledTimer(withTimeInterval: diff, repeats: false) { timer in
-////             //       currentlyPlayingLyricsIndex = currentlyPlayingLyrics.lastIndex(where: {$0.startTimeMS < currentMS}) ?? 0
-////                    print("timer ran, time interval worked")
-////                 //   updateLyricsIndexPlaybackBased()
-////                    
-////                }
-//                
-//            }
-//        }
-//
-//    }
 }

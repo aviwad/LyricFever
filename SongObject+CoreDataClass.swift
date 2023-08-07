@@ -16,16 +16,22 @@ public class SongObject: NSManagedObject, Decodable {
     }
 
     public required convenience init(from decoder: Decoder) throws {
-        guard let context = decoder.userInfo[CodingUserInfoKey.managedObjectContext] as? NSManagedObjectContext, let trackID = decoder.userInfo[CodingUserInfoKey.trackID] as? String else {
+        guard let context = decoder.userInfo[CodingUserInfoKey.managedObjectContext] as? NSManagedObjectContext, let trackID = decoder.userInfo[CodingUserInfoKey.trackID] as? String, let trackName = decoder.userInfo[CodingUserInfoKey.trackName] as? String else {
             fatalError()
         }
 
         self.init(context: context)
         self.id = trackID
+        self.title = trackName
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let lyrics = try container.decode([LyricLine].self, forKey: .lines)
-        self.lyricsTimestamps = lyrics.map {$0.startTimeMS}
-        self.lyricsWords = lyrics.map {$0.words}
+        if let lyrics = try? container.decode([LyricLine].self, forKey: .lines) {
+            self.lyricsTimestamps = lyrics.map {$0.startTimeMS}
+            self.lyricsWords = lyrics.map {$0.words}
+        } else {
+            self.lyricsWords = []
+            self.lyricsTimestamps = []
+        }
+        self.downloadDate = Date.now
     }
     
 }

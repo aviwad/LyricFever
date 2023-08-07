@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct PersistenceController {
+class PersistenceController {
     // A singleton for our entire app to use
     static let shared = PersistenceController()
     let container: NSPersistentContainer
@@ -18,6 +18,8 @@ struct PersistenceController {
             if let error = error {
                 fatalError("Error: \(error.localizedDescription)")
             }
+            self.container.viewContext.mergePolicy = NSMergePolicy.overwrite
+        //    self.container.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
     }
     
