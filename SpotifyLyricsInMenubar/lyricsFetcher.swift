@@ -15,7 +15,7 @@ actor lyricsFetcher {
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = persistanceController.container.viewContext
     }
     
-    func fetchLyrics(for trackID: String, _ trackName: String) async -> [LyricLine] {
+    func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
 //        guard let trackID, let trackName else {
 //            return []
 //        }
@@ -32,9 +32,12 @@ actor lyricsFetcher {
 //        }
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
-        if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)"), let urlResponseAndData = try? await URLSession.shared.data(from: url), let songObject = try? decoder.decode(SongObject.self, from: urlResponseAndData.0) {
+        if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)") {
+            let urlResponseAndData = try await URLSession.shared.data(from: url)
+            let songObject = try decoder.decode(SongObject.self, from: urlResponseAndData.0)
             print("downloaded from internet successfully")
             persistanceController.save()
+            print("SAVED TO COREDATA")
             let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             return lyricsArray
         }
@@ -62,7 +65,8 @@ actor lyricsFetcher {
         return nil
     }
     
-    func saveLyricsToCoreData(for lyrics: [LyricLine]) {
-        
-    }
+//    func fetchFromNetwork(for trackID: String, _ trackName: String) -> [LyricLine]? {
+//        
+//    }
+    
 }

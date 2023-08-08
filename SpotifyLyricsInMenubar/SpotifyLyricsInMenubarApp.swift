@@ -29,7 +29,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 if currentlyPlayingLyrics.isEmpty {
                     Button("Check For Lyrics Again") {
                         Task {
-                            currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)
+//                            currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)
+                            currentlyPlayingLyrics = (try? await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)) ?? []
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
                                 timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                             }
@@ -43,7 +44,6 @@ struct SpotifyLyricsInMenubarApp: App {
             }.keyboardShortcut("q")
         } , label: {
             Text(menuBarText())
-           // Text("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
                 .onAppear {
                     print("Application just started. lets check whats playing")
                     if let currentTrack = player.currentTrack {
@@ -57,12 +57,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     if notification.userInfo?["Player State"] as? String == "Playing" {
                         print("is playing")
                         isPlaying = true
-//                        playbackBasedTimer.invalidate()
                         if !currentlyPlayingLyrics.isEmpty {
                             print("timer started for spotify change, lyrics not nil")
                             timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                         }
-                     //   updateLyricsIndexPlaybackBased()
                     } else {
                         print("paused. timer canceled")
                         isPlaying = false
@@ -78,7 +76,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     timer.upstream.connect().cancel()
                     if let nowPlaying, let currentlyPlayingName {
                         Task {
-                           currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)
+                            currentlyPlayingLyrics = (try? await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)) ?? []
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
                                 timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
                             }
