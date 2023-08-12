@@ -16,9 +16,12 @@ struct SpotifyLyricsInMenubarApp: App {
     @State var currentlyPlayingLyricsIndex: Int?
     @State var currentMS: TimeInterval = 0
     @State var isPlaying: Bool = true
-    @State var timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+  //  @State var timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+    @State private var lyricUpdateWorkItem: DispatchWorkItem?
     
     var player = MusicPlayers.Scriptable(name: .spotify)!
+    
+    var workItem: DispatchWorkItem?
     
     var body: some Scene {
         MenuBarExtra(content: {
@@ -29,10 +32,10 @@ struct SpotifyLyricsInMenubarApp: App {
                 if currentlyPlayingLyrics.isEmpty {
                     Button("Check For Lyrics Again") {
                         Task {
-//                            currentlyPlayingLyrics = await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)
-                            currentlyPlayingLyrics = (try? await lyricsFetcher().fetchLyrics(for: currentlyPlaying, currentlyPlayingName)) ?? []
+                            currentlyPlayingLyrics = try await lyricsFetcher().fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
+                            print("HELLOO")
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
-                                timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                                startLyricUpdater()
                             }
                         }
                     }
@@ -42,6 +45,7 @@ struct SpotifyLyricsInMenubarApp: App {
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
+            
         } , label: {
             Text(menuBarText())
                 .onAppear {
@@ -49,7 +53,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     if let currentTrack = player.currentTrack {
                         print(currentTrack)
                     } else {
-                        timer.upstream.connect().cancel()
+                        stopLyricUpdater()
                     }
                 }
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged")), perform: { notification in
@@ -59,37 +63,30 @@ struct SpotifyLyricsInMenubarApp: App {
                         isPlaying = true
                         if !currentlyPlayingLyrics.isEmpty {
                             print("timer started for spotify change, lyrics not nil")
-                            timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                            startLyricUpdater()
                         }
                     } else {
                         print("paused. timer canceled")
                         isPlaying = false
-                        timer.upstream.connect().cancel()
+                        stopLyricUpdater()
                     }
                     currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
                     currentlyPlayingName = (notification.userInfo?["Name"] as? String)
                 })
                 .onChange(of: currentlyPlaying) { nowPlaying in
                     print("song change")
-                    currentlyPlayingLyrics = []
                     currentlyPlayingLyricsIndex = nil
-                    timer.upstream.connect().cancel()
+                    currentlyPlayingLyrics = []
+                    stopLyricUpdater()
                     if let nowPlaying, let currentlyPlayingName {
                         Task {
-                            currentlyPlayingLyrics = (try? await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)) ?? []
+                            currentlyPlayingLyrics = try await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
-                                timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
+                                startLyricUpdater()
                             }
                         }
                     }
                 }
-                .onReceive(timer, perform: { nih in
-                    print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
-                    currentMS = player.playbackTime * 1000
-                    print("timer: \(currentMS)")
-                    currentlyPlayingLyricsIndex = currentlyPlayingLyrics.lastIndex(where: {$0.startTimeMS < currentMS})
-                    print(currentlyPlayingLyricsIndex ?? "nil")
-                })
         })
     }
     
@@ -107,5 +104,37 @@ struct SpotifyLyricsInMenubarApp: App {
             return "Now \(isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
         return "Nothing Playing"
+    }
+    
+    func lyricUpdater(_ newIndex: Int) {
+        print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
+        currentMS = player.playbackTime * 1000
+        print("timer: \(currentMS)")
+        if currentlyPlayingLyrics.count > newIndex {
+            currentlyPlayingLyricsIndex = newIndex
+        } else {
+            currentlyPlayingLyricsIndex = nil
+        }
+        print(currentlyPlayingLyricsIndex ?? "nil")
+        startLyricUpdater()
+    }
+    
+    func startLyricUpdater() {
+        let currentTime = player.playbackTime * 1000
+        guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
+            stopLyricUpdater()
+            return
+        }
+        let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
+        let diff = nextTimestamp - currentTime
+        print("the difference is \(diff)")
+        lyricUpdateWorkItem = DispatchWorkItem {
+            self.lyricUpdater(lastIndex)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(Int(diff)), execute: lyricUpdateWorkItem!)
+    }
+    
+    func stopLyricUpdater() {
+        lyricUpdateWorkItem?.cancel()
     }
 }

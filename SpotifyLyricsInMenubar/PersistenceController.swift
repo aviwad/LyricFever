@@ -12,6 +12,7 @@ class PersistenceController {
     // A singleton for our entire app to use
     static let shared = PersistenceController()
     let container: NSPersistentContainer
+    
     init(){
         container = NSPersistentContainer(name: "Lyrics")
         container.loadPersistentStores { description, error in
@@ -19,13 +20,11 @@ class PersistenceController {
                 fatalError("Error: \(error.localizedDescription)")
             }
             self.container.viewContext.mergePolicy = NSMergePolicy.overwrite
-        //    self.container.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
     }
     
     func save() {
         let context = container.viewContext
-
         if context.hasChanges {
             do {
                 try context.save()
