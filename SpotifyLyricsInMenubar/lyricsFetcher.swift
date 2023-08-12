@@ -16,28 +16,23 @@ actor lyricsFetcher {
     }
     
     func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
-//        guard let trackID, let trackName else {
-//            return []
-//        }
         if let lyrics = fetchFromCoreData(for: trackID) {
-            print("got lyrics from core data :D")
+            print("got lyrics from core data :D \(trackID) \(trackName)")
             return lyrics
         }
-        print("no lyrics from core data, going to download from internet")
-//        else if let lyrics = fetchFromNetwork(for: trackID, trackName) {
-//            print("got lyrics from network :D")
-//            return lyrics
-//        } else {
-//            return []
-//        }
+        print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
+        return try await fetchNetworkLyrics(for: trackID, trackName)
+    }
+    
+    func fetchNetworkLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
         if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)") {
             let urlResponseAndData = try await URLSession.shared.data(from: url)
             let songObject = try decoder.decode(SongObject.self, from: urlResponseAndData.0)
-            print("downloaded from internet successfully")
+            print("downloaded from internet successfully \(trackID) \(trackName)")
             persistanceController.save()
-            print("SAVED TO COREDATA")
+            print("SAVED TO COREDATA \(trackID) \(trackName)")
             let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             return lyricsArray
         }
@@ -57,16 +52,12 @@ actor lyricsFetcher {
                 return lyricsArray
             } else {
                 // No SongObject found with the given trackID
-                print("No SongObject found with the provided trackID.")
+                print("No SongObject found with the provided trackID. \(trackID)")
             }
         } catch {
             print("Error fetching SongObject:", error)
         }
         return nil
     }
-    
-//    func fetchFromNetwork(for trackID: String, _ trackName: String) -> [LyricLine]? {
-//        
-//    }
     
 }
