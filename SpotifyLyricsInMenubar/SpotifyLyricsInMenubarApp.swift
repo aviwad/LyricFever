@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import MusicPlayer
+import ScriptingBridge
 
 @main
 struct SpotifyLyricsInMenubarApp: App {
@@ -14,12 +14,10 @@ struct SpotifyLyricsInMenubarApp: App {
     @State var currentlyPlayingName: String?
     @State var currentlyPlayingLyrics: [LyricLine] = []
     @State var currentlyPlayingLyricsIndex: Int?
-    @State var currentMS: TimeInterval = 0
     @State var isPlaying: Bool = true
-  //  @State var timer = Timer.publish(every: 1, tolerance: 1, on: .main, in: .common).autoconnect()
     @State private var lyricUpdateWorkItem: DispatchWorkItem?
     
-    var player = MusicPlayers.Scriptable(name: .spotify)!
+    var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     
     var workItem: DispatchWorkItem?
     
@@ -45,12 +43,18 @@ struct SpotifyLyricsInMenubarApp: App {
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
-            
         } , label: {
             Text(menuBarText())
                 .onAppear {
                     print("Application just started. lets check whats playing")
-                    if let currentTrack = player.currentTrack {
+                    if spotifyScript?.playerState == .playing {
+                        isPlaying = true
+                    } else {
+                        isPlaying = false
+                    }
+                    if let currentTrack = spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = spotifyScript?.currentTrack?.name {
+                        currentlyPlaying = currentTrack
+                        currentlyPlayingName = currentTrackName
                         print(currentTrack)
                     } else {
                         stopLyricUpdater()
@@ -108,8 +112,6 @@ struct SpotifyLyricsInMenubarApp: App {
     
     func lyricUpdater(_ newIndex: Int) {
         print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
-        currentMS = player.playbackTime * 1000
-        print("timer: \(currentMS)")
         if currentlyPlayingLyrics.count > newIndex {
             currentlyPlayingLyricsIndex = newIndex
         } else {
@@ -120,13 +122,20 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     func startLyricUpdater() {
-        let currentTime = player.playbackTime * 1000
+        guard let playerPosition = spotifyScript?.playerPosition else {
+            stopLyricUpdater()
+            return
+        }
+        let currentTime = playerPosition * 1000
         guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
+            
             stopLyricUpdater()
             return
         }
         let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
         let diff = nextTimestamp - currentTime
+        print("current time: \(currentTime)")
+        print("next time: \(nextTimestamp)")
         print("the difference is \(diff)")
         lyricUpdateWorkItem = DispatchWorkItem {
             self.lyricUpdater(lastIndex)
@@ -135,6 +144,7 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     func stopLyricUpdater() {
+        print("stop called")
         lyricUpdateWorkItem?.cancel()
     }
 }

@@ -12,11 +12,9 @@
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */; };
 		8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */; };
-		8FC1F4E32A7904EC0043D92A /* MusicPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC1F4E22A7904EC0043D92A /* MusicPlayer */; };
-		8FC1F4E62A7969C70043D92A /* LXMusicPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC1F4E52A7969C70043D92A /* LXMusicPlayer */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
-		8FC8E9502A704EED00F69915 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94F2A704EED00F69915 /* Preview Assets.xcassets */; };
+		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
 		8FF59E2B2A79871D00F0A382 /* lyricsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2A2A79871D00F0A382 /* lyricsFetcher.swift */; };
 		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -29,8 +27,9 @@
 		8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotifyLyricsInMenubar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8FC8E94F2A704EED00F69915 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotifyLyricsInMenubar.entitlements; sourceTree = "<group>"; };
+		8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyScripting.swift; sourceTree = "<group>"; };
+		8FE454292A891EBD0039EFA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FF59E2A2A79871D00F0A382 /* lyricsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lyricsFetcher.swift; sourceTree = "<group>"; };
 		8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Lyrics.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -40,8 +39,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FC1F4E32A7904EC0043D92A /* MusicPlayer in Frameworks */,
-				8FC1F4E62A7969C70043D92A /* LXMusicPlayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +74,7 @@
 		8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */ = {
 			isa = PBXGroup;
 			children = (
+				8FE454292A891EBD0039EFA7 /* Info.plist */,
 				8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */,
 				8FF59E2A2A79871D00F0A382 /* lyricsFetcher.swift */,
 				8F4F494E2A7EC30400097888 /* PersistenceController.swift */,
@@ -84,17 +82,9 @@
 				8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */,
 				8FC8E94C2A704EED00F69915 /* Assets.xcassets */,
 				8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */,
-				8FC8E94E2A704EED00F69915 /* Preview Content */,
+				8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */,
 			);
 			path = SpotifyLyricsInMenubar;
-			sourceTree = "<group>";
-		};
-		8FC8E94E2A704EED00F69915 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				8FC8E94F2A704EED00F69915 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -114,8 +104,6 @@
 			);
 			name = SpotifyLyricsInMenubar;
 			packageProductDependencies = (
-				8FC1F4E22A7904EC0043D92A /* MusicPlayer */,
-				8FC1F4E52A7969C70043D92A /* LXMusicPlayer */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */;
@@ -146,7 +134,6 @@
 			);
 			mainGroup = 8FC8E93C2A704EEB00F69915;
 			packageReferences = (
-				8FC1F4E12A7904EC0043D92A /* XCRemoteSwiftPackageReference "MusicPlayer" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -162,7 +149,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FC8E9502A704EED00F69915 /* Preview Assets.xcassets in Resources */,
 				8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,6 +166,7 @@
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8FF59E2B2A79871D00F0A382 /* lyricsFetcher.swift in Sources */,
 				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
+				8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */,
 				8F4F494F2A7EC30400097888 /* PersistenceController.swift in Sources */,
 				8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */,
 			);
@@ -241,7 +228,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.4;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -298,7 +285,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.4;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -315,12 +302,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SpotifyLyricsInMenubar/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spotify Lyrics in Menubar";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to interface with Spotify to sync the lyrics accurately";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -343,12 +334,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SpotifyLyricsInMenubar/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Spotify Lyrics in Menubar";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to interface with Spotify to sync the lyrics accurately";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -384,30 +379,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		8FC1F4E12A7904EC0043D92A /* XCRemoteSwiftPackageReference "MusicPlayer" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ddddxxx/MusicPlayer";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8FC1F4E22A7904EC0043D92A /* MusicPlayer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FC1F4E12A7904EC0043D92A /* XCRemoteSwiftPackageReference "MusicPlayer" */;
-			productName = MusicPlayer;
-		};
-		8FC1F4E52A7969C70043D92A /* LXMusicPlayer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FC1F4E12A7904EC0043D92A /* XCRemoteSwiftPackageReference "MusicPlayer" */;
-			productName = LXMusicPlayer;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */ = {
