@@ -16,10 +16,14 @@ struct SpotifyLyricsInMenubarApp: App {
     @State var currentlyPlayingLyricsIndex: Int?
     @State var isPlaying: Bool = true
     @State private var lyricUpdateWorkItem: DispatchWorkItem?
+    let lyricsFetcher: lyricsFetcher
     
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
-    
     var workItem: DispatchWorkItem?
+    
+    init() {
+        lyricsFetcher = SpotifyLyricsInMenubar.lyricsFetcher()
+    }
     
     var body: some Scene {
         MenuBarExtra(content: {
@@ -30,7 +34,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 if currentlyPlayingLyrics.isEmpty {
                     Button("Check For Lyrics Again") {
                         Task {
-                            currentlyPlayingLyrics = try await lyricsFetcher().fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
+                            currentlyPlayingLyrics = try await lyricsFetcher.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
                             print("HELLOO")
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
                                 startLyricUpdater()
@@ -84,7 +88,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     stopLyricUpdater()
                     if let nowPlaying, let currentlyPlayingName {
                         Task {
-                            currentlyPlayingLyrics = try await lyricsFetcher().fetchLyrics(for: nowPlaying, currentlyPlayingName)
+                            currentlyPlayingLyrics = try await lyricsFetcher.fetchLyrics(for: nowPlaying, currentlyPlayingName)
                             if isPlaying, !currentlyPlayingLyrics.isEmpty {
                                 startLyricUpdater()
                             }

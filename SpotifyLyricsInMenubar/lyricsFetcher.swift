@@ -11,6 +11,7 @@ import CoreData
 actor lyricsFetcher {
     let decoder = JSONDecoder()
     let persistanceController = PersistenceController.shared
+    
     init() {
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = persistanceController.container.viewContext
     }
