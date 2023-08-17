@@ -81,7 +81,7 @@ struct SpotifyLyricsInMenubarApp: App {
     
     func menuBarTitleText() -> String {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName {
-            return "Now Playing: \(currentlyPlayingName)"
+            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
         return "Nothing Playing"
     }
