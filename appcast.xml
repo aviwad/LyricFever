@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>SpotifyLyricsInMenubar</title>
+        <item>
+            <title>0.9</title>
+            <pubDate>Fri, 18 Aug 2023 00:44:34 +0530</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>0.9</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/release/SpotifyLyricsInMenubar.dmg" length="1572893" type="application/octet-stream" sparkle:edSignature="ZF8f6Ac+Qi3wleEIbtuv51EeX64cldpPgywlD8Nqtl0Qu2CQTvXKm14Oiogilo6JPuDJDwlbfDLvi/Ee2LsaAg=="/>
+        </item>
+    </channel>
+</rss>
