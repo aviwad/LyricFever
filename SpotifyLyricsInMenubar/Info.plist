@@ -7,7 +7,7 @@
 	<key>SUEnableInstallerLauncherService</key>
 	<false/>
 	<key>SUFeedURL</key>
-	<string>https://github.com/aviwad/SpotifyLyricsInMenubar/appcast.xml</string>
+	<string>https://aviwad.github.io/SpotifyLyricsInMenubar/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>GCYCGGY3mUnG+Zh6d6L9lY3b1F4lpO0yYP009G37PXQ=</string>
 </dict>
