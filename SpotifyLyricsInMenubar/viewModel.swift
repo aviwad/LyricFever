@@ -9,6 +9,7 @@ import Foundation
 import ScriptingBridge
 import CoreData
 import AmplitudeSwift
+import Sparkle
 
 @MainActor class viewModel: ObservableObject {
     let decoder = JSONDecoder()
@@ -22,8 +23,12 @@ import AmplitudeSwift
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     let coreDataContainer: NSPersistentContainer
     let amplitude = Amplitude(configuration: .init(apiKey: amplitudeKey))
+    let updaterController: SPUStandardUpdaterController
+    @Published var canCheckForUpdates = false
+
     
     init() {
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
@@ -31,6 +36,8 @@ import AmplitudeSwift
             }
             self.coreDataContainer.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
+        updaterController.updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
         print("Application just started. lets check whats playing")
         if spotifyScript?.playerState == .playing {

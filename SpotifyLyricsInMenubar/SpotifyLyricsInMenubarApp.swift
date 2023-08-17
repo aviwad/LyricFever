@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
@@ -31,6 +30,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
             }
             Divider()
+            Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
+                .disabled(!viewmodel.canCheckForUpdates)
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")

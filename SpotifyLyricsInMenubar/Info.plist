@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>SUEnableDownloaderService</key>
+	<false/>
+	<key>SUEnableInstallerLauncherService</key>
+	<false/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/aviwad/SpotifyLyricsInMenubar/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>GCYCGGY3mUnG+Zh6d6L9lY3b1F4lpO0yYP009G37PXQ=</string>
+</dict>
 </plist>
