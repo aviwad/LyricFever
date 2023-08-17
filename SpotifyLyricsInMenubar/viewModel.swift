@@ -19,13 +19,13 @@ import Sparkle
     @Published var currentlyPlayingLyrics: [LyricLine] = []
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var isPlaying: Bool = false
-    var lyricUpdateWorkItem: DispatchWorkItem?
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     let coreDataContainer: NSPersistentContainer
     let amplitude = Amplitude(configuration: .init(apiKey: amplitudeKey))
     let updaterController: SPUStandardUpdaterController
     @Published var canCheckForUpdates = false
-
+    private var currentFetchTask: Task<[LyricLine], Error>?
+    private var currentLyricsUpdaterTask: Task<Void,Error>?
     
     init() {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -45,24 +45,20 @@ import Sparkle
         }
     }
     
-    func lyricUpdater(_ newIndex: Int) {
-        print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
-        if currentlyPlayingLyrics.count > newIndex {
-            currentlyPlayingLyricsIndex = newIndex
-        } else {
-            currentlyPlayingLyricsIndex = nil
-        }
-        print(currentlyPlayingLyricsIndex ?? "nil")
-        startLyricUpdater()
-    }
-    
-    func startLyricUpdater() {
+    func lyricUpdater() async throws {
         guard let playerPosition = spotifyScript?.playerPosition else {
+            print("no player position hence stopped")
+            // pauses the timer bc there's no player position
             stopLyricUpdater()
             return
         }
         let currentTime = playerPosition * 1000
         guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
+            print("no lyric index hence stopped")
+            // pauses the timer because the index is nil
+            // this only happens near the end of the song (we pass the last lyric)
+            // or (more usually) when we skip songs and lyricUpdater is called before the new song's lyrics are loaded
+            // loading new song immediately sets lyrics to [] and index to nil
             stopLyricUpdater()
             return
         }
@@ -71,15 +67,38 @@ import Sparkle
         print("current time: \(currentTime)")
         print("next time: \(nextTimestamp)")
         print("the difference is \(diff)")
-        lyricUpdateWorkItem = DispatchWorkItem {
-            self.lyricUpdater(lastIndex)
+        try await Task.sleep(nanoseconds: 1000000*UInt64(diff))
+        print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
+        if currentlyPlayingLyrics.count > lastIndex {
+            currentlyPlayingLyricsIndex = lastIndex
+        } else {
+            currentlyPlayingLyricsIndex = nil
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(Int(diff)), execute: lyricUpdateWorkItem!)
+        print(currentlyPlayingLyricsIndex ?? "nil")
+        try await lyricUpdater()
+    }
+    
+    func startLyricUpdater() {
+        if !isPlaying, currentlyPlayingLyrics.isEmpty {
+            return
+        }
+        currentLyricsUpdaterTask?.cancel()
+        currentLyricsUpdaterTask = Task {
+            do {
+                try await lyricUpdater()
+            } catch {
+                print("lyrics were canceled \(error)")
+            }
+        }
+        Task {
+            try await currentLyricsUpdaterTask?.value
+        }
+        
     }
     
     func stopLyricUpdater() {
         print("stop called")
-        lyricUpdateWorkItem?.cancel()
+        currentLyricsUpdaterTask?.cancel()
     }
     
     func saveCoreData() {
@@ -88,15 +107,31 @@ import Sparkle
             do {
                 try context.save()
             } catch {
+                print("core data error \(error)")
                 // Show some error here
             }
         }
     }
     
-    func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+    func fetch(for trackID: String, _ trackName: String) async -> [LyricLine]? {
+        currentFetchTask?.cancel()
+        let newFetchTask = Task {
+            try await self.fetchLyrics(for: trackID, trackName)
+        }
+        currentFetchTask = newFetchTask
+        do {
+            return try await newFetchTask.value
+        } catch {
+            print("error \(error)")
+            return nil
+        }
+    }
+    
+    private func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
         if let lyrics = fetchFromCoreData(for: trackID) {
-            amplitude.track(eventType: "CoreData Fetch")
             print("got lyrics from core data :D \(trackID) \(trackName)")
+            try Task.checkCancellation()
+            amplitude.track(eventType: "CoreData Fetch")
             return lyrics
         }
         print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
@@ -113,6 +148,7 @@ import Sparkle
             saveCoreData()
             print("SAVED TO COREDATA \(trackID) \(trackName)")
             let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            try Task.checkCancellation()
             amplitude.track(eventType: "Network Fetch")
             return lyricsArray
         }

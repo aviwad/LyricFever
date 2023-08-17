@@ -42,8 +42,6 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlaying = currentTrack
                         viewmodel.currentlyPlayingName = currentTrackName
                         print(currentTrack)
-                    } else {
-                        //stopLyricUpdater()
                     }
                 }
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged")), perform: { notification in
@@ -58,6 +56,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     } else {
                         print("paused. timer canceled")
                         viewmodel.isPlaying = false
+                        // manually cancels the lyric-updater task bc media is paused
                         viewmodel.stopLyricUpdater()
                     }
                     viewmodel.currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
@@ -67,24 +66,16 @@ struct SpotifyLyricsInMenubarApp: App {
                     print("song change")
                     viewmodel.currentlyPlayingLyricsIndex = nil
                     viewmodel.currentlyPlayingLyrics = []
-                    viewmodel.stopLyricUpdater()
                     Task {
-                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
-                            viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchLyrics(for: nowPlaying, currentlyPlayingName)
+                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName) {
+                            viewmodel.currentlyPlayingLyrics = lyrics
                             if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
+                                print("STARTING UPDATER")
                                 viewmodel.startLyricUpdater()
                             }
                         }
                     }
                 }
-//                    if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
-//                        Task {
-//                            viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchLyrics(for: nowPlaying, currentlyPlayingName)
-//                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
-//                                viewmodel.startLyricUpdater()
-//                            }
-//                        }
-//                    }
         })
     }
     

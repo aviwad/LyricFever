@@ -16,7 +16,6 @@ import ScriptingBridge
     func activate()
     var delegate: SBApplicationDelegate! { get set }
     var isRunning: Bool { get }
-    //var running: Bool { get }
 }
 
 // MARK: SpotifyEPlS
