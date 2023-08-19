@@ -49,19 +49,24 @@ struct SpotifyLyricsInMenubarApp: App {
                     if notification.userInfo?["Player State"] as? String == "Playing" {
                         print("is playing")
                         viewmodel.isPlaying = true
+                    } else {
+                        print("paused. timer canceled")
+                        viewmodel.isPlaying = false
+                        // manually cancels the lyric-updater task bc media is paused
+                    }
+                    viewmodel.currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
+                    viewmodel.currentlyPlayingName = (notification.userInfo?["Name"] as? String)
+                })
+                .onChange(of: viewmodel.isPlaying) { nowPlaying in
+                    if nowPlaying {
                         if !viewmodel.currentlyPlayingLyrics.isEmpty {
                             print("timer started for spotify change, lyrics not nil")
                             viewmodel.startLyricUpdater()
                         }
                     } else {
-                        print("paused. timer canceled")
-                        viewmodel.isPlaying = false
-                        // manually cancels the lyric-updater task bc media is paused
                         viewmodel.stopLyricUpdater()
                     }
-                    viewmodel.currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
-                    viewmodel.currentlyPlayingName = (notification.userInfo?["Name"] as? String)
-                })
+                }
                 .onChange(of: viewmodel.currentlyPlaying) { nowPlaying in
                     print("song change")
                     viewmodel.currentlyPlayingLyricsIndex = nil
