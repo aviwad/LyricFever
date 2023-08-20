@@ -16,6 +16,7 @@ Download from [releases](https://github.com/aviwad/SpotifyLyricsInMenubar/releas
 ## Features
 
 - It Just Works.
+- Offline caching! Lyrics are automatically stored offline efficiently using CoreData
 - Play some music on the Spotify app and watch the lyrics play on the menu bar automatically.
 
 ## Screenshots
@@ -23,12 +24,6 @@ Download from [releases](https://github.com/aviwad/SpotifyLyricsInMenubar/releas
 ![First Screenshot](superShy.gif)
 
 ![Second Screenshot](screenshot2.png)
-
-<img src="docs/img/preview_1.jpg" width="1280px">
-
-<img src="docs/img/preview_2.jpg" width="1280px">
-
-<img src="docs/img/preview_3.jpg" width="1280px">
 
 ## Acknowledgements / Special Thanks
 
