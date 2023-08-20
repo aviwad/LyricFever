@@ -25,6 +25,15 @@ Download from [releases](https://github.com/aviwad/SpotifyLyricsInMenubar/releas
 
 ![Second Screenshot](screenshot2.png)
 
+## Technical Details
+
+- UI is built using SwiftUI.
+- The lyrics are updated and fetched using Swift Concurrency and Swift Tasks
+- The lyrics are stored into disk using CoreData. 
+- I interface with Spotify using their AppleScript methods as well as by subscribing to their playback state change notifications.
+- I interface with Spotify's AppleScript methods by using Apple's provided ScriptingBridge interface. 
+
+
 ## Acknowledgements / Special Thanks
 
 - [Sparkle:](https://github.com/sparkle-project/Sparkle) For app updates
