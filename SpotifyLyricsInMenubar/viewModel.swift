@@ -53,15 +53,28 @@ import Sparkle
             return
         }
         let currentTime = playerPosition * 1000
-        guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
-            print("no lyric index hence stopped")
-            // pauses the timer because the index is nil
-            // this only happens near the end of the song (we pass the last lyric)
-            // or (more usually) when we skip songs and lyricUpdater is called before the new song's lyrics are loaded
-            // loading new song immediately sets lyrics to [] and index to nil
+        guard let lastIndex = {
+            if let currentlyPlayingLyricsIndex {
+                let newIndex = currentlyPlayingLyricsIndex + 1
+                if currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
+                    print("just the next lyric")
+                    return newIndex
+                }
+            }
+            return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
+        }() else {
             stopLyricUpdater()
             return
         }
+//        guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
+//            print("no lyric index hence stopped")
+//            // pauses the timer because the index is nil
+//            // this only happens near the end of the song (we pass the last lyric)
+//            // or (more usually) when we skip songs and lyricUpdater is called before the new song's lyrics are loaded
+//            // loading new song immediately sets lyrics to [] and index to nil
+//            stopLyricUpdater()
+//            return
+//        }
         let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
         let diff = nextTimestamp - currentTime
         print("current time: \(currentTime)")
