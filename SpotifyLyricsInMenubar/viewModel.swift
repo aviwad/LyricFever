@@ -46,49 +46,58 @@ import Sparkle
     }
     
     func lyricUpdater() async throws {
-        guard let playerPosition = spotifyScript?.playerPosition else {
-            print("no player position hence stopped")
-            // pauses the timer bc there's no player position
-            stopLyricUpdater()
-            return
-        }
-        let currentTime = playerPosition * 1000
-        guard let lastIndex = {
-            if let currentlyPlayingLyricsIndex {
-                let newIndex = currentlyPlayingLyricsIndex + 1
-                if currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
-                    print("just the next lyric")
-                    return newIndex
-                }
+        repeat {
+            guard let playerPosition = spotifyScript?.playerPosition else {
+                print("no player position hence stopped")
+                // pauses the timer bc there's no player position
+                stopLyricUpdater()
+                return
             }
-            return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
-        }() else {
-            stopLyricUpdater()
-            return
-        }
-//        guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
-//            print("no lyric index hence stopped")
-//            // pauses the timer because the index is nil
-//            // this only happens near the end of the song (we pass the last lyric)
-//            // or (more usually) when we skip songs and lyricUpdater is called before the new song's lyrics are loaded
-//            // loading new song immediately sets lyrics to [] and index to nil
-//            stopLyricUpdater()
-//            return
-//        }
-        let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
-        let diff = nextTimestamp - currentTime
-        print("current time: \(currentTime)")
-        print("next time: \(nextTimestamp)")
-        print("the difference is \(diff)")
-        try await Task.sleep(nanoseconds: 1000000*UInt64(diff))
-        print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
-        if currentlyPlayingLyrics.count > lastIndex {
-            currentlyPlayingLyricsIndex = lastIndex
-        } else {
-            currentlyPlayingLyricsIndex = nil
-        }
-        print(currentlyPlayingLyricsIndex ?? "nil")
-        try await lyricUpdater()
+            let currentTime = playerPosition * 1000
+            guard let lastIndex: Int = {
+                if let currentlyPlayingLyricsIndex {
+                    let newIndex = currentlyPlayingLyricsIndex + 1
+                    if newIndex >= currentlyPlayingLyrics.count {
+                        // we've reached the end of the song, we're past the last lyric
+                        // so we set the timer till the duration of the song, in case the user skips ahead or forward
+                        return nil
+                    }
+                    else if  currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
+                        print("just the next lyric")
+                        return newIndex
+                    }
+                }
+                // linear search through the array to find the first lyric that's right after the current time
+                // done on first lyric update for the song, as well as post-scrubbing
+                return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
+            }() else {
+                stopLyricUpdater()
+                return
+            }
+    //        guard let lastIndex = currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime}) else {
+    //            print("no lyric index hence stopped")
+    //            // pauses the timer because the index is nil
+    //            // this only happens near the end of the song (we pass the last lyric)
+    //            // or (more usually) when we skip songs and lyricUpdater is called before the new song's lyrics are loaded
+    //            // loading new song immediately sets lyrics to [] and index to nil
+    //            stopLyricUpdater()
+    //            return
+    //        }
+            let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
+            let diff = nextTimestamp - currentTime
+            print("current time: \(currentTime)")
+            print("next time: \(nextTimestamp)")
+            print("the difference is \(diff)")
+            try await Task.sleep(nanoseconds: 1000000*UInt64(diff))
+            print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
+            if currentlyPlayingLyrics.count > lastIndex {
+                currentlyPlayingLyricsIndex = lastIndex
+            } else {
+                currentlyPlayingLyricsIndex = nil
+            }
+            print(currentlyPlayingLyricsIndex ?? "nil")
+        } while !Task.isCancelled
+       // try await lyricUpdater()
     }
     
     func startLyricUpdater() {
