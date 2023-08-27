@@ -36,7 +36,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(menuBarText())
+            Text(menuBarText().trunc(length: 50))
                 .onAppear {
                     print("Application just started. lets check whats playing")
                     if viewmodel.spotifyScript?.playerState == .playing {
@@ -103,4 +103,11 @@ struct SpotifyLyricsInMenubarApp: App {
         }
         return "Nothing Playing"
     }
+}
+
+extension String {
+  // https://gist.github.com/budidino/8585eecd55fd4284afaaef762450f98e
+  func trunc(length: Int, trailing: String = "…") -> String {
+    return (self.count > length) ? self.prefix(length) + trailing : self
+  }
 }
