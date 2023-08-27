@@ -38,6 +38,10 @@ struct SpotifyLyricsInMenubarApp: App {
         } , label: {
             Text(menuBarText())
                 .onAppear {
+                    print("Application just started. lets check whats playing")
+                    if viewmodel.spotifyScript?.playerState == .playing {
+                        viewmodel.isPlaying = true
+                    }
                     if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name {
                         viewmodel.currentlyPlaying = currentTrack
                         viewmodel.currentlyPlayingName = currentTrackName

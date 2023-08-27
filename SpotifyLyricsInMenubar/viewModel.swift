@@ -39,10 +39,6 @@ import Sparkle
         updaterController.updater.publisher(for: \.canCheckForUpdates)
             .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
-        print("Application just started. lets check whats playing")
-        if spotifyScript?.playerState == .playing {
-            isPlaying = true
-        }
     }
     
     func lyricUpdater() async throws {
