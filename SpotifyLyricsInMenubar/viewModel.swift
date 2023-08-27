@@ -152,8 +152,12 @@ import Sparkle
     }
     
     func fetchNetworkLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+        guard let intDuration = spotifyScript?.currentTrack?.duration else {
+            throw CancellationError()
+        }
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
+        decoder.userInfo[CodingUserInfoKey.duration] = TimeInterval(intDuration+10)
         if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)") {
             let urlResponseAndData = try await URLSession.shared.data(from: url)
             let songObject = try decoder.decode(SongObject.self, from: urlResponseAndData.0)
@@ -162,14 +166,14 @@ import Sparkle
             print("SAVED TO COREDATA \(trackID) \(trackName)")
             var lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
-            if !lyricsArray.isEmpty, let intDuration = spotifyScript?.currentTrack?.duration, let currentlyPlayingName {
-                // why + 10? a little buffer to make sure the timer runs a little bit after the song ends
-                // if user skips to next song -> doesn't affect us, task cancellation cancels updater
-                // if user scrubs or replays the same song -> good for us, the few milliseconds of buffer ensures that we don't accidentally stop the lyric updater
-                let duration = TimeInterval(intDuration+10)
-                print("appended duration lyric into array for \(trackID) \(trackName)")
-                lyricsArray.append(LyricLine(startTime: duration, words: "Now Playing: \(currentlyPlayingName)"))
-            }
+//            if !lyricsArray.isEmpty, let intDuration = spotifyScript?.currentTrack?.duration, let currentlyPlayingName {
+//                // why + 10? a little buffer to make sure the timer runs a little bit after the song ends
+//                // if user skips to next song -> doesn't affect us, task cancellation cancels updater
+//                // if user scrubs or replays the same song -> good for us, the few milliseconds of buffer ensures that we don't accidentally stop the lyric updater
+//                let duration = TimeInterval(intDuration+10)
+//                print("appended duration lyric into array for \(trackID) \(trackName)")
+//                lyricsArray.append(LyricLine(startTime: duration, words: "Now Playing: \(currentlyPlayingName)"))
+//            }
             try Task.checkCancellation()
             amplitude.track(eventType: "Network Fetch")
             return lyricsArray
