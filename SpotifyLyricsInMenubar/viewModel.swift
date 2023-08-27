@@ -54,6 +54,11 @@ import Sparkle
                 if let currentlyPlayingLyricsIndex {
                     let newIndex = currentlyPlayingLyricsIndex + 1
                     if newIndex >= currentlyPlayingLyrics.count {
+                        // if current time is before our current index's start time, the user has scrubbed and rewinded
+                        // reset into linear search mode
+                        if currentTime < currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS {
+                            return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
+                        }
                         // we've reached the end of the song, we're past the last lyric
                         // so we set the timer till the duration of the song, in case the user skips ahead or forward
                         return nil
@@ -155,7 +160,16 @@ import Sparkle
             print("downloaded from internet successfully \(trackID) \(trackName)")
             saveCoreData()
             print("SAVED TO COREDATA \(trackID) \(trackName)")
-            let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            var lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            
+            if !lyricsArray.isEmpty, let intDuration = spotifyScript?.currentTrack?.duration, let currentlyPlayingName {
+                // why + 10? a little buffer to make sure the timer runs a little bit after the song ends
+                // if user skips to next song -> doesn't affect us, task cancellation cancels updater
+                // if user scrubs or replays the same song -> good for us, the few milliseconds of buffer ensures that we don't accidentally stop the lyric updater
+                let duration = TimeInterval(intDuration+10)
+                print("appended duration lyric into array for \(trackID) \(trackName)")
+                lyricsArray.append(LyricLine(startTime: duration, words: "Now Playing: \(currentlyPlayingName)"))
+            }
             try Task.checkCancellation()
             amplitude.track(eventType: "Network Fetch")
             return lyricsArray
