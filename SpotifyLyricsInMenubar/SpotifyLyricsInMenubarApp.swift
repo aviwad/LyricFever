@@ -12,7 +12,7 @@ struct SpotifyLyricsInMenubarApp: App {
     
     var body: some Scene {
         MenuBarExtra(content: {
-            Text(menuBarTitleText())
+            Text(songTitle)
             
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
@@ -36,7 +36,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(menuBarText())
+            Text(menuBarTitle)
                 .onAppear {
                     print("Application just started. lets check whats playing")
                     if viewmodel.spotifyScript?.playerState == .playing {
@@ -88,14 +88,14 @@ struct SpotifyLyricsInMenubarApp: App {
         })
     }
     
-    func menuBarTitleText() -> String {
+    var songTitle: String {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
         return "Nothing Playing"
     }
     
-    func menuBarText() -> String {
+    var menuBarTitle: String {
         if viewmodel.isPlaying, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: 50)
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
