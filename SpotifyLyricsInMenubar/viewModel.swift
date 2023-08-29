@@ -41,6 +41,29 @@ import Sparkle
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
     }
     
+    func upcomingIndex(_ currentTime: Double) -> Int? {
+        if let currentlyPlayingLyricsIndex {
+            let newIndex = currentlyPlayingLyricsIndex + 1
+            if newIndex >= currentlyPlayingLyrics.count {
+                // if current time is before our current index's start time, the user has scrubbed and rewinded
+                // reset into linear search mode
+                if currentTime < currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS {
+                    return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
+                }
+                // we've reached the end of the song, we're past the last lyric
+                // so we set the timer till the duration of the song, in case the user skips ahead or forward
+                return nil
+            }
+            else if  currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
+                print("just the next lyric")
+                return newIndex
+            }
+        }
+        // linear search through the array to find the first lyric that's right after the current time
+        // done on first lyric update for the song, as well as post-scrubbing
+        return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
+    }
+    
     func lyricUpdater() async throws {
         repeat {
             guard let playerPosition = spotifyScript?.playerPosition else {
@@ -50,28 +73,7 @@ import Sparkle
                 return
             }
             let currentTime = playerPosition * 1000
-            guard let lastIndex: Int = {
-                if let currentlyPlayingLyricsIndex {
-                    let newIndex = currentlyPlayingLyricsIndex + 1
-                    if newIndex >= currentlyPlayingLyrics.count {
-                        // if current time is before our current index's start time, the user has scrubbed and rewinded
-                        // reset into linear search mode
-                        if currentTime < currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS {
-                            return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
-                        }
-                        // we've reached the end of the song, we're past the last lyric
-                        // so we set the timer till the duration of the song, in case the user skips ahead or forward
-                        return nil
-                    }
-                    else if  currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
-                        print("just the next lyric")
-                        return newIndex
-                    }
-                }
-                // linear search through the array to find the first lyric that's right after the current time
-                // done on first lyric update for the song, as well as post-scrubbing
-                return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
-            }() else {
+            guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
             }
