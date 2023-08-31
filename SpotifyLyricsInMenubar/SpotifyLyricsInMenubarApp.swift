@@ -58,8 +58,12 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.isPlaying = false
                         // manually cancels the lyric-updater task bc media is paused
                     }
-                    viewmodel.currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
-                    viewmodel.currentlyPlayingName = (notification.userInfo?["Name"] as? String)
+                    let currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
+                    let currentlyPlayingName = (notification.userInfo?["Name"] as? String)
+                    if currentlyPlaying != "", currentlyPlayingName != "" {
+                        viewmodel.currentlyPlaying = currentlyPlaying
+                        viewmodel.currentlyPlayingName = currentlyPlayingName
+                    }
                 })
                 .onChange(of: viewmodel.isPlaying) { nowPlaying in
                     if nowPlaying {
@@ -92,7 +96,7 @@ struct SpotifyLyricsInMenubarApp: App {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
-        return "Nothing Playing"
+        return "Open Spotify!"
     }
     
     var menuBarTitle: String {
@@ -101,7 +105,7 @@ struct SpotifyLyricsInMenubarApp: App {
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName.trunc(length: 50))"
         }
-        return "Nothing Playing"
+        return "Nothing Playing (Open Spotify!)"
     }
 }
 
