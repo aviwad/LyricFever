@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import ServiceManagement
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
-    
+    @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     var body: some Scene {
         MenuBarExtra(content: {
             Text(songTitle)
-            
+            Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
                 if viewmodel.currentlyPlayingLyrics.isEmpty {
@@ -30,6 +31,19 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
             }
             Divider()
+            Button(launchOnLogin ? "Don't launch at login" : "Automatically launch on login") {
+                if launchOnLogin {
+                    try? SMAppService.mainApp.unregister()
+                    launchOnLogin = false
+                } else {
+                    try? SMAppService.mainApp.register()
+                    launchOnLogin = true
+                }
+            }
+            Divider()
+            Button("Help / Install Guide (Easy 3 Steps)") {
+                NSWorkspace.shared.open(URL(string: "https://aviwadhwa.com/SpotifyLyricsInMenubar")!)
+            }.keyboardShortcut("h")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
                 .disabled(!viewmodel.canCheckForUpdates)
             Button("Quit") {
