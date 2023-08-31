@@ -42,7 +42,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     if viewmodel.spotifyScript?.playerState == .playing {
                         viewmodel.isPlaying = true
                     }
-                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name {
+                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
                         viewmodel.currentlyPlaying = currentTrack
                         viewmodel.currentlyPlayingName = currentTrackName
                         print(currentTrack)
