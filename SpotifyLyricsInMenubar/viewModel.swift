@@ -15,7 +15,7 @@ import Sparkle
     let decoder = JSONDecoder()
     static let shared = viewModel()
     @Published var currentlyPlaying: String?
-    @Published var currentlyPlayingName: String?
+    var currentlyPlayingName: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var isPlaying: Bool = false
