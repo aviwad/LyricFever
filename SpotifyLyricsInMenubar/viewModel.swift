@@ -94,7 +94,7 @@ import Sparkle
     }
     
     func startLyricUpdater() {
-        if !isPlaying, currentlyPlayingLyrics.isEmpty {
+        if !isPlaying || currentlyPlayingLyrics.isEmpty || spotifyScript?.playerPosition == 0.0 {
             return
         }
         currentLyricsUpdaterTask?.cancel()
@@ -165,8 +165,7 @@ import Sparkle
             let songObject = try decoder.decode(SongObject.self, from: urlResponseAndData.0)
             print("downloaded from internet successfully \(trackID) \(trackName)")
             saveCoreData()
-            print("SAVED TO COREDATA \(trackID) \(trackName)")
-            var lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
 //            if !lyricsArray.isEmpty, let intDuration = spotifyScript?.currentTrack?.duration, let currentlyPlayingName {
 //                // why + 10? a little buffer to make sure the timer runs a little bit after the song ends
