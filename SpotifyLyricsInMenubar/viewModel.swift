@@ -82,7 +82,7 @@ import Sparkle
             print("current time: \(currentTime)")
             print("next time: \(nextTimestamp)")
             print("the difference is \(diff)")
-            try await Task.sleep(nanoseconds: 1000000*UInt64(diff))
+            try await Task.sleep(nanoseconds: UInt64(1000000*diff))
             print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
             if currentlyPlayingLyrics.count > lastIndex {
                 currentlyPlayingLyricsIndex = lastIndex
