@@ -5,7 +5,7 @@
         <item>
             <title>1</title>
             <pubDate>Fri, 01 Sep 2023 23:38:51 +0530</pubDate>
-            <sparkle:version>1</sparkle:version>
+            <sparkle:version>1.01</sparkle:version>
             <sparkle:shortVersionString>1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/release/SpotifyLyricsInMenubar.dmg" length="16492975" type="application/octet-stream" sparkle:edSignature="qlu9l9m/Ail7/Vek8CNzlZ1CvL9iRdZVrAI/CwWsMK6lhpjxoFIdWBwR2ZZTnk0g41exe69507cXrc+YsGilDw=="/>
