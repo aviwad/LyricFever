@@ -1,58 +1,61 @@
 {
   "images" : [
     {
+      "filename" : "Group 1-4-2.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "Untitled-2 1.png",
+      "filename" : "Group 1-4.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "Untitled-2.png",
+      "filename" : "Group 1-4 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "Frame 1-4.png",
+      "filename" : "Group 1-3.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "Frame 1-3.png",
+      "filename" : "Group 1-2.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "Frame 1-2 1.png",
+      "filename" : "Group 2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "Frame 1-2.png",
+      "filename" : "Group 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "Frame 1.png",
+      "filename" : "Frame 1-12 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
+      "filename" : "Frame 1-12.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
+      "filename" : "Frame 1-15.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"

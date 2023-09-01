@@ -70,17 +70,95 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "49EB577E-EBD6-4CF4-8149-5F21D61ECE75"
+            uuid = "3D72889F-4BE8-442D-9722-FA7E65A9AFD7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SpotifyLyricsInMenubar/SpotifyLyricsInMenubarApp.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "84389E8D-9954-4D9C-B303-9CCAD954103D"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SpotifyLyricsInMenubar/viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "stopLyricUpdater()"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "fetch(for:_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "84389E8D-9954-4D9C-B303-9CCAD954103D - e769c9b268355ab6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SpotifyLyricsInMenubar.viewModel.fetchLyrics(for: Swift.String, _: Swift.String) async throws -&gt; Swift.Array&lt;SpotifyLyricsInMenubar.LyricLine&gt;"
+                  moduleName = "SpotifyLyricsInMenubar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aviwad/Code/SpotifyLyricsInMenubar/SpotifyLyricsInMenubar/viewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "84389E8D-9954-4D9C-B303-9CCAD954103D - 1c380406c1700d19"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for SpotifyLyricsInMenubar.viewModel.fetchLyrics(for: Swift.String, _: Swift.String) async throws -&gt; Swift.Array&lt;SpotifyLyricsInMenubar.LyricLine&gt;"
+                  moduleName = "SpotifyLyricsInMenubar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aviwad/Code/SpotifyLyricsInMenubar/SpotifyLyricsInMenubar/viewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "84389E8D-9954-4D9C-B303-9CCAD954103D - e769c9b268355a0d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SpotifyLyricsInMenubar.viewModel.fetchLyrics(for: Swift.String, _: Swift.String) async throws -&gt; Swift.Array&lt;SpotifyLyricsInMenubar.LyricLine&gt;"
+                  moduleName = "SpotifyLyricsInMenubar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aviwad/Code/SpotifyLyricsInMenubar/SpotifyLyricsInMenubar/viewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140"
+                  offsetFromSymbolStart = "136">
+               </Location>
+               <Location
+                  uuid = "84389E8D-9954-4D9C-B303-9CCAD954103D - 1c380406c1700da2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for SpotifyLyricsInMenubar.viewModel.fetchLyrics(for: Swift.String, _: Swift.String) async throws -&gt; Swift.Array&lt;SpotifyLyricsInMenubar.LyricLine&gt;"
+                  moduleName = "SpotifyLyricsInMenubar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aviwad/Code/SpotifyLyricsInMenubar/SpotifyLyricsInMenubar/viewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "140"
+                  endingLineNumber = "140"
+                  offsetFromSymbolStart = "132">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

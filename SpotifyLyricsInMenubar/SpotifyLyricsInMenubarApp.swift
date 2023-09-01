@@ -11,6 +11,8 @@ import ServiceManagement
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
+    @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
+    @Environment(\.openWindow) var openWindow
     var body: some Scene {
         MenuBarExtra(content: {
             Text(songTitle)
@@ -41,17 +43,27 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
             }
             Divider()
-            Button("Help / Install Guide (Easy 3 Steps)") {
-                NSWorkspace.shared.open(URL(string: "https://aviwadhwa.com/SpotifyLyricsInMenubar")!)
+            Button("Help / Install Guide") {
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                openWindow(id: "onboarding")
             }.keyboardShortcut("h")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
                 .disabled(!viewmodel.canCheckForUpdates)
+                .keyboardShortcut("u")
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
             Text(menuBarTitle)
                 .onAppear {
+                    guard hasOnboarded else {
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                        openWindow(id: "onboarding")
+                        return
+                    }
+                    guard let isRunning = viewmodel.spotifyScript?.isRunning, isRunning else {
+                        return
+                    }
                     print("Application just started. lets check whats playing")
                     if viewmodel.spotifyScript?.playerState == .playing {
                         viewmodel.isPlaying = true
@@ -104,6 +116,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
         })
+        Window("Lyrics in Menubar: Onboarding", id: "onboarding") { // << here !!
+            OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
+                .preferredColorScheme(.dark)
+        }.windowResizability(.contentSize)
     }
     
     var songTitle: String {
@@ -114,12 +130,15 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     var menuBarTitle: String {
+        guard hasOnboarded else {
+            return "Please Complete Onboarding Process (Click Help)"
+        }
         if viewmodel.isPlaying, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: 50)
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName.trunc(length: 50))"
         }
-        return "Nothing Playing (Open Spotify!)"
+        return "Nothing Playing on Spotify"
     }
 }
 
