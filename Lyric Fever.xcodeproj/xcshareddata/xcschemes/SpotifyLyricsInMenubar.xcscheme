@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8FC8E9442A704EEB00F69915"
-               BuildableName = "SpotifyLyricsInMenubar.app"
-               BlueprintName = "SpotifyLyricsInMenubar"
-               ReferencedContainer = "container:SpotifyLyricsInMenubar.xcodeproj">
+               BuildableName = "Lyric Fever.app"
+               BlueprintName = "Lyric Fever"
+               ReferencedContainer = "container:Lyric Fever.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -44,9 +44,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8FC8E9442A704EEB00F69915"
-            BuildableName = "SpotifyLyricsInMenubar.app"
-            BlueprintName = "SpotifyLyricsInMenubar"
-            ReferencedContainer = "container:SpotifyLyricsInMenubar.xcodeproj">
+            BuildableName = "Lyric Fever.app"
+            BlueprintName = "Lyric Fever"
+            ReferencedContainer = "container:Lyric Fever.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -67,9 +67,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8FC8E9442A704EEB00F69915"
-            BuildableName = "SpotifyLyricsInMenubar.app"
-            BlueprintName = "SpotifyLyricsInMenubar"
-            ReferencedContainer = "container:SpotifyLyricsInMenubar.xcodeproj">
+            BuildableName = "Lyric Fever.app"
+            BlueprintName = "Lyric Fever"
+            ReferencedContainer = "container:Lyric Fever.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
