@@ -31,7 +31,7 @@
 		8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
 		8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
-		8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpotifyLyricsInMenubar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotifyLyricsInMenubar.entitlements; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 		8FC8E9462A704EEB00F69915 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */,
+				8FC8E9452A704EEB00F69915 /* Lyric Fever.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,9 +105,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8FC8E9442A704EEB00F69915 /* SpotifyLyricsInMenubar */ = {
+		8FC8E9442A704EEB00F69915 /* Lyric Fever */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "SpotifyLyricsInMenubar" */;
+			buildConfigurationList = 8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "Lyric Fever" */;
 			buildPhases = (
 				8FC8E9412A704EEB00F69915 /* Sources */,
 				8FC8E9422A704EEB00F69915 /* Frameworks */,
@@ -117,14 +117,14 @@
 			);
 			dependencies = (
 			);
-			name = SpotifyLyricsInMenubar;
+			name = "Lyric Fever";
 			packageProductDependencies = (
 				8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */,
 				8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */,
 				8F28FDC12AA25D2700439D8D /* Sparkle */,
 			);
 			productName = SpotifyLyricsInMenubar;
-			productReference = 8FC8E9452A704EEB00F69915 /* SpotifyLyricsInMenubar.app */;
+			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -142,7 +142,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "SpotifyLyricsInMenubar" */;
+			buildConfigurationList = 8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "Lyric Fever" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -160,7 +160,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8FC8E9442A704EEB00F69915 /* SpotifyLyricsInMenubar */,
+				8FC8E9442A704EEB00F69915 /* Lyric Fever */,
 			);
 		};
 /* End PBXProject section */
@@ -337,10 +337,10 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Spotify Lyrics in Menubar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to interface with Spotify to sync the lyrics accurately";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify to play the lyrics properly!";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -373,10 +373,10 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Spotify Lyrics in Menubar";
+				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to interface with Spotify to sync the lyrics accurately";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify to play the lyrics properly!";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -394,7 +394,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "SpotifyLyricsInMenubar" */ = {
+		8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "Lyric Fever" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FC8E9522A704EED00F69915 /* Debug */,
@@ -403,7 +403,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "SpotifyLyricsInMenubar" */ = {
+		8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "Lyric Fever" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FC8E9552A704EED00F69915 /* Debug */,

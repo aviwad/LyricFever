@@ -7,15 +7,16 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import ScriptingBridge
 
 struct OnboardingWindow: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 16) {
-                Text("Welcome to Spotify Lyrics in Menubar! 🎉")
+                Text("Welcome to Lyric Fever! 🎉")
                     .font(.largeTitle)
                 
-                Text("Here's a few steps to quickly setup Spotify Lyrics in your Menubar.")
+                Text("Here's a few steps to quickly setup Lyric Fever in your Menubar.")
                     .font(.title)
                 
                 Image("hi")
@@ -36,6 +37,7 @@ struct OnboardingWindow: View {
 
 struct FirstView: View {
     @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             StepView(title: "2. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")

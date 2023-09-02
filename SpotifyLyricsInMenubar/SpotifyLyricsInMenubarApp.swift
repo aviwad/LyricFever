@@ -58,6 +58,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 .onAppear {
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
+                        viewmodel.spotifyScript?.name
                         openWindow(id: "onboarding")
                         return
                     }
