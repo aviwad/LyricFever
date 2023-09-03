@@ -121,6 +121,7 @@ struct SpotifyLyricsInMenubarApp: App {
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
                 .preferredColorScheme(.dark)
         }.windowResizability(.contentSize)
+            .windowStyle(.hiddenTitleBar)
     }
     
     var songTitle: String {
