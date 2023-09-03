@@ -27,7 +27,7 @@ struct OnboardingWindow: View {
                 
                 NavigationLink("Next", destination: FirstView())
                     .buttonStyle(.borderedProminent)
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.")
+                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.0.1")
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)
@@ -38,14 +38,15 @@ struct OnboardingWindow: View {
 
 struct FirstView: View {
     @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.controlActiveState) var controlActiveState
+    @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             StepView(title: "2. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")
             
             HStack {
                 Spacer()
-                AnimatedImage(name: "spotifyPermissionMac.gif")
+                AnimatedImage(name: "spotifyPermissionMac.gif", isAnimating: $isAnimating)
                     .resizable()
                     .frame(width: 531, height: 450)
                 Spacer()
@@ -66,22 +67,37 @@ struct FirstView: View {
             
         }
         .padding(.horizontal, 20)
-            .navigationBarBackButtonHidden(true)
+        .navigationBarBackButtonHidden(true)
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+            dismiss()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
+        }
+        .onChange(of: controlActiveState) { newState in
+            if newState == .inactive {
+                isAnimating = false
+            } else {
+                isAnimating = true
+            }
+        }
     }
 }
 
 struct SecondView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.controlActiveState) var controlActiveState
+    @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             StepView(title: "3. Make sure you disable crossfades", description: "Because of a glitch within Spotify, crossfades make the lyrics appear out-of-sync on occasion.")
             
             HStack {
                 Spacer()
-                AnimatedImage(name: "crossfade.gif", bundle: .main)
+                AnimatedImage(name: "crossfade.gif", bundle: .main, isAnimating: $isAnimating)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(height: 430)
+                    .frame(height: 470)
                 Spacer()
             }
             
@@ -96,10 +112,7 @@ struct SecondView: View {
                 Spacer()
                 Button("Done") {
                     UserDefaults().set(true, forKey: "hasOnboarded")
-                    //UserDefaults.standard.bool(forKey: "hasOnboarded") = true
                     NSApplication.shared.keyWindow?.close()
-                    dismiss()
-                    dismiss()
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -107,6 +120,22 @@ struct SecondView: View {
         }
         .padding(.horizontal, 20)
             .navigationBarBackButtonHidden(true)
+            .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                dismiss()
+                dismiss()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+                dismiss()
+                dismiss()
+            }
+            .onChange(of: controlActiveState) { newState in
+                print(newState)
+                if newState == .inactive {
+                    isAnimating = false
+                } else {
+                    isAnimating = true
+                }
+            }
     }
 }
 
