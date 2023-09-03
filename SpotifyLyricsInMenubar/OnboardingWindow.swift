@@ -97,6 +97,8 @@ struct SecondView: View {
                     UserDefaults().set(true, forKey: "hasOnboarded")
                     //UserDefaults.standard.bool(forKey: "hasOnboarded") = true
                     NSApplication.shared.keyWindow?.close()
+                    dismiss()
+                    dismiss()
                 }
                 .buttonStyle(.borderedProminent)
             }
