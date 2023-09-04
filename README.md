@@ -1,4 +1,4 @@
-# Spotify Lyrics in Menubar
+# Lyric Fever
 
 ![Logo](logo.png)
 
