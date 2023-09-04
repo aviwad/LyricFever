@@ -4,11 +4,11 @@
         <title>Lyric Fever</title>
         <item>
             <title>1.01</title>
-            <pubDate>Mon, 04 Sep 2023 11:23:49 +0530</pubDate>
+            <pubDate>Mon, 04 Sep 2023 11:37:16 +0530</pubDate>
             <sparkle:version>1.01</sparkle:version>
             <sparkle:shortVersionString>1.01</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/v1.0.1/Lyric.Fever.zip" length="42336831" type="application/octet-stream" sparkle:edSignature="FywAQvNvDBb9no62UkHpP/aBvDPSmKQgUtN0WQOEfLeiZsszkByDXAkAio9Ht1RtJHYZLXUduvJsws1YFAMQDQ=="/>
+            <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/release/Lyric.Fever.zip" length="42336602" type="application/octet-stream" sparkle:edSignature="L7lipLbRlZm8QR/6c1C504GaGLX22TqGnBMlcjLPluwLX6J0d7ty618ZOgGUe9QVZaYWhyqClJx4MekcGlnXDw=="/>
         </item>
     </channel>
 </rss>
