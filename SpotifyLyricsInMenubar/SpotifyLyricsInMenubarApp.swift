@@ -11,6 +11,7 @@ import ServiceManagement
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
+    @AppStorage("showLyrics") var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @Environment(\.openWindow) var openWindow
     var body: some Scene {
@@ -19,15 +20,13 @@ struct SpotifyLyricsInMenubarApp: App {
             Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
-                if viewmodel.currentlyPlayingLyrics.isEmpty {
-                    Button("Check For Lyrics Again") {
-                        
-                        Task {
-                            viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
-                            print("HELLOO")
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
-                                viewmodel.startLyricUpdater()
-                            }
+                Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check For Lyrics Again" : "Refresh Lyrics") {
+                    
+                    Task {
+                        viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
+                        print("HELLOO")
+                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
+                            viewmodel.startLyricUpdater()
                         }
                     }
                 }
@@ -42,6 +41,15 @@ struct SpotifyLyricsInMenubarApp: App {
                     launchOnLogin = true
                 }
             }
+            Button(showLyrics ? "Don't show lyrics" : "Show lyrics") {
+                if showLyrics {
+                    showLyrics = false
+                    viewmodel.stopLyricUpdater()
+                } else {
+                    showLyrics = true
+                    viewmodel.startLyricUpdater()
+                }
+            }
             Divider()
             Button("Help / Install Guide") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
@@ -54,8 +62,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(menuBarTitle)
+            Text(hasOnboarded ? menuBarTitle : "Please Complete Onboarding Process (Click Help)")
                 .onAppear {
+                    if viewmodel.cookie.count != 159 {
+                        hasOnboarded = false
+                    }
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
                         viewmodel.spotifyScript?.name
@@ -92,8 +103,11 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlayingName = currentlyPlayingName
                     }
                 })
+                .onChange(of: viewmodel.cookie) { newCookie in
+                    viewmodel.accessToken = nil
+                }
                 .onChange(of: viewmodel.isPlaying) { nowPlaying in
-                    if nowPlaying {
+                    if nowPlaying, showLyrics {
                         if !viewmodel.currentlyPlayingLyrics.isEmpty {
                             print("timer started for spotify change, lyrics not nil")
                             viewmodel.startLyricUpdater()
@@ -132,10 +146,7 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     var menuBarTitle: String {
-        guard hasOnboarded else {
-            return "Please Complete Onboarding Process (Click Help)"
-        }
-        if viewmodel.isPlaying, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+        if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: 50)
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName.trunc(length: 50))"

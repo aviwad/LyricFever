@@ -25,9 +25,9 @@ struct OnboardingWindow: View {
                 
                 StepView(title: "Make sure Spotify is installed on your mac", description: "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)")
                 
-                NavigationLink("Next", destination: FirstView())
+                NavigationLink("Next", destination: ZeroView())
                     .buttonStyle(.borderedProminent)
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.0.1")
+                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.5")
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)
@@ -35,6 +35,103 @@ struct OnboardingWindow: View {
         }
     }
 }
+
+struct ZeroView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.controlActiveState) var controlActiveState
+    @State var isAnimating = true
+    @State private var isShowingDetailView = false
+    @AppStorage("spDcCookie") var spDcCookie: String = ""
+    @State var isLoading = false
+    @State var error = false
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            StepView(title: "1. Spotify login credentials", description: "We need the cookie to make the lyric api calls.")
+            
+            HStack {
+                Spacer()
+                AnimatedImage(name: "spotifylogin.gif", isAnimating: $isAnimating)
+                    .resizable()
+                Spacer()
+            }
+            
+            TextField("Enter your SP_DC Cookie Here :)", text: $spDcCookie)
+            
+            HStack {
+                Button("Back") {
+                    dismiss()
+                }
+                Button("Open Spotify on the Web", action: {
+                    let url = URL(string: "https://open.spotify.com")!
+                    NSWorkspace.shared.open(url)
+                })
+                Spacer()
+                NavigationLink(destination: FirstView(), isActive: $isShowingDetailView) {EmptyView()}
+                    .hidden()
+                if error && !isLoading {
+                    Text("WRONG SP DC COOKIE TRY AGAIN ⚠️")
+                        .foregroundStyle(.red)
+                }
+                if isLoading {
+                    ProgressView()
+                        .scaleEffect(0.5)
+                        .frame(height: 20)
+                }
+                Button("Next") {
+                    Task {
+                        isLoading = true
+                        if spDcCookie.count != 159 {
+                            error = true
+                            isLoading = false
+                        }
+                        else if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+                            do {
+                                var request = URLRequest(url: url)
+                                request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
+                                let accessTokenData = try await URLSession.shared.data(for: request)
+                                print(String(decoding: accessTokenData.0, as: UTF8.self))
+                                try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                                print("ACCESS TOKEN IS SAVED")
+                                error = false
+                                isLoading = false
+                                isShowingDetailView = true
+                            }
+                            catch {
+                                self.error = true
+                                isLoading = false
+                            }
+                        }
+                    }
+                    // replace button with spinner
+                    // check if the cookie is legit
+                   // isLoading = false
+                    //isShowingDetailView = true
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(isLoading)
+            }
+            .padding(.vertical, 5)
+            
+        }
+        .padding(.horizontal, 20)
+        .navigationBarBackButtonHidden(true)
+//        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+//            dismiss()
+//        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
+        }
+        .onChange(of: controlActiveState) { newState in
+            if newState == .inactive {
+                isAnimating = false
+                print("inactive")
+            } else {
+                isAnimating = true
+            }
+        }
+    }
+}
+
 
 struct FirstView: View {
     @Environment(\.dismiss) var dismiss
@@ -70,8 +167,10 @@ struct FirstView: View {
         .navigationBarBackButtonHidden(true)
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
             dismiss()
+            dismiss()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
             dismiss()
         }
         .onChange(of: controlActiveState) { newState in
@@ -123,8 +222,10 @@ struct SecondView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
             dismiss()
             dismiss()
+            dismiss()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
             dismiss()
             dismiss()
         }

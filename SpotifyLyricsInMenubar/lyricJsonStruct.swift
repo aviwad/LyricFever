@@ -35,3 +35,14 @@ struct LyricLine: Decodable {
         self.words = words
     }
 }
+
+// access token json
+struct accessTokenJSON: Codable {
+    let accessToken: String
+    let accessTokenExpirationTimestampMs: TimeInterval
+    let isAnonymous: Bool
+}
+
+struct SongObjectParent: Decodable {
+    let lyrics: SongObject
+}

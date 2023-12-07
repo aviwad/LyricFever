@@ -17,6 +17,7 @@
 		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
+		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
 		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
 		8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */; };
@@ -35,6 +36,7 @@
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotifyLyricsInMenubar.entitlements; sourceTree = "<group>"; };
+		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
 		8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyScripting.swift; sourceTree = "<group>"; };
 		8FE454292A891EBD0039EFA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Lyrics.xcdatamodel; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */,
+				8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */,
 				8FFA9F362AA1B63500BAEC5C /* crossfade.gif */,
 				8FFA9F352AA1B63500BAEC5C /* spotifyPermissionMac.gif */,
 				8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */,
@@ -173,6 +176,7 @@
 				8FFA9F372AA1B63500BAEC5C /* spotifyPermissionMac.gif in Resources */,
 				8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */,
 				8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */,
+				8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,7 +332,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.01;
+				CURRENT_PROJECT_VERSION = 1.5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
 				ENABLE_APP_SANDBOX = YES;
@@ -347,7 +351,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -364,7 +368,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1.01;
+				CURRENT_PROJECT_VERSION = 1.5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
 				ENABLE_APP_SANDBOX = YES;
@@ -383,7 +387,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

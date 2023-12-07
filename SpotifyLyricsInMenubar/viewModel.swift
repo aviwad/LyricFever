@@ -10,6 +10,7 @@ import ScriptingBridge
 import CoreData
 import AmplitudeSwift
 import Sparkle
+import SwiftUI
 
 @MainActor class viewModel: ObservableObject {
     let decoder = JSONDecoder()
@@ -26,6 +27,8 @@ import Sparkle
     @Published var canCheckForUpdates = false
     private var currentFetchTask: Task<[LyricLine], Error>?
     private var currentLyricsUpdaterTask: Task<Void,Error>?
+    var accessToken: accessTokenJSON?
+    @AppStorage("spDcCookie") var cookie = ""
     
     init() {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
@@ -160,21 +163,39 @@ import Sparkle
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
         decoder.userInfo[CodingUserInfoKey.duration] = TimeInterval(intDuration+10)
-        if let url = URL(string: "https://spotify-lyric-api.herokuapp.com/?trackid=\(trackID)") {
-            let urlResponseAndData = try await URLSession.shared.data(from: url)
-            let songObject = try decoder.decode(SongObject.self, from: urlResponseAndData.0)
+        /*
+         check if saved access token is bigger than current time, then continue with url shit
+         else
+         check if we have spdc cookie, then access token stuff
+            then save access token in this observable object
+                then continue with url shit
+         otherwise []
+         */
+        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+                var request = URLRequest(url: url)
+                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
+                let accessTokenData = try await URLSession.shared.data(for: request)
+                print(String(decoding: accessTokenData.0, as: UTF8.self))
+                accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                print("ACCESS TOKEN IS SAVED")
+            }
+        }
+        if let accessToken, let url = URL(string: "https://spclient.wg.spotify.com/color-lyrics/v2/track/\(trackID)?format=json&vocalRemoval=false") {
+            var request = URLRequest(url: url)
+            request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
+            print("the access token is \(accessToken.accessToken)")
+            request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
+            let urlResponseAndData = try await URLSession.shared.data(for: request)
+            if urlResponseAndData.0.isEmpty {
+                return []
+            }
+            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
+            let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
             print("downloaded from internet successfully \(trackID) \(trackName)")
             saveCoreData()
-            let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            let lyricsArray = zip(songObject.lyrics.lyricsTimestamps, songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
-//            if !lyricsArray.isEmpty, let intDuration = spotifyScript?.currentTrack?.duration, let currentlyPlayingName {
-//                // why + 10? a little buffer to make sure the timer runs a little bit after the song ends
-//                // if user skips to next song -> doesn't affect us, task cancellation cancels updater
-//                // if user scrubs or replays the same song -> good for us, the few milliseconds of buffer ensures that we don't accidentally stop the lyric updater
-//                let duration = TimeInterval(intDuration+10)
-//                print("appended duration lyric into array for \(trackID) \(trackName)")
-//                lyricsArray.append(LyricLine(startTime: duration, words: "Now Playing: \(currentlyPlayingName)"))
-//            }
             try Task.checkCancellation()
             amplitude.track(eventType: "Network Fetch")
             return lyricsArray
