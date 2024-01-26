@@ -3,12 +3,12 @@
     <channel>
         <title>Lyric Fever</title>
         <item>
-            <title>1.5</title>
-            <pubDate>Wed, 06 Dec 2023 21:29:17 -0800</pubDate>
-            <sparkle:version>1.5</sparkle:version>
-            <sparkle:shortVersionString>1.5</sparkle:shortVersionString>
+            <title>1.6</title>
+            <pubDate>Fri, 26 Jan 2024 01:24:36 -0800</pubDate>
+            <sparkle:version>1.6</sparkle:version>
+            <sparkle:shortVersionString>1.6</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/v1.5/Lyric.Fever.zip" length="43906124" type="application/octet-stream" sparkle:edSignature="MwRskjyTKJdGzugquYYBkSkUOY+mNSevaDv4JJ5ogqxUUk/loJ27WRSPlEJ36k4MIvl1kN04S1ZLsDcHRbtRBw=="/>
+            <enclosure url="https://github.com/aviwad/SpotifyLyricsInMenubar/releases/download/v1.6/Lyric.Fever.app.zip" length="44510376" type="application/octet-stream" sparkle:edSignature="6AMIrj3I4s5FEQXYH96RIlSXoOub96MD9QU+0gMhrblIKQO05vy+alloiWBYiYYZAybxDlak94hD3LV3sgUrDQ=="/>
         </item>
     </channel>
 </rss>
