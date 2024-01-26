@@ -27,7 +27,7 @@ struct OnboardingWindow: View {
                 
                 NavigationLink("Next", destination: ZeroView())
                     .buttonStyle(.borderedProminent)
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.5")
+                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.6")
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)
