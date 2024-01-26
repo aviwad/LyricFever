@@ -66,7 +66,7 @@ struct ZeroView: View {
                     NSWorkspace.shared.open(url)
                 })
                 Spacer()
-                NavigationLink(destination: FirstView(), isActive: $isShowingDetailView) {EmptyView()}
+                NavigationLink(destination: BetweenZeroAndFirstView(), isActive: $isShowingDetailView) {EmptyView()}
                     .hidden()
                 if error && !isLoading {
                     Text("WRONG SP DC COOKIE TRY AGAIN ⚠️")
@@ -80,11 +80,7 @@ struct ZeroView: View {
                 Button("Next") {
                     Task {
                         isLoading = true
-                        if spDcCookie.count != 159 {
-                            error = true
-                            isLoading = false
-                        }
-                        else if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+                        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
                             do {
                                 var request = URLRequest(url: url)
                                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
@@ -132,6 +128,56 @@ struct ZeroView: View {
     }
 }
 
+struct BetweenZeroAndFirstView: View {
+    @Environment(\.dismiss) var dismiss
+    //@AppStorage("truncationLength") var truncationLength: Int = 50
+    @State var truncationLength: Int = UserDefaults.standard.integer(forKey: "truncationLength")
+    @Environment(\.controlActiveState) var controlActiveState
+    let allTruncations = [30,40,50,60]
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            StepView(title: "2. Set the Lyric Size", description: "This depends on how much free space you have in your menu bar!")
+            
+            Image("\(truncationLength)")
+                .resizable()
+                .scaledToFit()
+            
+            HStack {
+                Spacer()
+                Picker("Truncation Length", selection: $truncationLength) {
+                    ForEach(allTruncations, id:\.self) { oneThing in
+                        Text("\(oneThing) Characters")
+                    }
+                }
+                .pickerStyle(.radioGroup)
+                Spacer()
+            }
+            
+            HStack {
+                Button("Back") {
+                    dismiss()
+                }
+                Spacer()
+                NavigationLink("Next", destination: FirstView())
+                    .buttonStyle(.borderedProminent)
+            }
+            
+        }
+        .onChange(of: truncationLength) { newLength in
+            UserDefaults.standard.set(newLength, forKey: "truncationLength")
+        }
+        .padding(.horizontal, 20)
+        .navigationBarBackButtonHidden(true)
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+            dismiss()
+            dismiss()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
+            dismiss()
+        }
+    }
+}
 
 struct FirstView: View {
     @Environment(\.dismiss) var dismiss
@@ -139,7 +185,7 @@ struct FirstView: View {
     @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "2. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")
+            StepView(title: "3. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")
             
             HStack {
                 Spacer()
@@ -168,8 +214,10 @@ struct FirstView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
             dismiss()
             dismiss()
+            dismiss()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+            dismiss()
             dismiss()
             dismiss()
         }
@@ -189,7 +237,7 @@ struct SecondView: View {
     @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "3. Make sure you disable crossfades", description: "Because of a glitch within Spotify, crossfades make the lyrics appear out-of-sync on occasion.")
+            StepView(title: "4. Make sure you disable crossfades", description: "Because of a glitch within Spotify, crossfades make the lyrics appear out-of-sync on occasion.")
             
             HStack {
                 Spacer()

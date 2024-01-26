@@ -164,11 +164,11 @@ import SwiftUI
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
         decoder.userInfo[CodingUserInfoKey.duration] = TimeInterval(intDuration+10)
         /*
-         check if saved access token is bigger than current time, then continue with url shit
+         check if saved access token is bigger than current time, then continue with lyric fetch
          else
          check if we have spdc cookie, then access token stuff
             then save access token in this observable object
-                then continue with url shit
+                then continue with lyric fetch
          otherwise []
          */
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {

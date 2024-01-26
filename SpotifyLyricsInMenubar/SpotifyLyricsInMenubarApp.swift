@@ -7,12 +7,14 @@
 
 import SwiftUI
 import ServiceManagement
+
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     @AppStorage("showLyrics") var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
+    @AppStorage("truncationLength") var truncationLength: Int = 50
     @Environment(\.openWindow) var openWindow
     var body: some Scene {
         MenuBarExtra(content: {
@@ -147,9 +149,9 @@ struct SpotifyLyricsInMenubarApp: App {
     
     var menuBarTitle: String {
         if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
-            return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: 50)
+            return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
-            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName.trunc(length: 50))"
+            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)".trunc(length: truncationLength)
         }
         return "Nothing Playing on Spotify"
     }
