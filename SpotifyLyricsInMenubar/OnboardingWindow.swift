@@ -16,7 +16,7 @@ struct OnboardingWindow: View {
                 Text("Welcome to Lyric Fever! 🎉")
                     .font(.largeTitle)
                 
-                Text("Here's a few steps to quickly setup Lyric Fever in your Menubar.")
+                Text("Please accept the prompts so that Lyric Fever works properly ☺️.")
                     .font(.title)
                 
                 Image("hi")
@@ -35,7 +35,7 @@ struct OnboardingWindow: View {
                 
                 NavigationLink("Next", destination: ZeroView())
                     .buttonStyle(.borderedProminent)
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.6")
+                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nVersion 1.7")
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)
@@ -54,7 +54,7 @@ struct ZeroView: View {
     @State var error = false
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "1. Spotify Login Credential (EVEN IF YOU USE APPLE MUSIC!!!)", description: "We need the cookie to make the relevant Lyric API calls. Even if you're using Apple Music, I still download lyrics from Spotify.")
+            StepView(title: "1. Spotify Login Credentials (EVEN IF YOU USE APPLE MUSIC!!!)", description: "We need the cookie to make the relevant Lyric API calls. Even if you're using Apple Music, I still download lyrics from Spotify.")
             
             HStack {
                 Spacer()
@@ -112,7 +112,7 @@ struct ZeroView: View {
                     //isShowingDetailView = true
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(isLoading)
+                .disabled(isLoading || spDcCookie.count == 0)
             }
             .padding(.vertical, 5)
             
@@ -193,11 +193,11 @@ struct FirstView: View {
     @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "3. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify & Apple Music, so that we can play the correct lyrics! Watch the following gif to correctly give permission. In addition to the gif please give Apple Music Automation permission as well.")
+            StepView(title: "3. Make sure you give Automation & Music permission", description: "We need these permissions to read the current song from Spotify & Apple Music, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")
             
             HStack {
                 Spacer()
-                AnimatedImage(name: "spotifyPermissionMac.gif", isAnimating: $isAnimating)
+                AnimatedImage(name: "newPermissionMac.gif", isAnimating: $isAnimating)
                     .resizable()
                     .frame(width: 531, height: 450)
                 Spacer()

@@ -281,8 +281,8 @@ extension viewModel {
             return
         }
     }
+    
     func appleMusicFetch() async throws {
-        
         // check coredata for apple music persistent id -> spotify id mapping
         if let coreDataSpotifyID = fetchSpotifyIDFromPersistentIDCoreData() {
             if !Task.isCancelled {
@@ -290,6 +290,11 @@ extension viewModel {
                 return
             }
         }
+        
+        try await appleMusicNetworkFetch()
+    }
+    
+    func appleMusicNetworkFetch() async throws {
         
         // coredata didn't get us anything
         

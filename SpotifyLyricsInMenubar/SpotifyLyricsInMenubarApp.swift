@@ -26,7 +26,9 @@ struct SpotifyLyricsInMenubarApp: App {
                 Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check For Lyrics Again" : "Refresh Lyrics") {
                     
                     Task {
-                        try await viewmodel.appleMusicFetch()
+                        if spotifyOrAppleMusic {
+                            try await viewmodel.appleMusicNetworkFetch()
+                        }
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         print("HELLOO")
                         if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
