@@ -23,7 +23,15 @@ struct OnboardingWindow: View {
                     .resizable()
                     .frame(width: 250, height: 250, alignment: .center)
                 
-                StepView(title: "Make sure Spotify is installed on your mac", description: "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)")
+                VStack(alignment: .center, spacing: 8) {
+                    Text("Spotify Users: Make sure Spotify is installed on your mac")
+                        .font(.title2)
+                        .bold()
+                    
+                    Text(.init("Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"))
+                        .font(.title3)
+                }
+                
                 
                 NavigationLink("Next", destination: ZeroView())
                     .buttonStyle(.borderedProminent)
@@ -46,7 +54,7 @@ struct ZeroView: View {
     @State var error = false
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "1. Spotify login credentials", description: "We need the cookie to make the lyric api calls.")
+            StepView(title: "1. Spotify Login Credential (EVEN IF YOU USE APPLE MUSIC!!!)", description: "We need the cookie to make the relevant Lyric API calls. Even if you're using Apple Music, I still download lyrics from Spotify.")
             
             HStack {
                 Spacer()
@@ -185,7 +193,7 @@ struct FirstView: View {
     @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "3. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify, so that we can play the correct lyrics! Watch the following gif to correctly give permission.")
+            StepView(title: "3. Make sure you give Automation permission", description: "We need this permission to read the current song from Spotify & Apple Music, so that we can play the correct lyrics! Watch the following gif to correctly give permission. In addition to the gif please give Apple Music Automation permission as well.")
             
             HStack {
                 Spacer()
@@ -237,7 +245,7 @@ struct SecondView: View {
     @State var isAnimating = true
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "4. Make sure you disable crossfades", description: "Because of a glitch within Spotify, crossfades make the lyrics appear out-of-sync on occasion.")
+            StepView(title: "4. Make sure you disable crossfades (Spotify Users Only)", description: "Because of a glitch within Spotify, crossfades make the lyrics appear out-of-sync on occasion.")
             
             HStack {
                 Spacer()

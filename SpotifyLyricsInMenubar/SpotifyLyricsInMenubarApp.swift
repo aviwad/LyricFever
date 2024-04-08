@@ -12,6 +12,7 @@ import ServiceManagement
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
+    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("showLyrics") var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 50
@@ -25,16 +26,17 @@ struct SpotifyLyricsInMenubarApp: App {
                 Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check For Lyrics Again" : "Refresh Lyrics") {
                     
                     Task {
-                        viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
+                        try await viewmodel.appleMusicFetch()
+                        viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         print("HELLOO")
                         if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
-                            viewmodel.startLyricUpdater()
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     }
                 }
             }
             Divider()
-            Button(launchOnLogin ? "Don't launch at login" : "Automatically launch on login") {
+            Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
                 if launchOnLogin {
                     try? SMAppService.mainApp.unregister()
                     launchOnLogin = false
@@ -43,16 +45,50 @@ struct SpotifyLyricsInMenubarApp: App {
                     launchOnLogin = true
                 }
             }
-            Button(showLyrics ? "Don't show lyrics" : "Show lyrics") {
+            Button(showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
                 if showLyrics {
                     showLyrics = false
                     viewmodel.stopLyricUpdater()
                 } else {
                     showLyrics = true
-                    viewmodel.startLyricUpdater()
+                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                 }
             }
             Divider()
+            Button(spotifyOrAppleMusic ? "Switch To Spotify" : "Switch To Apple Music") {
+                spotifyOrAppleMusic.toggle()
+                guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
+                    viewmodel.isPlaying = false
+                    viewmodel.currentlyPlaying = nil
+                    viewmodel.currentlyPlayingName = nil
+                    return
+                }
+                print("Application just started. lets check whats playing")
+//                if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
+//                    viewmodel.isPlaying = true
+//                } else {
+//                    viewmodel.isPlaying = false
+//                }
+                viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
+                if spotifyOrAppleMusic {
+                    if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
+//                        viewmodel.currentlyPlaying = nil
+                        if currentTrackName == "" {
+                            viewmodel.currentlyPlayingName = nil
+                        } else {
+                            viewmodel.currentlyPlayingName = currentTrackName
+                        }
+                        viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                    }
+                } else {
+                    viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
+                        viewmodel.currentlyPlaying = currentTrack
+                        viewmodel.currentlyPlayingName = currentTrackName
+                        print(currentTrack)
+                    }
+                }
+            }
             Button("Help / Install Guide") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
@@ -66,29 +102,72 @@ struct SpotifyLyricsInMenubarApp: App {
         } , label: {
             Text(hasOnboarded ? menuBarTitle : "Please Complete Onboarding Process (Click Help)")
                 .onAppear {
-                    if viewmodel.cookie.count != 159 {
+                    if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
                     }
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
+                        // why do i call this?
                         viewmodel.spotifyScript?.name
+                        viewmodel.appleMusicScript?.name
                         openWindow(id: "onboarding")
                         return
                     }
-                    guard let isRunning = viewmodel.spotifyScript?.isRunning, isRunning else {
+                    guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
                         return
                     }
                     print("Application just started. lets check whats playing")
-                    if viewmodel.spotifyScript?.playerState == .playing {
+                    if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
                         viewmodel.isPlaying = true
                     }
-                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
-                        viewmodel.currentlyPlaying = currentTrack
-                        viewmodel.currentlyPlayingName = currentTrackName
-                        print(currentTrack)
+                    if spotifyOrAppleMusic {
+                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
+//                            viewmodel.currentlyPlaying = nil
+                            if currentTrackName == "" {
+                                viewmodel.currentlyPlayingName = nil
+                            } else {
+                                viewmodel.currentlyPlayingName = currentTrackName
+                            }
+                            print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
+                            viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                        }
+                    } else {
+                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
+                            viewmodel.currentlyPlaying = currentTrack
+                            viewmodel.currentlyPlayingName = currentTrackName
+                            print(currentTrack)
+                        }
                     }
                 }
+                .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.apple.Music.playerInfo")), perform: { notification in
+                    guard spotifyOrAppleMusic == true else {
+                        print("#TODO we are still listening to apple music playback state changes even when user selected Spotify")
+                        return
+                    }
+                    print("playback changed in apple music")
+                    if notification.userInfo?["Player State"] as? String == "Playing" {
+                        print("is playing")
+                        viewmodel.isPlaying = true
+                    } else {
+                        print("paused. timer canceled")
+                        viewmodel.isPlaying = false
+                        // manually cancels the lyric-updater task bc media is paused
+                    }
+                    /*let currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last*/
+                    let currentlyPlayingName = (notification.userInfo?["Name"] as? String)
+                    //viewmodel.currentlyPlaying = nil
+                    if currentlyPlayingName == "" {
+                        viewmodel.currentlyPlayingName = nil
+                    } else {
+                        viewmodel.currentlyPlayingName = currentlyPlayingName
+                    }
+                    viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                })
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged")), perform: { notification in
+                    guard spotifyOrAppleMusic == false else {
+                        print("#TODO we are still listening to spotify playback state changes even when user selected Apple Music")
+                        return
+                    }
                     print("playback changed in spotify")
                     if notification.userInfo?["Player State"] as? String == "Playing" {
                         print("is playing")
@@ -110,24 +189,36 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .onChange(of: viewmodel.isPlaying) { nowPlaying in
                     if nowPlaying, showLyrics {
-                        if !viewmodel.currentlyPlayingLyrics.isEmpty {
+                        if !viewmodel.currentlyPlayingLyrics.isEmpty, spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerPosition != 0.0 : viewmodel.spotifyScript?.playerPosition != 0.0  {
                             print("timer started for spotify change, lyrics not nil")
-                            viewmodel.startLyricUpdater()
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
                 }
+                .task(id: viewmodel.currentlyPlayingAppleMusicPersistentID) {
+                    if viewmodel.currentlyPlayingAppleMusicPersistentID != nil {
+                        // reset the store playback id so that the nil check actually works later
+                        viewmodel.appleMusicStorePlaybackID = nil
+                        await viewmodel.appleMusicStarter()
+                    }
+                }
                 .onChange(of: viewmodel.currentlyPlaying) { nowPlaying in
                     print("song change")
+                    // only set position to 0 when new song selected, user anyways expected song to start at position 0
+                    // gets rid of spotify's playback position glitch when autoplaying
+                    // see:
+//                    viewmodel.spotifyScript?.playpause?()
+//                    viewmodel.spotifyScript?.playpause?()
                     viewmodel.currentlyPlayingLyricsIndex = nil
                     viewmodel.currentlyPlayingLyrics = []
                     Task {
-                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName) {
+                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
                             if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
                                 print("STARTING UPDATER")
-                                viewmodel.startLyricUpdater()
+                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                             }
                         }
                     }
@@ -144,7 +235,7 @@ struct SpotifyLyricsInMenubarApp: App {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
         }
-        return "Open Spotify!"
+        return "Open \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )!"
     }
     
     var menuBarTitle: String {
@@ -153,7 +244,7 @@ struct SpotifyLyricsInMenubarApp: App {
         } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
             return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)".trunc(length: truncationLength)
         }
-        return "Nothing Playing on Spotify"
+        return "Nothing Playing on \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )"
     }
 }
 

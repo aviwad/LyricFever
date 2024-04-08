@@ -15,6 +15,7 @@
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
 		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
+		8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
@@ -32,6 +33,7 @@
 		8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
 		8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicScripting.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				8FC8E94C2A704EED00F69915 /* Assets.xcassets */,
 				8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */,
 				8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */,
+				8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */,
 			);
 			path = SpotifyLyricsInMenubar;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,
 				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
+				8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */,
 				8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */,
 				8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */,
 				8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */,
@@ -344,7 +348,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify to play the lyrics properly!";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify / Apple Music to play the lyrics properly.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -380,7 +384,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify to play the lyrics properly!";
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "I need to access Spotify / Apple Music to play the lyrics properly.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

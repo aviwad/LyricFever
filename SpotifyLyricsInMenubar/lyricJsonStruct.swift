@@ -46,3 +46,16 @@ struct accessTokenJSON: Codable {
 struct SongObjectParent: Decodable {
     let lyrics: SongObject
 }
+
+struct SpotifyResponse: Codable {
+    let tracks: Tracks
+}
+
+struct Tracks: Codable {
+    let items: [Item]
+}
+
+struct Item: Codable {
+    let type: String
+    let id: String
+}
