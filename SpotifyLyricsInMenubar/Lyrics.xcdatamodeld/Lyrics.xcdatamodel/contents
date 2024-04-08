@@ -3,6 +3,11 @@
     <entity name="PersistentIDToSpotify" representedClassName="PersistentIDToSpotify" syncable="YES" codeGenerationType="class">
         <attribute name="persistentID" optional="YES" attributeType="String"/>
         <attribute name="spotifyID" optional="YES" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="persistentID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="SongObject" representedClassName="SongObject" syncable="YES">
         <attribute name="downloadDate" attributeType="Date" usesScalarValueType="NO"/>

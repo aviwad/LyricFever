@@ -162,6 +162,7 @@ import MediaPlayer
         if context.hasChanges {
             do {
                 try context.save()
+                print("Saved CoreData!")
             } catch {
                 print("core data error \(error)")
                 // Show some error here
@@ -282,6 +283,16 @@ extension viewModel {
     }
     func appleMusicFetch() async throws {
         
+        // check coredata for apple music persistent id -> spotify id mapping
+        if let coreDataSpotifyID = fetchSpotifyIDFromPersistentIDCoreData() {
+            if !Task.isCancelled {
+                self.currentlyPlaying = coreDataSpotifyID
+                return
+            }
+        }
+        
+        // coredata didn't get us anything
+        
         // Get song info
         MRMediaRemoteGetNowPlayingInfo(DispatchQueue.global(), { (information) in
             self.appleMusicStorePlaybackID =  information["kMRMediaRemoteNowPlayingInfoContentItemIdentifier"] as? String
@@ -331,9 +342,41 @@ extension viewModel {
             // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
             if !Task.isCancelled {
                 self.currentlyPlaying = response.tracks.items.first?.id
+                
+                if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
+                    print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
+                    // save the mapping into coredata persistentIDToSpotify
+                    let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
+                    newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
+                    newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
+                    saveCoreData()
+                }
             }
         }
         // get equivalent spotify ID
+    }
+    
+    func fetchSpotifyIDFromPersistentIDCoreData() -> String? {
+        let fetchRequest: NSFetchRequest<PersistentIDToSpotify> = PersistentIDToSpotify.fetchRequest()
+        guard let currentlyPlayingAppleMusicPersistentID else {
+            print("No persistent ID available. it's nil! should have never happened")
+            return nil
+        }
+        fetchRequest.predicate = NSPredicate(format: "persistentID == %@", currentlyPlayingAppleMusicPersistentID) // Replace persistentID with the desired value
+
+        do {
+            let results = try coreDataContainer.viewContext.fetch(fetchRequest)
+            if let persistentIDToSpotify = results.first {
+                // Found the persistentIDToSpotify object with the matching persistentID
+                return persistentIDToSpotify.spotifyID
+            } else {
+                // No SongObject found with the given trackID
+                print("No spotifyID found with the provided persistentID. \(currentlyPlayingAppleMusicPersistentID)")
+            }
+        } catch {
+            print("Error fetching persistentIDToSpotify:", error)
+        }
+        return nil
     }
     
     func lyricUpdaterAppleMusic() async throws {
