@@ -10,5 +10,7 @@
 	<string>https://aviwad.github.io/SpotifyLyricsInMenubar/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>GCYCGGY3mUnG+Zh6d6L9lY3b1F4lpO0yYP009G37PXQ=</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This permission is required to interact with your Apple Music library.</string>
 </dict>
 </plist>

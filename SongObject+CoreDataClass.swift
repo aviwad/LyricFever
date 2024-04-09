@@ -27,7 +27,7 @@ public class SongObject: NSManagedObject, Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let syncType = try? container.decode(String.self, forKey: .syncType), syncType == "LINE_SYNCED", var lyrics = try? container.decode([LyricLine].self, forKey: .lines) {
             if !lyrics.isEmpty {
-                lyrics.append(LyricLine(startTime: duration, words: "Now Playing: \(title)"))
+                lyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
             }
             self.lyricsTimestamps = lyrics.map {$0.startTimeMS}
             self.lyricsWords = lyrics.map {$0.words}

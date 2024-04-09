@@ -10,27 +10,56 @@ import ScriptingBridge
 import CoreData
 import AmplitudeSwift
 import Sparkle
+import MusicKit
 import SwiftUI
+import MediaPlayer
 
 @MainActor class viewModel: ObservableObject {
-    let decoder = JSONDecoder()
+    // View Model
     static let shared = viewModel()
+    
+    //
+    var appleMusicStorePlaybackID: String? = nil
     @Published var currentlyPlaying: String?
     var currentlyPlayingName: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
     @Published var currentlyPlayingLyricsIndex: Int?
+    @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
+    var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
+    
+    // CoreData container (for saved lyrics)
     let coreDataContainer: NSPersistentContainer
+    
+    // Logging / Analytics
     let amplitude = Amplitude(configuration: .init(apiKey: amplitudeKey))
+    
+    // Sparkle / Update Controller
     let updaterController: SPUStandardUpdaterController
     @Published var canCheckForUpdates = false
+    
+    // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
     private var currentLyricsUpdaterTask: Task<Void,Error>?
+    private var currentAppleMusicFetchTask: Task<Void,Error>?
+    
+    let MRMediaRemoteGetNowPlayingInfo: @convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void
+    var status: MusicAuthorization.Status = .notDetermined
+    
+    // Authentication tokens
     var accessToken: accessTokenJSON?
     @AppStorage("spDcCookie") var cookie = ""
+    let decoder = JSONDecoder()
     
     init() {
+        // Load framework
+        let bundle = CFBundleCreate(kCFAllocatorDefault, NSURL(fileURLWithPath: "/System/Library/PrivateFrameworks/MediaRemote.framework"))
+
+        // Get a Swift function for MRMediaRemoteGetNowPlayingInfo
+        let MRMediaRemoteGetNowPlayingInfoPointer = CFBundleGetFunctionPointerForName(bundle, "MRMediaRemoteGetNowPlayingInfo" as CFString)!
+        MRMediaRemoteGetNowPlayingInfo = unsafeBitCast(MRMediaRemoteGetNowPlayingInfoPointer, to: (@convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void).self)
+        
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
         coreDataContainer.loadPersistentStores { description, error in
@@ -42,17 +71,24 @@ import SwiftUI
         updaterController.updater.publisher(for: \.canCheckForUpdates)
             .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
+        Task {
+            status = await MusicAuthorization.request()
+            print(status)
+        }
     }
+    
     
     func upcomingIndex(_ currentTime: Double) -> Int? {
         if let currentlyPlayingLyricsIndex {
             let newIndex = currentlyPlayingLyricsIndex + 1
             if newIndex >= currentlyPlayingLyrics.count {
+                print("REACHED LAST LYRIC!!!!!!!!")
                 // if current time is before our current index's start time, the user has scrubbed and rewinded
                 // reset into linear search mode
                 if currentTime < currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS {
                     return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
                 }
+//                spotifyScript?.nextTrack?()
                 // we've reached the end of the song, we're past the last lyric
                 // so we set the timer till the duration of the song, in case the user skips ahead or forward
                 return nil
@@ -87,6 +123,8 @@ import SwiftUI
             print("the difference is \(diff)")
             try await Task.sleep(nanoseconds: UInt64(1000000*diff))
             print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
+            print("last index: \(lastIndex)")
+            print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
                 currentlyPlayingLyricsIndex = lastIndex
             } else {
@@ -96,14 +134,14 @@ import SwiftUI
         } while !Task.isCancelled
     }
     
-    func startLyricUpdater() {
-        if !isPlaying || currentlyPlayingLyrics.isEmpty || spotifyScript?.playerPosition == 0.0 {
+    func startLyricUpdater(appleMusicOrSpotify: Bool) {
+        currentLyricsUpdaterTask?.cancel()
+        if !isPlaying || currentlyPlayingLyrics.isEmpty {
             return
         }
-        currentLyricsUpdaterTask?.cancel()
         currentLyricsUpdaterTask = Task {
             do {
-                try await lyricUpdater()
+                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic() : lyricUpdater()
             } catch {
                 print("lyrics were canceled \(error)")
             }
@@ -124,6 +162,7 @@ import SwiftUI
         if context.hasChanges {
             do {
                 try context.save()
+                print("Saved CoreData!")
             } catch {
                 print("core data error \(error)")
                 // Show some error here
@@ -131,10 +170,10 @@ import SwiftUI
         }
     }
     
-    func fetch(for trackID: String, _ trackName: String) async -> [LyricLine]? {
+    func fetch(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async -> [LyricLine]? {
         currentFetchTask?.cancel()
         let newFetchTask = Task {
-            try await self.fetchLyrics(for: trackID, trackName)
+            try await self.fetchLyrics(for: trackID, trackName, spotifyOrAppleMusic)
         }
         currentFetchTask = newFetchTask
         do {
@@ -145,7 +184,7 @@ import SwiftUI
         }
     }
     
-    private func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+    private func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
         if let lyrics = fetchFromCoreData(for: trackID) {
             print("got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
@@ -153,16 +192,16 @@ import SwiftUI
             return lyrics
         }
         print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
-        return try await fetchNetworkLyrics(for: trackID, trackName)
+        return try await fetchNetworkLyrics(for: trackID, trackName, spotifyOrAppleMusic)
     }
     
-    func fetchNetworkLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
-        guard let intDuration = spotifyScript?.currentTrack?.duration else {
+    func fetchNetworkLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
+        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
             throw CancellationError()
         }
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
-        decoder.userInfo[CodingUserInfoKey.duration] = TimeInterval(intDuration+10)
+        decoder.userInfo[CodingUserInfoKey.duration] = spotifyOrAppleMusic ? TimeInterval((intDuration*1000) + 1000) : TimeInterval(intDuration+10)
         /*
          check if saved access token is bigger than current time, then continue with lyric fetch
          else
@@ -222,5 +261,158 @@ import SwiftUI
             print("Error fetching SongObject:", error)
         }
         return nil
+    }
+}
+
+// Apple Music Code
+extension viewModel {
+    // Similar structure to my other Async functions. Only 1 appleMusicFetch() can run at any given moment
+    func appleMusicStarter() async {
+        print("apple music test called again, cancelling previous")
+        currentAppleMusicFetchTask?.cancel()
+        let newFetchTask = Task {
+            try await self.appleMusicFetch()
+        }
+        currentAppleMusicFetchTask = newFetchTask
+        do {
+            return try await newFetchTask.value
+        } catch {
+            print("error \(error)")
+            return
+        }
+    }
+    
+    func appleMusicFetch() async throws {
+        // check coredata for apple music persistent id -> spotify id mapping
+        if let coreDataSpotifyID = fetchSpotifyIDFromPersistentIDCoreData() {
+            if !Task.isCancelled {
+                self.currentlyPlaying = coreDataSpotifyID
+                return
+            }
+        }
+        
+        try await appleMusicNetworkFetch()
+    }
+    
+    func appleMusicNetworkFetch() async throws {
+        
+        // coredata didn't get us anything
+        
+        // Get song info
+        MRMediaRemoteGetNowPlayingInfo(DispatchQueue.global(), { (information) in
+            self.appleMusicStorePlaybackID =  information["kMRMediaRemoteNowPlayingInfoContentItemIdentifier"] as? String
+        })
+        // check for musickit auth
+        if status != .authorized || appleMusicStorePlaybackID == nil {
+            print("not authorized (or we dont have playback id yet) , lets wait a bit")
+            try await Task.sleep(nanoseconds: 100000000)
+            if status != .authorized {
+                print("still not authorized i give up")
+            }
+        }
+        print("authorized")
+        // A little delay to make sure we have musickit auth + storeplayback id by then (most likely)
+        // Faulty
+        //try await Task.sleep(nanoseconds: 100000000)
+        guard let appleMusicStorePlaybackID else {
+            print("no playback store id, giving up")
+            return
+        }
+        let request = MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: .init(appleMusicStorePlaybackID))
+        guard let response = try? await request.response(), let song = response.items.first, let isrc = song.isrc else { return }
+        print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
+        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
+            print("creating new access token from apple music, if this appears multiple times thats suspicious")
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+                var request = URLRequest(url: url)
+                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
+                let accessTokenData = try await URLSession.shared.data(for: request)
+                accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                print("ACCESS TOKEN IS SAVED")
+            }
+        }
+        if let accessToken, let url = URL(string: "https://api.spotify.com/v1/search?q=isrc:\(isrc)&type=track") {
+            var request = URLRequest(url: url)
+            request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
+            print("the access token is \(accessToken.accessToken)")
+            request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
+            // Invalidate this request if cancelled (means this song is old, user rapidly skipped)
+            guard !Task.isCancelled else {return}
+            let urlResponseAndData = try await URLSession.shared.data(for: request)
+            if urlResponseAndData.0.isEmpty {
+                return
+            }
+            let response = try decoder.decode(SpotifyResponse.self, from: urlResponseAndData.0)
+            print("GOT SPOTIFY ID AS \(response.tracks.items.first?.id)")
+            // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
+            if !Task.isCancelled {
+                self.currentlyPlaying = response.tracks.items.first?.id
+                
+                if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
+                    print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
+                    // save the mapping into coredata persistentIDToSpotify
+                    let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
+                    newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
+                    newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
+                    saveCoreData()
+                }
+            }
+        }
+        // get equivalent spotify ID
+    }
+    
+    func fetchSpotifyIDFromPersistentIDCoreData() -> String? {
+        let fetchRequest: NSFetchRequest<PersistentIDToSpotify> = PersistentIDToSpotify.fetchRequest()
+        guard let currentlyPlayingAppleMusicPersistentID else {
+            print("No persistent ID available. it's nil! should have never happened")
+            return nil
+        }
+        fetchRequest.predicate = NSPredicate(format: "persistentID == %@", currentlyPlayingAppleMusicPersistentID) // Replace persistentID with the desired value
+
+        do {
+            let results = try coreDataContainer.viewContext.fetch(fetchRequest)
+            if let persistentIDToSpotify = results.first {
+                // Found the persistentIDToSpotify object with the matching persistentID
+                return persistentIDToSpotify.spotifyID
+            } else {
+                // No SongObject found with the given trackID
+                print("No spotifyID found with the provided persistentID. \(currentlyPlayingAppleMusicPersistentID)")
+            }
+        } catch {
+            print("Error fetching persistentIDToSpotify:", error)
+        }
+        return nil
+    }
+    
+    func lyricUpdaterAppleMusic() async throws {
+        repeat {
+            guard let playerPosition = appleMusicScript?.playerPosition else {
+                print("no player position hence stopped")
+                // pauses the timer bc there's no player position
+                stopLyricUpdater()
+                return
+            }
+            // add a 700 (milisecond?) delay to offset the delta between spotify lyrics and apple music songs (or maybe the way apple music delivers playback position)
+            let currentTime = playerPosition * 1000 + 400
+            guard let lastIndex: Int = upcomingIndex(currentTime) else {
+                stopLyricUpdater()
+                return
+            }
+            let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
+            let diff = nextTimestamp - currentTime
+            print("current time: \(currentTime)")
+            print("next time: \(nextTimestamp)")
+            print("the difference is \(diff)")
+            try await Task.sleep(nanoseconds: UInt64(1000000*diff))
+            print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
+            print("last index: \(lastIndex)")
+            print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
+            if currentlyPlayingLyrics.count > lastIndex {
+                currentlyPlayingLyricsIndex = lastIndex
+            } else {
+                currentlyPlayingLyricsIndex = nil
+            }
+            print("current lyrics index is now \(currentlyPlayingLyricsIndex?.description ?? "nil")")
+        } while !Task.isCancelled
     }
 }
