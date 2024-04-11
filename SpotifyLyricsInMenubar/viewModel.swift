@@ -52,6 +52,11 @@ import MediaPlayer
     @AppStorage("spDcCookie") var cookie = ""
     let decoder = JSONDecoder()
     
+    // Fake Spotify User Agent
+    // Spotify's started blocking my app's useragent. A win honestly 🤣
+    let fakeSpotifyUserAgentconfig = URLSessionConfiguration.default
+    let fakeSpotifyUserAgentSession: URLSession
+    
     init() {
         // Load framework
         let bundle = CFBundleCreate(kCFAllocatorDefault, NSURL(fileURLWithPath: "/System/Library/PrivateFrameworks/MediaRemote.framework"))
@@ -62,6 +67,10 @@ import MediaPlayer
         
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
+        
+        fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Spotify/121000760 Win32/0 (PC laptop)"]
+        fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
+        
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Error: \(error.localizedDescription)")
@@ -91,6 +100,8 @@ import MediaPlayer
 //                spotifyScript?.nextTrack?()
                 // we've reached the end of the song, we're past the last lyric
                 // so we set the timer till the duration of the song, in case the user skips ahead or forward
+                currentlyPlayingAppleMusicPersistentID = nil
+                currentlyPlaying = nil
                 return nil
             }
             else if  currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
@@ -225,8 +236,11 @@ import MediaPlayer
             request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
             print("the access token is \(accessToken.accessToken)")
             request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
-            let urlResponseAndData = try await URLSession.shared.data(for: request)
+            
+            let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
+            print(urlResponseAndData)
             if urlResponseAndData.0.isEmpty {
+                print("F")
                 return []
             }
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))

@@ -26,6 +26,9 @@ public class SongObject: NSManagedObject, Decodable {
         self.downloadDate = Date.now
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let syncType = try? container.decode(String.self, forKey: .syncType), syncType == "LINE_SYNCED", var lyrics = try? container.decode([LyricLine].self, forKey: .lines) {
+            // Dummy lyric at the end to keep the timer going past the last lyric, necessary for someone playing a single song on repeat
+            // Spotify doesn't give playback notifications when it's the same song on repeat
+            // Apple Music does, but unfortunately has every song slightly longer than it's spotify counterpart so this doesn't help us
             if !lyrics.isEmpty {
                 lyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
             }
