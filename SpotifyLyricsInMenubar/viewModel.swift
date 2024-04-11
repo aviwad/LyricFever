@@ -57,6 +57,8 @@ import MediaPlayer
     let fakeSpotifyUserAgentconfig = URLSessionConfiguration.default
     let fakeSpotifyUserAgentSession: URLSession
     
+    @Published var mustUpdateUrgent: Bool = false
+    
     init() {
         // Load framework
         let bundle = CFBundleCreate(kCFAllocatorDefault, NSURL(fileURLWithPath: "/System/Library/PrivateFrameworks/MediaRemote.framework"))
@@ -83,6 +85,19 @@ import MediaPlayer
         Task {
             status = await MusicAuthorization.request()
             print(status)
+        }
+        Task {
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
+                var request = URLRequest(url: url)
+                let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
+                print("Our version is \(version) and the latest is \(String(bytes:urlResponseAndData.0, encoding: .utf8))")
+                if String(bytes:urlResponseAndData.0, encoding: .utf8) != version {
+                    print("NOT EQUAL")
+                    mustUpdateUrgent = true
+                } else {
+                    print("EQUAL")
+                }
+            }
         }
     }
     
