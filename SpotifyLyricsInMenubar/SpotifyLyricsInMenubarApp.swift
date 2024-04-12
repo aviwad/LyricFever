@@ -63,6 +63,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.isPlaying = false
                     viewmodel.currentlyPlaying = nil
                     viewmodel.currentlyPlayingName = nil
+                    viewmodel.currentlyPlayingAppleMusicPersistentID = nil
                     return
                 }
                 print("Application just started. lets check whats playing")
