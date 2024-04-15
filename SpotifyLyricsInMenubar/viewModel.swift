@@ -91,7 +91,7 @@ import MediaPlayer
                 var request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
                 print("Our version is \(version) and the latest is \(String(bytes:urlResponseAndData.0, encoding: .utf8))")
-                if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Int(internetUrgentVersionString), let currentVersion = Int(version), currentVersion < internetUrgentVersion {
+                if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Double(internetUrgentVersionString), let currentVersion = Double(version), currentVersion < internetUrgentVersion {
                     print("NOT EQUAL")
                     mustUpdateUrgent = true
                 } else {
@@ -162,7 +162,7 @@ import MediaPlayer
     
     func startLyricUpdater(appleMusicOrSpotify: Bool) {
         currentLyricsUpdaterTask?.cancel()
-        if !isPlaying || currentlyPlayingLyrics.isEmpty {
+        if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
             return
         }
         currentLyricsUpdaterTask = Task {
