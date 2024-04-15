@@ -358,31 +358,18 @@ extension viewModel {
                 print("ACCESS TOKEN IS SAVED")
             }
         }
-        if let accessToken, let url = URL(string: "https://api.spotify.com/v1/search?q=isrc:\(isrc)&type=track") {
-            var request = URLRequest(url: url)
-            request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
-            print("the access token is \(accessToken.accessToken)")
-            request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
-            // Invalidate this request if cancelled (means this song is old, user rapidly skipped)
-            guard !Task.isCancelled else {return}
-            let urlResponseAndData = try await URLSession.shared.data(for: request)
-            if urlResponseAndData.0.isEmpty {
-                return
-            }
-            let response = try decoder.decode(SpotifyResponse.self, from: urlResponseAndData.0)
-            print("GOT SPOTIFY ID AS \(response.tracks.items.first?.id)")
-            // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
-            if !Task.isCancelled {
-                self.currentlyPlaying = response.tracks.items.first?.id
-                
-                if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
-                    print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
-                    // save the mapping into coredata persistentIDToSpotify
-                    let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
-                    newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
-                    newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
-                    saveCoreData()
-                }
+        let spotifyID = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
+        // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
+        if !Task.isCancelled {
+            self.currentlyPlaying = spotifyID
+            
+            if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
+                print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
+                // save the mapping into coredata persistentIDToSpotify
+                let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
+                newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
+                newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
+                saveCoreData()
             }
         }
         // get equivalent spotify ID
@@ -441,5 +428,44 @@ extension viewModel {
             }
             print("current lyrics index is now \(currentlyPlayingLyricsIndex?.description ?? "nil")")
         } while !Task.isCancelled
+    }
+    
+    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String) async throws -> String? {
+        if let accessToken {
+            // Attempt to find Spotify ID using ISRC
+            if let url = URL(string: "https://api.spotify.com/v1/search?q=isrc:\(isrc)&type=track&limit=1") {
+                var request = URLRequest(url: url)
+                request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
+                print("the access token is \(accessToken.accessToken)")
+                request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
+                // Invalidate this request if cancelled (means this song is old, user rapidly skipped)
+                guard !Task.isCancelled else {return nil}
+                let urlResponseAndData = try await URLSession.shared.data(for: request)
+                if urlResponseAndData.0.isEmpty {
+                    return nil
+                }
+                let response = try decoder.decode(SpotifyResponse.self, from: urlResponseAndData.0)
+                if let spotifyID = response.tracks.items.first?.id {
+                    return spotifyID
+                }
+            }
+            // Manually search song name, artist name
+            else {
+                if let artist = self.appleMusicScript?.currentTrack?.artist, let track = self.currentlyPlayingName, let url = URL(string: "https://api.spotify.com/v1/search?q=track:\(track)+artist:\(artist)+&type=track&limit=1") {
+                    var request = URLRequest(url: url)
+                    request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
+                    request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
+                    guard !Task.isCancelled else {return nil}
+                    if let searchData = try? await URLSession.shared.data(for: request), !searchData.0.isEmpty, let searchResponse = try? self.decoder.decode(SpotifyResponse.self, from: searchData.0), let firstItem = searchResponse.tracks.items.first {
+                        print("GOT ID SEARCHING WITH TRACK AND ARTIST")
+                        return firstItem.id
+                    }
+                    
+                    
+                }
+                
+            }
+        }
+        return nil
     }
 }
