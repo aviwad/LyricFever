@@ -15,7 +15,7 @@ struct SpotifyLyricsInMenubarApp: App {
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("showLyrics") var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    @AppStorage("truncationLength") var truncationLength: Int = 50
+    @AppStorage("truncationLength") var truncationLength: Int = 40
     @Environment(\.openWindow) var openWindow
     var body: some Scene {
         MenuBarExtra(content: {
