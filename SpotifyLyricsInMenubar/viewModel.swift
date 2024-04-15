@@ -334,15 +334,13 @@ extension viewModel {
         // check for musickit auth
         if status != .authorized || appleMusicStorePlaybackID == nil {
             print("not authorized (or we dont have playback id yet) , lets wait a bit")
+            // A little delay to make sure we have musickit auth + storeplayback id by then (most likely)
             try await Task.sleep(nanoseconds: 100000000)
             if status != .authorized {
                 print("still not authorized i give up")
             }
         }
         print("authorized")
-        // A little delay to make sure we have musickit auth + storeplayback id by then (most likely)
-        // Faulty
-        //try await Task.sleep(nanoseconds: 100000000)
         guard let appleMusicStorePlaybackID else {
             print("no playback store id, giving up")
             return

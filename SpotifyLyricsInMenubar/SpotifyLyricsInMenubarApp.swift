@@ -12,6 +12,7 @@ import ServiceManagement
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
+    // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("showLyrics") var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
@@ -36,6 +37,17 @@ struct SpotifyLyricsInMenubarApp: App {
                         }
                     }
                 }
+            // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
+            // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
+            } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {
+                Text("No Lyrics Found ☹️")
+                Button("Check For Lyrics Again") {
+                    Task {
+                        // Fetch updates the currentlyPlaying ID which will call Lyric Updater
+                        try await viewmodel.appleMusicFetch()
+                    }
+                }
+                
             }
             Divider()
             Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
@@ -67,15 +79,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     return
                 }
                 print("Application just started. lets check whats playing")
-//                if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
-//                    viewmodel.isPlaying = true
-//                } else {
-//                    viewmodel.isPlaying = false
-//                }
                 viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
                 if spotifyOrAppleMusic {
                     if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
-//                        viewmodel.currentlyPlaying = nil
+                        // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                         if currentTrackName == "" {
                             viewmodel.currentlyPlayingName = nil
                         } else {
@@ -125,7 +132,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                     if spotifyOrAppleMusic {
                         if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
-//                            viewmodel.currentlyPlaying = nil
+                            // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                             if currentTrackName == "" {
                                 viewmodel.currentlyPlayingName = nil
                             } else {
