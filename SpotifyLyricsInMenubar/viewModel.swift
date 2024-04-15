@@ -91,7 +91,7 @@ import MediaPlayer
                 var request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
                 print("Our version is \(version) and the latest is \(String(bytes:urlResponseAndData.0, encoding: .utf8))")
-                if String(bytes:urlResponseAndData.0, encoding: .utf8) != version {
+                if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Int(internetUrgentVersionString), let currentVersion = Int(version), currentVersion < internetUrgentVersion {
                     print("NOT EQUAL")
                     mustUpdateUrgent = true
                 } else {
