@@ -40,7 +40,7 @@ struct SpotifyLyricsInMenubarApp: App {
             // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
             // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
             } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {
-                Text("No Lyrics Found ☹️")
+                Text("No Lyrics (Couldn't find Spotify ID) ☹️")
                 Button("Check For Lyrics Again") {
                     Task {
                         // Fetch updates the currentlyPlaying ID which will call Lyric Updater
@@ -75,26 +75,30 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.isPlaying = false
                     viewmodel.currentlyPlaying = nil
                     viewmodel.currentlyPlayingName = nil
+                    viewmodel.currentlyPlayingArtist = nil
                     viewmodel.currentlyPlayingAppleMusicPersistentID = nil
                     return
                 }
                 print("Application just started. lets check whats playing")
                 viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
                 if spotifyOrAppleMusic {
-                    if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
+                    if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentlyPlayingArtist = viewmodel.appleMusicScript?.currentTrack?.artist {
                         // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                         if currentTrackName == "" {
                             viewmodel.currentlyPlayingName = nil
+                            viewmodel.currentlyPlayingArtist = nil
                         } else {
                             viewmodel.currentlyPlayingName = currentTrackName
+                            viewmodel.currentlyPlayingArtist = currentlyPlayingArtist
                         }
                         viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                     }
                 } else {
                     viewmodel.currentlyPlayingAppleMusicPersistentID = nil
-                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
+                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName = viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                         viewmodel.currentlyPlaying = currentTrack
                         viewmodel.currentlyPlayingName = currentTrackName
+                        viewmodel.currentlyPlayingArtist = currentArtistName
                         print(currentTrack)
                     }
                 }
@@ -131,20 +135,23 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.isPlaying = true
                     }
                     if spotifyOrAppleMusic {
-                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name {
+                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
                             // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                             if currentTrackName == "" {
                                 viewmodel.currentlyPlayingName = nil
+                                viewmodel.currentlyPlayingArtist = nil
                             } else {
                                 viewmodel.currentlyPlayingName = currentTrackName
+                                viewmodel.currentlyPlayingArtist = currentArtistName
                             }
                             print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
                             viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                         }
                     } else {
-                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, currentTrack != "", currentTrackName != "" {
+                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                             viewmodel.currentlyPlaying = currentTrack
                             viewmodel.currentlyPlayingName = currentTrackName
+                            viewmodel.currentlyPlayingArtist = currentArtistName
                             print(currentTrack)
                         }
                     }
@@ -168,8 +175,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     //viewmodel.currentlyPlaying = nil
                     if currentlyPlayingName == "" {
                         viewmodel.currentlyPlayingName = nil
+                        viewmodel.currentlyPlayingArtist = nil
                     } else {
                         viewmodel.currentlyPlayingName = currentlyPlayingName
+                        viewmodel.currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
                     }
                     viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                 })
@@ -192,6 +201,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     if currentlyPlaying != "", currentlyPlayingName != "" {
                         viewmodel.currentlyPlaying = currentlyPlaying
                         viewmodel.currentlyPlayingName = currentlyPlayingName
+                        viewmodel.currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
                     }
                 })
                 .onChange(of: viewmodel.cookie) { newCookie in
@@ -242,8 +252,8 @@ struct SpotifyLyricsInMenubarApp: App {
     }
     
     var songTitle: String {
-        if let currentlyPlayingName = viewmodel.currentlyPlayingName {
-            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)"
+        if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
         }
         return "Open \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )!"
     }
@@ -251,8 +261,8 @@ struct SpotifyLyricsInMenubarApp: App {
     var menuBarTitle: String {
         if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
-        } else if let currentlyPlayingName = viewmodel.currentlyPlayingName {
-            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName)".trunc(length: truncationLength)
+        } else if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
         }
         return "Nothing Playing on \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )"
     }

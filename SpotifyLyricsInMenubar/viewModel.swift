@@ -22,6 +22,7 @@ import MediaPlayer
     var appleMusicStorePlaybackID: String? = nil
     @Published var currentlyPlaying: String?
     var currentlyPlayingName: String?
+    var currentlyPlayingArtist: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
