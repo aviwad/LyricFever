@@ -14,7 +14,7 @@ struct SpotifyLyricsInMenubarApp: App {
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
-    @AppStorage("showLyrics") var showLyrics: Bool = true
+    @State var showLyrics: Bool = true
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @Environment(\.openWindow) var openWindow
@@ -32,7 +32,7 @@ struct SpotifyLyricsInMenubarApp: App {
                         }
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         print("HELLOO")
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
+                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics {
                             viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     }
@@ -236,7 +236,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     Task {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
+                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics {
                                 print("STARTING UPDATER")
                                 viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                             }
