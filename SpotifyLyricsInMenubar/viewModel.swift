@@ -130,16 +130,19 @@ import MediaPlayer
         return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
     }
     
+    func fixSpotifyLyricDrift() async throws {
+        try await Task.sleep(nanoseconds: 1000000000)
+        if isPlaying {
+            print("LYRIC UPDATER'S LYRIC DRIFT FIX CALLED")
+            spotifyScript?.play?()
+        }
+    }
+    
     func lyricUpdater() async throws {
         // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
         // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
         // Harmless and fixes the sync
-        Task {
-            try await Task.sleep(nanoseconds: 1000000000)
-            if isPlaying {
-                spotifyScript?.play?()
-            }
-        }
+        try await fixSpotifyLyricDrift()
         repeat {
             guard let playerPosition = spotifyScript?.playerPosition else {
                 print("no player position hence stopped")
