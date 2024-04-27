@@ -250,7 +250,7 @@ import MediaPlayer
          otherwise []
          */
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
@@ -363,7 +363,7 @@ extension viewModel {
         print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
             print("creating new access token from apple music, if this appears multiple times thats suspicious")
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
