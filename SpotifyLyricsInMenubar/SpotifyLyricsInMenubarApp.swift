@@ -77,9 +77,58 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.currentlyPlayingName = nil
                     viewmodel.currentlyPlayingArtist = nil
                     viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                    // TODO FIX REPEATED BAD CODE
+                    if spotifyOrAppleMusic {
+                        Task {
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                            guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                                print("failed music automation permission")
+                                hasOnboarded = false
+                                return
+                            }
+                            let status = await viewmodel.requestMusicKitAuthorization()
+                            
+                            if status != .authorized {
+                                hasOnboarded = false
+                            }
+                            hasOnboarded = true
+                        }
+                    } else {
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
+                        print("Spotify: has onboarded is true on media player switch")
+                        hasOnboarded = true
+                    }
                     return
                 }
-                print("Application just started. lets check whats playing")
+                if spotifyOrAppleMusic {
+                    Task {
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            print("failed music automation permission")
+                            hasOnboarded = false
+                            return
+                        }
+                        let status = await viewmodel.requestMusicKitAuthorization()
+                        
+                        if status != .authorized {
+                            hasOnboarded = false
+                        }
+                        hasOnboarded = true
+                    }
+                } else {
+                    let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                    guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                        hasOnboarded = false
+                        return
+                    }
+                    print("Spotify: has onboarded is true on media player switch")
+                    hasOnboarded = true
+                }
+                print("Application just switched players. lets check whats playing")
                 viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
                 if spotifyOrAppleMusic {
                     if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentlyPlayingArtist = viewmodel.appleMusicScript?.currentTrack?.artist {
@@ -122,8 +171,8 @@ struct SpotifyLyricsInMenubarApp: App {
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
                         // why do i call this?
-                        viewmodel.spotifyScript?.name
-                        viewmodel.appleMusicScript?.name
+//                        viewmodel.spotifyScript?.name
+//                        viewmodel.appleMusicScript?.name
                         openWindow(id: "onboarding")
                         return
                     }
@@ -135,6 +184,18 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.isPlaying = true
                     }
                     if spotifyOrAppleMusic {
+                        Task {
+                            let status = await viewmodel.requestMusicKitAuthorization()
+                            
+                            if status != .authorized {
+                                hasOnboarded = false
+                            }
+                        }
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
                         if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
                             // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                             if currentTrackName == "" {
@@ -148,6 +209,11 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                         }
                     } else {
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
                         if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                             viewmodel.currentlyPlaying = currentTrack
                             viewmodel.currentlyPlayingName = currentTrackName
