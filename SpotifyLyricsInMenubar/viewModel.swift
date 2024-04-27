@@ -84,10 +84,6 @@ import MediaPlayer
             .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
         Task {
-            status = await MusicAuthorization.request()
-            print(status)
-        }
-        Task {
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
                 let request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
@@ -303,6 +299,11 @@ import MediaPlayer
             print("Error fetching SongObject:", error)
         }
         return nil
+    }
+    
+    func requestMusicKitAuthorization() async -> MusicKit.MusicAuthorization.Status {
+        let status = await MusicAuthorization.request()
+        return status
     }
 }
 
