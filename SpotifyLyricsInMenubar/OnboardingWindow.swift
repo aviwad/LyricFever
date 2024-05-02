@@ -186,6 +186,19 @@ struct OnboardingWindow: View {
                 .transition(.fade)
                 
             }
+            .onAppear {
+                if spotifyOrAppleMusic {
+                    errorMessage = "Please Open Apple Music!"
+                    spotifyPermission = true
+                    appleMusicPermission = false
+                    appleMusicLibraryPermission = false
+                } else {
+                    errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                    appleMusicPermission = true
+                    appleMusicLibraryPermission = true
+                    spotifyPermission = false
+                }
+            }
             .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickSettings"))) { newValue in
                 if spotifyOrAppleMusic {
                     // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
