@@ -82,7 +82,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(viewmodel.mustUpdateUrgent ? "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength) : (hasOnboarded ? menuBarTitle : "⚠️ Please Complete Onboarding Process (Click Help)"))
+            Text(viewmodel.mustUpdateUrgent ? "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength) : (hasOnboarded ? menuBarTitle : "⚠️ Please Complete Onboarding Process (Click Settings)"))
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
