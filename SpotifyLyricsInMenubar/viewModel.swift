@@ -84,10 +84,6 @@ import MediaPlayer
             .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
         Task {
-            status = await MusicAuthorization.request()
-            print(status)
-        }
-        Task {
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
                 let request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
@@ -250,7 +246,7 @@ import MediaPlayer
          otherwise []
          */
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
@@ -303,6 +299,11 @@ import MediaPlayer
             print("Error fetching SongObject:", error)
         }
         return nil
+    }
+    
+    func requestMusicKitAuthorization() async -> MusicKit.MusicAuthorization.Status {
+        let status = await MusicAuthorization.request()
+        return status
     }
 }
 
@@ -363,7 +364,7 @@ extension viewModel {
         print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
             print("creating new access token from apple music, if this appears multiple times thats suspicious")
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)

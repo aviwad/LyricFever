@@ -69,44 +69,12 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
             }
             Divider()
-            Button(spotifyOrAppleMusic ? "Switch To Spotify" : "Switch To Apple Music") {
-                spotifyOrAppleMusic.toggle()
-                guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
-                    viewmodel.isPlaying = false
-                    viewmodel.currentlyPlaying = nil
-                    viewmodel.currentlyPlayingName = nil
-                    viewmodel.currentlyPlayingArtist = nil
-                    viewmodel.currentlyPlayingAppleMusicPersistentID = nil
-                    return
-                }
-                print("Application just started. lets check whats playing")
-                viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
-                if spotifyOrAppleMusic {
-                    if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentlyPlayingArtist = viewmodel.appleMusicScript?.currentTrack?.artist {
-                        // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
-                        if currentTrackName == "" {
-                            viewmodel.currentlyPlayingName = nil
-                            viewmodel.currentlyPlayingArtist = nil
-                        } else {
-                            viewmodel.currentlyPlayingName = currentTrackName
-                            viewmodel.currentlyPlayingArtist = currentlyPlayingArtist
-                        }
-                        viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
-                    }
-                } else {
-                    viewmodel.currentlyPlayingAppleMusicPersistentID = nil
-                    if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName = viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
-                        viewmodel.currentlyPlaying = currentTrack
-                        viewmodel.currentlyPlayingName = currentTrackName
-                        viewmodel.currentlyPlayingArtist = currentArtistName
-                        print(currentTrack)
-                    }
-                }
-            }
-            Button("Help / Install Guide") {
+            Button("Settings") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
-            }.keyboardShortcut("h")
+                // send notification to check auth
+                NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
+            }.keyboardShortcut("s")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
                 .disabled(!viewmodel.canCheckForUpdates)
                 .keyboardShortcut("u")
@@ -114,7 +82,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(viewmodel.mustUpdateUrgent ? "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength) : (hasOnboarded ? menuBarTitle : "⚠️ Please Complete Onboarding Process (Click Help)"))
+            Text(viewmodel.mustUpdateUrgent ? "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength) : (hasOnboarded ? menuBarTitle : "⚠️ Please Complete Onboarding Process (Click Settings)"))
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
@@ -122,8 +90,8 @@ struct SpotifyLyricsInMenubarApp: App {
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
                         // why do i call this?
-                        viewmodel.spotifyScript?.name
-                        viewmodel.appleMusicScript?.name
+//                        viewmodel.spotifyScript?.name
+//                        viewmodel.appleMusicScript?.name
                         openWindow(id: "onboarding")
                         return
                     }
@@ -135,6 +103,18 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.isPlaying = true
                     }
                     if spotifyOrAppleMusic {
+                        Task {
+                            let status = await viewmodel.requestMusicKitAuthorization()
+                            
+                            if status != .authorized {
+                                hasOnboarded = false
+                            }
+                        }
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
                         if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
                             // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                             if currentTrackName == "" {
@@ -148,6 +128,11 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                         }
                     } else {
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
                         if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                             viewmodel.currentlyPlaying = currentTrack
                             viewmodel.currentlyPlayingName = currentTrackName
@@ -204,6 +189,100 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
                     }
                 })
+                .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
+                    guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
+                        viewmodel.isPlaying = false
+                        viewmodel.currentlyPlaying = nil
+                        viewmodel.currentlyPlayingName = nil
+                        viewmodel.currentlyPlayingArtist = nil
+                        viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                        return
+                    }
+                    if spotifyOrAppleMusic {
+                        Task {
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                            guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                                print("failed music automation permission")
+                                hasOnboarded = false
+                                return
+                            }
+                            let status = await viewmodel.requestMusicKitAuthorization()
+                            
+                            if status != .authorized {
+                                hasOnboarded = false
+                            }
+                            hasOnboarded = true
+                        }
+                    } else {
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                            hasOnboarded = false
+                            return
+                        }
+                        print("Spotify: has onboarded is true on media player switch")
+                        hasOnboarded = true
+                    }
+                    print("Application just switched players. lets check whats playing")
+                    viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
+                    if spotifyOrAppleMusic {
+                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentlyPlayingArtist = viewmodel.appleMusicScript?.currentTrack?.artist {
+                            // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
+                            if currentTrackName == "" {
+                                viewmodel.currentlyPlayingName = nil
+                                viewmodel.currentlyPlayingArtist = nil
+                            } else {
+                                viewmodel.currentlyPlayingName = currentTrackName
+                                viewmodel.currentlyPlayingArtist = currentlyPlayingArtist
+                            }
+                            viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                        }
+                    } else {
+                        viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName = viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                            viewmodel.currentlyPlaying = currentTrack
+                            viewmodel.currentlyPlayingName = currentTrackName
+                            viewmodel.currentlyPlayingArtist = currentArtistName
+                            print(currentTrack)
+                        }
+                    }
+                }
+                .onChange(of: hasOnboarded) { newHasOnboarded in
+                    if newHasOnboarded {
+                        guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
+                                viewmodel.isPlaying = false
+                                viewmodel.currentlyPlaying = nil
+                                viewmodel.currentlyPlayingName = nil
+                                viewmodel.currentlyPlayingArtist = nil
+                                viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                            return
+                        }
+                        print("Application just started (finished onboarding). lets check whats playing")
+                        if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
+                            viewmodel.isPlaying = true
+                        }
+                        if spotifyOrAppleMusic {
+                            if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
+                                // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
+                                if currentTrackName == "" {
+                                    viewmodel.currentlyPlayingName = nil
+                                    viewmodel.currentlyPlayingArtist = nil
+                                } else {
+                                    viewmodel.currentlyPlayingName = currentTrackName
+                                    viewmodel.currentlyPlayingArtist = currentArtistName
+                                }
+                                print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
+                                viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                            }
+                        } else {
+                            if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                                viewmodel.currentlyPlaying = currentTrack
+                                viewmodel.currentlyPlayingName = currentTrackName
+                                viewmodel.currentlyPlayingArtist = currentArtistName
+                                print(currentTrack)
+                            }
+                        }
+                    }
+                }
                 .onChange(of: viewmodel.cookie) { newCookie in
                     viewmodel.accessToken = nil
                 }
