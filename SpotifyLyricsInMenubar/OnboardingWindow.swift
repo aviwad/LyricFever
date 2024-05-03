@@ -372,13 +372,21 @@ struct ApiView: View {
                                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
                                 let accessTokenData = try await URLSession.shared.data(for: request)
                                 print(String(decoding: accessTokenData.0, as: UTF8.self))
-                                try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                                print("ACCESS TOKEN IS SAVED")
-                                // set onboarded to true here, no need to wait for user to finish selecting truncation
-                                UserDefaults().set(true, forKey: "hasOnboarded")
-                                error = false
-                                isLoading = false
-                                isShowingDetailView = true
+                                do {
+                                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                                    
+                                    print("ACCESS TOKEN IS SAVED")
+                                    // set onboarded to true here, no need to wait for user to finish selecting truncation
+                                    UserDefaults().set(true, forKey: "hasOnboarded")
+                                    error = false
+                                    isLoading = false
+                                    isShowingDetailView = true
+                                }
+                                catch {
+                                    print("JSON ERROR CAUGHT")
+                                    self.error = true
+                                    isLoading = false
+                                }
                             }
                             catch {
                                 self.error = true

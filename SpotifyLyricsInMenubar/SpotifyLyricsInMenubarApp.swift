@@ -192,63 +192,6 @@ struct SpotifyLyricsInMenubarApp: App {
                 .onChange(of: spotifyOrAppleMusic) { newSpotifyorAppleMusic in
                     hasOnboarded = false
                 }
-//                .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
-//                    guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
-//                        viewmodel.isPlaying = false
-//                        viewmodel.currentlyPlaying = nil
-//                        viewmodel.currentlyPlayingName = nil
-//                        viewmodel.currentlyPlayingArtist = nil
-//                        viewmodel.currentlyPlayingAppleMusicPersistentID = nil
-//                        return
-//                    }
-//                    if spotifyOrAppleMusic {
-//                        Task {
-//                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
-//                            guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
-//                                print("failed music automation permission")
-//                                hasOnboarded = false
-//                                return
-//                            }
-//                            let status = await viewmodel.requestMusicKitAuthorization()
-//                            
-//                            if status != .authorized {
-//                                hasOnboarded = false
-//                            }
-//                            hasOnboarded = true
-//                        }
-//                    } else {
-//                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
-//                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
-//                            hasOnboarded = false
-//                            return
-//                        }
-//                        print("Spotify: has onboarded is true on media player switch")
-//                        hasOnboarded = true
-//                    }
-//                    print("Application just switched players. lets check whats playing")
-//                    viewmodel.isPlaying = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing : viewmodel.spotifyScript?.playerState == .playing
-//                    if spotifyOrAppleMusic {
-//                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentlyPlayingArtist = viewmodel.appleMusicScript?.currentTrack?.artist {
-//                            // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
-//                            if currentTrackName == "" {
-//                                viewmodel.currentlyPlayingName = nil
-//                                viewmodel.currentlyPlayingArtist = nil
-//                            } else {
-//                                viewmodel.currentlyPlayingName = currentTrackName
-//                                viewmodel.currentlyPlayingArtist = currentlyPlayingArtist
-//                            }
-//                            viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
-//                        }
-//                    } else {
-//                        viewmodel.currentlyPlayingAppleMusicPersistentID = nil
-//                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName = viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
-//                            viewmodel.currentlyPlaying = currentTrack
-//                            viewmodel.currentlyPlayingName = currentTrackName
-//                            viewmodel.currentlyPlayingArtist = currentArtistName
-//                            print(currentTrack)
-//                        }
-//                    }
-//                }
                 .onChange(of: hasOnboarded) { newHasOnboarded in
                     if newHasOnboarded {
                         guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
@@ -308,11 +251,6 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .onChange(of: viewmodel.currentlyPlaying) { nowPlaying in
                     print("song change")
-                    // only set position to 0 when new song selected, user anyways expected song to start at position 0
-                    // gets rid of spotify's playback position glitch when autoplaying
-                    // see:
-//                    viewmodel.spotifyScript?.playpause?()
-//                    viewmodel.spotifyScript?.playpause?()
                     viewmodel.currentlyPlayingLyricsIndex = nil
                     viewmodel.currentlyPlayingLyrics = []
                     Task {

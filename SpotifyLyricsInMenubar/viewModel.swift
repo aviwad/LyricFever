@@ -251,8 +251,14 @@ import MediaPlayer
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
-                accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                print("ACCESS TOKEN IS SAVED")
+                do {
+                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                    print("ACCESS TOKEN IS SAVED")
+                } catch {
+                    UserDefaults().set(false, forKey: "hasOnboarded")
+                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
+                }
+                
             }
         }
         if let accessToken, let url = URL(string: "https://spclient.wg.spotify.com/color-lyrics/v2/track/\(trackID)?format=json&vocalRemoval=false") {
@@ -368,8 +374,13 @@ extension viewModel {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
-                accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                print("ACCESS TOKEN IS SAVED")
+                do {
+                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                    print("ACCESS TOKEN IS SAVED")
+                } catch {
+                    UserDefaults().set(false, forKey: "hasOnboarded")
+                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
+                }
             }
         }
         let spotifyID = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
