@@ -32,7 +32,7 @@ struct SpotifyLyricsInMenubarApp: App {
                         }
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         print("HELLOO")
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics {
+                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
                             viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     }
@@ -59,6 +59,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     launchOnLogin = true
                 }
             }
+            .disabled(!hasOnboarded)
             Button(showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
                 if showLyrics {
                     showLyrics = false
@@ -68,6 +69,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                 }
             }
+            .disabled(!hasOnboarded)
             Divider()
             Button("Settings") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
@@ -227,14 +229,17 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(currentTrack)
                             }
                         }
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    } else {
+                        viewmodel.stopLyricUpdater()
                     }
                 }
                 .onChange(of: viewmodel.cookie) { newCookie in
                     viewmodel.accessToken = nil
                 }
                 .onChange(of: viewmodel.isPlaying) { nowPlaying in
-                    if nowPlaying, showLyrics {
-                        if !viewmodel.currentlyPlayingLyrics.isEmpty, spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerPosition != 0.0 : viewmodel.spotifyScript?.playerPosition != 0.0  {
+                    if nowPlaying, showLyrics, hasOnboarded {
+                        if !viewmodel.currentlyPlayingLyrics.isEmpty  {
                             print("timer started for spotify change, lyrics not nil")
                             viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
@@ -256,7 +261,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     Task {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics {
+                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
                                 print("STARTING UPDATER")
                                 viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                             }
