@@ -374,6 +374,8 @@ struct ApiView: View {
                                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                                 try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
                                 print("ACCESS TOKEN IS SAVED")
+                                // set onboarded to true here, no need to wait for user to finish selecting truncation
+                                UserDefaults().set(true, forKey: "hasOnboarded")
                                 error = false
                                 isLoading = false
                                 isShowingDetailView = true
@@ -450,7 +452,6 @@ struct FinalTruncationView: View {
                 }
                 Spacer()
                 Button("Done") {
-                    UserDefaults().set(true, forKey: "hasOnboarded")
                     NSApplication.shared.keyWindow?.close()
                     
                 }
