@@ -71,6 +71,18 @@ struct SpotifyLyricsInMenubarApp: App {
             }
             .disabled(!hasOnboarded)
             Divider()
+            Text("Menubar Size is \(truncationLength)")
+            if truncationLength != 60 {
+                Button("Increase Size to \(truncationLength+10) ") {
+                    truncationLength = truncationLength + 10
+                }
+            }
+            if truncationLength != 30 {
+                Button("Decrease Size to \(truncationLength-10)") {
+                    truncationLength = truncationLength - 10
+                }
+            }
+            Divider()
             Button("Settings") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
