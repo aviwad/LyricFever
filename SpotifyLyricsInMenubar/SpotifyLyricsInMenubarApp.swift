@@ -119,6 +119,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     if spotifyOrAppleMusic {
                         Task {
                             let status = await viewmodel.requestMusicKitAuthorization()
+                            print("APP STARTUP MusicKit auth status is \(status)")
                             
                             if status != .authorized {
                                 hasOnboarded = false

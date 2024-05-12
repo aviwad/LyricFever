@@ -366,23 +366,8 @@ extension viewModel {
         MRMediaRemoteGetNowPlayingInfo(DispatchQueue.global(), { (information) in
             self.appleMusicStorePlaybackID =  information["kMRMediaRemoteNowPlayingInfoContentItemIdentifier"] as? String
         })
-        // check for musickit auth
-        if status != .authorized || appleMusicStorePlaybackID == nil {
-            print("not authorized (or we dont have playback id yet) , lets wait a bit")
-            // A little delay to make sure we have musickit auth + storeplayback id by then (most likely)
-            try await Task.sleep(nanoseconds: 100000000)
-            if status != .authorized {
-                print("still not authorized i give up")
-            }
-        }
-        print("authorized")
-        guard let appleMusicStorePlaybackID else {
-            print("no playback store id, giving up")
-            return
-        }
-        let request = MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: .init(appleMusicStorePlaybackID))
-        guard let response = try? await request.response(), let song = response.items.first, let isrc = song.isrc else { return }
-        print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
+        
+        // run access token generator
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
             print("creating new access token from apple music, if this appears multiple times thats suspicious")
             if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
@@ -398,6 +383,27 @@ extension viewModel {
                 }
             }
         }
+        
+        // check for musickit auth
+        print("status of MusicKit auth: \(MusicAuthorization.currentStatus)")
+        print("status of apple music store playback ID: \(appleMusicStorePlaybackID)")
+        
+//        guard let appleMusicStorePlaybackID else {
+//            print("no playback store id, giving up")
+//            return
+//        }
+        let isrc = await {
+            if let appleMusicStorePlaybackID, let response = try? await MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: .init(appleMusicStorePlaybackID)).response(), let song = response.items.first
+            {
+                return song.isrc
+            }
+            return nil
+        }()
+//        let request = MusicCatalogResourceRequest<Song>(matching: \.id, equalTo: .init(appleMusicStorePlaybackID))
+//        guard let response = try? await request.response(), let song = response.items.first, let isrc = song.isrc else { return }
+        print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
+        
+        // get equivalent spotify ID
         let spotifyID = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         if !Task.isCancelled {
@@ -412,7 +418,6 @@ extension viewModel {
                 saveCoreData()
             }
         }
-        // get equivalent spotify ID
     }
     
     func fetchSpotifyIDFromPersistentIDCoreData() -> String? {
@@ -470,10 +475,11 @@ extension viewModel {
         } while !Task.isCancelled
     }
     
-    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String) async throws -> String? {
+    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String?) async throws -> String? {
         if let accessToken {
+            print("AM to Spotify: access token found")
             // Attempt to find Spotify ID using ISRC
-            if let url = URL(string: "https://api.spotify.com/v1/search?q=isrc:\(isrc)&type=track&limit=1") {
+            if let isrc, let url = URL(string: "https://api.spotify.com/v1/search?q=isrc:\(isrc)&type=track&limit=1") {
                 var request = URLRequest(url: url)
                 request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
                 print("the access token is \(accessToken.accessToken)")
