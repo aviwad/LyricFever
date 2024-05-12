@@ -9,6 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 import ScriptingBridge
 import MusicKit
+import WebKit
 
 struct OnboardingWindow: View {
     @State var spotifyPermission: Bool = false
@@ -330,18 +331,66 @@ struct ApiView: View {
     @AppStorage("spDcCookie") var spDcCookie: String = ""
     @State var isLoading = false
     @State var error = false
+    @StateObject var navigationState = NavigationState()
+    @State var loginMethod = true
+    @State var loggedIn = false
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "1. Spotify Login Credentials (EVEN IF YOU USE APPLE MUSIC!!!)", description: "We need the cookie to make the relevant Lyric API calls. Even if you're using Apple Music, I still download lyrics from Spotify.")
+            StepView(title: "1. Spotify Login (EVEN IF YOU USE APPLE MUSIC!)", description: "I download lyrics from Spotify.")
             
-            HStack {
-                Spacer()
-                AnimatedImage(name: "spotifylogin.gif", isAnimating: $isAnimating)
-                    .resizable()
-                Spacer()
+            Picker("", selection: $loginMethod) {
+                Text("Spotify Login").tag(true)
+                Text("API Key: Advanced").tag(false)
             }
+            .pickerStyle(.segmented)
             
-            TextField("Enter your SP_DC Cookie Here :)", text: $spDcCookie)
+            if loginMethod {
+                ZStack {
+                    // Blurred web view
+                    WebView(request: URLRequest(url: URL(string: "https://accounts.spotify.com/en/login?continue=https%3A%2F%2Fopen.spotify.com%2F")!), navigationState: navigationState)
+                        .disabled(loggedIn)
+                        .brightness(loggedIn ? -0.4 : 0)
+                        .blur(radius: loggedIn ? 15 : 0)
+                    
+                    if loggedIn {
+                        VStack {
+                            Text("You're Logged In 🙂")
+                                .font(.largeTitle)
+                            
+                            // Next button centered on the web view
+                            Button("Next") {
+                                Task {
+                                    await checkForLogin()
+                                }
+                                // Handle next button action
+                            }
+                            .font(.headline)
+                            .controlSize(.large)
+                            .buttonStyle(.borderedProminent)
+                            Button("Log Out") {
+                                Task {
+                                    loggedIn = false
+                                    viewModel.shared.cookie = ""
+                                    navigationState.webView.load(URLRequest(url: URL(string: "https://www.spotify.com/logout/")!))
+                                    try await Task.sleep(nanoseconds: 2000000000)
+                                    navigationState.webView.load(URLRequest(url: URL(string: "https://accounts.spotify.com/en/login?continue=https%3A%2F%2Fopen.spotify.com%2F")!))
+                                }
+                            }
+                            .font(.headline)
+                            .controlSize(.large)
+                        }
+                    }
+                }
+            } else {
+                HStack {
+                    Spacer()
+                    AnimatedImage(name: "spotifylogin.gif", isAnimating: $isAnimating)
+                        .resizable()
+                    Spacer()
+                }
+                
+                TextField("Enter your SP_DC Cookie Here", text: $spDcCookie)
+            }
             
             HStack {
                 Button("Back") {
@@ -365,34 +414,7 @@ struct ApiView: View {
                 }
                 Button("Next") {
                     Task {
-                        isLoading = true
-                        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
-                            do {
-                                var request = URLRequest(url: url)
-                                request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
-                                let accessTokenData = try await URLSession.shared.data(for: request)
-                                print(String(decoding: accessTokenData.0, as: UTF8.self))
-                                do {
-                                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                                    
-                                    print("ACCESS TOKEN IS SAVED")
-                                    // set onboarded to true here, no need to wait for user to finish selecting truncation
-                                    UserDefaults().set(true, forKey: "hasOnboarded")
-                                    error = false
-                                    isLoading = false
-                                    isShowingDetailView = true
-                                }
-                                catch {
-                                    print("JSON ERROR CAUGHT")
-                                    self.error = true
-                                    isLoading = false
-                                }
-                            }
-                            catch {
-                                self.error = true
-                                isLoading = false
-                            }
-                        }
+                        await checkForLogin()
                     }
                     // replace button with spinner
                     // check if the cookie is legit
@@ -410,7 +432,10 @@ struct ApiView: View {
 //        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
 //            dismiss()
 //        }
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didLogIn"))) { newValue in
+            loggedIn = true
+        }
+         .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
             dismiss()
         }
         .onChange(of: controlActiveState) { newState in
@@ -419,6 +444,37 @@ struct ApiView: View {
                 print("inactive")
             } else {
                 isAnimating = true
+            }
+        }
+    }
+    
+    func checkForLogin() async {
+        isLoading = true
+        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
+            do {
+                var request = URLRequest(url: url)
+                request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
+                let accessTokenData = try await URLSession.shared.data(for: request)
+                print(String(decoding: accessTokenData.0, as: UTF8.self))
+                do {
+                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                    
+                    print("ACCESS TOKEN IS SAVED")
+                    // set onboarded to true here, no need to wait for user to finish selecting truncation
+                    UserDefaults().set(true, forKey: "hasOnboarded")
+                    error = false
+                    isLoading = false
+                    isShowingDetailView = true
+                }
+                catch {
+                    print("JSON ERROR CAUGHT")
+                    self.error = true
+                    isLoading = false
+                }
+            }
+            catch {
+                self.error = true
+                isLoading = false
             }
         }
     }

@@ -13,6 +13,7 @@ import Sparkle
 import MusicKit
 import SwiftUI
 import MediaPlayer
+import WebKit
 
 @MainActor class viewModel: ObservableObject {
     // View Model
@@ -96,6 +97,20 @@ import MediaPlayer
                 }
             }
         }
+    }
+    
+    func checkIfLoggedIn() {
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
+            if let temporaryCookie = cookies.first(where: {$0.name == "sp_dc"}) {
+                print("found the sp_dc cookie")
+                self.cookie = temporaryCookie.value
+                NotificationCenter.default.post(name: Notification.Name("didLogIn"), object: nil)
+            }
+        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            FriendActivityBackend.logger.debug(" LOGGED dispatch queue is working (check if logged in function is running)")
+//
+//        }
     }
     
     
