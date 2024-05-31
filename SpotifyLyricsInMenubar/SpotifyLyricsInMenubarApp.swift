@@ -96,16 +96,20 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            Text(viewmodel.mustUpdateUrgent ? "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength) : (hasOnboarded ? menuBarTitle : "⚠️ Please Complete Onboarding Process (Click Settings)"))
+            // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else 
+            Group {
+                if let menuBarTitle {
+                    Text(menuBarTitle)
+                } else {
+                    Image(systemName: "music.note.list")
+                }
+            }
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
                     }
                     guard hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
-                        // why do i call this?
-//                        viewmodel.spotifyScript?.name
-//                        viewmodel.appleMusicScript?.name
                         openWindow(id: "onboarding")
                         return
                     }
@@ -296,13 +300,25 @@ struct SpotifyLyricsInMenubarApp: App {
         return "Open \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )!"
     }
     
-    var menuBarTitle: String {
-        if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
-            return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
-        } else if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
-            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
+    var menuBarTitle: String? {
+        // Update message takes priority
+        if viewmodel.mustUpdateUrgent {
+            return "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength)
+        } else if hasOnboarded {
+            // Try to work through lyric logic if onboarded
+            if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+                return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
+            // Backup: Display name and artist
+            } else if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+                return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
+            }
+            // Onboarded but app is not open
+            return nil
+        } else {
+            // Hasn't onboarded
+            return "⚠️ Please Complete Onboarding Process (Click Settings)".trunc(length: truncationLength)
         }
-        return "Nothing Playing on \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )"
+        
     }
 }
 
