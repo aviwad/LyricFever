@@ -37,6 +37,7 @@ struct SpotifyLyricsInMenubarApp: App {
                         }
                     }
                 }
+                .keyboardShortcut("r")
             // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
             // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
             } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {
@@ -47,19 +48,8 @@ struct SpotifyLyricsInMenubarApp: App {
                         try await viewmodel.appleMusicFetch()
                     }
                 }
-                
+                .keyboardShortcut("r")
             }
-            Divider()
-            Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
-                if launchOnLogin {
-                    try? SMAppService.mainApp.unregister()
-                    launchOnLogin = false
-                } else {
-                    try? SMAppService.mainApp.register()
-                    launchOnLogin = true
-                }
-            }
-            .disabled(!hasOnboarded)
             Button(showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
                 if showLyrics {
                     showLyrics = false
@@ -70,17 +60,20 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
             }
             .disabled(!hasOnboarded)
+            .keyboardShortcut("h")
             Divider()
             Text("Menubar Size is \(truncationLength)")
             if truncationLength != 60 {
                 Button("Increase Size to \(truncationLength+10) ") {
                     truncationLength = truncationLength + 10
                 }
+                .keyboardShortcut("+")
             }
             if truncationLength != 30 {
                 Button("Decrease Size to \(truncationLength-10)") {
                     truncationLength = truncationLength - 10
                 }
+                .keyboardShortcut("-")
             }
             Divider()
             Button("Settings") {
@@ -89,6 +82,17 @@ struct SpotifyLyricsInMenubarApp: App {
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
+            Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
+                if launchOnLogin {
+                    try? SMAppService.mainApp.unregister()
+                    launchOnLogin = false
+                } else {
+                    try? SMAppService.mainApp.register()
+                    launchOnLogin = true
+                }
+            }
+            .disabled(!hasOnboarded)
+            .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
                 .disabled(!viewmodel.canCheckForUpdates)
                 .keyboardShortcut("u")
@@ -96,7 +100,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
         } , label: {
-            // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else 
+            // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else
             Group {
                 if let menuBarTitle {
                     Text(menuBarTitle)
