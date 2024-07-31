@@ -107,10 +107,6 @@ import WebKit
                 NotificationCenter.default.post(name: Notification.Name("didLogIn"), object: nil)
             }
         }
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//            FriendActivityBackend.logger.debug(" LOGGED dispatch queue is working (check if logged in function is running)")
-//
-//        }
     }
     
     

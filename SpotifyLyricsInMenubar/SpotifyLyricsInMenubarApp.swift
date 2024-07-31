@@ -77,14 +77,14 @@ struct SpotifyLyricsInMenubarApp: App {
             }
             Divider()
             Button("Fullscreen") {
-                NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "fullscreen")
+                NSApplication.shared.activate(ignoringOtherApps: true)
                 NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
             }
             Divider()
             Button("Settings") {
-                NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
+                NSApplication.shared.activate(ignoringOtherApps: true)
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
@@ -304,7 +304,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     Task { @MainActor in
                         let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
                         window?.collectionBehavior = .fullScreenPrimary
-                        if window?.styleMask != .fullScreen {
+                        if window?.styleMask.rawValue != 49167 {
                             window?.toggleFullScreen(true)
                         }
                     }
