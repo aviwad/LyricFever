@@ -15,13 +15,14 @@ struct FullscreenView: View {
     
     @ViewBuilder var albumArt: some View {
         VStack {
+            Spacer()
             if spotifyOrAppleMusic {
                 if let newAppleMusicArtworkImage {
                     Image(nsImage: newAppleMusicArtworkImage)
                         .resizable()
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
-                        .frame(width: 600, height: 600)
+                        .frame(width: 550, height: 550)
                 }
             } else {
                 if let newArtworkUrl  {
@@ -36,11 +37,19 @@ struct FullscreenView: View {
                     }
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
-                        .frame(width: 600, height: 600)
+                        .frame(width: 550, height: 550)
                        // .frame(minWidth: 0, maxWidth: .infinity)
                 } else {
                     Image(systemName: "music.note.list")
                 }
+            }
+            if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+                Text(currentlyPlayingName)
+                    .font(.title)
+                    .bold()
+                    .padding(.top, 30)
+                Text(currentlyPlayingArtist)
+                    .font(.title2)
             }
             Button {
                 print("spotify or apple music: \(spotifyOrAppleMusic)")
@@ -53,81 +62,84 @@ struct FullscreenView: View {
                 Image(systemName: "pause")
             }
             .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
+            Spacer()
         }
     }
     
     @ViewBuilder var lyrics: some View {
-        GeometryReader { geo in
-            VStack(alignment: .leading){
-                Spacer()
-                    .frame(maxHeight: 0.45*(geo.size.height))
-                ScrollViewReader { proxy in
-                    List (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
-                        Text(viewmodel.currentlyPlayingLyrics[i].words)
-                            .bold(viewmodel.currentlyPlayingLyricsIndex == i)
-                            .font(.system(size: 50, weight: .bold, design: .default))
-                            .padding(.vertical, 20)
-                            .blur(radius: viewmodel.currentlyPlayingLyricsIndex == i ? 0 : 5)
-                            .onChange(of: viewmodel.currentlyPlayingLyricsIndex) { newIndex in
-                                withAnimation {
-                                    proxy.scrollTo(newIndex, anchor: .topLeading)
-                                }
-                            }
-                            //.frame(width: 0.7*geo.size.width, alignment: .trailing)
-                            .listRowSeparator(.hidden)
-                            .contentShape(.rect)
-//                            .scrollTransition { effect, phase in
-//                                effect
-//                                    
-//                            }
-//                            .onTapGesture {
-//                                if spotifyOrAppleMusic {
-//                                    viewmodel.appleMusicScript?.setPlayerPosition?(viewmodel.currentlyPlayingLyrics[i].startTimeMS)
-//                                } else {
-//                                    viewmodel.spotifyScript?.setPlayerPosition?(viewmodel.currentlyPlayingLyrics[i].startTimeMS)
-//                                }
-//                                viewmodel.currentlyPlayingLyricsIndex = i
-//                            }
-//                            .scrollTransition(.animated(.smooth)) { view, transition in
-////                                content
-////                                    .opacity(phase.isIdentity ? 1 : 0)
-////                                    .scaleEffect(phase.isIdentity ? 1 : 0.75)
-////                                    .blur(radius: phase.isIdentity ? 0 : 10)
-//                                view
-//                                    .scaleEffect(transition.isIdentity ? 1 : 0.5)
-//                            }
-                    }
-                    
-                    .scrollContentBackground(.hidden)
-                    .padding(.trailing, 100)
-                    .frame( maxWidth: viewmodel.currentlyPlayingLyricsIndex == nil ? .none : .infinity, minHeight: 0.55*(geo.size.height), maxHeight: 0.55*(geo.size.height), alignment: .bottom)
+        VStack(alignment: .leading){
+            Spacer()
+            ScrollView(showsIndicators: false){
+                ForEach (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
+                    Text(viewmodel.currentlyPlayingLyrics[i].words)
+                        .font(.system(size: 50, weight: .bold, design: .default))
+                        .padding(.vertical, 20)
+                        .padding(.horizontal, 10)
+                        .blur(radius: (i == viewmodel.currentlyPlayingLyricsIndex || i == viewmodel.currentlyPlayingLyrics.count-1) ? 0 : 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(.rect)
                 }
-                .scrollPosition(id: $viewmodel.currentlyPlayingLyricsIndex)
-                .mask(LinearGradient(gradient: Gradient(colors: [.black, .black, .black, .clear]), startPoint: .top, endPoint: .bottom))
+                .scrollTargetLayout()
+                .safeAreaPadding(EdgeInsets(top: 600, leading: 0, bottom: 500, trailing: 200))
+                
+                .scrollContentBackground(.hidden)
             }
+            .scrollDisabled(true)
+            .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
+            .scrollPosition(id: $viewmodel.currentlyPlayingLyricsIndex, anchor: .center)
+            Spacer()
+            
         }
     }
     
     var body: some View {
-        HStack {
-            albumArt
-                .frame(minWidth: 1000, maxWidth: .infinity)
-            lyrics
+        GeometryReader { geo in
+            HStack {
+                albumArt
+                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                   // .frame(minWidth: 1000, maxWidth: .infinity)
+                lyrics
+                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+            }
         }
         .background {
-            
+            BackgroundView()
         }
         .onAppear {
             withAnimation {
-                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-                self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                if spotifyOrAppleMusic {
+                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                } else {
+                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+                }
             }
         }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
             withAnimation {
-                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-                self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                if spotifyOrAppleMusic {
+                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                } else {
+                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+                }
             }
         }
     }
 }
+
+struct BackgroundView: View {
+
+@State var gradient = [Color.red, Color.purple, Color.orange]
+
+@State var startPoint = UnitPoint(x: 0, y: 0)
+@State var endPoint = UnitPoint(x: 0, y: 2)
+
+var body: some View {
+    LinearGradient(gradient: Gradient(colors: self.gradient), startPoint: self.startPoint, endPoint: self.endPoint)
+    .edgesIgnoringSafeArea(.all)
+    .onAppear {
+        withAnimation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
+            self.startPoint = UnitPoint(x: 1, y: -1)
+            self.endPoint = UnitPoint(x: 0, y: 1)
+        }
+    }
+}}
