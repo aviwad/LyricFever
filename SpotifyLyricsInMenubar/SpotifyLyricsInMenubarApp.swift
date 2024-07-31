@@ -76,6 +76,12 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
+            Button("Fullscreen") {
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                openWindow(id: "fullscreen")
+                NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
+            }
+            Divider()
             Button("Settings") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
@@ -290,7 +296,21 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
         })
-        Window("Lyrics in Menubar: Onboarding", id: "onboarding") { // << here !!
+        Window("Lyric Fever: Fullscreen", id: "fullscreen") {
+            FullscreenView()
+                .preferredColorScheme(.dark)
+                .environmentObject(viewmodel)
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickFullscreen"))) { _ in
+                    Task { @MainActor in
+                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+                        window?.collectionBehavior = .fullScreenPrimary
+                        if window?.styleMask != .fullScreen {
+                            window?.toggleFullScreen(true)
+                        }
+                    }
+                }
+        }
+        Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
                 .preferredColorScheme(.dark)
         }.windowResizability(.contentSize)

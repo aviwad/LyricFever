@@ -176,7 +176,9 @@ import WebKit
             print("last index: \(lastIndex)")
             print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
-                currentlyPlayingLyricsIndex = lastIndex
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex
+                }
             } else {
                 currentlyPlayingLyricsIndex = nil
             }
@@ -467,7 +469,9 @@ extension viewModel {
             print("last index: \(lastIndex)")
             print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
-                currentlyPlayingLyricsIndex = lastIndex
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex
+                }
             } else {
                 currentlyPlayingLyricsIndex = nil
             }

@@ -15,9 +15,10 @@ extension CodingUserInfoKey {
     static let duration = CodingUserInfoKey(rawValue: "duration")!
 }
 
-struct LyricLine: Decodable {
+struct LyricLine: Decodable, Hashable {
     let startTimeMS: TimeInterval
     let words: String
+    let id = UUID()
 
     enum CodingKeys: String, CodingKey {
         case startTimeMS = "startTimeMs"
