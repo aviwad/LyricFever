@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import vibrant
 
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @State var newAppleMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
+    @State var gradient = [Color.red, Color.purple, Color.orange]
+    @State var points: ColorSpots = .init()
     
     @ViewBuilder var albumArt: some View {
         VStack {
@@ -62,6 +65,26 @@ struct FullscreenView: View {
                 Image(systemName: "pause")
             }
             .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
+            HStack {
+                Button("Muted") {
+                    
+                }
+                Button("Dark Muted") {
+                    
+                }
+                Button("Light Muted") {
+                    
+                }
+                Button("Vibrant") {
+                    
+                }
+                Button("Dark Vibrant") {
+                    
+                }
+                Button("Light Vibrant") {
+                    
+                }
+            }
             Spacer()
         }
     }
@@ -103,21 +126,36 @@ struct FullscreenView: View {
             }
         }
         .background {
-            BackgroundView()
+            BackgroundView(colors: $gradient, points: $points)
         }
         .onAppear {
             withAnimation {
                 if spotifyOrAppleMusic {
-                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
+                    if let newAppleMusicArtworkImage {
+                        let palette = Vibrant.from(newAppleMusicArtworkImage).getPalette()
+                        if let muted = palette.Muted?.uiColor, let darkMuted = palette.DarkMuted?.uiColor, let lightMuted = palette.LightMuted?.uiColor, let darkVibrant = palette.DarkVibrant?.uiColor, let vibrant = palette.Vibrant?.uiColor {
+                            gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant)]
+                        }
+                    }
                 } else {
                     self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
                 }
             }
         }
+        .onChange(of: gradient) { newGradient in
+            points = newGradient.map { .random(withColor: $0) }
+        }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
             withAnimation {
                 if spotifyOrAppleMusic {
-                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as! MusicArtwork).data
+                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
+                    if let newAppleMusicArtworkImage {
+                        let palette = Vibrant.from(newAppleMusicArtworkImage).getPalette()
+                        if let muted = palette.Muted?.uiColor, let darkMuted = palette.DarkMuted?.uiColor, let lightMuted = palette.LightMuted?.uiColor, let darkVibrant = palette.DarkVibrant?.uiColor, let vibrant = palette.Vibrant?.uiColor, let lightVibrant = palette.LightVibrant?.uiColor {
+                            gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant),Color(lightVibrant)]
+                        }
+                    }
                 } else {
                     self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
                 }
@@ -126,20 +164,96 @@ struct FullscreenView: View {
     }
 }
 
+//struct BackgroundView: View {
+//
+//@State var startPoint = UnitPoint(x: 0, y: 0)
+//@State var endPoint = UnitPoint(x: 0, y: 2)
+//@Binding var gradient: [SwiftUI.Color]
+//
+//var body: some View {
+//    ZStack {
+//        LinearGradient(gradient: Gradient(colors: self.gradient), startPoint: self.startPoint, endPoint: self.endPoint)
+//        .edgesIgnoringSafeArea(.all)
+//        .onAppear {
+//            withAnimation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
+//                self.startPoint = UnitPoint(x: 1, y: -1)
+//                self.endPoint = UnitPoint(x: 0, y: 1)
+//            }
+//        }
+//    }
+//}}
+
 struct BackgroundView: View {
+    @Binding var colors: [SwiftUI.Color]
+    @Binding var points: ColorSpots
+    //@State var points: ColorSpots = BackgroundView.colors.map { .random(withColor: $0) }
 
-@State var gradient = [Color.red, Color.purple, Color.orange]
+    static let animationDuration: Double = 5
+    @State var bias: Float = 0.002
+    @State var power: Float = 2.5
+    @State var noise: Float = 2
 
-@State var startPoint = UnitPoint(x: 0, y: 0)
-@State var endPoint = UnitPoint(x: 0, y: 2)
+    let timer = Timer
+        .publish(every: BackgroundView.animationDuration * 0.8, on: .main, in: .common)
+        .autoconnect()
 
-var body: some View {
-    LinearGradient(gradient: Gradient(colors: self.gradient), startPoint: self.startPoint, endPoint: self.endPoint)
-    .edgesIgnoringSafeArea(.all)
-    .onAppear {
-        withAnimation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
-            self.startPoint = UnitPoint(x: 1, y: -1)
-            self.endPoint = UnitPoint(x: 0, y: 1)
+    var body: some View {
+        ZStack {
+            MulticolorGradient(
+                points: points,
+                bias: bias,
+                power: power,
+                noise: noise
+            )
+            .ignoresSafeArea()
+//            controls
+//                .padding()
+        }
+        .onReceive(timer) { _ in animate() }
+        .onAppear { animate() }
+    }
+    
+}
+
+private extension BackgroundView {
+    var controls: some View {
+        VStack {
+            Spacer()
+            labeldSlider("bias", value: $bias, in: 0.001 ... 0.5)
+            labeldSlider("power", value: $power, in: 1 ... 10)
+            labeldSlider("noise", value: $noise, in: 0 ... 400)
         }
     }
-}}
+
+    func animate() {
+        withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
+            points = self.colors.map { .random(withColor: $0) }
+        }
+    }
+
+    func labeldSlider(
+        _ label: String,
+        value: Binding<Float>,
+        in bounds: ClosedRange<Float>
+    ) -> some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(label)
+                Text(String(format: "%.4f", value.wrappedValue))
+            }
+            .font(.system(size: 10))
+            .frame(minWidth: 50, alignment: .leading)
+
+            Slider(value: value, in: bounds)
+        }
+    }
+}
+
+private extension ColorSpot {
+    static func random(withColor color: SwiftUI.Color) -> ColorSpot {
+        .init(
+            position: .init(x: CGFloat.random(in: 0 ..< 1), y: CGFloat.random(in: 0 ..< 1)),
+            color: color
+        )
+    }
+}
