@@ -30,35 +30,45 @@ struct FullscreenView: View {
                 }
             } else {
                 if let newArtworkUrl  {
-//                    WebImage(url: .init(string: newArtworkUrl), placeholder: {Image(systemName: "music.note.list")}, content: {Image($0)})
                     WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData) { image in
-                         image.resizable() // Control layout like SwiftUI.AsyncImage, you must use this modifier or the view will use the image bitmap size
-                     } placeholder: {
-                         Image(systemName: "music.note.list")
-                             .resizable()
-                     }
+                        switch image {
+                            case .empty:
+                                Image(systemName: "music.note.list")
+                                    .resizable()
+                                    .shadow(radius: 3)
+                                    .scaleEffect(0.5)
+                                    .background(.gray)
+                            case .success(let image):
+                                image.resizable()
+                            case .failure(let error):
+                                Image(systemName: "music.note.list")
+                                    .resizable()
+                                    .shadow(radius: 3)
+                                    .scaleEffect(0.5)
+                                    .background(.gray)
+                        }
+                    }
+//                     } placeholder: {
+//                         Image(systemName: "music.note.list")
+//                             .resizable()
+//                     }
                      .onSuccess { image, data, cacheType in
                          if let data {
                              newSpotifyMusicArtworkImage = NSImage(data: data)
                          }
-                         // Success
-                         // Note: Data exist only when queried from disk cache or network. Use `.queryMemoryData` if you really need data
                      }
-//                    AsyncImage(url: .init(string: newArtworkUrl), transaction:Transaction(animation: .default)) { phase in
-//                        switch phase {
-//                            case .success(let image):
-//                                image
-//                                    .resizable()
-//                            default:
-//                                Image(systemName: "music.note.list")
-//                        }
-//                    }
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
                         .frame(width: 550, height: 550)
-                       // .frame(minWidth: 0, maxWidth: .infinity)
                 } else {
                     Image(systemName: "music.note.list")
+                        .resizable()
+                        .shadow(radius: 3)
+                        .scaleEffect(0.5)
+                        .background(.gray)
+                        .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
+                        .shadow(radius: 5)
+                        .frame(width: 550, height: 550)
                 }
             }
             if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
@@ -140,9 +150,6 @@ struct FullscreenView: View {
         }
         .background {
             BackgroundView(colors: $gradient)
-            
-//                .brightness(-0.2)
-//                .saturation(1.2)
         }
         .onAppear {
             withAnimation {
@@ -169,9 +176,6 @@ struct FullscreenView: View {
                 gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant),Color(lightVibrant)]
             }
         }
-//        .onChange(of: gradient) { newGradient in
-//            points = newGradient.map { .random(withColor: $0) }
-//        }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
             withAnimation {
                 if spotifyOrAppleMusic {
@@ -190,29 +194,9 @@ struct FullscreenView: View {
     }
 }
 
-//struct BackgroundView: View {
-//
-//@State var startPoint = UnitPoint(x: 0, y: 0)
-//@State var endPoint = UnitPoint(x: 0, y: 2)
-//@Binding var gradient: [SwiftUI.Color]
-//
-//var body: some View {
-//    ZStack {
-//        LinearGradient(gradient: Gradient(colors: self.gradient), startPoint: self.startPoint, endPoint: self.endPoint)
-//        .edgesIgnoringSafeArea(.all)
-//        .onAppear {
-//            withAnimation(Animation.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
-//                self.startPoint = UnitPoint(x: 1, y: -1)
-//                self.endPoint = UnitPoint(x: 0, y: 1)
-//            }
-//        }
-//    }
-//}}
-
 struct BackgroundView: View {
     @Binding var colors: [SwiftUI.Color]
     @State var points: ColorSpots = .init()
-    //@State var points: ColorSpots = BackgroundView.colors.map { .random(withColor: $0) }
 
     static let animationDuration: Double = 5
     @State var bias: Float = 0.002
@@ -231,7 +215,6 @@ struct BackgroundView: View {
                 power: power,
                 noise: noise
             )
-            //.brightness(-0.1)
             .ignoresSafeArea()
         //    controls
          //       .padding()
