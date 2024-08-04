@@ -15,6 +15,7 @@ struct FullscreenView: View {
     @State var newAppleMusicArtworkImage: NSImage?
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
+    @State var showLyrics = true
     @State var gradient = [SwiftUI.Color(red: 33/255, green: 69/255, blue: 152/255),SwiftUI.Color(red: 218/255, green: 62/255, blue: 136/255)]
     
     @ViewBuilder var albumArt: some View {
@@ -26,7 +27,7 @@ struct FullscreenView: View {
                         .resizable()
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
-                        .frame(width: 550, height: 550)
+                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
                 }
             } else {
                 if let newArtworkUrl  {
@@ -59,7 +60,7 @@ struct FullscreenView: View {
                      }
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
-                        .frame(width: 550, height: 550)
+                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
                 } else {
                     Image(systemName: "music.note.list")
                         .resizable()
@@ -68,7 +69,7 @@ struct FullscreenView: View {
                         .background(.gray)
                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                         .shadow(radius: 5)
-                        .frame(width: 550, height: 550)
+                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
                 }
             }
             Group {
@@ -80,17 +81,25 @@ struct FullscreenView: View {
                     .font(.title2)
             }
             .frame(height: 35)
-            Button {
-                print("spotify or apple music: \(spotifyOrAppleMusic)")
-                if spotifyOrAppleMusic {
-                    viewmodel.appleMusicScript?.playpause?()
-                } else {
-                    viewmodel.spotifyScript?.playpause?()
+            HStack {
+                Button {
+                    print("spotify or apple music: \(spotifyOrAppleMusic)")
+                    if spotifyOrAppleMusic {
+                        viewmodel.appleMusicScript?.playpause?()
+                    } else {
+                        viewmodel.spotifyScript?.playpause?()
+                    }
+                } label: {
+                    Image(systemName: "pause")
                 }
-            } label: {
-                Image(systemName: "pause")
+                .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
+                Button {
+                    showLyrics.toggle()
+                    
+                } label: {
+                    Image(systemName: "music.note.list")
+                }
             }
-            .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
 //            if gradient.count >= 6 {
 //                VStack {
 //                    Text("Muted \(gradient.first?.description)")
@@ -143,10 +152,12 @@ struct FullscreenView: View {
         GeometryReader { geo in
             HStack {
                 albumArt
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: showLyrics ? 0.50*(geo.size.width) : .infinity)
                    // .frame(minWidth: 1000, maxWidth: .infinity)
-                lyrics
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                if showLyrics {
+                    lyrics
+                        .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                }
             }
         }
         .background {
