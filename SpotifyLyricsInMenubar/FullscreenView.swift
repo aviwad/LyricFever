@@ -97,8 +97,8 @@ struct FullscreenView: View {
                     Text(viewmodel.currentlyPlayingLyrics[i].words)
                         .font(.system(size: 50, weight: .bold, design: .default))
                         .padding(.vertical, 20)
-                        .padding(.horizontal, 10)
                         .blur(radius: (i == viewmodel.currentlyPlayingLyricsIndex || i == viewmodel.currentlyPlayingLyrics.count-1) ? 0 : 8)
+                        .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(.rect)
                 }
