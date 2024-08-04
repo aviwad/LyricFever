@@ -71,14 +71,15 @@ struct FullscreenView: View {
                         .frame(width: 550, height: 550)
                 }
             }
-            if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
-                Text(currentlyPlayingName)
+            Group {
+                Text(viewmodel.currentlyPlayingName ?? "")
                     .font(.title)
                     .bold()
                     .padding(.top, 30)
-                Text(currentlyPlayingArtist)
+                Text(viewmodel.currentlyPlayingArtist ?? "")
                     .font(.title2)
             }
+            .frame(height: 35)
             Button {
                 print("spotify or apple music: \(spotifyOrAppleMusic)")
                 if spotifyOrAppleMusic {
@@ -226,7 +227,7 @@ struct BackgroundView: View {
             }
         }
         .onReceive(timer) { _ in animate() }
-        .onAppear { animate() }
+       // .onAppear { animate() }
     }
     
 }
