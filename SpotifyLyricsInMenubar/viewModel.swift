@@ -145,7 +145,7 @@ import WebKit
         }
     }
     
-    func lyricUpdater() async throws {
+    func lyricUpdater(fullscreen: Bool) async throws {
         // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
         // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
         // Harmless and fixes the sync
@@ -157,7 +157,7 @@ import WebKit
                 stopLyricUpdater()
                 return
             }
-            let currentTime = playerPosition * 1000
+            let currentTime = playerPosition * 1000  + (fullscreen ? 600 : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
@@ -182,14 +182,14 @@ import WebKit
         } while !Task.isCancelled
     }
     
-    func startLyricUpdater(appleMusicOrSpotify: Bool) {
+    func startLyricUpdater(appleMusicOrSpotify: Bool, fullscreen: Bool) {
         currentLyricsUpdaterTask?.cancel()
         if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
             return
         }
         currentLyricsUpdaterTask = Task {
             do {
-                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic() : lyricUpdater()
+                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic(fullscreen: fullscreen) : lyricUpdater(fullscreen: fullscreen)
             } catch {
                 print("lyrics were canceled \(error)")
             }
@@ -441,7 +441,7 @@ extension viewModel {
         return nil
     }
     
-    func lyricUpdaterAppleMusic() async throws {
+    func lyricUpdaterAppleMusic(fullscreen: Bool) async throws {
         repeat {
             guard let playerPosition = appleMusicScript?.playerPosition else {
                 print("no player position hence stopped")
@@ -450,7 +450,7 @@ extension viewModel {
                 return
             }
             // add a 700 (milisecond?) delay to offset the delta between spotify lyrics and apple music songs (or maybe the way apple music delivers playback position)
-            let currentTime = playerPosition * 1000 + 400
+            let currentTime = playerPosition * 1000 + 400 + (fullscreen ? 600 : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return

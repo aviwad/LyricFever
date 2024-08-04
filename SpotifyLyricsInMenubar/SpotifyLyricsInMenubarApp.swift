@@ -33,7 +33,7 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         print("HELLOO")
                         if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
                         }
                     }
                 }
@@ -56,7 +56,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.stopLyricUpdater()
                 } else {
                     showLyrics = true
-                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
                 }
             }
             .disabled(!hasOnboarded)
@@ -80,6 +80,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 openWindow(id: "fullscreen")
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
+                viewmodel.stopLyricUpdater()
+                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
             }
             Divider()
             Button("Settings") {
@@ -256,7 +258,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(currentTrack)
                             }
                         }
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
@@ -268,7 +270,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     if nowPlaying, showLyrics, hasOnboarded {
                         if !viewmodel.currentlyPlayingLyrics.isEmpty  {
                             print("timer started for spotify change, lyrics not nil")
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
                         }
                     } else {
                         viewmodel.stopLyricUpdater()
@@ -290,7 +292,7 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.currentlyPlayingLyrics = lyrics
                             if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
                                 print("STARTING UPDATER")
-                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
                             }
                         }
                     }
@@ -300,7 +302,11 @@ struct SpotifyLyricsInMenubarApp: App {
             FullscreenView()
                 .preferredColorScheme(.dark)
                 .environmentObject(viewmodel)
+                .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                    fullscreen = false
+                }
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickFullscreen"))) { _ in
+                    fullscreen = true
                     Task { @MainActor in
                         let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
                         window?.collectionBehavior = .fullScreenPrimary
