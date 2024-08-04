@@ -15,6 +15,7 @@ struct SpotifyLyricsInMenubarApp: App {
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @State var showLyrics: Bool = true
+    @State var fullscreen: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @Environment(\.openWindow) var openWindow
