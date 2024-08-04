@@ -236,6 +236,12 @@ struct BackgroundView: View {
         //    controls
          //       .padding()
         }
+        .onChange(of: colors) {
+            print("change color called")
+            withAnimation(.easeInOut(duration: BackgroundView.animationDuration/2)){
+                points = self.colors.map { .random(withColor: $0) }
+            }
+        }
         .onReceive(timer) { _ in animate() }
         .onAppear { animate() }
     }
@@ -253,6 +259,7 @@ private extension BackgroundView {
     }
 
     func animate() {
+        print("animate called")
         withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
             points = self.colors.map { .random(withColor: $0) }
         }
