@@ -41,7 +41,7 @@ struct FullscreenView: View {
                                     .background(.gray)
                             case .success(let image):
                                 image.resizable()
-                            case .failure(let error):
+                            case .failure(_):
                                 Image(systemName: "music.note.list")
                                     .resizable()
                                     .shadow(radius: 3)
