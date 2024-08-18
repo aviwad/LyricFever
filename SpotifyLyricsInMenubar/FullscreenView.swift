@@ -49,10 +49,6 @@ struct FullscreenView: View {
                                     .background(.gray)
                         }
                     }
-//                     } placeholder: {
-//                         Image(systemName: "music.note.list")
-//                             .resizable()
-//                     }
                      .onSuccess { image, data, cacheType in
                          if let data {
                              newSpotifyMusicArtworkImage = NSImage(data: data)
@@ -100,24 +96,6 @@ struct FullscreenView: View {
                     Image(systemName: "music.note.list")
                 }
             }
-//            if gradient.count >= 6 {
-//                VStack {
-//                    Text("Muted \(gradient.first?.description)")
-//                    .foregroundStyle(gradient[0])
-//                    Text("Dark Muted \(gradient[1].description)")
-//                    .foregroundStyle(gradient[1])
-//                    Text("Light Muted \(gradient[2].description)")
-//                    .foregroundStyle(gradient[2])
-//                    Text("Vibrant \(gradient[3].description)")
-//                    .foregroundStyle(gradient[3])
-//                    Text("Dark Vibrant \(gradient[4].description)")
-//                    .foregroundStyle(gradient[4])
-//                    Text("Light Vibrant \(gradient[5].description)")
-//                    .foregroundStyle(gradient[5])
-//                }
-//                .bold()
-//                .background(.white)
-//            }
             Spacer()
         }
     }
@@ -153,7 +131,6 @@ struct FullscreenView: View {
             HStack {
                 albumArt
                     .frame( minWidth: 0.50*(geo.size.width), maxWidth: showLyrics ? 0.50*(geo.size.width) : .infinity)
-                   // .frame(minWidth: 1000, maxWidth: .infinity)
                 if showLyrics {
                     lyrics
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
@@ -228,8 +205,6 @@ struct BackgroundView: View {
                 noise: noise
             )
             .ignoresSafeArea()
-        //    controls
-         //       .padding()
         }
         .onChange(of: colors) {
             print("change color called")
@@ -238,21 +213,11 @@ struct BackgroundView: View {
             }
         }
         .onReceive(timer) { _ in animate() }
-       // .onAppear { animate() }
     }
     
 }
 
 private extension BackgroundView {
-    var controls: some View {
-        VStack {
-            Spacer()
-            labeldSlider("bias", value: $bias, in: 0.001 ... 0.5)
-            labeldSlider("power", value: $power, in: 1 ... 10)
-            labeldSlider("noise", value: $noise, in: 0 ... 400)
-        }
-    }
-
     func animate() {
         print("animate called")
         withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
