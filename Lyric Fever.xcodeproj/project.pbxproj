@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,6 +12,8 @@
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */; };
 		8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */; };
+		8F4F95882C716CBD009F6F63 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8F4F95872C716CBD009F6F63 /* ColorKit */; };
+		8F4F958E2C7175C6009F6F63 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8F4F958D2C7175C6009F6F63 /* ColorKit */; };
 		8F58B8CF2C55AEB1009ADA1A /* FullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */; };
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
@@ -24,8 +26,6 @@
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
 		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
-		8FF9AD902C5B05EB00A57A75 /* Vibrant in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF9AD8F2C5B05EB00A57A75 /* Vibrant */; };
-		8FF9AD932C5B084300A57A75 /* Vibrant in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF9AD922C5B084300A57A75 /* Vibrant */; };
 		8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */; };
 		8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */; };
 		8FF9ADAB2C5B5E7500A57A75 /* ColorStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */; };
@@ -68,9 +68,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F4F958E2C7175C6009F6F63 /* ColorKit in Frameworks */,
+				8F4F95882C716CBD009F6F63 /* ColorKit in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
-				8FF9AD902C5B05EB00A57A75 /* Vibrant in Frameworks */,
-				8FF9AD932C5B084300A57A75 /* Vibrant in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */,
 			);
@@ -169,8 +169,8 @@
 				8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */,
 				8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */,
 				8F28FDC12AA25D2700439D8D /* Sparkle */,
-				8FF9AD8F2C5B05EB00A57A75 /* Vibrant */,
-				8FF9AD922C5B084300A57A75 /* Vibrant */,
+				8F4F95872C716CBD009F6F63 /* ColorKit */,
+				8F4F958D2C7175C6009F6F63 /* ColorKit */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -204,7 +204,7 @@
 				8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
 				8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */,
-				8FF9AD912C5B084300A57A75 /* XCLocalSwiftPackageReference "../../Downloads/swift-vibrant-master" */,
+				8F4F958C2C7175C6009F6F63 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -473,13 +473,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		8FF9AD912C5B084300A57A75 /* XCLocalSwiftPackageReference "../../Downloads/swift-vibrant-master" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../Downloads/swift-vibrant-master";
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -487,6 +480,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.2;
+			};
+		};
+		8F4F958C2C7175C6009F6F63 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aviwad/ColorKit-macOS";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 		8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
@@ -513,18 +514,19 @@
 			package = 8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
 		};
+		8F4F95872C716CBD009F6F63 /* ColorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ColorKit;
+		};
+		8F4F958D2C7175C6009F6F63 /* ColorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F4F958C2C7175C6009F6F63 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */;
+			productName = ColorKit;
+		};
 		8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
-		};
-		8FF9AD8F2C5B05EB00A57A75 /* Vibrant */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Vibrant;
-		};
-		8FF9AD922C5B084300A57A75 /* Vibrant */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Vibrant;
 		};
 		8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import vibrant
 import SDWebImageSwiftUI
+import ColorKit
 
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
@@ -144,11 +144,8 @@ struct FullscreenView: View {
             withAnimation {
                 if spotifyOrAppleMusic {
                     self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
-                    if let newAppleMusicArtworkImage {
-                        let palette = Vibrant.from(newAppleMusicArtworkImage).getPalette()
-                        if let muted = palette.Muted?.uiColor, let darkMuted = palette.DarkMuted?.uiColor, let lightMuted = palette.LightMuted?.uiColor, let darkVibrant = palette.DarkVibrant?.uiColor, let vibrant = palette.Vibrant?.uiColor, let lightVibrant = palette.LightVibrant?.uiColor {
-                            gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant),Color(lightVibrant)]
-                        }
+                    if let newAppleMusicArtworkImage, let dominantColors = try? newAppleMusicArtworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                        gradient = dominantColors.map({Color($0)})
                     }
                 } else {
                     self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
@@ -157,23 +154,16 @@ struct FullscreenView: View {
         }
         .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
             print("NEW ARTWORK")
-            guard let newArtwork else {
-                return
-            }
-            let palette = Vibrant.from(newArtwork).getPalette()
-            if let muted = palette.Muted?.uiColor, let darkMuted = palette.DarkMuted?.uiColor, let lightMuted = palette.LightMuted?.uiColor, let darkVibrant = palette.DarkVibrant?.uiColor, let vibrant = palette.Vibrant?.uiColor, let lightVibrant = palette.LightVibrant?.uiColor {
-                gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant),Color(lightVibrant)]
+            if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                gradient = dominantColors.map({Color($0)})
             }
         }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
             withAnimation {
                 if spotifyOrAppleMusic {
                     self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
-                    if let newAppleMusicArtworkImage {
-                        let palette = Vibrant.from(newAppleMusicArtworkImage).getPalette()
-                        if let muted = palette.Muted?.uiColor, let darkMuted = palette.DarkMuted?.uiColor, let lightMuted = palette.LightMuted?.uiColor, let darkVibrant = palette.DarkVibrant?.uiColor, let vibrant = palette.Vibrant?.uiColor, let lightVibrant = palette.LightVibrant?.uiColor {
-                            gradient = [Color(muted),Color(darkMuted),Color(lightMuted),Color(darkVibrant),Color(vibrant),Color(lightVibrant)]
-                        }
+                    if let newAppleMusicArtworkImage, let dominantColors = try? newAppleMusicArtworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                        gradient = dominantColors.map({Color($0)})
                     }
                 } else {
                     self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
