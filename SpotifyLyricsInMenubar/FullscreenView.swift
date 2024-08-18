@@ -194,6 +194,7 @@ struct BackgroundView: View {
                 power: power,
                 noise: noise
             )
+            .brightness(-0.3)
             .ignoresSafeArea()
         }
         .onChange(of: colors) {
