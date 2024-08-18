@@ -183,7 +183,7 @@ struct BackgroundView: View {
     @State var noise: Float = 2
 
     let timer = Timer
-        .publish(every: BackgroundView.animationDuration * 0.8, on: .main, in: .common)
+        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
         .autoconnect()
 
     var body: some View {
