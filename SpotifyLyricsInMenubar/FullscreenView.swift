@@ -9,6 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 import ColorKit
 
+@available(macOS 14.0, *)
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
@@ -173,6 +174,7 @@ struct FullscreenView: View {
     }
 }
 
+@available(macOS 14.0, *)
 struct BackgroundView: View {
     @Binding var colors: [SwiftUI.Color]
     @State var points: ColorSpots = .init()

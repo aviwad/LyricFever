@@ -77,12 +77,21 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
-            Button("Fullscreen") {
-                openWindow(id: "fullscreen")
-                NSApplication.shared.activate(ignoringOtherApps: true)
-                NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
-                viewmodel.stopLyricUpdater()
-                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+            if #available(macOS 14.0, *) {
+                if spotifyOrAppleMusic {
+                    Text("Switch to Spotify to use fullscreen")
+                } else {
+                    Button("Fullscreen") {
+                        openWindow(id: "fullscreen")
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                        viewmodel.stopLyricUpdater()
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                        fullscreen = true
+                        //NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
+                    }
+                }
+            } else {
+                Text("Update to macOS 14.0 to use fullscreen")
             }
             Divider()
             Button("Settings") {
@@ -299,23 +308,26 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
         })
-        Window("Lyric Fever: Fullscreen", id: "fullscreen") {
-            FullscreenView()
-                .preferredColorScheme(.dark)
-                .environmentObject(viewmodel)
-                .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
-                    fullscreen = false
-                }
-                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickFullscreen"))) { _ in
-                    fullscreen = true
-                    Task { @MainActor in
-                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-                        window?.collectionBehavior = .fullScreenPrimary
-                        if window?.styleMask.rawValue != 49167 {
-                            window?.toggleFullScreen(true)
+        if #available(macOS 14.0, *) {
+            Window("Lyric Fever: Fullscreen", id: "fullscreen") {
+                
+                    FullscreenView()
+                        .preferredColorScheme(.dark)
+                        .environmentObject(viewmodel)
+                        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                            fullscreen = false
                         }
-                    }
-                }
+    //                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickFullscreen"))) { _ in
+    //                    fullscreen = true
+    //                    Task { @MainActor in
+    //                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+    //                        window?.collectionBehavior = .fullScreenPrimary
+    //                        if window?.styleMask.rawValue != 49167 {
+    //                            window?.toggleFullScreen(true)
+    //                        }
+    //                    }
+    //                }
+            }
         }
         Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(macOS 14.0, *)
 struct MulticolorGradient: View, Animatable {
     var points: ColorSpots
     var bias: Float = 0.001
@@ -28,6 +29,7 @@ struct MulticolorGradient: View, Animatable {
     }
 }
 
+@available(macOS 14.0, *)
 extension Shader.Argument {
     static func uniforms(_ param: Uniforms) -> Shader.Argument {
         var copy = param

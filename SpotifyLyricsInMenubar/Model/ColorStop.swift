@@ -12,6 +12,7 @@ struct ColorSpot: Hashable {
     var color: Color
 }
 
+@available(macOS 14.0, *)
 extension ColorSpot: Animatable {
     public typealias AnimatableData = AnimatablePair<UnitPoint.AnimatableData, Color.Resolved.AnimatableData>
 
@@ -26,6 +27,7 @@ extension ColorSpot: Animatable {
     }
 }
 
+@available(macOS 14.0, *)
 private extension ColorSpot {
     static var zero: ColorSpot {
         .init(position: .zero, color: .black)
@@ -39,6 +41,7 @@ private extension ColorSpot {
     }
 }
 
+@available(macOS 14.0, *)
 private extension Color {
     init(_ animatableData: Color.Resolved.AnimatableData) {
         var resolvedColor = Color.Resolved(red: 0, green: 0, blue: 0)
@@ -61,6 +64,7 @@ private extension UnitPoint {
 
 typealias ColorSpots = [ColorSpot]
 
+@available(macOS 14.0, *)
 extension ColorSpots: Animatable {
     public var animatableData: ColorSpotsAnimatableData {
         get { .init(values: map { point in point.animatableData }) }
@@ -68,16 +72,19 @@ extension ColorSpots: Animatable {
     }
 }
 
+@available(macOS 14.0, *)
 extension ColorSpots {
     init(_ animatableData: ColorSpotsAnimatableData) {
         self = animatableData.values.map { .init($0) }
     }
 }
 
+@available(macOS 14.0, *)
 public struct ColorSpotsAnimatableData {
     var values: [ColorSpot.AnimatableData]
 }
 
+@available(macOS 14.0, *)
 extension ColorSpotsAnimatableData: VectorArithmetic {
     public static func - (lhs: ColorSpotsAnimatableData, rhs: ColorSpotsAnimatableData) -> ColorSpotsAnimatableData {
         .init(
