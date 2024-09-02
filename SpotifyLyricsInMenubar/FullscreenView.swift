@@ -110,9 +110,10 @@ struct FullscreenView: View {
             ScrollView(showsIndicators: false){
                 ForEach (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
                     Text(viewmodel.currentlyPlayingLyrics[i].words)
-                        .font(.system(size: 50, weight: .bold, design: .default))
+                        .opacity(i == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
+                        .font(.system(size: 40, weight: .bold, design: .default))
                         .padding(.vertical, 20)
-                        .blur(radius: (i == viewmodel.currentlyPlayingLyricsIndex || i == viewmodel.currentlyPlayingLyrics.count-1) ? 0 : 8)
+                        .blur(radius: i == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
                         .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(.rect)
