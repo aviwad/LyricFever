@@ -157,6 +157,11 @@ struct FullscreenView: View {
             withAnimation {
                 self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
             }
+            Task { @MainActor in
+                let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+                window?.collectionBehavior = .fullScreenPrimary
+                if window?.styleMask.rawValue != 49167 {
+                    window?.toggleFullScreen(true)
                 }
             }
         }
