@@ -8,6 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import ColorKit
+import Combine
 
 @available(macOS 14.0, *)
 struct FullscreenView: View {
@@ -15,7 +16,12 @@ struct FullscreenView: View {
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
     @State var showLyrics = true
-    @State var gradient = [SwiftUI.Color(red: 33/255, green: 69/255, blue: 152/255),SwiftUI.Color(red: 218/255, green: 62/255, blue: 136/255)]
+    @State var animate = true
+    @State var avgColor: Color = Color(red: 33/255, green: 69/255, blue: 152/255)
+    @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
+    @State var timer = Timer
+        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
+        .autoconnect()
     
     @ViewBuilder var albumArt: some View {
         VStack {
@@ -79,6 +85,20 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "music.note.list")
                 }
+                Button {
+                    withAnimation {
+                        animate.toggle()
+                    }
+                    if animate {
+                        timer = Timer
+                            .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
+                            .autoconnect()
+                    } else {
+                        timer.upstream.connect().cancel()
+                    }
+                } label: {
+                    Image(systemName: "sparkles")
+                }
             }
             Spacer()
         }
@@ -122,7 +142,15 @@ struct FullscreenView: View {
             }
         }
         .background {
-            BackgroundView(colors: $gradient)
+            ZStack {
+                if animate {
+                    BackgroundView(colors: $gradient, timer: $timer)
+                } else {
+                    avgColor
+                }
+            }
+            .ignoresSafeArea()
+            .transition(.opacity)
         }
         .onAppear {
             withAnimation {
@@ -134,7 +162,12 @@ struct FullscreenView: View {
         .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
             print("NEW ARTWORK")
             if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
-                gradient = dominantColors.map({Color($0)})
+                gradient = dominantColors.map({adjustedColor($0)})
+                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
+                    withAnimation {
+                        self.avgColor = avgColor
+                    }
+                }
             }
         }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
@@ -143,11 +176,35 @@ struct FullscreenView: View {
             }
         }
     }
+    func adjustedColor(_ nsColor: NSColor) -> Color {
+        // Convert NSColor to HSB components
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        nsColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        
+        // Adjust brightness
+        brightness = brightness - 0.2
+        
+        if saturation < 0.8 {
+            // Adjust contrast
+            saturation = saturation * 3
+        }
+        
+        // Create new NSColor with modified HSB values
+        let modifiedNSColor = NSColor(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
+        
+        // Convert NSColor to SwiftUI Color
+        return Color(modifiedNSColor)
+    }
 }
 
 @available(macOS 14.0, *)
 struct BackgroundView: View {
     @Binding var colors: [SwiftUI.Color]
+    @Binding var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     @State var points: ColorSpots = .init()
 
     static let animationDuration: Double = 5
@@ -155,56 +212,29 @@ struct BackgroundView: View {
     @State var power: Float = 2.5
     @State var noise: Float = 2
 
-    let timer = Timer
-        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
-        .autoconnect()
-
     var body: some View {
-        ZStack {
-            MulticolorGradient(
-                points: points,
-                bias: bias,
-                power: power,
-                noise: noise
-            )
-            .brightness(-0.3)
-            .ignoresSafeArea()
-        }
+        MulticolorGradient(
+            points: points,
+            bias: bias,
+            power: power,
+            noise: noise
+        )
         .onChange(of: colors) {
             print("change color called")
             withAnimation(.easeInOut(duration: BackgroundView.animationDuration/2)){
                 points = self.colors.map { .random(withColor: $0) }
             }
         }
-        .onReceive(timer) { _ in animate() }
+        .onReceive(timer) { _ in
+            withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
+                points = self.colors.map { .random(withColor: $0) }
+            }
+        }
+//        .onAppear {
+//            points = self.colors.map { .random(withColor: $0) }
+//        }
     }
     
-}
-
-private extension BackgroundView {
-    func animate() {
-        print("animate called")
-        withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
-            points = self.colors.map { .random(withColor: $0) }
-        }
-    }
-
-    func labeldSlider(
-        _ label: String,
-        value: Binding<Float>,
-        in bounds: ClosedRange<Float>
-    ) -> some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(label)
-                Text(String(format: "%.4f", value.wrappedValue))
-            }
-            .font(.system(size: 10))
-            .frame(minWidth: 50, alignment: .leading)
-
-            Slider(value: value, in: bounds)
-        }
-    }
 }
 
 private extension ColorSpot {
