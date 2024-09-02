@@ -281,7 +281,6 @@ import WebKit
             request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
             
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
-            print(urlResponseAndData)
             if urlResponseAndData.0.isEmpty {
                 print("F")
                 return []
