@@ -89,6 +89,7 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "music.note.list")
                 }
+                .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
                 Button {
                     withAnimation {
                         animate.toggle()
