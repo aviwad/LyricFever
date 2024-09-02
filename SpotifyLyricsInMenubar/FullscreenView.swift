@@ -23,6 +23,10 @@ struct FullscreenView: View {
         .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
         .autoconnect()
     
+    var canDisplayLyrics: Bool {
+        showLyrics && !viewmodel.lyricsIsEmptyPostLoad
+    }
+    
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
@@ -44,24 +48,24 @@ struct FullscreenView: View {
                                 .scaleEffect(0.5)
                                 .background(.gray)
                     }
-                     .onSuccess { image, data, cacheType in
-                         if let data {
-                             newSpotifyMusicArtworkImage = NSImage(data: data)
-                         }
-                     }
-                        .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
-                        .shadow(radius: 5)
-                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
-                } else {
-                    Image(systemName: "music.note.list")
-                        .resizable()
-                        .shadow(radius: 3)
-                        .scaleEffect(0.5)
-                        .background(.gray)
-                        .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
-                        .shadow(radius: 5)
-                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
                 }
+                 .onSuccess { image, data, cacheType in
+                     if let data {
+                         newSpotifyMusicArtworkImage = NSImage(data: data)
+                     }
+                 }
+                    .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
+                    .shadow(radius: 5)
+                    .frame(width: canDisplayLyrics ? 550 : 700, height: canDisplayLyrics ? 550 : 700)
+            } else {
+                Image(systemName: "music.note.list")
+                    .resizable()
+                    .shadow(radius: 3)
+                    .scaleEffect(0.5)
+                    .background(.gray)
+                    .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
+                    .shadow(radius: 5)
+                    .frame(width: canDisplayLyrics ? 550 : 650, height: canDisplayLyrics ? 550 : 650)
             }
             Group {
                 Text(viewmodel.currentlyPlayingName ?? "")
@@ -135,8 +139,8 @@ struct FullscreenView: View {
         GeometryReader { geo in
             HStack {
                 albumArt
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: showLyrics ? 0.50*(geo.size.width) : .infinity)
-                if showLyrics {
+                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
+                if canDisplayLyrics {
                     lyrics
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
                 }

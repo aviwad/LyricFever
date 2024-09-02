@@ -32,6 +32,7 @@ struct SpotifyLyricsInMenubarApp: App {
                             try await viewmodel.appleMusicNetworkFetch()
                         }
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
+                        viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
                         print("HELLOO")
                         if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
                             viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
@@ -300,6 +301,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     Task {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
+                            viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
                             if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
                                 print("STARTING UPDATER")
                                 viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)

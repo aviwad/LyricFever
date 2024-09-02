@@ -60,6 +60,7 @@ import WebKit
     let fakeSpotifyUserAgentSession: URLSession
     
     @Published var mustUpdateUrgent: Bool = false
+    @Published var lyricsIsEmptyPostLoad: Bool = true
     
     init() {
         // Load framework
