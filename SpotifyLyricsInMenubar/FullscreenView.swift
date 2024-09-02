@@ -12,8 +12,6 @@ import ColorKit
 @available(macOS 14.0, *)
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
-    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
-    @State var newAppleMusicArtworkImage: NSImage?
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
     @State var showLyrics = true
@@ -22,33 +20,23 @@ struct FullscreenView: View {
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
-            if spotifyOrAppleMusic {
-                if let newAppleMusicArtworkImage {
-                    Image(nsImage: newAppleMusicArtworkImage)
-                        .resizable()
-                        .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
-                        .shadow(radius: 5)
-                        .frame(width: showLyrics ? 550 : 700, height: showLyrics ? 550 : 700)
-                }
-            } else {
-                if let newArtworkUrl  {
-                    WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData) { image in
-                        switch image {
-                            case .empty:
-                                Image(systemName: "music.note.list")
-                                    .resizable()
-                                    .shadow(radius: 3)
-                                    .scaleEffect(0.5)
-                                    .background(.gray)
-                            case .success(let image):
-                                image.resizable()
-                            case .failure(_):
-                                Image(systemName: "music.note.list")
-                                    .resizable()
-                                    .shadow(radius: 3)
-                                    .scaleEffect(0.5)
-                                    .background(.gray)
-                        }
+            if let newArtworkUrl  {
+                WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData) { image in
+                    switch image {
+                        case .empty:
+                            Image(systemName: "music.note.list")
+                                .resizable()
+                                .shadow(radius: 3)
+                                .scaleEffect(0.5)
+                                .background(.gray)
+                        case .success(let image):
+                            image.resizable()
+                        case .failure(_):
+                            Image(systemName: "music.note.list")
+                                .resizable()
+                                .shadow(radius: 3)
+                                .scaleEffect(0.5)
+                                .background(.gray)
                     }
                      .onSuccess { image, data, cacheType in
                          if let data {
@@ -80,12 +68,7 @@ struct FullscreenView: View {
             .frame(height: 35)
             HStack {
                 Button {
-                    print("spotify or apple music: \(spotifyOrAppleMusic)")
-                    if spotifyOrAppleMusic {
-                        viewmodel.appleMusicScript?.playpause?()
-                    } else {
-                        viewmodel.spotifyScript?.playpause?()
-                    }
+                    viewmodel.spotifyScript?.playpause?()
                 } label: {
                     Image(systemName: "pause")
                 }
@@ -143,13 +126,8 @@ struct FullscreenView: View {
         }
         .onAppear {
             withAnimation {
-                if spotifyOrAppleMusic {
-                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
-                    if let newAppleMusicArtworkImage, let dominantColors = try? newAppleMusicArtworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
-                        gradient = dominantColors.map({Color($0)})
-                    }
-                } else {
-                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+            }
                 }
             }
         }
@@ -161,14 +139,7 @@ struct FullscreenView: View {
         }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
             withAnimation {
-                if spotifyOrAppleMusic {
-                    self.newAppleMusicArtworkImage = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data
-                    if let newAppleMusicArtworkImage, let dominantColors = try? newAppleMusicArtworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
-                        gradient = dominantColors.map({Color($0)})
-                    }
-                } else {
-                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-                }
+                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
             }
         }
     }
