@@ -89,6 +89,7 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     }
+                    .disabled(!hasOnboarded)
                 }
             } else {
                 Text("Update to macOS 14.0 to use fullscreen")
