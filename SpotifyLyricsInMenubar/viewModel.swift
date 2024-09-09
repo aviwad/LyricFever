@@ -28,6 +28,8 @@ import WebKit
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var showLyrics = true
+    var fullscreen = false
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     
@@ -146,7 +148,7 @@ import WebKit
         }
     }
     
-    func lyricUpdater(fullscreen: Bool) async throws {
+    func lyricUpdater() async throws {
         // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
         // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
         // Harmless and fixes the sync
@@ -183,14 +185,14 @@ import WebKit
         } while !Task.isCancelled
     }
     
-    func startLyricUpdater(appleMusicOrSpotify: Bool, fullscreen: Bool) {
+    func startLyricUpdater(appleMusicOrSpotify: Bool) {
         currentLyricsUpdaterTask?.cancel()
         if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
             return
         }
         currentLyricsUpdaterTask = Task {
             do {
-                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic(fullscreen: fullscreen) : lyricUpdater(fullscreen: fullscreen)
+                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic() : lyricUpdater()
             } catch {
                 print("lyrics were canceled \(error)")
             }
@@ -441,7 +443,7 @@ extension viewModel {
         return nil
     }
     
-    func lyricUpdaterAppleMusic(fullscreen: Bool) async throws {
+    func lyricUpdaterAppleMusic() async throws {
         repeat {
             guard let playerPosition = appleMusicScript?.playerPosition else {
                 print("no player position hence stopped")

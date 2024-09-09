@@ -14,8 +14,6 @@ struct SpotifyLyricsInMenubarApp: App {
     @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
-    @State var showLyrics: Bool = true
-    @State var fullscreen: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @Environment(\.openWindow) var openWindow
@@ -34,8 +32,8 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                         viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
                         print("HELLOO")
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     }
                 }
@@ -52,13 +50,13 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .keyboardShortcut("r")
             }
-            Button(showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
-                if showLyrics {
-                    showLyrics = false
+            Button(viewmodel.showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
+                if viewmodel.showLyrics {
+                    viewmodel.showLyrics = false
                     viewmodel.stopLyricUpdater()
                 } else {
-                    showLyrics = true
-                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                    viewmodel.showLyrics = true
+                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                 }
             }
             .disabled(!hasOnboarded)
@@ -85,10 +83,11 @@ struct SpotifyLyricsInMenubarApp: App {
                     Button("Fullscreen") {
                         openWindow(id: "fullscreen")
                         NSApplication.shared.activate(ignoringOtherApps: true)
-                        viewmodel.stopLyricUpdater()
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
-                        fullscreen = true
-                        //NotificationCenter.default.post(name: Notification.Name("didClickFullscreen"), object: nil)
+                        viewmodel.fullscreen = true
+                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics {
+                            viewmodel.stopLyricUpdater()
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                        }
                     }
                 }
             } else {
@@ -269,7 +268,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(currentTrack)
                             }
                         }
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
@@ -278,10 +277,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     viewmodel.accessToken = nil
                 }
                 .onChange(of: viewmodel.isPlaying) { nowPlaying in
-                    if nowPlaying, showLyrics, hasOnboarded {
+                    if nowPlaying, viewmodel.showLyrics, hasOnboarded {
                         if !viewmodel.currentlyPlayingLyrics.isEmpty  {
                             print("timer started for spotify change, lyrics not nil")
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                         }
                     } else {
                         viewmodel.stopLyricUpdater()
@@ -302,9 +301,9 @@ struct SpotifyLyricsInMenubarApp: App {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
                             viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, showLyrics, hasOnboarded {
+                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
                                 print("STARTING UPDATER")
-                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic, fullscreen: fullscreen)
+                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                             }
                         }
                     }
@@ -312,23 +311,12 @@ struct SpotifyLyricsInMenubarApp: App {
         })
         if #available(macOS 14.0, *) {
             Window("Lyric Fever: Fullscreen", id: "fullscreen") {
-                
-                    FullscreenView()
-                        .preferredColorScheme(.dark)
-                        .environmentObject(viewmodel)
-                        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
-                            fullscreen = false
-                        }
-    //                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickFullscreen"))) { _ in
-    //                    fullscreen = true
-    //                    Task { @MainActor in
-    //                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-    //                        window?.collectionBehavior = .fullScreenPrimary
-    //                        if window?.styleMask.rawValue != 49167 {
-    //                            window?.toggleFullScreen(true)
-    //                        }
-    //                    }
-    //                }
+                FullscreenView()
+                    .preferredColorScheme(.dark)
+                    .environmentObject(viewmodel)
+                    .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                        viewmodel.fullscreen = false
+                    }
             }
         }
         Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
@@ -351,7 +339,7 @@ struct SpotifyLyricsInMenubarApp: App {
             return "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength)
         } else if hasOnboarded {
             // Try to work through lyric logic if onboarded
-            if viewmodel.isPlaying, showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+            if viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
                 return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
             // Backup: Display name and artist
             } else if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {

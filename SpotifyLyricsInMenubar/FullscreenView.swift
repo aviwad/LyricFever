@@ -15,7 +15,6 @@ struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
-    @State var showLyrics = true
     @State var animate = true
     @State var avgColor: Color = Color(red: 33/255, green: 69/255, blue: 152/255)
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
@@ -24,7 +23,7 @@ struct FullscreenView: View {
         .autoconnect()
     
     var canDisplayLyrics: Bool {
-        showLyrics && !viewmodel.lyricsIsEmptyPostLoad
+        viewmodel.showLyrics && !viewmodel.lyricsIsEmptyPostLoad
     }
     
     @ViewBuilder var albumArt: some View {
@@ -84,7 +83,14 @@ struct FullscreenView: View {
                 }
                 .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
                 Button {
-                    showLyrics.toggle()
+                    if viewmodel.showLyrics {
+                        viewmodel.showLyrics = false
+                        viewmodel.stopLyricUpdater()
+                    } else {
+                        viewmodel.showLyrics = true
+                        // Only Spotify has access to Fullscreen view
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: false)
+                    }
                     
                 } label: {
                     Image(systemName: "music.note.list")
