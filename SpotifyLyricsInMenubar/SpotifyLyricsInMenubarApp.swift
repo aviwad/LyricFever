@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import ServiceManagement
+import LaunchAtLogin
 
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
-    @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @State var showLyrics: Bool = true
@@ -50,15 +49,14 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .keyboardShortcut("r")
             }
-            Button(showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
-                if showLyrics {
-                    showLyrics = false
-                    viewmodel.stopLyricUpdater()
-                } else {
-                    showLyrics = true
-                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+            Toggle("Show Lyrics", isOn: $showLyrics)
+                .onChange(of: showLyrics) { newShowLyricsIn in
+                    if newShowLyricsIn {
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    } else {
+                        viewmodel.stopLyricUpdater()
+                    }
                 }
-            }
             .disabled(!hasOnboarded)
             .keyboardShortcut("h")
             Divider()
@@ -82,15 +80,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
-            Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
-                if launchOnLogin {
-                    try? SMAppService.mainApp.unregister()
-                    launchOnLogin = false
-                } else {
-                    try? SMAppService.mainApp.register()
-                    launchOnLogin = true
-                }
-            }
+            LaunchAtLogin.Toggle()
             .disabled(!hasOnboarded)
             .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
