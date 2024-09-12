@@ -50,13 +50,6 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("r")
             }
             Toggle("Show Lyrics", isOn: $showLyrics)
-                .onChange(of: showLyrics) { newShowLyricsIn in
-                    if newShowLyricsIn {
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                    } else {
-                        viewmodel.stopLyricUpdater()
-                    }
-                }
             .disabled(!hasOnboarded)
             .keyboardShortcut("h")
             Divider()
@@ -98,6 +91,14 @@ struct SpotifyLyricsInMenubarApp: App {
                     Image(systemName: "music.note.list")
                 }
             }
+                .onChange(of: showLyrics) { newShowLyricsIn in
+                    print("ON CHANGE OF SHOW LYRICS")
+                    if newShowLyricsIn {
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    } else {
+                        viewmodel.stopLyricUpdater()
+                    }
+                }
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
