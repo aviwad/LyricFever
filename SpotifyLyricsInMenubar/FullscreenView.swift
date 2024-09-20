@@ -81,7 +81,7 @@ struct FullscreenView: View {
                 Button {
                     viewmodel.spotifyScript?.playpause?()
                 } label: {
-                    Image(systemName: "pause")
+                    Image(systemName: "playpause")
                 }
                 .onHover { hover in
                     currentHover = hover ? .playpause : .none
