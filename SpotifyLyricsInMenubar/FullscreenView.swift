@@ -213,11 +213,12 @@ struct FullscreenView: View {
         }
         .background {
             ZStack {
-                if animate {
-                    BackgroundView(colors: $gradient, timer: $timer)
-                } else {
-                    avgColor
-                }
+                BackgroundView(colors: $gradient, timer: $timer, points: $points)
+//                if animate {
+//
+//                } else {
+//                    avgColor
+//                }
             }
             .ignoresSafeArea()
             .transition(.opacity)
