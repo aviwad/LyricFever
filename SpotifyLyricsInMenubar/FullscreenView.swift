@@ -30,24 +30,15 @@ struct FullscreenView: View {
         VStack {
             Spacer()
             if let newArtworkUrl  {
-                WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData) { image in
-                    switch image {
-                        case .empty:
-                            Image(systemName: "music.note.list")
-                                .resizable()
-                                .shadow(radius: 3)
-                                .scaleEffect(0.5)
-                                .background(.gray)
-                        case .success(let image):
-                            image.resizable()
-                        case .failure(_):
-                            Image(systemName: "music.note.list")
-                                .resizable()
-                                .shadow(radius: 3)
-                                .scaleEffect(0.5)
-                                .background(.gray)
-                    }
-                }
+                WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData)
+                    .resizable()
+                    .placeholder(content: {
+                        Image(systemName: "music.note.list")
+                        .resizable()
+                        .shadow(radius: 3)
+                        .scaleEffect(0.5)
+                        .background(.gray)
+                    })
                  .onSuccess { image, data, cacheType in
                      if let data {
                          newSpotifyMusicArtworkImage = NSImage(data: data)
