@@ -21,6 +21,8 @@ struct FullscreenView: View {
     @State var timer = Timer
         .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
         .autoconnect()
+    @State var currentHover = hoverOptions.none
+    @State var points: ColorSpots = .init()
     
     var canDisplayLyrics: Bool {
         viewmodel.showLyrics && !viewmodel.lyricsIsEmptyPostLoad
@@ -95,6 +97,9 @@ struct FullscreenView: View {
                         timer = Timer
                             .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
                             .autoconnect()
+                        withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
+                            points = self.gradient.map { .random(withColor: $0) }
+                        }
                     } else {
                         timer.upstream.connect().cancel()
                     }
@@ -229,7 +234,7 @@ struct FullscreenView: View {
 struct BackgroundView: View {
     @Binding var colors: [SwiftUI.Color]
     @Binding var timer: Publishers.Autoconnect<Timer.TimerPublisher>
-    @State var points: ColorSpots = .init()
+    @Binding var points: ColorSpots
 
     static let animationDuration: Double = 5
     @State var bias: Float = 0.002
