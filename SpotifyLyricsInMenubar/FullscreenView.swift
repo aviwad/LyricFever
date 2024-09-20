@@ -28,6 +28,15 @@ struct FullscreenView: View {
         viewmodel.showLyrics && !viewmodel.lyricsIsEmptyPostLoad
     }
     
+    enum hoverOptions {
+        case playpause
+        case showlyrics
+        case pauseanimation
+        case volumelow
+        case volumehigh
+        case none
+    }
+    
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
@@ -74,6 +83,9 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "pause")
                 }
+                .onHover { hover in
+                    currentHover = hover ? .playpause : .none
+                }
                 .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
                 Button {
                     if viewmodel.showLyrics {
@@ -87,6 +99,9 @@ struct FullscreenView: View {
                     
                 } label: {
                     Image(systemName: "music.note.list")
+                }
+                .onHover { hover in
+                    currentHover = hover ? .showlyrics : .none
                 }
                 .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
                 Button {
@@ -106,12 +121,18 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "sparkles")
                 }
+                .onHover { hover in
+                    currentHover = hover ? .pauseanimation : .none
+                }
                 Button {
                     if let soundVolume = viewmodel.spotifyScript?.soundVolume {
                         viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
                     }
                 } label: {
                     Image(systemName: "speaker.minus")
+                }
+                .onHover { hover in
+                    currentHover = hover ? .volumelow : .none
                 }
                 .keyboardShortcut(KeyEquivalent.downArrow, modifiers: [])
                 Button {
@@ -121,9 +142,33 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "speaker.plus")
                 }
+                .onHover { hover in
+                    currentHover = hover ? .volumehigh : .none
+                }
                 .keyboardShortcut(KeyEquivalent.upArrow, modifiers: [])
             }
+            Text(displayHoverTooltip())
+                .textCase(.uppercase)
+                .font(.system(size: 14, weight: .light, design: .monospaced))
+                .frame(height: 20)
             Spacer()
+        }
+    }
+    
+    func displayHoverTooltip() -> String {
+        switch currentHover {
+            case .playpause:
+                viewmodel.isPlaying ? "Pause (spacebar)" : "Play (spacebar)"
+            case .showlyrics:
+                viewmodel.showLyrics ? "Hide lyrics (⌘ + H)" : "Show lyrics (⌘ + H)"
+            case .pauseanimation:
+                animate ? "Pause animations (saves battery)" : "Unpause animations (uses battery)"
+            case .volumelow:
+                "Decrease volume by 5 (down arrow)"
+            case .volumehigh:
+                "Increase volume by 5 (up arrow)"
+            case .none:
+                ""
         }
     }
     
