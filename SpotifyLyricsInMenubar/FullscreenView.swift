@@ -103,6 +103,7 @@ struct FullscreenView: View {
                 .onHover { hover in
                     currentHover = hover ? .showlyrics : .none
                 }
+                .keyboardShortcut("h")
                 .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
                 Button {
                     withAnimation {
