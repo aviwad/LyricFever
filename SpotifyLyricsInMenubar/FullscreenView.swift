@@ -101,6 +101,22 @@ struct FullscreenView: View {
                 } label: {
                     Image(systemName: "sparkles")
                 }
+                Button {
+                    if let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                        viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
+                    }
+                } label: {
+                    Image(systemName: "speaker.minus")
+                }
+                .keyboardShortcut(KeyEquivalent.downArrow, modifiers: [])
+                Button {
+                    if let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                        viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
+                    }
+                } label: {
+                    Image(systemName: "speaker.plus")
+                }
+                .keyboardShortcut(KeyEquivalent.upArrow, modifiers: [])
             }
             Spacer()
         }
