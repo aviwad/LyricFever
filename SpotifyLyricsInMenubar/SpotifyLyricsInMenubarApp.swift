@@ -69,7 +69,7 @@ struct SpotifyLyricsInMenubarApp: App {
             Divider()
             if !spotifyOrAppleMusic {
                  Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
-                     .disabled(spotifyOrAppleMusic || !hasOnboarded)
+                     .disabled(!hasOnboarded)
                  if viewmodel.spotifyConnectDelay {
                      Text("Offset is \(viewmodel.spotifyConnectDelayCount) ms")
                      if viewmodel.spotifyConnectDelayCount != 3000 {
