@@ -28,6 +28,8 @@ import WebKit
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var spotifyConnectDelay: Bool = false
+    @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     
@@ -161,7 +163,7 @@ import WebKit
                 stopLyricUpdater()
                 return
             }
-            let currentTime = playerPosition * 1000
+            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
@@ -452,6 +454,7 @@ extension viewModel {
                 return
             }
             // add a 700 (milisecond?) delay to offset the delta between spotify lyrics and apple music songs (or maybe the way apple music delivers playback position)
+            // No need for Spotify Connect delay, this is APPLE MUSIC 
             let currentTime = playerPosition * 1000 + 400
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
