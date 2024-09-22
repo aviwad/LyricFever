@@ -28,6 +28,8 @@ import WebKit
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var showLyrics = true
+    var fullscreen = false
     @Published var spotifyConnectDelay: Bool = false
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
@@ -62,6 +64,7 @@ import WebKit
     let fakeSpotifyUserAgentSession: URLSession
     
     @Published var mustUpdateUrgent: Bool = false
+    @Published var lyricsIsEmptyPostLoad: Bool = true
     
     init() {
         // Load framework
@@ -109,10 +112,6 @@ import WebKit
                 NotificationCenter.default.post(name: Notification.Name("didLogIn"), object: nil)
             }
         }
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//            FriendActivityBackend.logger.debug(" LOGGED dispatch queue is working (check if logged in function is running)")
-//
-//        }
     }
     
     
@@ -178,7 +177,9 @@ import WebKit
             print("last index: \(lastIndex)")
             print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
-                currentlyPlayingLyricsIndex = lastIndex
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex
+                }
             } else {
                 currentlyPlayingLyricsIndex = nil
             }
@@ -285,7 +286,6 @@ import WebKit
             request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
             
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
-            print(urlResponseAndData)
             if urlResponseAndData.0.isEmpty {
                 print("F")
                 return []
@@ -454,7 +454,7 @@ extension viewModel {
                 return
             }
             // add a 700 (milisecond?) delay to offset the delta between spotify lyrics and apple music songs (or maybe the way apple music delivers playback position)
-            // No need for Spotify Connect delay, this is APPLE MUSIC 
+            // No need for Spotify Connect delay or fullscreen, this is APPLE MUSIC 
             let currentTime = playerPosition * 1000 + 400
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
@@ -470,7 +470,9 @@ extension viewModel {
             print("last index: \(lastIndex)")
             print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
-                currentlyPlayingLyricsIndex = lastIndex
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex
+                }
             } else {
                 currentlyPlayingLyricsIndex = nil
             }

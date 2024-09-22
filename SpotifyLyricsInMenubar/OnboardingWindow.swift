@@ -100,7 +100,7 @@ struct OnboardingWindow: View {
                                 let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
                                 // Can cause a freeze if app we're querying for isn't open
                                 // See: https://forums.developer.apple.com/forums/thread/666528
-                                guard let _ = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
+                                guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
                                     withAnimation {
                                         errorMessage = "Please Open Spotify First!"
                                     }
