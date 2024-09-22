@@ -28,6 +28,8 @@ import WebKit
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var translate = false
+    @Published var translatedLyric: [String] = []
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     
