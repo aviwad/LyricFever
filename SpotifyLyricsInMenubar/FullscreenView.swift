@@ -192,11 +192,10 @@ struct FullscreenView: View {
                     lyricLineView(for: i)
                         .opacity(i == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
                         .font(.system(size: 40, weight: .bold, design: .default))
-                        .padding(.vertical, 20)
+                        .padding(20)
                         .blur(radius: i == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
-                        .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(.rect)
+                        //.contentShape(.rect)
                 }
                 .scrollTargetLayout()
                 .safeAreaPadding(EdgeInsets(top: 600, leading: 0, bottom: 500, trailing: 200))
