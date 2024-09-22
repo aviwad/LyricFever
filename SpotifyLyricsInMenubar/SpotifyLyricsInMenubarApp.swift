@@ -67,6 +67,24 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
+            if !spotifyOrAppleMusic {
+                 Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
+                     .disabled(!hasOnboarded)
+                 if viewmodel.spotifyConnectDelay {
+                     Text("Offset is \(viewmodel.spotifyConnectDelayCount) ms")
+                     if viewmodel.spotifyConnectDelayCount != 3000 {
+                         Button("Increase Offset to \(viewmodel.spotifyConnectDelayCount+100)") {
+                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount + 100
+                         }
+                     }
+                     if viewmodel.spotifyConnectDelayCount != 300 {
+                         Button("Decrease Offset to \(viewmodel.spotifyConnectDelayCount-100)") {
+                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount - 100
+                         }
+                     }
+                 }
+                 Divider()
+             }
             Button("Settings") {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "onboarding")
