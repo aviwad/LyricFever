@@ -87,6 +87,7 @@ struct FullscreenView: View {
                     currentHover = hover ? .playpause : .none
                 }
                 .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
+                
                 Button {
                     if viewmodel.showLyrics {
                         viewmodel.showLyrics = false
@@ -105,6 +106,7 @@ struct FullscreenView: View {
                 }
                 .keyboardShortcut("h")
                 .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
+                
                 Button {
                     withAnimation {
                         animate.toggle()
@@ -125,6 +127,8 @@ struct FullscreenView: View {
                 .onHover { hover in
                     currentHover = hover ? .pauseanimation : .none
                 }
+                .keyboardShortcut("a")
+                
                 Button {
                     if let soundVolume = viewmodel.spotifyScript?.soundVolume {
                         viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
@@ -136,6 +140,7 @@ struct FullscreenView: View {
                     currentHover = hover ? .volumelow : .none
                 }
                 .keyboardShortcut(KeyEquivalent.downArrow, modifiers: [])
+                
                 Button {
                     if let soundVolume = viewmodel.spotifyScript?.soundVolume {
                         viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
@@ -163,13 +168,19 @@ struct FullscreenView: View {
             case .showlyrics:
                 viewmodel.showLyrics ? "Hide lyrics (⌘ + H)" : "Show lyrics (⌘ + H)"
             case .pauseanimation:
-                animate ? "Pause animations (saves battery)" : "Unpause animations (uses battery)"
+                animate ? "Pause animations (saves battery) (⌘ + A)" : "Unpause animations (uses battery) (⌘ + A)"
             case .volumelow:
-                "Decrease volume by 5 (down arrow)"
+                "Decrease volume by 5 (Down Arrow)"
             case .volumehigh:
-                "Increase volume by 5 (up arrow)"
+                "Increase volume by 5 (Up Arrow)"
             case .none:
                 ""
+        }
+    }
+    
+    @ViewBuilder func lyricLineView(for index: Int) -> some View {
+        VStack(alignment: .leading) {
+            Text(viewmodel.currentlyPlayingLyrics[index].words)
         }
     }
     
@@ -178,7 +189,7 @@ struct FullscreenView: View {
             Spacer()
             ScrollView(showsIndicators: false){
                 ForEach (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
-                    Text(viewmodel.currentlyPlayingLyrics[i].words)
+                    lyricLineView(for: i)
                         .opacity(i == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
                         .font(.system(size: 40, weight: .bold, design: .default))
                         .padding(.vertical, 20)
