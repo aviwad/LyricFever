@@ -142,7 +142,7 @@ import WebKit
     }
     
     func fixSpotifyLyricDrift() async throws {
-        try await Task.sleep(nanoseconds: 1000000000)
+        try await Task.sleep(nanoseconds: 2000000000)
         if isPlaying {
             print("LYRIC UPDATER'S LYRIC DRIFT FIX CALLED")
             spotifyScript?.play?()
