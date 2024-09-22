@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import ServiceManagement
+import LaunchAtLogin
 
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
-    @AppStorage("launchOnLogin") var launchOnLogin: Bool = false
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
@@ -50,15 +49,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .keyboardShortcut("r")
             }
-            Button(viewmodel.showLyrics ? "Don't Show Lyrics" : "Show Lyrics") {
-                if viewmodel.showLyrics {
-                    viewmodel.showLyrics = false
-                    viewmodel.stopLyricUpdater()
-                } else {
-                    viewmodel.showLyrics = true
-                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                }
-            }
+            Toggle("Show Lyrics", isOn: $showLyrics)
             .disabled(!hasOnboarded)
             .keyboardShortcut("h")
             Divider()
@@ -95,21 +86,31 @@ struct SpotifyLyricsInMenubarApp: App {
                 Text("Update to macOS 14.0 to use fullscreen")
             }
             Divider()
+            if !spotifyOrAppleMusic {
+                 Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
+                     .disabled(!hasOnboarded)
+                 if viewmodel.spotifyConnectDelay {
+                     Text("Offset is \(viewmodel.spotifyConnectDelayCount) ms")
+                     if viewmodel.spotifyConnectDelayCount != 3000 {
+                         Button("Increase Offset to \(viewmodel.spotifyConnectDelayCount+100)") {
+                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount + 100
+                         }
+                     }
+                     if viewmodel.spotifyConnectDelayCount != 300 {
+                         Button("Decrease Offset to \(viewmodel.spotifyConnectDelayCount-100)") {
+                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount - 100
+                         }
+                     }
+                 }
+                 Divider()
+             }
             Button("Settings") {
                 openWindow(id: "onboarding")
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
-            Button(launchOnLogin ? "Don't Launch At Login" : "Automatically Launch On Login") {
-                if launchOnLogin {
-                    try? SMAppService.mainApp.unregister()
-                    launchOnLogin = false
-                } else {
-                    try? SMAppService.mainApp.register()
-                    launchOnLogin = true
-                }
-            }
+            LaunchAtLogin.Toggle()
             .disabled(!hasOnboarded)
             .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
@@ -127,6 +128,14 @@ struct SpotifyLyricsInMenubarApp: App {
                     Image(systemName: "music.note.list")
                 }
             }
+                .onChange(of: showLyrics) { newShowLyricsIn in
+                    print("ON CHANGE OF SHOW LYRICS")
+                    if newShowLyricsIn {
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    } else {
+                        viewmodel.stopLyricUpdater()
+                    }
+                }
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false

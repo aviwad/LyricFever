@@ -18,6 +18,7 @@
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
 		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
 		8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */; };
+		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */; };
 		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
@@ -69,6 +70,7 @@
 			files = (
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
+				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
 				8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */,
 				8F61B48C2C9FE6A100F23B84 /* ColorKit in Frameworks */,
 			);
@@ -168,6 +170,7 @@
 				8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */,
 				8F28FDC12AA25D2700439D8D /* Sparkle */,
 				8F61B48B2C9FE6A100F23B84 /* ColorKit */,
+				8F89E1102C90DA4900F511EB /* LaunchAtLogin */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -202,6 +205,7 @@
 				8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8F61B48A2C9FE6A100F23B84 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */,
+				8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -495,6 +499,14 @@
 				kind = branch;
 			};
 		};
+		8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin-Modern";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
@@ -520,6 +532,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
+		};
+		8F89E1102C90DA4900F511EB /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
+			productName = LaunchAtLogin;
 		};
 		8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
