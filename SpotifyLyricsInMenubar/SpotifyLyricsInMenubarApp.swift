@@ -359,7 +359,7 @@ struct SpotifyLyricsInMenubarApp: App {
             return nil
         } else {
             // Hasn't onboarded
-            return "⚠️ Please Complete Onboarding Process (Click Settings)".trunc(length: truncationLength)
+            return "⚠️ Complete Setup (Click Settings)".trunc(length: truncationLength)
         }
         
     }

@@ -273,7 +273,14 @@ import WebKit
                     accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
                     print("ACCESS TOKEN IS SAVED")
                 } catch {
-                    UserDefaults().set(false, forKey: "hasOnboarded")
+                    do {
+                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+                        if errorWrap.error.code == 401 {
+                            UserDefaults().set(false, forKey: "hasOnboarded")
+                        }
+                    } catch {
+                        // silently fail
+                    }
                     print("json error decoding the access token, therefore bad cookie therefore un-onboard")
                 }
                 
@@ -380,7 +387,14 @@ extension viewModel {
                     accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
                     print("ACCESS TOKEN IS SAVED")
                 } catch {
-                    UserDefaults().set(false, forKey: "hasOnboarded")
+                    do {
+                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+                        if errorWrap.error.code == 401 {
+                            UserDefaults().set(false, forKey: "hasOnboarded")
+                        }
+                    } catch {
+                        // silently fail
+                    }
                     print("json error decoding the access token, therefore bad cookie therefore un-onboard")
                 }
             }
