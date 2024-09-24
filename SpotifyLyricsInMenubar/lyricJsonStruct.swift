@@ -60,3 +60,13 @@ struct Item: Codable {
     let type: String
     let id: String
 }
+
+struct ErrorWrapper: Codable {
+    struct Error: Codable {
+        let code: Int
+        let message: String
+    }
+
+    let error: Error
+}
+
