@@ -275,11 +275,11 @@ struct FullscreenView: View {
             print("NEW ARTWORK")
             if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
                 gradient = dominantColors.map({adjustedColor($0)})
-                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
-                    withAnimation {
-                        self.avgColor = avgColor
-                    }
-                }
+//                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
+//                    withAnimation {
+//                        self.avgColor = avgColor
+//                    }
+//                }
             }
         }
         .onChange(of: viewmodel.currentlyPlayingName) { _ in
