@@ -14,6 +14,7 @@ import MusicKit
 import SwiftUI
 import MediaPlayer
 import WebKit
+import NaturalLanguage
 
 @MainActor class viewModel: ObservableObject {
     // View Model
@@ -34,6 +35,22 @@ import WebKit
             
         }
     }
+    var displayFullscreen: Bool {
+        get {
+            fullscreen
+        }
+        set {
+            if fullscreen {
+                NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}?.makeKeyAndOrderFront(self)
+                NSApplication.shared.activate(ignoringOtherApps: true)
+            } else {
+//                openWindow(id: "fullscreen")
+//                NSApplication.shared.activate(ignoringOtherApps: true)
+                fullscreen = true
+                NSApp.setActivationPolicy(.regular)
+            }
+        }
+    }
     var currentlyPlayingName: String?
     var currentlyPlayingArtist: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
@@ -43,7 +60,7 @@ import WebKit
     @Published var translate = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
-    var fullscreen = false
+    @Published var fullscreen = false
     @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
@@ -58,7 +75,7 @@ import WebKit
     
     // Sparkle / Update Controller
     let updaterController: SPUStandardUpdaterController
-    @Published var canCheckForUpdates = false
+//    var canCheckForUpdates = false
     
     // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
@@ -101,8 +118,8 @@ import WebKit
             }
             self.coreDataContainer.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
-        updaterController.updater.publisher(for: \.canCheckForUpdates)
-            .assign(to: &$canCheckForUpdates)
+//        updaterController.updater.publisher(for: \.canCheckForUpdates)
+//            .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
         Task {
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
@@ -154,6 +171,10 @@ import WebKit
         }
         // linear search through the array to find the first lyric that's right after the current time
         // done on first lyric update for the song, as well as post-scrubbing
+        // Delete the expired index so that our middle-of-the-lyric checking works
+        // TODO: figure out if removing this nil setter fixes anything
+        // TODO: debug why setting this to nil and then back hides the karaoke view :(
+//        currentlyPlayingLyricsIndex = nil
         return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
     }
     
@@ -182,6 +203,13 @@ import WebKit
                 stopLyricUpdater()
                 return
             }
+            // If there is no current index (perhaps lyric updater started late and we're mid-way of the first lyric, or the user scrubbed and our index is expired)
+            // Then we set the current index to the one before our anticipated index
+            if currentlyPlayingLyricsIndex == nil && lastIndex > 0 {
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex-1
+                }
+            }
             let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
             let diff = nextTimestamp - currentTime
             print("current time: \(currentTime)")
@@ -197,6 +225,7 @@ import WebKit
                 }
             } else {
                 currentlyPlayingLyricsIndex = nil
+                
             }
             print(currentlyPlayingLyricsIndex ?? "nil")
         } while !Task.isCancelled
@@ -604,6 +633,30 @@ extension viewModel {
                     
                 }
                 
+            }
+        }
+        return nil
+    }
+    
+    func findRealLanguage() -> Locale.Language? {
+        var langCount: [Locale.Language: Int] = [:]
+        let recognizer = NLLanguageRecognizer()
+        for lyric in currentlyPlayingLyrics {
+            recognizer.reset()
+            recognizer.processString(lyric.words)
+            
+          //  if recognizer.dominantLanguage !=
+            if let dominantLanguage = recognizer.dominantLanguage {
+                let value: Locale.Language = .init(identifier: dominantLanguage.rawValue)
+                if value != Locale.Language.systemLanguages.first! {
+                    langCount[value, default: 0] += 1
+                }
+                print(value)
+            }
+        }
+        if let lol =  langCount.sorted( by: { $1.value < $0.value}).first {
+            if lol.value >= 3 {
+                return lol.key
             }
         }
         return nil

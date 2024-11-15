@@ -35,7 +35,7 @@ struct SpotifyLyricsInMenubarApp: App {
             Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
-                Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check For Lyrics Again" : "Refresh Lyrics") {
+                Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check for Lyrics Again" : "Refresh Lyrics") {
                     
                     Task {
                         if spotifyOrAppleMusic {
@@ -45,7 +45,11 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.fetchBackgroundColor()
                         if viewmodel.translate {
                             if #available(macOS 15, *) {
-                                translationConfigObject.translationConfig?.invalidate()
+                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!) {
+                                    translationConfigObject.translationConfig?.invalidate()
+                                } else {
+                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!)
+                                }
                             }
                         }
                         viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
@@ -60,7 +64,7 @@ struct SpotifyLyricsInMenubarApp: App {
             // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
             } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {
                 Text("No Lyrics (Couldn't find Spotify ID) ☹️")
-                Button("Check For Lyrics Again") {
+                Button("Check for Lyrics Again") {
                     Task {
                         // Fetch updates the currentlyPlaying ID which will call Lyric Updater
                         try await viewmodel.appleMusicFetch()
@@ -97,21 +101,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
-            if #available(macOS 14.0, *) {
-                if spotifyOrAppleMusic {
-                    Text("Switch to Spotify to use fullscreen")
-                } else {
-                    Button("Fullscreen") {
-                        openWindow(id: "fullscreen")
-                        NSApplication.shared.activate(ignoringOtherApps: true)
-                        viewmodel.fullscreen = true
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics {
-                            viewmodel.stopLyricUpdater()
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                        }
-                    }
-                    .disabled(!hasOnboarded)
-                }
+            if spotifyOrAppleMusic {
+                Text("Switch to Spotify to use fullscreen")
+            } else if #available(macOS 14.0, *) {
+                Toggle("Fullscreen", isOn: $viewmodel.displayFullscreen)
+                .disabled(!hasOnboarded)
             } else {
                 Text("Update to macOS 14.0 to use fullscreen")
             }
@@ -144,7 +138,7 @@ struct SpotifyLyricsInMenubarApp: App {
                      }
                  }
                  Divider()
-             }
+            }
             Divider()
             Button("Settings") {
                 openWindow(id: "onboarding")
@@ -152,11 +146,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
-            LaunchAtLogin.Toggle()
+            LaunchAtLogin.Toggle("Launch at Login")
             .disabled(!hasOnboarded)
             .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
-                .disabled(!viewmodel.canCheckForUpdates)
+            //    .disabled(!viewmodel.canCheckForUpdates)
                 .keyboardShortcut("u")
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
@@ -308,6 +302,9 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(response)
                                 
                             } catch {
+                                if let source = viewmodel.findRealLanguage() {
+                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: source, target: Locale.Language.systemLanguages.first!)
+                                }
                                 print(error)
                             }
                         }
@@ -323,7 +320,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                     // TODO: update translationConfig on song change, pickup song language from spotify and feed it as source locale
                                     return
                                 }
-                                translationConfigObject.translationConfig?.invalidate()
+                              //  translationConfigObject.translationConfig?.invalidate()
                             } else {
                                 translationConfigObject.translationConfig = nil
                             }
@@ -364,6 +361,12 @@ struct SpotifyLyricsInMenubarApp: App {
 //                }
                 .onChange(of: spotifyOrAppleMusic) { newSpotifyorAppleMusic in
                     hasOnboarded = false
+                }
+                .onChange(of: viewmodel.fullscreen) { newFullscreen in
+                    if newFullscreen {
+                        openWindow(id: "fullscreen")
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    }
                 }
                 .onChange(of: hasOnboarded) { newHasOnboarded in
                     if newHasOnboarded {
@@ -436,7 +439,11 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
-                                    translationConfigObject.translationConfig?.invalidate()
+                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!) {
+                                        translationConfigObject.translationConfig?.invalidate()
+                                    } else {
+                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!)
+                                    }
                                 }
                             }
                             viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
@@ -453,7 +460,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 FullscreenView()
                     .preferredColorScheme(.dark)
                     .environmentObject(viewmodel)
-                    .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                    .onDisappear {
+                        NSApp.setActivationPolicy(.accessory)
                         viewmodel.fullscreen = false
                     }
             }

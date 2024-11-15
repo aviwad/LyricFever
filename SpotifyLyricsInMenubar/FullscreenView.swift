@@ -16,8 +16,9 @@ struct FullscreenView: View {
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
     @State var animate = true
-    @State var avgColor: Color = Color(red: 33/255, green: 69/255, blue: 152/255)
+//    @State var avgColor: Color = Color(red: 33/255, green: 69/255, blue: 152/255)
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
+//    @State var colors: [Color] = []
     @State var timer = Timer
         .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
         .autoconnect()
@@ -32,8 +33,10 @@ struct FullscreenView: View {
         case playpause
         case showlyrics
         case pauseanimation
+//        case gradientOrColor
         case volumelow
         case volumehigh
+        case translate
         case none
     }
     
@@ -108,6 +111,19 @@ struct FullscreenView: View {
                 .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
                 
                 Button {
+                    viewmodel.translate.toggle()
+                } label: {
+                    Image(systemName: "translate")
+                }
+                .onHover { hover in
+                    currentHover = hover ? .translate : .none
+                }
+                .keyboardShortcut("t")
+                .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
+                                
+                
+                
+                Button {
                     withAnimation {
                         animate.toggle()
                     }
@@ -175,12 +191,22 @@ struct FullscreenView: View {
                 "Increase volume by 5 (Up Arrow)"
             case .none:
                 ""
+            case .translate:
+                viewmodel.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
+//            case .gradientOrColor:
+//
         }
     }
     
     @ViewBuilder func lyricLineView(for index: Int) -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(viewmodel.currentlyPlayingLyrics[index].words)
+                .foregroundStyle(.white)
+            if viewmodel.translate, !viewmodel.translatedLyric.isEmpty {
+                Text(viewmodel.translatedLyric[index])
+                    .font(.system(size: 33, weight: .semibold, design: .default))
+                    .opacity(0.85)
+            }
         }
     }
     
@@ -272,11 +298,11 @@ struct FullscreenView: View {
         nsColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
         
         // Adjust brightness
-        brightness = brightness - 0.2
+        brightness = max(brightness - 0.2, 0.1)
         
-        if saturation < 0.8 {
+        if saturation < 0.9 {
             // Adjust contrast
-            saturation = saturation * 3
+            saturation = max(0.1, saturation * 3)
         }
         
         // Create new NSColor with modified HSB values
@@ -324,7 +350,7 @@ struct BackgroundView: View {
 }
 
 private extension ColorSpot {
-    static func random(withColor color: SwiftUI.Color) -> ColorSpot {
+    static public func random(withColor color: SwiftUI.Color) -> ColorSpot {
         .init(
             position: .init(x: CGFloat.random(in: 0 ..< 1), y: CGFloat.random(in: 0 ..< 1)),
             color: color
