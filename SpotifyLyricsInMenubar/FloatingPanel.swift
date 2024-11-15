@@ -146,8 +146,8 @@ class FloatingPanel<Content: View>: NSPanel {
             .background(VisualEffectView().ignoresSafeArea())
             .environment(\.floatingPanel, self))
         
-        contentView?.layer?.cornerRadius = 16.0
-//        
+        contentView?.layer?.cornerRadius = 20
+//
 //        let animation: CABasicAnimation = .init()
 //        animation.delegate = self as! any CAAnimationDelegate
 //        self.animations = [.alpha: animation]
