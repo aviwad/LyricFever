@@ -500,6 +500,15 @@ struct SpotifyLyricsInMenubarApp: App {
         Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
                 .preferredColorScheme(.dark)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                }
+                .onDisappear {
+                    if !viewmodel.fullscreen {
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+//                    viewmodel.fullscreen = false
+                }
         }.windowResizability(.contentSize)
             .windowStyle(.hiddenTitleBar)
     }
