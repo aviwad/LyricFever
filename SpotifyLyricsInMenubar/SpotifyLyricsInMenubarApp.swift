@@ -11,7 +11,6 @@ import Translation
 #endif
 import LaunchAtLogin
 
-
 class translationConfigObject: ObservableObject {
     @Published private var _translationConfig: Any?
     @available(macOS 15, *)
@@ -43,6 +42,7 @@ struct SpotifyLyricsInMenubarApp: App {
                             try await viewmodel.appleMusicNetworkFetch()
                         }
                         viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
+                        viewmodel.fetchBackgroundColor()
                         if viewmodel.translate {
                             if #available(macOS 15, *) {
                                 translationConfigObject.translationConfig?.invalidate()
@@ -115,6 +115,17 @@ struct SpotifyLyricsInMenubarApp: App {
             } else {
                 Text("Update to macOS 14.0 to use fullscreen")
             }
+            Toggle(viewmodel.showLyrics ? "Karaoke Mode" : "Karaoke Mode (Enable Show Lyrics)", isOn: $viewmodel.karaoke)
+//            Button("Karaoke") {
+////                        openWindow(id: "karaoke")
+//                //NSApplication.shared.activate(ignoringOtherApps: true)
+//                viewmodel.karaoke = true
+////                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics {
+////                            viewmodel.stopLyricUpdater()
+////                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+////                        }
+//            }
+                .disabled(!hasOnboarded || !viewmodel.showLyrics)
             Divider()
             if !spotifyOrAppleMusic {
                  Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
@@ -134,6 +145,7 @@ struct SpotifyLyricsInMenubarApp: App {
                  }
                  Divider()
              }
+            Divider()
             Button("Settings") {
                 openWindow(id: "onboarding")
                 NSApplication.shared.activate(ignoringOtherApps: true)
@@ -166,6 +178,15 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.stopLyricUpdater()
                     }
                 }
+                .floatingPanel(isPresented: $viewmodel.displayKaraoke, content: {
+                    KaraokeView()
+                        .environmentObject(viewmodel)
+//                    ZStack {
+//                        Rectangle()
+//                            .fill(.white)
+//                        Text("I'm a floating panel. Click anywhere to dismiss me.")
+//                    }
+                })
                 .onAppear {
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
@@ -412,6 +433,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     Task {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
+                            viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
                                     translationConfigObject.translationConfig?.invalidate()
@@ -456,7 +478,10 @@ struct SpotifyLyricsInMenubarApp: App {
             return "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength)
         } else if hasOnboarded {
             // Try to work through lyric logic if onboarded
-            if viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+            // NEW: Revert to song name if fullscreen / karaoke activated
+            if !viewmodel.fullscreen, !viewmodel.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+                // Attempt to display translations
+                // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
                 if viewmodel.translate, !viewmodel.translatedLyric.isEmpty {
                     return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
                 } else {
