@@ -1,6 +1,7 @@
 import SwiftUI
 import WebKit
 
+@MainActor
 class NavigationState: NSObject, ObservableObject {
     @Published var url: URL?
     let webView: WKWebView
