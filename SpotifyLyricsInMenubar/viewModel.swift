@@ -20,16 +20,31 @@ import WebKit
     static let shared = viewModel()
     
     //
+    
+    // nil to deal with previously saved songs that don't have lang saved with them
+    // or for LRCLIB
+    @Published var currentBackground: Color? = nil
     var appleMusicStorePlaybackID: String? = nil
     @Published var currentlyPlaying: String?
+    var displayKaraoke: Bool {
+        get {
+            showLyrics && isPlaying && karaoke && (currentlyPlayingLyricsIndex != nil)
+        }
+        set {
+            
+        }
+    }
     var currentlyPlayingName: String?
     var currentlyPlayingArtist: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var translate = false
+    @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
     var fullscreen = false
+    @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
@@ -237,6 +252,50 @@ import WebKit
         }
     }
     
+    func intToRGB(_ value: Int32) -> Color {//(red: Int, green: Int, blue: Int) {
+        // Convert negative numbers to an unsigned 32-bit representation
+        let unsignedValue = UInt32(bitPattern: value)
+        
+        // Extract RGB components
+        let red = Double((unsignedValue >> 16) & 0xFF)
+        let green = Double((unsignedValue >> 8) & 0xFF)
+        let blue = Double(unsignedValue & 0xFF)
+        return Color(red: red/255, green: green/255, blue: blue/255) //(red, green, blue)
+    }
+    
+    func fetchBackgroundColor() {
+        guard let currentlyPlaying else {
+            return
+        }
+        let fetchRequest: NSFetchRequest<IDToColor> = IDToColor.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", currentlyPlaying) // Replace trackID with the desired value
+
+        do {
+            let results = try coreDataContainer.viewContext.fetch(fetchRequest)
+            if let idToColor = results.first {
+                self.currentBackground = intToRGB(idToColor.songColor)
+                // Found the SongObject with the matching trackID
+//                let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+//                print("Found SongObject with ID:", songObject.id)
+//                return lyricsArray
+            } else {
+                self.currentBackground = nil
+                // if lyrics exist, then we can def get the background by rerunning the network call
+                if !currentlyPlayingLyrics.isEmpty, let currentlyPlayingName {
+                    Task {
+                        currentlyPlayingLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
+                        fetchBackgroundColor()
+                    }
+                }
+                // No SongObject found with the given trackID
+//                print("No SongObject found with the provided trackID. \(trackID)")
+            }
+        } catch {
+            print("Error fetching SongObject:", error)
+        }
+//        return nil
+    }
+    
     private func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
         if let lyrics = fetchFromCoreData(for: trackID) {
             print("got lyrics from core data :D \(trackID) \(trackName)")
@@ -365,6 +424,22 @@ extension viewModel {
         }
         
         try await appleMusicNetworkFetch()
+    }
+    
+    func base62ToHex(_ base62Str: String) throws -> String {
+        let characters = Array("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        var decimalValue = 0
+        
+        for char in base62Str {
+            guard let index = characters.firstIndex(of: char) else {
+                throw NSError(domain: "Invalid character in base62 string", code: 1, userInfo: nil)
+            }
+            decimalValue = decimalValue * 62 + index
+        }
+        
+        var hexValue = String(decimalValue, radix: 16)
+        hexValue = String(repeating: "0", count: max(0, 32 - hexValue.count)) + hexValue
+        return hexValue
     }
     
     func appleMusicNetworkFetch() async throws {
