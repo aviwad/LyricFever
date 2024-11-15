@@ -26,9 +26,11 @@ struct SpotifyLyricsInMenubarApp: App {
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
+    @AppStorage("hasTranslated") var hasTranslated: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @StateObject var translationConfigObject: translationConfigObject = .init()
     @Environment(\.openWindow) var openWindow
+    @Environment(\.openURL) var openURL
     var body: some Scene {
         MenuBarExtra(content: {
             Text(songTitle)
@@ -79,6 +81,11 @@ struct SpotifyLyricsInMenubarApp: App {
             if #available(macOS 15, *) {
                 if viewmodel.translate {
                     Text(!viewmodel.translatedLyric.isEmpty ? "Translated Lyrics 😃" : "No Translation ☹️")
+                    if viewmodel.translatedLyric.isEmpty {
+                        Button("Translation Help") {
+                            openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
+                        }
+                    }
                 }
                 Toggle("Translate To \(Locale.current.localizedString(forLanguageCode: Bundle.main.preferredLocalizations[0])!)", isOn: $viewmodel.translate)
                 .disabled(!hasOnboarded)
@@ -407,6 +414,12 @@ struct SpotifyLyricsInMenubarApp: App {
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
+                }
+                .onChange(of: viewmodel.translate) { newTranslate in
+                    if !hasTranslated {
+                        openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
+                    }
+                    hasTranslated = true
                 }
                 .onChange(of: viewmodel.cookie) { newCookie in
                     viewmodel.accessToken = nil
