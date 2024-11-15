@@ -319,7 +319,7 @@ struct BackgroundView: View {
     @Binding var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     @Binding var points: ColorSpots
 
-    static let animationDuration: Double = 5
+    static let animationDuration: Double = 10
     @State var bias: Float = 0.002
     @State var power: Float = 2.5
     @State var noise: Float = 2
