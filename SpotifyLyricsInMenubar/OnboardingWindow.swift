@@ -129,6 +129,12 @@ struct OnboardingWindow: View {
                             .disabled(spotifyPermission)
                             Button("Give Apple Music Permissions") {
                                 let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                                guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
+                                    withAnimation {
+                                        errorMessage = "Please Open Spotify First!"
+                                    }
+                                    return
+                                }
                                 let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                                 switch status {
                                     case -600:
@@ -218,6 +224,12 @@ struct OnboardingWindow: View {
                     
                     
                     // Check Apple Music Automation permission
+                    guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
+                        withAnimation {
+                            errorMessage = "Please Open Spotify First!"
+                        }
+                        return
+                    }
                     let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
                     let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                     switch status {
@@ -275,6 +287,12 @@ struct OnboardingWindow: View {
                     appleMusicLibraryPermission = true
                     spotifyPermission = false
                     // Check Spotify
+                    guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
+                        withAnimation {
+                            errorMessage = "Please Open Spotify First!"
+                        }
+                        return
+                    }
                     let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
                     let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                     switch status {
