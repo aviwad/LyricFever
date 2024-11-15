@@ -34,6 +34,22 @@ import WebKit
             
         }
     }
+    var displayFullscreen: Bool {
+        get {
+            fullscreen
+        }
+        set {
+            if fullscreen {
+                NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}?.makeKeyAndOrderFront(self)
+                NSApplication.shared.activate(ignoringOtherApps: true)
+            } else {
+//                openWindow(id: "fullscreen")
+//                NSApplication.shared.activate(ignoringOtherApps: true)
+                fullscreen = true
+                NSApp.setActivationPolicy(.regular)
+            }
+        }
+    }
     var currentlyPlayingName: String?
     var currentlyPlayingArtist: String?
     @Published var currentlyPlayingLyrics: [LyricLine] = []
@@ -43,7 +59,7 @@ import WebKit
     @Published var translate = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
-    var fullscreen = false
+    @Published var fullscreen = false
     @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400

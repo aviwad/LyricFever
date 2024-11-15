@@ -97,21 +97,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
-            if #available(macOS 14.0, *) {
-                if spotifyOrAppleMusic {
-                    Text("Switch to Spotify to use fullscreen")
-                } else {
-                    Button("Fullscreen") {
-                        openWindow(id: "fullscreen")
-                        NSApplication.shared.activate(ignoringOtherApps: true)
-                        viewmodel.fullscreen = true
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics {
-                            viewmodel.stopLyricUpdater()
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                        }
-                    }
-                    .disabled(!hasOnboarded)
-                }
+            if spotifyOrAppleMusic {
+                Text("Switch to Spotify to use fullscreen")
+            } else if #available(macOS 14.0, *) {
+                Toggle("Fullscreen", isOn: $viewmodel.displayFullscreen)
+                .disabled(!hasOnboarded)
             } else {
                 Text("Update to macOS 14.0 to use fullscreen")
             }
@@ -144,7 +134,7 @@ struct SpotifyLyricsInMenubarApp: App {
                      }
                  }
                  Divider()
-             }
+            }
             Divider()
             Button("Settings") {
                 openWindow(id: "onboarding")
@@ -365,6 +355,12 @@ struct SpotifyLyricsInMenubarApp: App {
                 .onChange(of: spotifyOrAppleMusic) { newSpotifyorAppleMusic in
                     hasOnboarded = false
                 }
+                .onChange(of: viewmodel.fullscreen) { newFullscreen in
+                    if newFullscreen {
+                        openWindow(id: "fullscreen")
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    }
+                }
                 .onChange(of: hasOnboarded) { newHasOnboarded in
                     if newHasOnboarded {
                         guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
@@ -453,7 +449,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 FullscreenView()
                     .preferredColorScheme(.dark)
                     .environmentObject(viewmodel)
-                    .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                    .onDisappear {
+                        NSApp.setActivationPolicy(.accessory)
                         viewmodel.fullscreen = false
                     }
             }
