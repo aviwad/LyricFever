@@ -473,6 +473,24 @@ struct SpotifyLyricsInMenubarApp: App {
                 FullscreenView()
                     .preferredColorScheme(.dark)
                     .environmentObject(viewmodel)
+                    .onAppear {
+                        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (aEvent) -> NSEvent? in
+                                if aEvent.keyCode == 53 { // if esc pressed
+                                    
+//                                    appDelegate.hideMainWnd()
+                                    return nil // do not do "beep" sound
+                                }
+                                    
+                                return aEvent
+                            }
+                        Task { @MainActor in
+                            let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+                            window?.collectionBehavior = .fullScreenPrimary
+                            if window?.styleMask.rawValue != 49167 {
+                                window?.toggleFullScreen(true)
+                            }
+                        }
+                    }
                     .onDisappear {
                         NSApp.setActivationPolicy(.accessory)
                         viewmodel.fullscreen = false
