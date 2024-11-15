@@ -192,6 +192,10 @@ class FloatingPanel<Content: View>: NSPanel {
     override var canBecomeMain: Bool {
         return true
     }
+    override func center() {
+        let rect = self.screen?.frame
+        self.setFrameOrigin(NSPoint(x: (rect!.width - self.frame.width)/2, y: (rect!.height - self.frame.height)/5))
+    }
 }
 
 //extension NSPanel. {
