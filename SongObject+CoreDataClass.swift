@@ -14,6 +14,25 @@ public class SongObject: NSManagedObject, Decodable {
     enum CodingKeys: String, CodingKey {
         case lines, language, syncType
     }
+    
+    convenience init(from LRCLyrics: LRCLyrics, with context: NSManagedObjectContext, trackID: String, trackName: String, duration: TimeInterval) {
+        self.init(context: context)
+        self.id = trackID
+        self.title = trackName
+        self.downloadDate = Date.now
+        self.language = ""
+//        self.duration = duration
+        if !LRCLyrics.lyrics.isEmpty {
+            var newLyrics = LRCLyrics.lyrics
+            newLyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
+            self.lyricsTimestamps = newLyrics.map {$0.startTimeMS}
+            self.lyricsWords = newLyrics.map {$0.words}
+        } else {
+            self.lyricsTimestamps = []
+            self.lyricsWords = []
+        }
+        
+    }
 
     public required convenience init(from decoder: Decoder) throws {
         guard let context = decoder.userInfo[CodingUserInfoKey.managedObjectContext] as? NSManagedObjectContext, let trackID = decoder.userInfo[CodingUserInfoKey.trackID] as? String, let trackName = decoder.userInfo[CodingUserInfoKey.trackName] as? String, let duration = decoder.userInfo[CodingUserInfoKey.duration] as? TimeInterval else {
