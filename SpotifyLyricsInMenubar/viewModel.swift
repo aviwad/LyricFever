@@ -299,7 +299,7 @@ import NaturalLanguage
         return Color(red: red/255, green: green/255, blue: blue/255) //(red, green, blue)
     }
     
-    func fetchBackgroundColor() {
+    func fetchBackgroundColor(retry: Bool = true) {
         guard let currentlyPlaying else {
             return
         }
@@ -320,7 +320,9 @@ import NaturalLanguage
                 if !currentlyPlayingLyrics.isEmpty, let currentlyPlayingName {
                     Task {
                         currentlyPlayingLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
-                        fetchBackgroundColor()
+                        if retry {
+                            fetchBackgroundColor(retry: false)
+                        }
                     }
                 }
                 // No SongObject found with the given trackID
