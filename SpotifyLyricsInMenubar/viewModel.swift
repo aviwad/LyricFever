@@ -392,7 +392,7 @@ import NaturalLanguage
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
             if urlResponseAndData.0.isEmpty {
                 print("F")
-                return try await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)
+                return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
 //                return []
             }
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))
