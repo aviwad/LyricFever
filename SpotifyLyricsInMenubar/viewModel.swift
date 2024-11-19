@@ -95,6 +95,10 @@ import NaturalLanguage
     let fakeSpotifyUserAgentconfig = URLSessionConfiguration.default
     let fakeSpotifyUserAgentSession: URLSession
     
+    // LRCLIB User Agent
+    let LRCLIBUserAgentConfig = URLSessionConfiguration.default
+    let LRCLIBUserAgentSession: URLSession
+    
     @Published var mustUpdateUrgent: Bool = false
     @Published var lyricsIsEmptyPostLoad: Bool = true
     
@@ -111,6 +115,9 @@ import NaturalLanguage
         
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Spotify/121000760 Win32/0 (PC laptop)"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
+        
+        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.0 (https://github.com/aviwad/LyricFever)"]
+        LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
         
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
@@ -383,7 +390,8 @@ import NaturalLanguage
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
             if urlResponseAndData.0.isEmpty {
                 print("F")
-                return []
+                return try await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)
+//                return []
             }
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))
             let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
@@ -395,6 +403,43 @@ import NaturalLanguage
             amplitude.track(eventType: "Network Fetch")
             return lyricsArray
         }
+        return []
+    }
+    
+    func fetchLRCLIBNetworkLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
+        let artist = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
+        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
+        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+            throw CancellationError()
+        }
+        // fetch lrc lyrics
+        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
+            let request = URLRequest(url: url)
+            let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
+            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
+            let lrcLyrics = try decoder.decode(LRCLyrics.self, from: urlResponseAndData.0)
+            print(lrcLyrics)
+            let songObject = SongObject(from: lrcLyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
+            saveCoreData()
+            if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+            } else {
+                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: 104810)
+            }
+            return lrcLyrics.lyrics
+//            let lyricsArray = zip(songObject., songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+            
+//            if urlResponseAndData.0.isEmpty {
+//                print("F")
+//                return try await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)
+////                return []
+//            }
+        }
+        // and then custom spotify album call to get the color for karaoke mode
+        
+        // check if not cancelled
+        // save SongObject and IDToColor
+        
         return []
     }
     
@@ -660,5 +705,92 @@ extension viewModel {
             }
         }
         return nil
+    }
+}
+
+// credits: Christian Selig https://christianselig.com/2021/04/efficient-average-color/
+
+extension NSImage {
+    
+    func findAverageColor() -> Int32 {
+        guard let cgImage = cgImage else { return 0 }
+        
+        let size = CGSize(width: 40, height: 40)
+        
+        let width = Int(size.width)
+        let height = Int(size.height)
+        let totalPixels = width * height
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        // ARGB format
+        let bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue
+        
+        // 8 bits for each color channel, we're doing ARGB so 32 bits (4 bytes) total, and thus if the image is n pixels wide, and has 4 bytes per pixel, the total bytes per row is 4n. That gives us 2^8 = 256 color variations for each RGB channel or 256 * 256 * 256 = ~16.7M color options in total. That seems like a lot, but lots of HDR movies are in 10 bit, which is (2^10)^3 = 1 billion color options!
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: colorSpace, bitmapInfo: bitmapInfo) else { return 0 }
+
+        // Draw our resized image
+        context.draw(cgImage, in: CGRect(origin: .zero, size: size))
+
+        guard let pixelBuffer = context.data else { return 0 }
+        
+        // Bind the pixel buffer's memory location to a pointer we can use/access
+        let pointer = pixelBuffer.bindMemory(to: UInt32.self, capacity: width * height)
+
+        // Keep track of total colors (note: we don't care about alpha and will always assume alpha of 1, AKA opaque)
+        var totalRed = 0
+        var totalBlue = 0
+        var totalGreen = 0
+        
+        // Column of pixels in image
+        for x in 0 ..< width {
+            // Row of pixels in image
+            for y in 0 ..< height {
+                // To get the pixel location just think of the image as a grid of pixels, but stored as one long row rather than columns and rows, so for instance to map the pixel from the grid in the 15th row and 3 columns in to our "long row", we'd offset ourselves 15 times the width in pixels of the image, and then offset by the amount of columns
+                let pixel = pointer[(y * width) + x]
+                
+                let r = red(for: pixel)
+                let g = green(for: pixel)
+                let b = blue(for: pixel)
+
+                totalRed += Int(r)
+                totalBlue += Int(b)
+                totalGreen += Int(g)
+            }
+        }
+        
+        let averageRed: CGFloat
+        let averageGreen: CGFloat
+        let averageBlue: CGFloat
+        
+        averageRed = CGFloat(totalRed) / CGFloat(totalPixels)
+        averageGreen = CGFloat(totalGreen) / CGFloat(totalPixels)
+        averageBlue = CGFloat(totalBlue) / CGFloat(totalPixels)
+        
+        // Convert from [0 ... 255] format to the [0 ... 1.0] format UIColor wants
+//        return NSColor(red: averageRed / 255.0, green: averageGreen / 255.0, blue: averageBlue / 255.0, alpha: 1.0)
+        // Convert CGFloat values to UInt8 (0-255 range)
+        let red = Int(averageRed)
+        let green = Int(averageGreen)
+        let blue = Int(averageBlue)
+
+        // Pack into a single UInt32
+        
+//        return (UInt32(red) << 16) | (UInt32(green) << 8) | UInt32(blue)
+        print("Find average color: red is \(red), green is \(green), blue is \(blue)")
+        let combinedValue = (red << 16) | (green << 8) | blue
+        return Int32(bitPattern: UInt32(combinedValue))
+    }
+    
+    private func red(for pixelData: UInt32) -> UInt8 {
+        return UInt8((pixelData >> 16) & 255)
+    }
+
+    private func green(for pixelData: UInt32) -> UInt8 {
+        return UInt8((pixelData >> 8) & 255)
+    }
+
+    private func blue(for pixelData: UInt32) -> UInt8 {
+        return UInt8((pixelData >> 0) & 255)
     }
 }
