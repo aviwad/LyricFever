@@ -156,9 +156,15 @@ struct LRCLyrics: Decodable {
         self.albumName = try container.decode(String.self, forKey: .albumName)
         self.duration = try container.decode(Int.self, forKey: .duration)
         self.instrumental = try container.decode(Bool.self, forKey: .instrumental)
-        self.plainLyrics = try container.decode(String.self, forKey: .plainLyrics)
-        self.syncedLyrics = try container.decode(String.self, forKey: .syncedLyrics)
-        self.lyrics = LRCLyrics.decodeLyrics(input: syncedLyrics)
+        if instrumental {
+            self.plainLyrics = ""
+            self.syncedLyrics = ""
+            self.lyrics = []
+        } else {
+            self.plainLyrics = try container.decode(String.self, forKey: .plainLyrics)
+            self.syncedLyrics = try container.decode(String.self, forKey: .syncedLyrics)
+            self.lyrics = LRCLyrics.decodeLyrics(input: syncedLyrics)
+        }
 //        self.lyrics = try container.decode([LyricLine].self, forKey: .lyrics)
     }
 }
