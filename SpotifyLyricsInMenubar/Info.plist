@@ -2,9 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SUAutomaticallyUpdate</key>
-	<true/>
 	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
+	<key>SUAutomaticallyUpdate</key>
 	<true/>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
@@ -15,8 +15,6 @@
 	<key>SUFeedURL</key>
 	<string>https://aviwad.github.io/SpotifyLyricsInMenubar/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>GCYCGGY3mUnG+Zh6d6L9lY3b1F4lpO0yYP009G37PXQ=</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>This permission is required to interact with your Apple Music library.</string>
+	<string>FSX9uBGItlJwhydb/y9bFiAoZKFy1YaTjgiR/0bcVbI=</string>
 </dict>
 </plist>
