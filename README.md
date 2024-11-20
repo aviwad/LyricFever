@@ -57,4 +57,5 @@ YouTube Promo Vid:
 - [Apple Music:](https://music.apple.com/us/browse) Another platform that this project depends on
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
+- [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
 - Unknown author for the mesh gradient view. I have lost the source.
