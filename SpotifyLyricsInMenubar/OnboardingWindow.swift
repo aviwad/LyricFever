@@ -131,7 +131,7 @@ struct OnboardingWindow: View {
                                 let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
                                 guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
                                     withAnimation {
-                                        errorMessage = "Please Open Spotify First!"
+                                        errorMessage = "Please Open Apple Music First!"
                                     }
                                     return
                                 }
