@@ -214,9 +214,8 @@ struct FullscreenView: View {
         VStack(alignment: .leading){
             Spacer()
             ScrollView(showsIndicators: false){
-                List (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
+                ForEach (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
                     lyricLineView(for: i)
-                        .listRowSeparator(.hidden)
                         .opacity(i == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
                         .font(.system(size: 40, weight: .bold, design: .default))
                         .padding(20)
