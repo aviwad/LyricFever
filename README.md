@@ -48,8 +48,10 @@ YouTube Promo Vid:
 - Technical write-up coming soon
 
 
-## Acknowledgements / Special Thanks
+## Other Contributors
+- [lcandy2](https://github.com/lcandy2) For their [pull request](https://github.com/aviwad/LyricFever/pull/68)
 
+## Acknowledgements / Special Thanks
 - [Sparkle:](https://github.com/sparkle-project/Sparkle) For app updates
 - [Amplitude:](https://amplitude.com) For app analytics
 - [Spotify:](https://spotify.com) The music platform this project depends on! (for playback, for lyrics)
