@@ -47,10 +47,10 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.fetchBackgroundColor()
                         if viewmodel.translate {
                             if #available(macOS 15, *) {
-                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!) {
+                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
                                     translationConfigObject.translationConfig?.invalidate()
                                 } else {
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!)
+                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                 }
                             }
                         }
@@ -87,7 +87,8 @@ struct SpotifyLyricsInMenubarApp: App {
                         }
                     }
                 }
-                Toggle("Translate To \(Locale.current.localizedString(forLanguageCode: Bundle.main.preferredLocalizations[0])!)", isOn: $viewmodel.translate)
+                
+                Toggle("Translate To \(viewmodel.userLocaleLanguageString)", isOn: $viewmodel.translate)
                 .disabled(!hasOnboarded)
             }
             else {
@@ -310,7 +311,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                 
                             } catch {
                                 if let source = viewmodel.findRealLanguage() {
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: source, target: Locale.Language.systemLanguages.first!)
+                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: source, target: viewmodel.userLocaleLanguage.language)
                                 }
                                 print(error)
                             }
@@ -323,7 +324,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                     // required for most hindi songs: lyrics are written in english script and apple translation is very stupid
 //                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: Locale.Language.init(identifier: "hi_IN"), target: Locale.Language.systemLanguages.first!)
                                     // good backup for now, doesn't replace english songs with french
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!)
+                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                     // TODO: update translationConfig on song change, pickup song language from spotify and feed it as source locale
                                     return
                                 }
@@ -452,10 +453,10 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
-                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!) {
+                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
                                         translationConfigObject.translationConfig?.invalidate()
                                     } else {
-                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: Locale.Language.systemLanguages.first!)
+                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                     }
                                 }
                             }
@@ -559,5 +560,20 @@ extension String {
 extension View {
     func complexModifier<V: View>(@ViewBuilder _ closure: (Self) -> V) -> some View {
         closure(self)
+    }
+}
+// https://stackoverflow.com/questions/48136456/locale-current-reporting-wrong-language-on-device
+extension Locale {
+    static func preferredLocaleString() -> String? {
+        guard let preferredIdentifier = Locale.preferredLanguages.first else {
+            return Locale.current.localizedString(for: Calendar.autoupdatingCurrent.identifier)
+        }
+        return Locale.current.localizedString(forIdentifier: preferredIdentifier)
+    }
+    static func preferredLocale() -> Locale {
+        guard let preferredIdentifier = Locale.preferredLanguages.first else {
+            return Locale.current
+        }
+        return Locale.init(identifier: preferredIdentifier)
     }
 }

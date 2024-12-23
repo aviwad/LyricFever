@@ -99,6 +99,9 @@ import NaturalLanguage
     let LRCLIBUserAgentConfig = URLSessionConfiguration.default
     let LRCLIBUserAgentSession: URLSession
     
+    let userLocaleLanguage: Locale
+    let userLocaleLanguageString: String
+    
     @Published var mustUpdateUrgent: Bool = false
     @Published var lyricsIsEmptyPostLoad: Bool = true
     
@@ -113,11 +116,16 @@ import NaturalLanguage
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
         
+        
+        
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Spotify/121000760 Win32/0 (PC laptop)"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
         
         LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.0 (https://github.com/aviwad/LyricFever)"]
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
+        
+        userLocaleLanguage = Locale.preferredLocale()
+        userLocaleLanguageString = Locale.preferredLocaleString() ?? ""
         
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
