@@ -4,17 +4,22 @@
 
 The Best Lyrics Experience for Spotify & Apple Music on macOS. It Just Works.
 
-## Downloads
-Download [here](https://github.com/aviwad/LyricFever/releases/download/v2.0/Lyric.Fever.2.0.dmg).
+## Installation
 
-Screenshots
+### Manual
+Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/download/v2.0/Lyric.Fever.2.0.dmg).
+
+### Homebrew
+Run `brew install lyric-fever`
+
+## Screenshots
 
 <img src="superShy.gif" alt="First Screenshot" width="50%">
 <img src="https://github.com/user-attachments/assets/e3c2c5f1-3d2b-4f7c-9893-d4613340943e" alt="Screenshot 1" width="50%">
 <img src="https://github.com/user-attachments/assets/8d63d03e-6961-4675-b07a-e29697379c4b" alt="Screenshot 2" width="50%">
 
 
-Features
+## Features
 - Automatic Lyric Playback on Menubar
 - Fullscreen Mode (Modeled after Apple Music’s fullscreen view)
 - Karaoke Mode (Lyric popup that stays on screen)
@@ -23,7 +28,7 @@ Features
 - Play some music on the Spotify / Apple Music app and watch the lyrics play on the menu bar automatically.
 - Lyrics fetched from Spotify, and LRCLIB as a backup lyric provider
 
-YouTube Promo Vid:
+## YouTube Promo Vid:
 
 [![LyricFever Promo Vid](https://img.youtube.com/vi/Bxc7d-O9-rM/0.jpg)](https://www.youtube.com/watch?v=Bxc7d-O9-rM)
 
@@ -60,4 +65,4 @@ YouTube Promo Vid:
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
-- Unknown author for the mesh gradient view. I have lost the source.
+- [f728743](https://github.com/f728743) for the mesh gradient view. 
