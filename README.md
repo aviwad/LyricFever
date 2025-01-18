@@ -48,7 +48,7 @@ Run `brew install lyric-fever`
 - I map Apple Music songs to equivalent Spotify ID using ISRC to display Lyrics fetched from Spotify for either platform
 - Lyrics are fetched from LRCLIB as a backup when Spotify fails
 - I fetch the song “background color” with each lyric, and the color is used for the karaoke mode window background 
-- The fullscreen view uses a custom mesh gradient (I have lost the source for the code, cannot attribute it) and extracts colors from the album art using ColorKit
+- The fullscreen view uses a custom mesh gradient and extracts colors from the album art using ColorKit
 - Spiritual successor to LyricsX (95% more efficient, 0.1% CPU usage of Lyric Fever vs 3% of LyricsX)
 - Technical write-up coming soon
 
