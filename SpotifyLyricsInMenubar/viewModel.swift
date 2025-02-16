@@ -430,7 +430,9 @@ import NaturalLanguage
             throw CancellationError()
         }
         // fetch lrc lyrics
-        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
+//        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
+        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)") {
+            print("the lrclib call is \("https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)")")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))
