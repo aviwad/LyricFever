@@ -29,7 +29,7 @@ import NaturalLanguage
     @Published var currentlyPlaying: String?
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && karaoke && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
         }
         set {
             
@@ -104,6 +104,13 @@ import NaturalLanguage
     
     @Published var mustUpdateUrgent: Bool = false
     @Published var lyricsIsEmptyPostLoad: Bool = true
+    
+//    @Published var karaokeModeHoveringSetting: Bool = false
+    @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
+    @Published var karaokeModeHovering: Bool = false
+    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
+    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = false
+    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 0.5
     
     init() {
         // Load framework
