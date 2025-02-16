@@ -128,6 +128,7 @@ struct SpotifyLyricsInMenubarApp: App {
 ////                        }
 //            }
                 .disabled(!hasOnboarded || !viewmodel.showLyrics)
+                .keyboardShortcut("k")
             Divider()
             if !spotifyOrAppleMusic {
                  Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
