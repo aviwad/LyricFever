@@ -54,8 +54,16 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
             }.onChange(of: isPresented) { value in
                 /// On change of the presentation state, make the panel react accordingly
                 if value {
-                    present()
+//                    present()
+                    panel?.orderFront(nil)
+                    panel?.fadeIn()
                 } else {
+//                    panel?.close()
+                    panel?.fadeOut()
+                }
+            }
+            .onChange(of: viewModel.shared.karaoke) { value in
+                if !value {
                     panel?.close()
                 }
             }
@@ -64,7 +72,7 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
     /// Present the panel and make it the key window
     func present() {
         panel?.orderFront(nil)
-        panel?.makeKey()
+//        panel?.makeKey()
         panel?.fadeIn()
     }
 }
@@ -153,6 +161,16 @@ class FloatingPanel<Content: View>: NSPanel {
 //        self.animations = [.alpha: animation]
     }
     
+//    override func mouseEntered(with event: NSEvent) {
+//        close()
+//    }
+//    
+//    override func mouseExited(with event: NSEvent) {
+//        orderFront(nil)
+////        makeKey()
+//        fadeIn()
+//    }
+    
     override func resignMain() {
         super.resignMain()
 //        close()
@@ -175,7 +193,7 @@ class FloatingPanel<Content: View>: NSPanel {
         NSAnimationContext.runAnimationGroup { hi in
             hi.completionHandler = {
                 super.close()
-                self.isPresented = false
+//                self.isPresented = false
             }
             self.animator().alphaValue = 0.0
         }

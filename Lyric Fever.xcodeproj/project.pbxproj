@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0849332CB5D1BD00644244 /* KaraokeView.swift */; };
+		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
 		8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		8F0849332CB5D1BD00644244 /* KaraokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeView.swift; sourceTree = "<group>"; };
+		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
 		8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lyricJsonStruct.swift; sourceTree = "<group>"; };
 		8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataClass.swift"; sourceTree = "<group>"; };
 		8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */,
 				8FF9ADAA2C5B5E7500A57A75 /* Model */,
 				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
+				8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */,
 				8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */,
 				8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */,
 				8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */,
@@ -248,6 +251,7 @@
 				8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */,
 				8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */,
 				8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */,
+				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */,
 				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,

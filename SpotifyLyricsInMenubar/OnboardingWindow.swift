@@ -24,328 +24,350 @@ struct OnboardingWindow: View {
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @State var errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
     var body: some View {
-        NavigationStack() {
-            VStack(alignment: .center, spacing: 20) {
-                Group {
-                    if permissionMissing {
-                        Group {
-                            AnimatedImage(name: "newPermissionMac.gif", isAnimating: $isAnimating)
-                                .resizable()
-                                .frame(width: 397, height: 340)
-                            HStack {
-                                Button("Open Automation Panel", action: {
-                                    let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
-                                    NSWorkspace.shared.open(url)
-                                })
-                                if spotifyOrAppleMusic {
-                                    Button("Open Music Panel", action: {
-                                        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media")!
+        TabView {
+            
+            NavigationStack() {
+                VStack(alignment: .center, spacing: 20) {
+                    Group {
+                        if permissionMissing {
+                            Group {
+                                AnimatedImage(name: "newPermissionMac.gif", isAnimating: $isAnimating)
+                                    .resizable()
+                                    .frame(width: 397, height: 340)
+                                HStack {
+                                    Button("Open Automation Panel", action: {
+                                        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
                                         NSWorkspace.shared.open(url)
                                     })
+                                    if spotifyOrAppleMusic {
+                                        Button("Open Music Panel", action: {
+                                            let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media")!
+                                            NSWorkspace.shared.open(url)
+                                        })
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        Group {
-                            Image("hi")
-                                .resizable()
-                                .frame(width: 150, height: 150, alignment: .center)
-                            
-                            Text("Welcome to Lyric Fever! 🎉")
-                                .font(.largeTitle)
-                                .onAppear() {
-                                    
-                                }
-                            
-                            Text("Please pick between Spotify and Apple Music")
-                                .font(.title)
-                        }
-                    }
-                }
-                .transition(.fade)
-                
-                Group {
-                    Picker("", selection: $spotifyOrAppleMusic) {
-                        VStack {
-                            Image("spotify")
-                                .resizable()
-                                .frame(width: 70.0, height: 70.0)
-                            Text("Spotify")
-                        }.tag(false)
-                        VStack {
-                            Image("music")
-                                .resizable()
-                                .frame(width: 70.0, height: 70.0)
-                            Text("Apple Music")
-                        }.tag(true)
-                    }
-                    .font(.title2)
-                    .frame(width: 500)
-                    .pickerStyle(.radioGroup)
-                    .horizontalRadioGroupLayout()
-                    
-                
-                    
-                        Text(.init(errorMessage))
-                        .transition(.opacity)
-                        .id(errorMessage)
-                    
-                    if spotifyPermission && appleMusicPermission && appleMusicLibraryPermission {
-                        NavigationLink("Next", destination: ApiView())
-                            .buttonStyle(.borderedProminent)
-                    } else {
-                        HStack {
-                            Button("Give Spotify Permissions") {
+                        } else {
+                            Group {
+                                Image("hi")
+                                    .resizable()
+                                    .frame(width: 150, height: 150, alignment: .center)
                                 
-                                let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
-                                // Can cause a freeze if app we're querying for isn't open
-                                // See: https://forums.developer.apple.com/forums/thread/666528
-                                guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
-                                    withAnimation {
-                                        errorMessage = "Please Open Spotify First!"
+                                Text("Welcome to Lyric Fever! 🎉")
+                                    .font(.largeTitle)
+                                    .onAppear() {
+                                        
                                     }
-                                    return
-                                }
-                                let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                                switch status {
-                                    case -600:
-                                        errorMessage = "Please Open Spotify First!"
-                                    case -0:
-                                    withAnimation {
-                                        permissionMissing = false
-                                            spotifyPermission = true
-                                        errorMessage = "Please Click Next 😀"
-                                    }
-                                    default:
-                                    withAnimation {
-                                        errorMessage = "Please give required permissions!"
-                                        permissionMissing = true
-                                        isAnimating = true
-                                    }
-                                }
-
-                                }
-                            
-                            .disabled(spotifyPermission)
-                            Button("Give Apple Music Permissions") {
-                                let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
-                                guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
-                                    withAnimation {
-                                        errorMessage = "Please Open Apple Music First!"
-                                    }
-                                    return
-                                }
-                                let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                                switch status {
-                                    case -600:
-                                    errorMessage = "Please Open Apple Music First!"
-                                    case -0:
-                                    withAnimation {
-                                        appleMusicPermission = true
-                                        permissionMissing = false
-                                    }
-                                    isAnimating = false
-                                    if appleMusicLibraryPermission {
-                                        errorMessage = "Please Click Next 😀"
-                                    } else {
-                                        errorMessage = "Please Give Library Permission"
-                                    }
-                                    default:
-                                    withAnimation {
-                                        permissionMissing = true
-                                    }
-                                    errorMessage = "Please give required permissions!"
-                                    permissionMissing = true
-                                    isAnimating = true
-                                        // OPEN AUTOMATION PANEL
-                                }
-
+                                
+                                Text("Please pick between Spotify and Apple Music")
+                                    .font(.title)
                             }
-                            .disabled(appleMusicPermission)
-                            Button("Give Apple Music Library Permissions") {
-                                Task {
-                                    let status = await MusicKit.MusicAuthorization.request()
+                        }
+                    }
+                    .transition(.fade)
+                    
+                    Group {
+                        Picker("", selection: $spotifyOrAppleMusic) {
+                            VStack {
+                                Image("spotify")
+                                    .resizable()
+                                    .frame(width: 70.0, height: 70.0)
+                                Text("Spotify")
+                            }.tag(false)
+                            VStack {
+                                Image("music")
+                                    .resizable()
+                                    .frame(width: 70.0, height: 70.0)
+                                Text("Apple Music")
+                            }.tag(true)
+                        }
+                        .font(.title2)
+                        .frame(width: 500)
+                        .pickerStyle(.radioGroup)
+                        .horizontalRadioGroupLayout()
+                        
+                    
+                        
+                            Text(.init(errorMessage))
+                            .transition(.opacity)
+                            .id(errorMessage)
+                        
+                        if spotifyPermission && appleMusicPermission && appleMusicLibraryPermission {
+                            NavigationLink("Next", destination: ApiView())
+                                .buttonStyle(.borderedProminent)
+                        } else {
+                            HStack {
+                                Button("Give Spotify Permissions") {
                                     
-                                    if status == .authorized {
+                                    let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                                    // Can cause a freeze if app we're querying for isn't open
+                                    // See: https://forums.developer.apple.com/forums/thread/666528
+                                    guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
                                         withAnimation {
-                                            appleMusicLibraryPermission = true
+                                            errorMessage = "Please Open Spotify First!"
+                                        }
+                                        return
+                                    }
+                                    let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                                    switch status {
+                                        case -600:
+                                            errorMessage = "Please Open Spotify First!"
+                                        case -0:
+                                        withAnimation {
+                                            permissionMissing = false
+                                                spotifyPermission = true
+                                            errorMessage = "Please Click Next 😀"
+                                        }
+                                        default:
+                                        withAnimation {
+                                            errorMessage = "Please give required permissions!"
+                                            permissionMissing = true
+                                            isAnimating = true
+                                        }
+                                    }
+
+                                    }
+                                
+                                .disabled(spotifyPermission)
+                                Button("Give Apple Music Permissions") {
+                                    let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                                    guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
+                                        withAnimation {
+                                            errorMessage = "Please Open Apple Music First!"
+                                        }
+                                        return
+                                    }
+                                    let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                                    switch status {
+                                        case -600:
+                                        errorMessage = "Please Open Apple Music First!"
+                                        case -0:
+                                        withAnimation {
+                                            appleMusicPermission = true
                                             permissionMissing = false
                                         }
                                         isAnimating = false
-                                        if appleMusicPermission {
+                                        if appleMusicLibraryPermission {
                                             errorMessage = "Please Click Next 😀"
                                         } else {
-                                            errorMessage = "Please Give Music Permission"
+                                            errorMessage = "Please Give Library Permission"
                                         }
-                                    }
-                                    else {
-                                        errorMessage = "Please give required permissions!"
+                                        default:
                                         withAnimation {
                                             permissionMissing = true
                                         }
+                                        errorMessage = "Please give required permissions!"
+                                        permissionMissing = true
                                         isAnimating = true
+                                            // OPEN AUTOMATION PANEL
+                                    }
+
+                                }
+                                .disabled(appleMusicPermission)
+                                Button("Give Apple Music Library Permissions") {
+                                    Task {
+                                        let status = await MusicKit.MusicAuthorization.request()
+                                        
+                                        if status == .authorized {
+                                            withAnimation {
+                                                appleMusicLibraryPermission = true
+                                                permissionMissing = false
+                                            }
+                                            isAnimating = false
+                                            if appleMusicPermission {
+                                                errorMessage = "Please Click Next 😀"
+                                            } else {
+                                                errorMessage = "Please Give Music Permission"
+                                            }
+                                        }
+                                        else {
+                                            errorMessage = "Please give required permissions!"
+                                            withAnimation {
+                                                permissionMissing = true
+                                            }
+                                            isAnimating = true
+                                        }
                                     }
                                 }
+                                .disabled(appleMusicLibraryPermission)
                             }
-                            .disabled(appleMusicLibraryPermission)
                         }
-                    }
-                    
-                    
-                    Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.0")
-                        .multilineTextAlignment(.center)
-                        .font(.callout)
-                        .padding(.top, 10)
-                        .frame(alignment: .bottom)
-                }
-                .transition(.fade)
-                
-            }
-            .onAppear {
-                if spotifyOrAppleMusic {
-                    errorMessage = "Please Open Apple Music!"
-                    spotifyPermission = true
-                    appleMusicPermission = false
-                    appleMusicLibraryPermission = false
-                } else {
-                    errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
-                    appleMusicPermission = true
-                    appleMusicLibraryPermission = true
-                    spotifyPermission = false
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickSettings"))) { newValue in
-                if spotifyOrAppleMusic {
-                    // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
-                    errorMessage = "Please Open Apple Music!"
-                    spotifyPermission = true
-                    appleMusicPermission = false
-                    appleMusicLibraryPermission = false
-                    
-                    
-                    // Check Apple Music Automation permission
-                    guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
-                        withAnimation {
-                            errorMessage = "Please Open Spotify First!"
-                        }
-                        return
-                    }
-                    let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
-                    let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                    switch status {
-                        case -600:
-                        errorMessage = "Please Open Apple Music First!"
-                        case -0:
-                        appleMusicPermission = true
-                        permissionMissing = false
-                        isAnimating = false
-                        if appleMusicLibraryPermission {
-                            errorMessage = "Please Click Next 😀"
-                        } else {
-                            errorMessage = "Please Give Library Permission"
-                        }
-//                                case -1744:
-//                                Alert(title: Text("Please give permission by going to the Automation panel"))
-                        default:
-                        withAnimation {
-                            permissionMissing = true
-                        }
-                        errorMessage = "Please give required permissions!"
-                        permissionMissing = true
-                        isAnimating = true
-                            // OPEN AUTOMATION PANEL
-                    }
-                    
-                    // Check Media Library Permission
-                    Task {
-                        let status = await MusicKit.MusicAuthorization.request()
                         
-                        if status == .authorized {
+                        
+                        Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.0")
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
+                            .padding(.top, 10)
+                            .frame(alignment: .bottom)
+                    }
+                    .transition(.fade)
+                    
+                }
+                .onAppear {
+                    if spotifyOrAppleMusic {
+                        errorMessage = "Please Open Apple Music!"
+                        spotifyPermission = true
+                        appleMusicPermission = false
+                        appleMusicLibraryPermission = false
+                    } else {
+                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        appleMusicPermission = true
+                        appleMusicLibraryPermission = true
+                        spotifyPermission = false
+                    }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickSettings"))) { newValue in
+                    if spotifyOrAppleMusic {
+                        // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
+                        errorMessage = "Please Open Apple Music!"
+                        spotifyPermission = true
+                        appleMusicPermission = false
+                        appleMusicLibraryPermission = false
+                        
+                        
+                        // Check Apple Music Automation permission
+                        guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
                             withAnimation {
-                                appleMusicLibraryPermission = true
-                                permissionMissing = false
+                                errorMessage = "Please Open Spotify First!"
                             }
+                            return
+                        }
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                        let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                        switch status {
+                            case -600:
+                            errorMessage = "Please Open Apple Music First!"
+                            case -0:
+                            appleMusicPermission = true
+                            permissionMissing = false
                             isAnimating = false
-                            if appleMusicPermission {
+                            if appleMusicLibraryPermission {
                                 errorMessage = "Please Click Next 😀"
                             } else {
-                                errorMessage = "Please Give Music Permission"
+                                errorMessage = "Please Give Library Permission"
                             }
-                        }
-                        else {
-                            errorMessage = "Please give required permissions!"
+    //                                case -1744:
+    //                                Alert(title: Text("Please give permission by going to the Automation panel"))
+                            default:
                             withAnimation {
                                 permissionMissing = true
                             }
-                            isAnimating = true
-                        }
-                    }
-                    
-                } else {
-                    errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
-                    appleMusicPermission = true
-                    appleMusicLibraryPermission = true
-                    spotifyPermission = false
-                    // Check Spotify
-                    guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
-                        withAnimation {
-                            errorMessage = "Please Open Spotify First!"
-                        }
-                        return
-                    }
-                    let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
-                    let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                    switch status {
-                        case -600:
-                            errorMessage = "Please Open Spotify First!"
-                        case -0:
-                        withAnimation {
-                            permissionMissing = false
-                                spotifyPermission = true
-                            errorMessage = "Please Click Next 😀"
-                        }
-//                                case -1744:
-//                                Alert(title: Text("Please give permission by going to the Automation panel"))
-                        default:
-                        withAnimation {
                             errorMessage = "Please give required permissions!"
                             permissionMissing = true
                             isAnimating = true
+                                // OPEN AUTOMATION PANEL
                         }
-                            // OPEN AUTOMATION PANEL
+                        
+                        // Check Media Library Permission
+                        Task {
+                            let status = await MusicKit.MusicAuthorization.request()
+                            
+                            if status == .authorized {
+                                withAnimation {
+                                    appleMusicLibraryPermission = true
+                                    permissionMissing = false
+                                }
+                                isAnimating = false
+                                if appleMusicPermission {
+                                    errorMessage = "Please Click Next 😀"
+                                } else {
+                                    errorMessage = "Please Give Music Permission"
+                                }
+                            }
+                            else {
+                                errorMessage = "Please give required permissions!"
+                                withAnimation {
+                                    permissionMissing = true
+                                }
+                                isAnimating = true
+                            }
+                        }
+                        
+                    } else {
+                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        appleMusicPermission = true
+                        appleMusicLibraryPermission = true
+                        spotifyPermission = false
+                        // Check Spotify
+                        guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
+                            withAnimation {
+                                errorMessage = "Please Open Spotify First!"
+                            }
+                            return
+                        }
+                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                        let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                        switch status {
+                            case -600:
+                                errorMessage = "Please Open Spotify First!"
+                            case -0:
+                            withAnimation {
+                                permissionMissing = false
+                                    spotifyPermission = true
+                                errorMessage = "Please Click Next 😀"
+                            }
+    //                                case -1744:
+    //                                Alert(title: Text("Please give permission by going to the Automation panel"))
+                            default:
+                            withAnimation {
+                                errorMessage = "Please give required permissions!"
+                                permissionMissing = true
+                                isAnimating = true
+                            }
+                                // OPEN AUTOMATION PANEL
+                        }
+                    }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
+                    isAnimating = false
+                    permissionMissing = false
+                }
+                .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
+                    isAnimating = false
+                    permissionMissing = false
+                }
+                .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
+                    print("Updating permission booleans based on media player change")
+                    if spotifyOrAppleMusic {
+                        errorMessage = "Please Open Apple Music!"
+                        spotifyPermission = true
+                        appleMusicPermission = false
+                        appleMusicLibraryPermission = false
+                    } else {
+                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        appleMusicPermission = true
+                        appleMusicLibraryPermission = true
+                        spotifyPermission = false
+                    }
+                }
+                .onChange(of: controlActiveState) { newState in
+                    if newState == .inactive {
+                        isAnimating = false
+                    } else {
+                        isAnimating = true
                     }
                 }
             }
-            .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
-                isAnimating = false
-                permissionMissing = false
+            .tabItem {
+                Label("Main Settings", systemImage: "person.crop.circle")
             }
-            .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
-                isAnimating = false
-                permissionMissing = false
-            }
-            .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
-                print("Updating permission booleans based on media player change")
-                if spotifyOrAppleMusic {
-                    errorMessage = "Please Open Apple Music!"
-                    spotifyPermission = true
-                    appleMusicPermission = false
-                    appleMusicLibraryPermission = false
-                } else {
-                    errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
-                    appleMusicPermission = true
-                    appleMusicLibraryPermission = true
-                    spotifyPermission = false
-                }
-            }
-            .onChange(of: controlActiveState) { newState in
-                if newState == .inactive {
-                    isAnimating = false
-                } else {
-                    isAnimating = true
-                }
-            }
+            KaraokeSettingsView()
+                .padding(.horizontal, 100)
+                 .tabItem {
+                     Label("Karaoke Window", systemImage: "person.crop.circle")
+                 }
+             
+//                 AppearanceSettingsView()
+//                     .tabItem {
+//                         Label("Appearance", systemImage: "paintpalette")
+//                     }
+             
+//                 PrivacySettingsView()
+//                     .tabItem {
+//                         Label("Privacy", systemImage: "hand.raised")
+//                     }
         }
+//        NavigationStack()
     }
 }
 

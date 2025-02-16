@@ -149,7 +149,7 @@ struct SpotifyLyricsInMenubarApp: App {
                  Divider()
             }
             Divider()
-            Button("Settings") {
+            Button("Settings (New Karaoke Settings!)") {
                 openWindow(id: "onboarding")
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 // send notification to check auth
@@ -501,6 +501,7 @@ struct SpotifyLyricsInMenubarApp: App {
         }
         Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
+                .environmentObject(viewmodel)
                 .preferredColorScheme(.dark)
                 .onAppear {
                     NSApp.setActivationPolicy(.regular)
@@ -509,7 +510,6 @@ struct SpotifyLyricsInMenubarApp: App {
                     if !viewmodel.fullscreen {
                         NSApp.setActivationPolicy(.accessory)
                     }
-//                    viewmodel.fullscreen = false
                 }
         }.windowResizability(.contentSize)
             .windowStyle(.hiddenTitleBar)
