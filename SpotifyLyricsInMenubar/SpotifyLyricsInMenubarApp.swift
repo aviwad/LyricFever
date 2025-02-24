@@ -43,7 +43,11 @@ struct SpotifyLyricsInMenubarApp: App {
                         if spotifyOrAppleMusic {
                             try await viewmodel.appleMusicNetworkFetch()
                         }
-                        viewmodel.currentlyPlayingLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
+                        let tempLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
+                        if tempLyrics.isEmpty {
+                            viewmodel.currentlyPlayingLyricsIndex = nil
+                        }
+                        viewmodel.currentlyPlayingLyrics = tempLyrics
                         viewmodel.fetchBackgroundColor()
                         if viewmodel.translate {
                             if #available(macOS 15, *) {

@@ -335,10 +335,14 @@ import NaturalLanguage
                 // if lyrics exist, then we can def get the background by rerunning the network call
                 if !currentlyPlayingLyrics.isEmpty, let currentlyPlayingName {
                     Task {
-                        currentlyPlayingLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
-                        if retry {
-                            fetchBackgroundColor(retry: false)
+                        let tempLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
+                        if !tempLyrics.isEmpty {
+                            currentlyPlayingLyrics = tempLyrics
                         }
+//                         = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
+//                        if retry {
+//                            fetchBackgroundColor(retry: false)
+//                        }
                     }
                 }
                 // No SongObject found with the given trackID
