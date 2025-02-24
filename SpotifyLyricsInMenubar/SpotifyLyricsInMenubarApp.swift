@@ -62,6 +62,27 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
                 .keyboardShortcut("r")
+                if viewmodel.currentlyPlayingLyrics.isEmpty {
+                    Button("Upload Local LRC File") {
+                        Task {
+                            try await viewmodel.currentlyPlayingLyrics = viewmodel.localFetch(for: currentlyPlaying, currentlyPlayingName)
+                            viewmodel.fetchBackgroundColor()
+                            if viewmodel.translate {
+                                if #available(macOS 15, *) {
+                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                        translationConfigObject.translationConfig?.invalidate()
+                                    } else {
+                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                                    }
+                                }
+                            }
+                            viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
+                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
+                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                            }
+                        }
+                    }
+                }
             // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
             // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
             } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {

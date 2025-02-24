@@ -14,6 +14,7 @@ import MusicKit
 import SwiftUI
 import MediaPlayer
 import WebKit
+import UniformTypeIdentifiers
 import NaturalLanguage
 
 @MainActor class viewModel: ObservableObject {
@@ -349,7 +350,56 @@ import NaturalLanguage
 //        return nil
     }
     
-    private func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
+    @MainActor
+    func selectLRC() async -> URL? {
+        defer {
+            NSApp.setActivationPolicy(.accessory)
+        }
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        let folderChooserPoint = CGPoint(x: 0, y: 0)
+        let folderChooserSize = CGSize(width: 500, height: 600)
+        let folderChooserRectangle = CGRect(origin: folderChooserPoint, size: folderChooserSize)
+        NSApp.setActivationPolicy(.regular)
+        let folderPicker =  NSOpenPanel(contentRect: folderChooserRectangle, styleMask: .resizable, backing: .buffered, defer: true)
+        folderPicker.title = "Select an LRC File for \(currentlyPlayingName ?? "")"
+        let lrcType = UTType(filenameExtension: "lrc")!
+        folderPicker.allowedContentTypes = [lrcType] // Only allow .gif files
+        folderPicker.allowsMultipleSelection = false // Only allow a single selection
+        folderPicker.canChooseFiles = true // Allow file selection
+        folderPicker.canChooseDirectories = false // Disallow directory selection
+        let response = await folderPicker.begin()
+        if response == .OK {
+            return folderPicker.url
+        }
+        return nil
+    }
+
+    
+    func localFetch(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+        if let fileUrl = await selectLRC(), let lyricText = try? String(contentsOf: fileUrl, encoding: .utf8) {
+            let parser = LyricsParser(lyrics: lyricText)
+            print(parser.lyrics)
+            if !parser.lyrics.isEmpty {
+                _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
+                saveCoreData()
+                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                }
+            }
+            return parser.lyrics
+        }
+        return []
+//        if let lyrics = fetchFromCoreData(for: trackID) {
+//            print("got lyrics from core data :D \(trackID) \(trackName)")
+//            try Task.checkCancellation()
+//            amplitude.track(eventType: "CoreData Fetch")
+//            return lyrics
+//        }
+//        print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
+//        return try await fetchNetworkLyrics(for: trackID, trackName, false)
+    }
+    
+    func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
         if let lyrics = fetchFromCoreData(for: trackID) {
             print("got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()

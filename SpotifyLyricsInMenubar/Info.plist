@@ -16,5 +16,17 @@
 	<string>https://aviwad.github.io/SpotifyLyricsInMenubar/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>FSX9uBGItlJwhydb/y9bFiAoZKFy1YaTjgiR/0bcVbI=</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIcons</key>
+			<dict/>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array/>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>
