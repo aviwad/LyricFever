@@ -492,9 +492,11 @@ import NaturalLanguage
             saveCoreData()
             if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                 SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-            } else {
-                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: 104810)
             }
+            // Karaoke window uses the user color choice as a backup. no need to save a backup color
+//            else {
+//                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: 104810)
+//            }
             return lrcLyrics.lyrics
 //            let lyricsArray = zip(songObject., songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
