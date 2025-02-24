@@ -208,7 +208,13 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .floatingPanel(isPresented: $viewmodel.displayKaraoke, content: {
                     KaraokeView()
+//                        .drawingGroup()
                         .environmentObject(viewmodel)
+//                        .id(viewmodel.currentlyPlayingLyricsIndex)
+//                        .transition(.opacity)
+//                        .animation(.linear)
+//                        .contentTransition(.interpolate)
+//                        .animation(.snappy(duration: 0.1), value: viewmodel.currentlyPlayingLyricsIndex)
 //                    ZStack {
 //                        Rectangle()
 //                            .fill(.white)
@@ -342,6 +348,11 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(error)
                             }
                         }
+                        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+                               // This code will be executed just before the app terminates
+                            UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
+                            UserDefaults.standard.set(Double(viewmodel.karaokeFont.pointSize), forKey: "karaokeFontSize")
+                           }
                         .onChange(of: viewmodel.translate) { newTranslate in
                             if newTranslate {
                                 if translationConfigObject.translationConfig == nil {
@@ -514,7 +525,11 @@ struct SpotifyLyricsInMenubarApp: App {
                             let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
                             window?.collectionBehavior = .fullScreenPrimary
                             if window?.styleMask.rawValue != 49167 {
+//                                viewmodel.fullscreenInProgress = true
                                 window?.toggleFullScreen(true)
+                                withAnimation() {
+                                    viewmodel.fullscreenInProgress = false
+                                }
                             }
                         }
                     }

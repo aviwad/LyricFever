@@ -198,9 +198,9 @@ struct FullscreenView: View {
         }
     }
     
-    @ViewBuilder func lyricLineView(for index: Int) -> some View {
+    @ViewBuilder func lyricLineView(for element: LyricLine, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(viewmodel.currentlyPlayingLyrics[index].words)
+            Text(element.words)
                 .foregroundStyle(.white)
             if viewmodel.translate, !viewmodel.translatedLyric.isEmpty {
                 Text(viewmodel.translatedLyric[index])
@@ -213,78 +213,129 @@ struct FullscreenView: View {
     @ViewBuilder var lyrics: some View {
         VStack(alignment: .leading){
             Spacer()
-            ScrollView(showsIndicators: false){
-                ForEach (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
-                    lyricLineView(for: i)
-                        .opacity(i == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
+            ScrollViewReader { proxy in
+//                Array(array.enumerated()), id: \.offset
+                List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { offset, element in
+//                List (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
+                    lyricLineView(for: element, index: offset)
+                        .opacity(offset == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
                         .font(.system(size: 40, weight: .bold, design: .default))
                         .padding(20)
-                        .blur(radius: i == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .listRowSeparator(.hidden)
+                        .blur(radius: offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
+    //                        .animation(., value: <#T##Equatable#>)
+    //                    .frame(maxWidth: .infinity, alignment: .leading)
                         //.contentShape(.rect)
                 }
-                .scrollTargetLayout()
-                .safeAreaPadding(EdgeInsets(top: 600, leading: 0, bottom: 500, trailing: 200))
-                
-                .scrollContentBackground(.hidden)
+                .padding(.trailing, 100)
+//                .border(.blue)
+                .safeAreaInset(edge: .top) {
+                    Spacer()
+                        .id("first")
+                        .frame(height: 500)
+                    }
+                .safeAreaInset(edge: .bottom) {
+                    Spacer()
+                        .id("last")
+                        .frame(height: 500)
+                    }
+//                .onChange(of: viewmodel.showLyrics) {
+//                    if viewmodel.showLyrics, let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+//                        withAnimation {
+//                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+//                        }
+//                    }
+//                }
+                .onChange(of: viewmodel.translatedLyric) {
+                    withAnimation() {
+                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                        } else {
+                            proxy.scrollTo("first", anchor: .top)
+                        }
+                        
+                    }
+                }
+                .onChange(of: viewmodel.currentlyPlayingLyricsIndex) {
+                    withAnimation() {
+                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                        } else {
+                            proxy.scrollTo("first", anchor: .top)
+                        }
+                        
+                    }
+                }
             }
+//            .safeAreaPadding(EdgeInsets(top: 600, leading: 0, bottom: 500, trailing: 200))
+            
+//                .scrollTargetLayout()
+//                .animation(.easeInOut(duration: 10), value: viewmodel.currentlyPlayingLyricsIndex)
+            .scrollContentBackground(.hidden)
             .scrollDisabled(true)
             .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
-            .scrollPosition(id: $viewmodel.currentlyPlayingLyricsIndex, anchor: .center)
+//            .scrollPosition(id: $viewmodel.currentlyPlayingLyricsIndex, anchor: .center)
             Spacer()
             
         }
     }
     
     var body: some View {
-        GeometryReader { geo in
-            HStack {
-                albumArt
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
-                if canDisplayLyrics {
-                    lyrics
-                        .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+        if viewmodel.fullscreenInProgress {
+            Color.black
+        } else {
+            GeometryReader { geo in
+                HStack {
+                    albumArt
+                        .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
+    //                    .border(.brown)
+                    if canDisplayLyrics {
+                        lyrics
+                            .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+    //                        .border(.green)
+                    }
+                }
+    //            .ignoresSafeArea()
+            }
+            .background {
+                ZStack {
+                    BackgroundView(colors: $gradient, timer: $timer, points: $points)
+    //                if animate {
+    //
+    //                } else {
+    //                    avgColor
+    //                }
+                }
+                .ignoresSafeArea()
+                .transition(.opacity)
+            }
+            .onAppear {
+                withAnimation {
+                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+                }
+    //            Task { @MainActor in
+    //                let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+    //                window?.collectionBehavior = .fullScreenPrimary
+    //                if window?.styleMask.rawValue != 49167 {
+    //                    window?.toggleFullScreen(true)
+    //                }
+    //            }
+            }
+            .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
+                print("NEW ARTWORK")
+                if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                    gradient = dominantColors.map({adjustedColor($0)})
+    //                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
+    //                    withAnimation {
+    //                        self.avgColor = avgColor
+    //                    }
+    //                }
                 }
             }
-        }
-        .background {
-            ZStack {
-                BackgroundView(colors: $gradient, timer: $timer, points: $points)
-//                if animate {
-//
-//                } else {
-//                    avgColor
-//                }
-            }
-            .ignoresSafeArea()
-            .transition(.opacity)
-        }
-        .onAppear {
-            withAnimation {
-                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-            }
-//            Task { @MainActor in
-//                let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-//                window?.collectionBehavior = .fullScreenPrimary
-//                if window?.styleMask.rawValue != 49167 {
-//                    window?.toggleFullScreen(true)
-//                }
-//            }
-        }
-        .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
-            print("NEW ARTWORK")
-            if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
-                gradient = dominantColors.map({adjustedColor($0)})
-//                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
-//                    withAnimation {
-//                        self.avgColor = avgColor
-//                    }
-//                }
-            }
-        }
-        .onChange(of: viewmodel.currentlyPlayingName) { _ in
-            withAnimation {
-                self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+            .onChange(of: viewmodel.currentlyPlayingName) { _ in
+                withAnimation {
+                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+                }
             }
         }
     }
@@ -319,7 +370,7 @@ struct BackgroundView: View {
     @Binding var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     @Binding var points: ColorSpots
 
-    static let animationDuration: Double = 10
+    static let animationDuration: Double = 20
     @State var bias: Float = 0.002
     @State var power: Float = 2.5
     @State var noise: Float = 2

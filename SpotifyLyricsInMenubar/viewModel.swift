@@ -21,13 +21,25 @@ import NaturalLanguage
     // View Model
     static let shared = viewModel()
     
-    //
+    // Karaoke Font
+    @Published var karaokeFont: NSFont
     
     // nil to deal with previously saved songs that don't have lang saved with them
     // or for LRCLIB
     @Published var currentBackground: Color? = nil
+    @Published var fullscreenInProgress = true
     var appleMusicStorePlaybackID: String? = nil
     @Published var currentlyPlaying: String?
+    
+    var animatedDisplay: Bool {
+        get {
+            displayKaraoke || fullscreen
+        }
+        set {
+            
+        }
+    }
+    
     var displayKaraoke: Bool {
         get {
             showLyrics && isPlaying && karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
@@ -110,8 +122,19 @@ import NaturalLanguage
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @Published var karaokeModeHovering: Bool = false
     @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
-    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = false
-    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 0.5
+    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
+    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+//    @AppStorage("karaokeFontSize") var karaokeFontSize: Double = 30
+    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
+    var colorBinding: Binding<Color> {
+        Binding<Color> {
+            Color(NSColor(hexString: self.fixedKaraokeColorHex)!)
+        } set: { newValue in
+            self.fixedKaraokeColorHex = NSColor(newValue).hexString!
+        }
+    }
+//    @Published var fixedKaraokeColor: Color =  Color(.displayP3, red: 0.98, green: 0.0, blue: 0.98)
+
     
     init() {
         // Load framework
@@ -134,7 +157,21 @@ import NaturalLanguage
         
         userLocaleLanguage = Locale.preferredLocale()
         userLocaleLanguageString = Locale.preferredLocaleString() ?? ""
+//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorR" : 0.98])
+//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorG" : 0.0])
+//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorB" : 0.98])
+        let karaokeFontSize: Double = UserDefaults.standard.double(forKey: "karaokeFontSize")
+        let karaokeFontName: String? = UserDefaults.standard.string(forKey: "karaokeFontName")
+//        fixedKaraokeColor =  Color(.sRGB, red: fixedKaraokeColorR, green: fixedKaraokeColorG, blue: fixedKaraokeColorB)
         
+//        if fixedKaraokeColorR != 0 && fixedKaraokeColorG != 0 && fixedKaraokeColorB != 0 {
+//            fixedKaraokeColor
+//        }
+        if let karaokeFontName, karaokeFontSize != 0, let ourKaraokeFont = NSFont(name: karaokeFontName, size: karaokeFontSize) {
+            karaokeFont = ourKaraokeFont
+        } else {
+            karaokeFont = NSFont.boldSystemFont(ofSize: 30)
+        }
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Error: \(error.localizedDescription)")
@@ -221,7 +258,7 @@ import NaturalLanguage
                 stopLyricUpdater()
                 return
             }
-            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0)
+            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
@@ -243,7 +280,7 @@ import NaturalLanguage
             print("last index: \(lastIndex)")
             print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
-                withAnimation {
+                withAnimation(.easeInOut(duration: 0.2)) {
                     currentlyPlayingLyricsIndex = lastIndex
                 }
             } else {
@@ -315,7 +352,7 @@ import NaturalLanguage
         return Color(red: red/255, green: green/255, blue: blue/255) //(red, green, blue)
     }
     
-    func fetchBackgroundColor(retry: Bool = true) {
+    func fetchBackgroundColor() {
         guard let currentlyPlaying else {
             return
         }
@@ -492,6 +529,7 @@ import NaturalLanguage
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))
             let lrcLyrics = try decoder.decode(LRCLyrics.self, from: urlResponseAndData.0)
             print(lrcLyrics)
+//            if lrcLyrics.sy
             let songObject = SongObject(from: lrcLyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
             saveCoreData()
             if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
@@ -867,5 +905,38 @@ extension NSImage {
 
     private func blue(for pixelData: UInt32) -> UInt8 {
         return UInt8((pixelData >> 0) & 255)
+    }
+}
+
+extension NSColor {
+    var hexString: String? {
+        guard let rgbColor = self.usingColorSpace(.sRGB) else {
+            return nil
+        }
+        let red = Int(rgbColor.redComponent * 255)
+        let green = Int(rgbColor.greenComponent * 255)
+        let blue = Int(rgbColor.blueComponent * 255)
+        return String(format: "#%02X%02X%02X", red, green, blue)
+    }
+    
+    convenience init?(hexString hex: String) {
+        if hex.count != 7 { // The '#' included
+            return nil
+        }
+            
+        let hexColor = String(hex.dropFirst())
+        
+        let scanner = Scanner(string: hexColor)
+        var hexNumber: UInt64 = 0
+        
+        if !scanner.scanHexInt64(&hexNumber) {
+            return nil
+        }
+        
+        let r = CGFloat((hexNumber & 0xff0000) >> 16) / 255
+        let g = CGFloat((hexNumber & 0x00ff00) >> 8) / 255
+        let b = CGFloat(hexNumber & 0x0000ff) / 255
+        
+        self.init(srgbRed: r, green: g, blue: b, alpha: 1)
     }
 }

@@ -16,7 +16,7 @@ extension View {
      - Parameter content: The displayed content
      **/
     func floatingPanel<Content: View>(isPresented: Binding<Bool>,
-                                      contentRect: CGRect = CGRect(x: 0, y: 0, width: 600, height: 100),
+                                      contentRect: CGRect = CGRect(x: 0, y: 0, width: 800, height: 100),
                                       @ViewBuilder content: @escaping () -> Content) -> some View {
 //        self.modifier(FloatingPanelModifier(isPresented: isPresented, contentRect: contentRect, view: content))
         self.modifier(FloatingPanelModifier(isPresented: isPresented, contentRect: contentRect, view: content))
@@ -99,7 +99,7 @@ class FloatingPanel<Content: View>: NSPanel {
      
         /// Init the window as usual
         super.init(contentRect: contentRect,
-                   styleMask: [.nonactivatingPanel, .resizable], //.resizable, .closable], //.fullSizeContentView],
+                   styleMask: [.nonactivatingPanel, .fullSizeContentView, .closable], //.resizable, .closable], //.fullSizeContentView],
                    backing: .buffered,
                    defer: true)
      
@@ -136,6 +136,8 @@ class FloatingPanel<Content: View>: NSPanel {
         hidesOnDeactivate = false
         backgroundColor = NSColor.clear
         
+        
+        
 //        hasTitleBar = true
      
         /// Hide all traffic light buttons
@@ -149,12 +151,26 @@ class FloatingPanel<Content: View>: NSPanel {
         /// Set the content view.
         /// The safe area is ignored because the title bar still interferes with the geometry
         contentView = NSHostingView(rootView: view()
-            .ignoresSafeArea()
+//            .ignoresSafeArea()
             .preferredColorScheme(.dark)
-            .background(VisualEffectView().ignoresSafeArea())
+//            .background(VisualEffectView())//.ignoresSafeArea())
             .environment(\.floatingPanel, self))
+        hasShadow = false
+//        let visualEffect = NSVisualEffectView()
+//        visualEffect.blendingMode = .behindWindow
+//        visualEffect.state = .active
+//        visualEffect.material = .hudWindow
         
-        contentView?.layer?.cornerRadius = 20
+//        contentView?.addSubview(visualEffect)
+//        guard let constraints = self.contentView else {
+//                    return
+//                }
+//        visualEffect.leadingAnchor.constraint(equalTo: constraints.leadingAnchor).isActive = true
+//                visualEffect.trailingAnchor.constraint(equalTo: constraints.trailingAnchor).isActive = true
+//                visualEffect.topAnchor.constraint(equalTo: constraints.topAnchor).isActive = true
+//                visualEffect.bottomAnchor.constraint(equalTo: constraints.bottomAnchor).isActive = true
+//        contentView?.layer?.cornerRadius = 20
+//        contentView?.layer?.backgroundColor = Color(hue: 3, saturation: 3, brightness: 3)
 //
 //        let animation: CABasicAnimation = .init()
 //        animation.delegate = self as! any CAAnimationDelegate
