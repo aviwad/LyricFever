@@ -250,7 +250,6 @@ import NaturalLanguage
         // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
         // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
         // Harmless and fixes the sync
-        try await fixSpotifyLyricDrift()
         repeat {
             guard let playerPosition = spotifyScript?.playerPosition else {
                 print("no player position hence stopped")
@@ -296,6 +295,55 @@ import NaturalLanguage
         if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
             return
         }
+        // If an index exists, we're unpausing: meaning we must instantly find the current lyric
+        if currentlyPlayingLyricsIndex != nil {
+            if appleMusicOrSpotify {
+                guard let playerPosition = appleMusicScript?.playerPosition else {
+                    print("no player position hence stopped")
+                    // pauses the timer bc there's no player position
+                    stopLyricUpdater()
+                    return
+                }
+                // add a 700 (milisecond?) delay to offset the delta between spotify lyrics and apple music songs (or maybe the way apple music delivers playback position)
+                // No need for Spotify Connect delay or fullscreen, this is APPLE MUSIC
+                let currentTime = playerPosition * 1000 + 400
+                guard let lastIndex: Int = upcomingIndex(currentTime) else {
+                    stopLyricUpdater()
+                    return
+                }
+                // If there is no current index (perhaps lyric updater started late and we're mid-way of the first lyric, or the user scrubbed and our index is expired)
+                // Then we set the current index to the one before our anticipated index
+                if lastIndex > 0 {
+                    withAnimation {
+                        currentlyPlayingLyricsIndex = lastIndex-1
+                    }
+                }
+            } else {
+                guard let playerPosition = spotifyScript?.playerPosition else {
+                    print("no player position hence stopped")
+                    // pauses the timer bc there's no player position
+                    stopLyricUpdater()
+                    return
+                }
+                let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0)
+                guard let lastIndex: Int = upcomingIndex(currentTime) else {
+                    stopLyricUpdater()
+                    return
+                }
+                // If there is no current index (perhaps lyric updater started late and we're mid-way of the first lyric, or the user scrubbed and our index is expired)
+                // Then we set the current index to the one before our anticipated index
+                if lastIndex > 0 {
+                    withAnimation {
+                        currentlyPlayingLyricsIndex = lastIndex-1
+                    }
+                }
+            }
+        } else {
+            // Only run drift fix for new songs
+            Task {
+                try await fixSpotifyLyricDrift()
+            }
+        }
         currentLyricsUpdaterTask = Task {
             do {
                 try await appleMusicOrSpotify ? lyricUpdaterAppleMusic() : lyricUpdater()
@@ -311,6 +359,7 @@ import NaturalLanguage
     
     func stopLyricUpdater() {
         print("stop called")
+//        currentlyPlayingLyricsIndex = nil
         currentLyricsUpdaterTask?.cancel()
     }
     
@@ -753,6 +802,13 @@ extension viewModel {
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
+            }
+            // If there is no current index (perhaps lyric updater started late and we're mid-way of the first lyric, or the user scrubbed and our index is expired)
+            // Then we set the current index to the one before our anticipated index
+            if currentlyPlayingLyricsIndex == nil && lastIndex > 0 {
+                withAnimation {
+                    currentlyPlayingLyricsIndex = lastIndex-1
+                }
             }
             let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
             let diff = nextTimestamp - currentTime
