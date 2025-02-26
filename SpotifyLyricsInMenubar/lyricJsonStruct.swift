@@ -187,3 +187,23 @@ extension String {
         return interval * 1000 // Convert seconds to milliseconds
     }
 }
+
+struct MusicBrainzReply: Codable {
+    let created: String
+    let count, offset: Int
+    let releases: [MusicBrainzRelease]
+}
+
+struct MusicBrainzRelease: Codable {
+    let id: String
+    
+    enum CodingKeys: CodingKey {
+        case id
+    }
+    
+    init(from decoder: any Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+    }
+}

@@ -310,9 +310,27 @@ struct FullscreenView: View {
                 .transition(.opacity)
             }
             .onAppear {
-                withAnimation {
-                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-                }
+//                withAnimation {
+                    if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                        print(artworkUrl)
+                        withAnimation {
+                            self.newArtworkUrl = artworkUrl
+                        }
+                    }
+                    else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
+                        print("\(artistName) \(albumName)")
+                        Task {
+                            if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
+                                withAnimation {
+                                    self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"
+                                }
+                            }
+                            
+                        }
+//                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    }
+//                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+//                }
     //            Task { @MainActor in
     //                let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
     //                window?.collectionBehavior = .fullScreenPrimary
@@ -333,8 +351,26 @@ struct FullscreenView: View {
                 }
             }
             .onChange(of: viewmodel.currentlyPlayingName) { _ in
-                withAnimation {
-                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+//                withAnimation {
+//                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
+//                }
+                if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                    print(artworkUrl)
+                    withAnimation {
+                        self.newArtworkUrl = artworkUrl
+                    }
+                }
+                else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
+                    print("\(artistName) \(albumName)")
+                    Task {
+                        if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
+                            withAnimation {
+                                self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"
+                            }
+                        }
+                        
+                    }
+//                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
                 }
             }
         }
