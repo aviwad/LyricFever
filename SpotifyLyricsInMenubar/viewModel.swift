@@ -523,6 +523,12 @@ import NaturalLanguage
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
         decoder.userInfo[CodingUserInfoKey.duration] = spotifyOrAppleMusic ? TimeInterval((intDuration*1000) + 1000) : TimeInterval(intDuration+10)
+        
+        // Local file giveaway
+        if trackID.count < 22 {
+            return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+        }
+        
         /*
          check if saved access token is bigger than current time, then continue with lyric fetch
          else
