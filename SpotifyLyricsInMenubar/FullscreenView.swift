@@ -210,7 +210,7 @@ struct FullscreenView: View {
         }
     }
     
-    @ViewBuilder var lyrics: some View {
+    @ViewBuilder func lyrics(padding: CGFloat) -> some View {
         VStack(alignment: .leading){
             Spacer()
             ScrollViewReader { proxy in
@@ -232,12 +232,12 @@ struct FullscreenView: View {
                 .safeAreaInset(edge: .top) {
                     Spacer()
                         .id("first")
-                        .frame(height: 500)
+                        .frame(height: padding)
                     }
                 .safeAreaInset(edge: .bottom) {
                     Spacer()
                         .id("last")
-                        .frame(height: 500)
+                        .frame(height: padding)
                     }
 //                .onChange(of: viewmodel.showLyrics) {
 //                    if viewmodel.showLyrics, let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
@@ -290,7 +290,7 @@ struct FullscreenView: View {
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
     //                    .border(.brown)
                     if canDisplayLyrics {
-                        lyrics
+                        lyrics(padding: 0.5*(geo.size.height))
                             .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
     //                        .border(.green)
                     }
