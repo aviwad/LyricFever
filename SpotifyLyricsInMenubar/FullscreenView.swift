@@ -355,7 +355,7 @@ struct FullscreenView: View {
 //                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
 //                }
                 if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
-                    print(artworkUrl)
+                    print("spotify artwork is \(artworkUrl)")
                     withAnimation {
                         self.newArtworkUrl = artworkUrl
                     }
@@ -365,6 +365,7 @@ struct FullscreenView: View {
                     Task {
                         if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
                             withAnimation {
+                                print("setting newartwork url to: https://coverartarchive.org/release/\(mbid)/front")
                                 self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"
                             }
                         }
