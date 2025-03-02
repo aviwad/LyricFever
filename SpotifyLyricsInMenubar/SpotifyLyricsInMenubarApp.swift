@@ -20,6 +20,11 @@ class translationConfigObject: ObservableObject {
     }
 }
 
+enum MusicType {
+    case spotify
+    case appleMusic
+}
+
 @main
 struct SpotifyLyricsInMenubarApp: App {
     @StateObject var viewmodel = viewModel.shared
@@ -134,9 +139,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 .keyboardShortcut("-")
             }
             Divider()
-            if spotifyOrAppleMusic {
-                Text("Switch to Spotify to use fullscreen")
-            } else if #available(macOS 14.0, *) {
+            if #available(macOS 14.0, *) {
                 Toggle("Fullscreen", isOn: $viewmodel.displayFullscreen)
                 .disabled(!hasOnboarded)
             } else {

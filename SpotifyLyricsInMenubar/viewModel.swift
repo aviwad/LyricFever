@@ -57,8 +57,6 @@ import NaturalLanguage
                 NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}?.makeKeyAndOrderFront(self)
                 NSApplication.shared.activate(ignoringOtherApps: true)
             } else {
-//                openWindow(id: "fullscreen")
-//                NSApplication.shared.activate(ignoringOtherApps: true)
                 fullscreen = true
                 NSApp.setActivationPolicy(.regular)
             }
@@ -88,14 +86,16 @@ import NaturalLanguage
     
     // Sparkle / Update Controller
     let updaterController: SPUStandardUpdaterController
-//    var canCheckForUpdates = false
     
     // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
     private var currentLyricsUpdaterTask: Task<Void,Error>?
     private var currentAppleMusicFetchTask: Task<Void,Error>?
     
+    // Apple Music APIs
+    // Private API to get track ID
     let MRMediaRemoteGetNowPlayingInfo: @convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void
+    // Official MusicKit API Auth status to
     var status: MusicAuthorization.Status = .notDetermined
     
     // Authentication tokens
@@ -112,19 +112,27 @@ import NaturalLanguage
     let LRCLIBUserAgentConfig = URLSessionConfiguration.default
     let LRCLIBUserAgentSession: URLSession
     
+    // Songs are translated to user locale
     let userLocaleLanguage: Locale
     let userLocaleLanguageString: String
     
+    // Override menubar with an update message
     @Published var mustUpdateUrgent: Bool = false
+    
+    // Delayed variable to hook onto for fullscreen (whether to display lyrics or not)
+    // Prevents flickering that occurs when we directly bind to currentlyPlayingLyrics.isEmpty()
     @Published var lyricsIsEmptyPostLoad: Bool = true
     
-//    @Published var karaokeModeHoveringSetting: Bool = false
+    // User setting: hide karaoke on hover
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
+    
+    // UI element used to hide if karaokeModeHoveringSetting is true
     @Published var karaokeModeHovering: Bool = false
+    
+    // User setting: use album art color or user-set currentBackground
     @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
-//    @AppStorage("karaokeFontSize") var karaokeFontSize: Double = 30
     @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     var colorBinding: Binding<Color> {
         Binding<Color> {
@@ -133,59 +141,52 @@ import NaturalLanguage
             self.fixedKaraokeColorHex = NSColor(newValue).hexString!
         }
     }
-//    @Published var fixedKaraokeColor: Color =  Color(.displayP3, red: 0.98, green: 0.0, blue: 0.98)
 
     
     init() {
-        // Load framework
+        // Load Apple Music private api framework
         let bundle = CFBundleCreate(kCFAllocatorDefault, NSURL(fileURLWithPath: "/System/Library/PrivateFrameworks/MediaRemote.framework"))
-
-        // Get a Swift function for MRMediaRemoteGetNowPlayingInfo
         let MRMediaRemoteGetNowPlayingInfoPointer = CFBundleGetFunctionPointerForName(bundle, "MRMediaRemoteGetNowPlayingInfo" as CFString)!
         MRMediaRemoteGetNowPlayingInfo = unsafeBitCast(MRMediaRemoteGetNowPlayingInfoPointer, to: (@convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void).self)
         
+        // Setup Sparkle updater service
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        coreDataContainer = NSPersistentContainer(name: "Lyrics")
+    
         
-        
-        
+        // Set user agents for Spotify and LRCLIB
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Spotify/121000760 Win32/0 (PC laptop)"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
-        
         LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.1 (https://github.com/aviwad/LyricFever)"]
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
         
+        // Set our user locale for translation language
         userLocaleLanguage = Locale.preferredLocale()
         userLocaleLanguageString = Locale.preferredLocaleString() ?? ""
-//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorR" : 0.98])
-//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorG" : 0.0])
-//        UserDefaults.standard.register(defaults: ["fixedKaraokeColorB" : 0.98])
+        
+        // Generate user-saved font and load it
         let karaokeFontSize: Double = UserDefaults.standard.double(forKey: "karaokeFontSize")
         let karaokeFontName: String? = UserDefaults.standard.string(forKey: "karaokeFontName")
-//        fixedKaraokeColor =  Color(.sRGB, red: fixedKaraokeColorR, green: fixedKaraokeColorG, blue: fixedKaraokeColorB)
-        
-//        if fixedKaraokeColorR != 0 && fixedKaraokeColorG != 0 && fixedKaraokeColorB != 0 {
-//            fixedKaraokeColor
-//        }
         if let karaokeFontName, karaokeFontSize != 0, let ourKaraokeFont = NSFont(name: karaokeFontName, size: karaokeFontSize) {
             karaokeFont = ourKaraokeFont
         } else {
             karaokeFont = NSFont.boldSystemFont(ofSize: 30)
         }
+        
+        // Load our CoreData container for Lyrics
+        coreDataContainer = NSPersistentContainer(name: "Lyrics")
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Error: \(error.localizedDescription)")
             }
             self.coreDataContainer.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
-//        updaterController.updater.publisher(for: \.canCheckForUpdates)
-//            .assign(to: &$canCheckForUpdates)
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
+        
+        // Check if user must urgently update (overrides menubar)
         Task {
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
                 let request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
-                print("Our version is \(version) and the latest is \(String(bytes:urlResponseAndData.0, encoding: .utf8))")
                 if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Double(internetUrgentVersionString), let currentVersion = Double(version), currentVersion < internetUrgentVersion {
                     print("NOT EQUAL")
                     mustUpdateUrgent = true
@@ -196,6 +197,7 @@ import NaturalLanguage
         }
     }
     
+    // Runs once user has completed Spotify log-in. Attemp to extract cookie
     func checkIfLoggedIn() {
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             if let temporaryCookie = cookies.first(where: {$0.name == "sp_dc"}) {
@@ -217,9 +219,8 @@ import NaturalLanguage
                 if currentTime < currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS {
                     return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
                 }
-//                spotifyScript?.nextTrack?()
                 // we've reached the end of the song, we're past the last lyric
-                // so we set the timer till the duration of the song, in case the user skips ahead or forward
+                //TODO: remove these
                 currentlyPlayingAppleMusicPersistentID = nil
                 currentlyPlaying = nil
                 return nil
@@ -231,13 +232,13 @@ import NaturalLanguage
         }
         // linear search through the array to find the first lyric that's right after the current time
         // done on first lyric update for the song, as well as post-scrubbing
-        // Delete the expired index so that our middle-of-the-lyric checking works
-        // TODO: figure out if removing this nil setter fixes anything
-        // TODO: debug why setting this to nil and then back hides the karaoke view :(
-//        currentlyPlayingLyricsIndex = nil
         return currentlyPlayingLyrics.firstIndex(where: {$0.startTimeMS > currentTime})
     }
     
+    
+    // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
+    // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
+    // Harmless and fixes the sync
     func fixSpotifyLyricDrift() async throws {
         try await Task.sleep(nanoseconds: 2000000000)
         if isPlaying {
@@ -247,9 +248,6 @@ import NaturalLanguage
     }
     
     func lyricUpdater() async throws {
-        // A little hack to fix Spotify's playbackPosition() drift on songs autoplaying
-        // Why the async 1 second delay? Because Spotify ignores the play command if it's lesser than a second away from another play command
-        // Harmless and fixes the sync
         repeat {
             guard let playerPosition = spotifyScript?.playerPosition else {
                 print("no player position hence stopped")
@@ -338,7 +336,7 @@ import NaturalLanguage
                     }
                 }
             }
-        } else {
+        } else if !appleMusicOrSpotify {
             // Only run drift fix for new songs
             Task {
                 try await fixSpotifyLyricDrift()
@@ -359,7 +357,6 @@ import NaturalLanguage
     
     func stopLyricUpdater() {
         print("stop called")
-//        currentlyPlayingLyricsIndex = nil
         currentLyricsUpdaterTask?.cancel()
     }
     
@@ -412,27 +409,8 @@ import NaturalLanguage
             let results = try coreDataContainer.viewContext.fetch(fetchRequest)
             if let idToColor = results.first {
                 self.currentBackground = intToRGB(idToColor.songColor)
-                // Found the SongObject with the matching trackID
-//                let lyricsArray = zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
-//                print("Found SongObject with ID:", songObject.id)
-//                return lyricsArray
             } else {
                 self.currentBackground = nil
-                // if lyrics exist, then we can def get the background by rerunning the network call
-//                if !currentlyPlayingLyrics.isEmpty, let currentlyPlayingName {
-//                    Task {
-//                        let tempLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
-//                        if !tempLyrics.isEmpty {
-//                            currentlyPlayingLyrics = tempLyrics
-//                        }
-////                         = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, UserDefaults.standard.bool(forKey: "spotifyOrAppleMusic"))
-////                        if retry {
-////                            fetchBackgroundColor(retry: false)
-////                        }
-//                    }
-//                }
-                // No SongObject found with the given trackID
-//                print("No SongObject found with the provided trackID. \(trackID)")
             }
         } catch {
             print("Error fetching SongObject:", error)
@@ -453,7 +431,7 @@ import NaturalLanguage
         let folderPicker =  NSOpenPanel(contentRect: folderChooserRectangle, styleMask: .resizable, backing: .buffered, defer: true)
         folderPicker.title = "Select an LRC File for \(currentlyPlayingName ?? "")"
         let lrcType = UTType(filenameExtension: "lrc")!
-        folderPicker.allowedContentTypes = [lrcType] // Only allow .gif files
+        folderPicker.allowedContentTypes = [lrcType] // Only allow .lrc files
         folderPicker.allowsMultipleSelection = false // Only allow a single selection
         folderPicker.canChooseFiles = true // Allow file selection
         folderPicker.canChooseDirectories = false // Disallow directory selection
@@ -487,22 +465,16 @@ import NaturalLanguage
                 _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
                 saveCoreData()
                 if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
                     SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
                 } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
                     SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
                 }
             }
             return parser.lyrics
         }
         return []
-//        if let lyrics = fetchFromCoreData(for: trackID) {
-//            print("got lyrics from core data :D \(trackID) \(trackName)")
-//            try Task.checkCancellation()
-//            amplitude.track(eventType: "CoreData Fetch")
-//            return lyrics
-//        }
-//        print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
-//        return try await fetchNetworkLyrics(for: trackID, trackName, false)
     }
     
     func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
@@ -567,12 +539,13 @@ import NaturalLanguage
             request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
             
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
+            
+            // Song lyrics don't exist on Spotify
             if urlResponseAndData.0.isEmpty {
                 print("F")
                 return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
-//                return []
             }
-            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
+            
             let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
             print("downloaded from internet successfully \(trackID) \(trackName)")
             saveCoreData()
@@ -597,21 +570,20 @@ import NaturalLanguage
             print("the lrclib call is \("https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)")")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
-            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
             let lrcLyrics = try decoder.decode(LRCLyrics.self, from: urlResponseAndData.0)
             print(lrcLyrics)
-//            if lrcLyrics.sy
+            
             let songObject = SongObject(from: lrcLyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
             saveCoreData()
+            amplitude.track(eventType: "LRC Fetch")
+            if spotifyOrAppleMusic {
+                
+            }
             if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                 SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
             } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                 SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
             }
-            // Karaoke window uses the user color choice as a backup. no need to save a backup color
-//            else {
-//                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: 104810)
-//            }
             return lrcLyrics.lyrics
 //            let lyricsArray = zip(songObject., songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             

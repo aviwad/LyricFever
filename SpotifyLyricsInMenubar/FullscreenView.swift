@@ -16,9 +16,7 @@ struct FullscreenView: View {
     @State var newSpotifyMusicArtworkImage: NSImage?
     @State var newArtworkUrl: String?
     @State var animate = true
-//    @State var avgColor: Color = Color(red: 33/255, green: 69/255, blue: 152/255)
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
-//    @State var colors: [Color] = []
     @State var timer = Timer
         .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
         .autoconnect()
@@ -33,7 +31,6 @@ struct FullscreenView: View {
         case playpause
         case showlyrics
         case pauseanimation
-//        case gradientOrColor
         case volumelow
         case volumehigh
         case translate
@@ -193,8 +190,6 @@ struct FullscreenView: View {
                 ""
             case .translate:
                 viewmodel.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
-//            case .gradientOrColor:
-//
         }
     }
     
@@ -214,21 +209,15 @@ struct FullscreenView: View {
         VStack(alignment: .leading){
             Spacer()
             ScrollViewReader { proxy in
-//                Array(array.enumerated()), id: \.offset
                 List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { offset, element in
-//                List (viewmodel.currentlyPlayingLyrics.indices, id:\.self) { i in
                     lyricLineView(for: element, index: offset)
                         .opacity(offset == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
                         .font(.system(size: 40, weight: .bold, design: .default))
                         .padding(20)
                         .listRowSeparator(.hidden)
                         .blur(radius: offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
-    //                        .animation(., value: <#T##Equatable#>)
-    //                    .frame(maxWidth: .infinity, alignment: .leading)
-                        //.contentShape(.rect)
                 }
                 .padding(.trailing, 100)
-//                .border(.blue)
                 .safeAreaInset(edge: .top) {
                     Spacer()
                         .id("first")
@@ -239,13 +228,6 @@ struct FullscreenView: View {
                         .id("last")
                         .frame(height: padding)
                     }
-//                .onChange(of: viewmodel.showLyrics) {
-//                    if viewmodel.showLyrics, let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-//                        withAnimation {
-//                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-//                        }
-//                    }
-//                }
                 .onChange(of: viewmodel.translatedLyric) {
                     withAnimation() {
                         if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
@@ -267,14 +249,9 @@ struct FullscreenView: View {
                     }
                 }
             }
-//            .safeAreaPadding(EdgeInsets(top: 600, leading: 0, bottom: 500, trailing: 200))
-            
-//                .scrollTargetLayout()
-//                .animation(.easeInOut(duration: 10), value: viewmodel.currentlyPlayingLyricsIndex)
             .scrollContentBackground(.hidden)
             .scrollDisabled(true)
             .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
-//            .scrollPosition(id: $viewmodel.currentlyPlayingLyricsIndex, anchor: .center)
             Spacer()
             
         }
@@ -282,78 +259,52 @@ struct FullscreenView: View {
     
     var body: some View {
         if viewmodel.fullscreenInProgress {
-            Color.black
+            // The animation to fullscreen can look jarring otherwise
+            Color(.windowBackgroundColor)
         } else {
             GeometryReader { geo in
                 HStack {
                     albumArt
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
-    //                    .border(.brown)
                     if canDisplayLyrics {
                         lyrics(padding: 0.5*(geo.size.height))
                             .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
-    //                        .border(.green)
                     }
                 }
-    //            .ignoresSafeArea()
             }
             .background {
                 ZStack {
                     BackgroundView(colors: $gradient, timer: $timer, points: $points)
-    //                if animate {
-    //
-    //                } else {
-    //                    avgColor
-    //                }
                 }
                 .ignoresSafeArea()
                 .transition(.opacity)
             }
             .onAppear {
-//                withAnimation {
-                    if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
-                        print(artworkUrl)
-                        withAnimation {
-                            self.newArtworkUrl = artworkUrl
-                        }
+                if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                    print(artworkUrl)
+                    withAnimation {
+                        self.newArtworkUrl = artworkUrl
                     }
-                    else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
-                        print("\(artistName) \(albumName)")
-                        Task {
-                            if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
-                                withAnimation {
-                                    self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"
-                                }
+                }
+                else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
+                    print("\(artistName) \(albumName)")
+                    Task {
+                        if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
+                            withAnimation {
+                                self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"
                             }
-                            
                         }
-//                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                        
                     }
-//                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-//                }
-    //            Task { @MainActor in
-    //                let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-    //                window?.collectionBehavior = .fullScreenPrimary
-    //                if window?.styleMask.rawValue != 49167 {
-    //                    window?.toggleFullScreen(true)
-    //                }
-    //            }
+                }
             }
             .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
                 print("NEW ARTWORK")
                 if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
                     gradient = dominantColors.map({adjustedColor($0)})
-    //                if let avgColor = try? adjustedColor(newArtwork.averageColor()) {
-    //                    withAnimation {
-    //                        self.avgColor = avgColor
-    //                    }
-    //                }
                 }
             }
             .onChange(of: viewmodel.currentlyPlayingName) { _ in
-//                withAnimation {
-//                    self.newArtworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl
-//                }
                 if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print("spotify artwork is \(artworkUrl)")
                     withAnimation {
@@ -371,7 +322,6 @@ struct FullscreenView: View {
                         }
                         
                     }
-//                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
                 }
             }
         }
@@ -430,15 +380,12 @@ struct BackgroundView: View {
                 points = self.colors.map { .random(withColor: $0) }
             }
         }
-//        .onAppear {
-//            points = self.colors.map { .random(withColor: $0) }
-//        }
     }
     
 }
 
 private extension ColorSpot {
-    static public func random(withColor color: SwiftUI.Color) -> ColorSpot {
+    static func random(withColor color: SwiftUI.Color) -> ColorSpot {
         .init(
             position: .init(x: CGFloat.random(in: 0 ..< 1), y: CGFloat.random(in: 0 ..< 1)),
             color: color
