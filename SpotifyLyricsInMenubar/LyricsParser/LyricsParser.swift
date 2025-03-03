@@ -156,7 +156,7 @@ public class LyricsParser {
 //            
 //            cLine.removeSubrange(line.startIndex..<cLine.index(closureIndex, offsetBy: 1))
             cLine.removeSubrange(cLine.startIndex..<cLine.index(closureIndex, offsetBy: 1))
-                    
+            cLine = cLine.trimmingCharacters(in: .whitespaces)
                     // Create a LyricLine with the calculated start time and the remaining line as the words
             let lyricLine = LyricLine(startTime: 1000*(hour * 3600 + minute * 60 + second + header.offset), words: cLine)
             items.append(lyricLine)
