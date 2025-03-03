@@ -516,11 +516,10 @@ struct SpotifyLyricsInMenubarApp: App {
                     .preferredColorScheme(.dark)
                     .environmentObject(viewmodel)
                     .onAppear {
+                        // Block "Esc" button
                         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (aEvent) -> NSEvent? in
                                 if aEvent.keyCode == 53 { // if esc pressed
-                                    
-//                                    appDelegate.hideMainWnd()
-                                    return nil // do not do "beep" sound
+                                    return nil
                                 }
                                     
                                 return aEvent
@@ -529,7 +528,6 @@ struct SpotifyLyricsInMenubarApp: App {
                             let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
                             window?.collectionBehavior = .fullScreenPrimary
                             if window?.styleMask.rawValue != 49167 {
-//                                viewmodel.fullscreenInProgress = true
                                 window?.toggleFullScreen(true)
                                 withAnimation() {
                                     viewmodel.fullscreenInProgress = false
