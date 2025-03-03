@@ -497,7 +497,7 @@ import NaturalLanguage
         decoder.userInfo[CodingUserInfoKey.duration] = spotifyOrAppleMusic ? TimeInterval((intDuration*1000) + 1000) : TimeInterval(intDuration+10)
         
         // Local file giveaway
-        if trackID.count < 22 {
+        if trackID.count != 22 {
             return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
         }
         
@@ -728,9 +728,16 @@ extension viewModel {
         
         // get equivalent spotify ID
         let spotifyID = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
+        let alternativeID = (appleMusicScript?.currentTrack?.artist ?? "") + (appleMusicScript?.currentTrack?.name ?? "")
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         if !Task.isCancelled {
-            self.currentlyPlaying = spotifyID
+            if let spotifyID {
+                self.currentlyPlaying = spotifyID
+            } else if alternativeID != "" {
+                self.currentlyPlaying = alternativeID
+            } else {
+                lyricsIsEmptyPostLoad = true
+            }
             
             if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
                 print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
@@ -839,10 +846,7 @@ extension viewModel {
                         print("GOT ID SEARCHING WITH TRACK AND ARTIST")
                         return firstItem.id
                     }
-                    
-                    
                 }
-                
             }
         }
         return nil

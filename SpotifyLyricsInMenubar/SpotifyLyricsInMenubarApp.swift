@@ -272,7 +272,7 @@ struct SpotifyLyricsInMenubarApp: App {
                             hasOnboarded = false
                             return
                         }
-                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                             viewmodel.currentlyPlaying = currentTrack
                             viewmodel.currentlyPlayingName = currentTrackName
                             viewmodel.currentlyPlayingArtist = currentArtistName
@@ -320,7 +320,8 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.isPlaying = false
                         // manually cancels the lyric-updater task bc media is paused
                     }
-                    let currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.components(separatedBy: ":").last
+                    print(notification.userInfo?["Track ID"] as? String)
+                    let currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.spotifyProcessedUrl()
                     let currentlyPlayingName = (notification.userInfo?["Name"] as? String)
                     if currentlyPlaying != "", currentlyPlayingName != "" {
                         viewmodel.currentlyPlaying = currentlyPlaying
@@ -444,7 +445,7 @@ struct SpotifyLyricsInMenubarApp: App {
                                 viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                             }
                         } else {
-                            if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.components(separatedBy: ":").last, let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                            if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
                                 viewmodel.currentlyPlaying = currentTrack
                                 viewmodel.currentlyPlayingName = currentTrackName
                                 viewmodel.currentlyPlayingArtist = currentArtistName
@@ -619,5 +620,16 @@ extension Locale {
             return Locale.current
         }
         return Locale.init(identifier: preferredIdentifier)
+    }
+}
+
+extension String {
+    func spotifyProcessedUrl() -> String? {
+        let components = self.components(separatedBy: ":")
+        guard components.count > 2 else { return nil }
+
+        return components[1] == "local"
+            ? components.dropFirst(2).dropLast().joined(separator: ":")
+            : components.dropFirst(2).joined(separator: ":")
     }
 }

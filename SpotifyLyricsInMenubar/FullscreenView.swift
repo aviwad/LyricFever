@@ -14,7 +14,9 @@ import Combine
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
     @State var newSpotifyMusicArtworkImage: NSImage?
+    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @State var newArtworkUrl: String?
+    @State var newAppleMusicArtworkImage: NSImage?
     @State var animate = true
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
     @State var timer = Timer
@@ -40,7 +42,14 @@ struct FullscreenView: View {
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
-            if let newArtworkUrl  {
+            if spotifyOrAppleMusic, let newAppleMusicArtworkImage {
+                Image(nsImage: newAppleMusicArtworkImage)
+                                        .resizable()
+                                        .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
+                                        .shadow(radius: 5)
+                                        .frame(width: canDisplayLyrics ? 550 : 700, height: canDisplayLyrics ? 550 : 700)
+            }
+            else if let newArtworkUrl  {
                 WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData)
                     .resizable()
                     .placeholder(content: {
@@ -79,7 +88,8 @@ struct FullscreenView: View {
             .frame(height: 35)
             HStack {
                 Button {
-                    viewmodel.spotifyScript?.playpause?()
+                    spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playpause?() : viewmodel.spotifyScript?.playpause?()
+                    
                 } label: {
                     Image(systemName: "playpause")
                 }
@@ -95,7 +105,7 @@ struct FullscreenView: View {
                     } else {
                         viewmodel.showLyrics = true
                         // Only Spotify has access to Fullscreen view
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: false)
+                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
                     }
                     
                 } label: {
@@ -143,8 +153,10 @@ struct FullscreenView: View {
                 .keyboardShortcut("a")
                 
                 Button {
-                    if let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                    if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
                         viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
+                    } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume{
+                        viewmodel.appleMusicScript?.setSoundVolume?(soundVolume-5)
                     }
                 } label: {
                     Image(systemName: "speaker.minus")
@@ -155,8 +167,10 @@ struct FullscreenView: View {
                 .keyboardShortcut(KeyEquivalent.downArrow, modifiers: [])
                 
                 Button {
-                    if let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                    if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
                         viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
+                    } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume{
+                        viewmodel.appleMusicScript?.setSoundVolume?(soundVolume+5)
                     }
                 } label: {
                     Image(systemName: "speaker.plus")
@@ -280,11 +294,14 @@ struct FullscreenView: View {
                 .transition(.opacity)
             }
             .onAppear {
-                if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                if !spotifyOrAppleMusic, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print(artworkUrl)
                     withAnimation {
                         self.newArtworkUrl = artworkUrl
                     }
+                }
+                else if spotifyOrAppleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
+                    newAppleMusicArtworkImage = artwork
                 }
                 else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
                     print("\(artistName) \(albumName)")
@@ -298,6 +315,12 @@ struct FullscreenView: View {
                     }
                 }
             }
+            .onChange(of: newAppleMusicArtworkImage) { newArtwork in
+                print("NEW ARTWORK")
+                if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                    gradient = dominantColors.map({adjustedColor($0)})
+                }
+            }
             .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
                 print("NEW ARTWORK")
                 if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
@@ -305,11 +328,14 @@ struct FullscreenView: View {
                 }
             }
             .onChange(of: viewmodel.currentlyPlayingName) { _ in
-                if let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                if !spotifyOrAppleMusic, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print("spotify artwork is \(artworkUrl)")
                     withAnimation {
                         self.newArtworkUrl = artworkUrl
                     }
+                }
+                else if spotifyOrAppleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
+                    newAppleMusicArtworkImage = artwork
                 }
                 else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
                     print("\(artistName) \(albumName)")
