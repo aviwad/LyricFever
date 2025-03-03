@@ -512,7 +512,7 @@ struct SpotifyLyricsInMenubarApp: App {
         })
         if #available(macOS 14.0, *) {
             Window("Lyric Fever: Fullscreen", id: "fullscreen") {
-                FullscreenView()
+                FullscreenView(spotifyOrAppleMusic: $spotifyOrAppleMusic)
                     .preferredColorScheme(.dark)
                     .environmentObject(viewmodel)
                     .onAppear {

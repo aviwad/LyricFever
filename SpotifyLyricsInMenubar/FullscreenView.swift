@@ -14,7 +14,7 @@ import Combine
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
     @State var newSpotifyMusicArtworkImage: NSImage?
-    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
+    @Binding var spotifyOrAppleMusic: Bool
     @State var newArtworkUrl: String?
     @State var newAppleMusicArtworkImage: NSImage?
     @State var animate = true
