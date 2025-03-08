@@ -65,4 +65,6 @@ Run `brew install lyric-fever`
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
-- [f728743](https://github.com/f728743) for the mesh gradient view. 
+- [f728743](https://github.com/f728743) for the mesh gradient view.
+- [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
+- MusicBrainz & the CoverArtArchive projects for their MBID and Cover Art APIs (used for non-spotify / local files)
