@@ -207,7 +207,7 @@ struct MusicBrainzReply: Codable {
 
 struct MusicBrainzRelease: Codable {
     let id: String
-    let status: String
+    let status: String?
     
     enum CodingKeys: CodingKey {
         case id,status
@@ -217,6 +217,6 @@ struct MusicBrainzRelease: Codable {
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
-        self.status = try container.decode(String.self, forKey: .status)
+        self.status = try? container.decode(String.self, forKey: .status)
     }
 }
