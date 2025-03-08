@@ -71,6 +71,7 @@ import NaturalLanguage
     @Published var translate = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
+    @AppStorage("showSongDetailsInMenubar") var showSongDetailsInMenubar = true
     @Published var fullscreen = false
     @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false

@@ -39,6 +39,7 @@ struct SpotifyLyricsInMenubarApp: App {
     var body: some Scene {
         MenuBarExtra(content: {
             Text(songTitle)
+            Toggle("Show Now Playing in Menubar", isOn: $viewmodel.showSongDetailsInMenubar)
             Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
@@ -580,7 +581,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
                 }
             // Backup: Display name and artist
-            } else if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+            } else if viewmodel.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
                 return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
             }
             // Onboarded but app is not open
