@@ -458,12 +458,15 @@ import NaturalLanguage
     }
 
     
-    func localFetch(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+    func localFetch(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
+        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+            throw CancellationError()
+        }
         if let fileUrl = await selectLRC(), let lyricText = try? String(contentsOf: fileUrl, encoding: .utf8) {
             let parser = LyricsParser(lyrics: lyricText)
             print(parser.lyrics)
             if !parser.lyrics.isEmpty {
-                _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
+                _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(intDuration+1000))
                 saveCoreData()
                 if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                     // Just instantiates a SpotifyColorData class to save it to CoreData haha....

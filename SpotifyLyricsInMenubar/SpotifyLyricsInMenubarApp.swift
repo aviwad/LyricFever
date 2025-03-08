@@ -75,7 +75,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 if viewmodel.currentlyPlayingLyrics.isEmpty {
                     Button("Upload Local LRC File") {
                         Task {
-                            try await viewmodel.currentlyPlayingLyrics = viewmodel.localFetch(for: currentlyPlaying, currentlyPlayingName)
+                            try await viewmodel.currentlyPlayingLyrics = viewmodel.localFetch(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
                             viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
