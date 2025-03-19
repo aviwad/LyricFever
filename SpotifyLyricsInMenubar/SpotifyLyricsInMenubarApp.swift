@@ -539,6 +539,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     .onDisappear {
                         NSApp.setActivationPolicy(.accessory)
                         viewmodel.fullscreen = false
+                        viewmodel.fullscreenInProgress = true
                     }
             }
         }
