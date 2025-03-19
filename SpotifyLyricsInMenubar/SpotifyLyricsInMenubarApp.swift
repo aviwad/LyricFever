@@ -575,7 +575,7 @@ struct SpotifyLyricsInMenubarApp: App {
             if !viewmodel.fullscreen, !viewmodel.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
                 // Attempt to display translations
                 // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
-                if viewmodel.translate, !viewmodel.translatedLyric.isEmpty {
+                if viewmodel.translateAndExists {
                     return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
                 } else {
                     return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)

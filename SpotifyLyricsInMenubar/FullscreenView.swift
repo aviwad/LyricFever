@@ -211,7 +211,7 @@ struct FullscreenView: View {
         VStack(alignment: .leading, spacing: 3) {
             Text(element.words)
                 .foregroundStyle(.white)
-            if viewmodel.translate, !viewmodel.translatedLyric.isEmpty {
+            if viewmodel.translateAndExists {
                 Text(viewmodel.translatedLyric[index])
                     .font(.system(size: 33, weight: .semibold, design: .default))
                     .opacity(0.85)
