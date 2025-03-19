@@ -24,7 +24,8 @@ public class SongObject: NSManagedObject, Decodable {
 //        self.duration = duration
         if !LRCLyrics.lyrics.isEmpty {
             var newLyrics = LRCLyrics.lyrics
-            newLyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
+            newLyrics.removeAll { $0.words == ""}
+            newLyrics.append(LyricLine(startTime: duration+5000, words: "Now Playing: \(title)"))
             self.lyricsTimestamps = newLyrics.map {$0.startTimeMS}
             self.lyricsWords = newLyrics.map {$0.words}
         } else {
@@ -43,7 +44,7 @@ public class SongObject: NSManagedObject, Decodable {
 //        self.duration = duration
         if !LocalLyrics.isEmpty {
             var newLyrics = LocalLyrics
-            newLyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
+            newLyrics.append(LyricLine(startTime: duration+5000, words: "Now Playing: \(title)"))
             self.lyricsTimestamps = newLyrics.map {$0.startTimeMS}
             self.lyricsWords = newLyrics.map {$0.words}
         } else {
@@ -68,8 +69,9 @@ public class SongObject: NSManagedObject, Decodable {
             // Dummy lyric at the end to keep the timer going past the last lyric, necessary for someone playing a single song on repeat
             // Spotify doesn't give playback notifications when it's the same song on repeat
             // Apple Music does, but unfortunately has every song slightly longer than it's spotify counterpart so this doesn't help us
+            lyrics.removeAll { $0.words == ""}
             if !lyrics.isEmpty {
-                lyrics.append(LyricLine(startTime: duration-1400, words: "Now Playing: \(title)"))
+                lyrics.append(LyricLine(startTime: duration+5000, words: "Now Playing: \(title)"))
             }
             self.lyricsTimestamps = lyrics.map {$0.startTimeMS}
             self.lyricsWords = lyrics.map {$0.words}
