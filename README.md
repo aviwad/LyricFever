@@ -23,10 +23,11 @@ Run `brew install lyric-fever`
 - Automatic Lyric Playback on Menubar
 - Fullscreen Mode (Modeled after Apple Music’s fullscreen view)
 - Karaoke Mode (Lyric popup that stays on screen)
+- Karaoke Mode customization (font color, etc)
 - Lyric Translation (using Apple’s on device APIs)
 - Offline caching! Lyrics are automatically stored offline efficiently using CoreData
 - Play some music on the Spotify / Apple Music app and watch the lyrics play on the menu bar automatically.
-- Lyrics fetched from Spotify, and LRCLIB as a backup lyric provider
+- Lyrics fetched from Spotify, LRCLIB, and NetEase as a backup lyric provider
 
 ## YouTube Promo Vid:
 
@@ -48,6 +49,7 @@ Run `brew install lyric-fever`
 - I map Apple Music songs to equivalent Spotify ID using ISRC to display Lyrics fetched from Spotify for either platform
 - Lyrics are fetched from LRCLIB as a backup when Spotify fails
 - I fetch the song “background color” with each lyric, and the color is used for the karaoke mode window background 
+- Songs translated using Apple's Translation API. 
 - The fullscreen view uses a custom mesh gradient and extracts colors from the album art using ColorKit
 - Spiritual successor to LyricsX (95% more efficient, 0.1% CPU usage of Lyric Fever vs 3% of LyricsX)
 - Technical write-up coming soon
@@ -65,6 +67,11 @@ Run `brew install lyric-fever`
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
+- NetEase for their Lyrics, used when LRCLIB and Spotify fail.
+- https://neteasecloudmusicapi-ten-wine.vercel.app for their NetEase API
 - [f728743](https://github.com/f728743) for the mesh gradient view.
 - [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
 - MusicBrainz & the CoverArtArchive projects for their MBID and Cover Art APIs (used for non-spotify / local files)
+- LyricsX for their Spotify TOTP fix and NetEase lyric provider
+- Christian Selig for his efficient image color averaging technique
+- Various StackOverflow snippets
