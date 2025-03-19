@@ -516,16 +516,31 @@ import NaturalLanguage
             if !parser.lyrics.isEmpty {
                 _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(intDuration+1000))
                 saveCoreData()
-                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                if spotifyOrAppleMusic {
+                    if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                    } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    }
+                } else {
+                    if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    }
                 }
+//                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+//                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
+//                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+//                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+//                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
+//                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+//                }
             }
+            try Task.checkCancellation()
             return parser.lyrics
         }
+        try Task.checkCancellation()
         return []
     }
     
@@ -747,13 +762,19 @@ import NaturalLanguage
             saveCoreData()
             amplitude.track(eventType: "LRC Fetch")
             if spotifyOrAppleMusic {
-                
+                if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                }
+            } else {
+                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                }
             }
-            if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-            } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-            }
+            try Task.checkCancellation()
             return lrcLyrics.lyrics
 //            let lyricsArray = zip(songObject., songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
