@@ -70,6 +70,7 @@ import NaturalLanguage
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
     @AppStorage("translate") var translate = false
+    @AppStorage("romanize") var romanize = false
     @AppStorage("hasMigrated") var hasMigrated = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true

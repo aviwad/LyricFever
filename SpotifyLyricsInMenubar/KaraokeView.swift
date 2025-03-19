@@ -48,8 +48,12 @@ struct KaraokeView: View {
     
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
+            if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
+                Text(toLatin)
+            } else {
+                Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
+            }
             Text(viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
-            Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9*(viewmodel.karaokeFont.pointSize)))
 //                .font(.system(size: 0.9*(viewmodel.karaokeFontSize), weight: .semibold, design: .default))
                 .opacity(0.85)
@@ -69,7 +73,11 @@ struct KaraokeView: View {
                     Text(viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 }
             } else {
-                Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
+                if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
+                    Text(toLatin)
+                } else {
+                    Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
+                }
             }
         } else {
             Text("")

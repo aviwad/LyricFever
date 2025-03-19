@@ -126,6 +126,8 @@ struct SpotifyLyricsInMenubarApp: App {
                 Text("Update to macOS 15 to enable translation")
             }
             Divider()
+            Toggle("Romanize", isOn: $viewmodel.romanize)
+            Divider()
             Text("Menubar Size is \(truncationLength)")
             if truncationLength != 60 {
                 Button("Increase Size to \(truncationLength+10) ") {
@@ -579,7 +581,12 @@ struct SpotifyLyricsInMenubarApp: App {
                 if viewmodel.translateAndExists {
                     return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
                 } else {
-                    return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
+                    // Attempt to display Romanization
+                    if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
+                        return toLatin.trunc(length: truncationLength)
+                    } else {
+                        return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
+                    }
                 }
             // Backup: Display name and artist
             } else if viewmodel.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
