@@ -33,6 +33,7 @@
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
+		8FEF70F72D8B5CE40069AC01 /* Update21Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEF70F62D8B5CE40069AC01 /* Update21Window.swift */; };
 		8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF184EC2D626F1E0026D2A2 /* CompactSlider */; };
 		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
 		8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */; };
@@ -70,6 +71,7 @@
 		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
 		8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyScripting.swift; sourceTree = "<group>"; };
 		8FE454292A891EBD0039EFA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8FEF70F62D8B5CE40069AC01 /* Update21Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update21Window.swift; sourceTree = "<group>"; };
 		8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Lyrics.xcdatamodel; sourceTree = "<group>"; };
 		8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MulticolorGradientShader.metal; sourceTree = "<group>"; };
 		8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticolorGradient.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */,
 				8FF9ADAA2C5B5E7500A57A75 /* Model */,
 				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
+				8FEF70F62D8B5CE40069AC01 /* Update21Window.swift */,
 				8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */,
 				8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */,
 				8F2D534A2D6C1B50006F33B0 /* LyricsParser */,
@@ -285,6 +288,7 @@
 				8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */,
 				8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */,
 				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
+				8FEF70F72D8B5CE40069AC01 /* Update21Window.swift in Sources */,
 				8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */,
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */,

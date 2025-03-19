@@ -25,8 +25,17 @@ enum MusicType {
     case appleMusic
 }
 
+//final class AppDelegate: NSObject, NSApplicationDelegate {
+////    @Environment(\.openWindow) private var openWindow
+//    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+////        openWindow(id: "onboarding")
+//        return false
+//    }
+//}
+
 @main
 struct SpotifyLyricsInMenubarApp: App {
+//    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var viewmodel = viewModel.shared
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
@@ -243,6 +252,11 @@ struct SpotifyLyricsInMenubarApp: App {
                     if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
                         viewmodel.isPlaying = true
                     }
+                    if !viewmodel.hasMigrated {
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                        openWindow(id: "update21")
+                        return
+                    }
                     if spotifyOrAppleMusic {
                         Task {
                             let status = await viewmodel.requestMusicKitAuthorization()
@@ -355,6 +369,12 @@ struct SpotifyLyricsInMenubarApp: App {
                                 print(error)
                             }
                         }
+//                        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
+//                            if !viewmodel.fullscreenInProgress {
+//                                openWindow(id: "onboarding")
+//                            }
+//                            
+//                           }
                         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
                                // This code will be executed just before the app terminates
                             UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
@@ -558,6 +578,25 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                 }
         }.windowResizability(.contentSize)
+            .windowStyle(.hiddenTitleBar)
+        Window("Lyric Fever: Update 2.1", id: "update21") { // << here !!
+            Update21Window().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
+                .environmentObject(viewmodel)
+                .preferredColorScheme(.dark)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                    Task { @MainActor in
+                        let window = NSApp.windows.first {$0.identifier?.rawValue == "update21"}
+                        window?.level = .floating
+                    }
+                }
+                .onDisappear {
+                    if !viewmodel.fullscreen {
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+                }
+        }
+            .windowResizability(.contentSize)
             .windowStyle(.hiddenTitleBar)
     }
     
