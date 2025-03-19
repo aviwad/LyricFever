@@ -40,6 +40,7 @@ struct SpotifyLyricsInMenubarApp: App {
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
+    @AppStorage("hasUpdated21") var hasUpdated21: Bool = false
     @AppStorage("hasTranslated") var hasTranslated: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @StateObject var translationConfigObject: translationConfigObject = .init()
@@ -237,6 +238,14 @@ struct SpotifyLyricsInMenubarApp: App {
 //                    }
                 })
                 .onAppear {
+                    print("on appear running")
+                    if !hasUpdated21 {
+                    
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                        openWindow(id: "update21")
+                        hasUpdated21 = true
+                        return
+                    }
                     if viewmodel.cookie.count == 0 {
                         hasOnboarded = false
                     }
@@ -251,11 +260,6 @@ struct SpotifyLyricsInMenubarApp: App {
                     print("Application just started. lets check whats playing")
                     if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
                         viewmodel.isPlaying = true
-                    }
-                    if !viewmodel.hasMigrated {
-                        NSApplication.shared.activate(ignoringOtherApps: true)
-                        openWindow(id: "update21")
-                        return
                     }
                     if spotifyOrAppleMusic {
                         Task {
