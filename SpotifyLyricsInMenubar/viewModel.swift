@@ -15,6 +15,7 @@ import SwiftUI
 import MediaPlayer
 import WebKit
 import UniformTypeIdentifiers
+import SwiftOTP
 import NaturalLanguage
 
 @MainActor class viewModel: ObservableObject {
@@ -492,6 +493,80 @@ import NaturalLanguage
         return try await fetchNetworkLyrics(for: trackID, trackName, spotifyOrAppleMusic)
     }
     
+    // Thanks to Mx-lris
+    enum TOTPGenerator {
+         static func generate(serverTimeSeconds: Int) -> String? {
+             let secretCipher = [12, 56, 76, 33, 88, 44, 88, 33, 78, 78, 11, 66, 22, 22, 55, 69, 54]
+     
+             var processed = [UInt8]()
+             for (i, byte) in secretCipher.enumerated() {
+                 processed.append(UInt8(byte ^ (i % 33 + 9)))
+             }
+     
+             let processedStr = processed.map { String($0) }.joined()
+     
+             guard let utf8Bytes = processedStr.data(using: .utf8) else {
+                 return nil
+             }
+     
+             let secretBase32 = utf8Bytes.base32EncodedString
+     
+             guard let secretData = base32DecodeToData(secretBase32) else {
+                 return nil
+             }
+     
+             guard let totp = TOTP(secret: secretData, digits: 6, timeInterval: 30, algorithm: .sha1) else {
+                 return nil
+             }
+     
+             return totp.generate(secondsPast1970: serverTimeSeconds)
+         }
+     }
+    
+    func generateAccessToken() async throws {
+        
+        // NEW: generate TOTP
+        // Thanks to Mxlris-LyricsX-Project
+        
+        /*
+         check if saved access token is bigger than current time, then continue with lyric fetch
+         else
+         check if we have spdc cookie, then access token stuff
+            then save access token in this observable object
+                then continue with lyric fetch
+         otherwise []
+         */
+        
+        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
+            while accessToken?.accessToken.range(of: "[-_]", options: .regularExpression) == nil {
+                let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
+                let serverTimeData = try await URLSession.shared.data(for: serverTimeRequest).0
+                let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
+                if let totp = TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)"), cookie != "" {
+                    var request = URLRequest(url: url)
+                    request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
+                    let accessTokenData = try await fakeSpotifyUserAgentSession.data(for: request)
+                    print(String(decoding: accessTokenData.0, as: UTF8.self))
+                    do {
+                        accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                        print("ACCESS TOKEN IS SAVED")
+                    } catch {
+                        do {
+                            let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+                            if errorWrap.error.code == 401 {
+                                UserDefaults().set(false, forKey: "hasOnboarded")
+                            }
+                        } catch {
+                            // silently fail
+                        }
+                        print("json error decoding the access token, therefore bad cookie therefore un-onboard")
+                    }
+                    
+                }
+            }
+        }
+    }
+    
     func fetchNetworkLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
         guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
             throw CancellationError()
@@ -505,37 +580,7 @@ import NaturalLanguage
             return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
         }
         
-        /*
-         check if saved access token is bigger than current time, then continue with lyric fetch
-         else
-         check if we have spdc cookie, then access token stuff
-            then save access token in this observable object
-                then continue with lyric fetch
-         otherwise []
-         */
-        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
-                var request = URLRequest(url: url)
-                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
-                let accessTokenData = try await URLSession.shared.data(for: request)
-                print(String(decoding: accessTokenData.0, as: UTF8.self))
-                do {
-                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                    print("ACCESS TOKEN IS SAVED")
-                } catch {
-                    do {
-                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
-                        if errorWrap.error.code == 401 {
-                            UserDefaults().set(false, forKey: "hasOnboarded")
-                        }
-                    } catch {
-                        // silently fail
-                    }
-                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
-                }
-                
-            }
-        }
+        try await generateAccessToken()
         if let accessToken, let url = URL(string: "https://spclient.wg.spotify.com/color-lyrics/v2/track/\(trackID)?format=json&vocalRemoval=false") {
             var request = URLRequest(url: url)
             request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
@@ -687,29 +732,30 @@ extension viewModel {
             self.appleMusicStorePlaybackID =  information["kMRMediaRemoteNowPlayingInfoContentItemIdentifier"] as? String
         })
         
-        // run access token generator
-        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-            print("creating new access token from apple music, if this appears multiple times thats suspicious")
-            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
-                var request = URLRequest(url: url)
-                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
-                let accessTokenData = try await URLSession.shared.data(for: request)
-                do {
-                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                    print("ACCESS TOKEN IS SAVED")
-                } catch {
-                    do {
-                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
-                        if errorWrap.error.code == 401 {
-                            UserDefaults().set(false, forKey: "hasOnboarded")
-                        }
-                    } catch {
-                        // silently fail
-                    }
-                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
-                }
-            }
-        }
+//        // run access token generator
+//        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
+//            print("creating new access token from apple music, if this appears multiple times thats suspicious")
+//            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
+//                var request = URLRequest(url: url)
+//                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
+//                let accessTokenData = try await URLSession.shared.data(for: request)
+//                do {
+//                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+//                    print("ACCESS TOKEN IS SAVED")
+//                } catch {
+//                    do {
+//                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+//                        if errorWrap.error.code == 401 {
+//                            UserDefaults().set(false, forKey: "hasOnboarded")
+//                        }
+//                    } catch {
+//                        // silently fail
+//                    }
+//                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
+//                }
+//            }
+//        }
+        try await generateAccessToken()
         
         // check for musickit auth
         print("status of MusicKit auth: \(MusicAuthorization.currentStatus)")

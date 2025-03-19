@@ -495,36 +495,73 @@ struct ApiView: View {
             }
         }
     }
+
     
     func checkForLogin() async {
         isLoading = true
-        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player") {
-            do {
+        do {
+            let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
+            let serverTimeData = try await URLSession.shared.data(for: serverTimeRequest).0
+            let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
+            if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)") {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await URLSession.shared.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                 do {
                     try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                    
                     print("ACCESS TOKEN IS SAVED")
                     // set onboarded to true here, no need to wait for user to finish selecting truncation
                     UserDefaults().set(true, forKey: "hasOnboarded")
                     error = false
                     isLoading = false
                     isShowingDetailView = true
-                }
-                catch {
-                    print("JSON ERROR CAUGHT")
+                } catch {
                     self.error = true
                     isLoading = false
+//                    do {
+//                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+//                        if errorWrap.error.code == 401 {
+//                            UserDefaults().set(false, forKey: "hasOnboarded")
+//                        }
+//                    } catch {
+//                        // silently fail
+//                    }
+//                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
                 }
+                
             }
-            catch {
-                self.error = true
-                isLoading = false
-            }
+        } catch {
+            self.error = true
+            isLoading = false
         }
+//        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"){//&totp=\(getTotp())&totpVer=5&ts=\(getTimestamp())") {
+//            do {
+//                var request = URLRequest(url: url)
+//                request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
+//                let accessTokenData = try await URLSession.shared.data(for: request)
+//                print(String(decoding: accessTokenData.0, as: UTF8.self))
+//                do {
+//                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+//                    
+//                    print("ACCESS TOKEN IS SAVED")
+//                    // set onboarded to true here, no need to wait for user to finish selecting truncation
+//                    UserDefaults().set(true, forKey: "hasOnboarded")
+//                    error = false
+//                    isLoading = false
+//                    isShowingDetailView = true
+//                }
+//                catch {
+//                    print("JSON ERROR CAUGHT")
+//                    self.error = true
+//                    isLoading = false
+//                }
+//            }
+//            catch {
+//                self.error = true
+//                isLoading = false
+//            }
+//        }
     }
 }
 

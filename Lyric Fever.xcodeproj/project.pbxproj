@@ -43,6 +43,7 @@
 		8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */; };
 		8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */; };
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
+		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
 				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
@@ -206,6 +208,7 @@
 				8FA4E9772CE73DB900CEEF35 /* ColorKit */,
 				8FF184EC2D626F1E0026D2A2 /* CompactSlider */,
 				8F832CAC2D6BEC52008C1C2B /* FontPicker */,
+				8FFED07A2D8A26E700EA1510 /* SwiftOTP */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -243,6 +246,7 @@
 				8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */,
 				8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */,
+				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -583,6 +587,14 @@
 				kind = branch;
 			};
 		};
+		8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lachlanbell/SwiftOTP";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -620,6 +632,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		8FFED07A2D8A26E700EA1510 /* SwiftOTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */;
+			productName = SwiftOTP;
 		};
 /* End XCSwiftPackageProductDependency section */
 

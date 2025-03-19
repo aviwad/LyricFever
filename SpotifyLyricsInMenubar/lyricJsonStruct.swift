@@ -220,3 +220,8 @@ struct MusicBrainzRelease: Codable {
         self.status = try? container.decode(String.self, forKey: .status)
     }
 }
+
+// Spotify TOTP Login Fix
+struct SpotifyServerTime: Decodable {
+    let serverTime: Int
+}
