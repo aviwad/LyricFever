@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0849332CB5D1BD00644244 /* KaraokeView.swift */; };
+		8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F10AC8D2D7D04D90036664A /* OverridePrint.swift */; };
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
 		8F2D534D2D6C1B50006F33B0 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */; };
@@ -46,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		8F0849332CB5D1BD00644244 /* KaraokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeView.swift; sourceTree = "<group>"; };
+		8F10AC8D2D7D04D90036664A /* OverridePrint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverridePrint.swift; sourceTree = "<group>"; };
 		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
 		8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParser.swift; sourceTree = "<group>"; };
 		8F2D534E2D6C1B88006F33B0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				8FF9AD9E2C5B426C00A57A75 /* Shaders */,
 				8FE454292A891EBD0039EFA7 /* Info.plist */,
 				8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */,
+				8F10AC8D2D7D04D90036664A /* OverridePrint.swift */,
 				8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */,
 				8FF9ADAA2C5B5E7500A57A75 /* Model */,
 				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
@@ -278,6 +281,7 @@
 				8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */,
 				8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */,
 				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
+				8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */,
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */,
 				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,
