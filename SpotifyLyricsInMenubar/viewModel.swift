@@ -593,27 +593,101 @@ import NaturalLanguage
             // Song lyrics don't exist on Spotify
             if urlResponseAndData.0.isEmpty {
                 print("F")
-                return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                if lrc == [] {
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    return netease
+                } else {
+                    return lrc
+                }
             }
             
             let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
-            print("downloaded from internet successfully \(trackID) \(trackName)")
-            saveCoreData()
-            let lyricsArray = zip(songObject.lyrics.lyricsTimestamps, songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
-            
-            try Task.checkCancellation()
-            amplitude.track(eventType: "Network Fetch")
-            return lyricsArray
+            if !songObject.lyrics.lyricsTimestamps.isEmpty {
+                print("downloaded from internet successfully \(trackID) \(trackName)")
+                saveCoreData()
+                let lyricsArray = zip(songObject.lyrics.lyricsTimestamps, songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+                
+                try Task.checkCancellation()
+                amplitude.track(eventType: "Network Fetch")
+                return lyricsArray
+            } else {
+                print("F (no time synced lyrics)")
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                if lrc == [] {
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    return netease
+                } else {
+                    return lrc
+                }
+            }
         }
+        return []
+    }
+    
+    func fetchNetEaseLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
+        let artist = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
+//        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
+//        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+//            throw CancellationError()
+//        }
+        // fetch lrc lyrics
+//        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
+        
+        if let artist, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist)") {
+            print("the netease search call is \("https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist)")")
+            let request = URLRequest(url: url)
+            let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
+            let neteasesearch = try decoder.decode(NetEaseSearch.self, from: urlResponseAndData.0)
+            print(neteasesearch)
+            guard let neteaseId = neteasesearch.result.songs.first?.id else {
+                return []
+            }
+            let lyricRequest = URLRequest(url: URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/lyric?id=\(neteaseId)")!)
+            let urlResponseAndDataLyrics = try await LRCLIBUserAgentSession.data(for: lyricRequest)
+            let neteaseLyrics = try decoder.decode(NetEaseLyrics.self, from: urlResponseAndDataLyrics.0)
+            guard let neteaselrc = neteaseLyrics.lrc, let neteaseLrcString = neteaselrc.lyric else {
+                return []
+            }
+            let parser = LyricsParser(lyrics: neteaseLrcString)
+            print(parser.lyrics)
+            // NetEase incorrectly advertises lyrics for EVERY song when it only has the name, artist, composer at 0.0 *sigh*
+            if parser.lyrics.last?.startTimeMS == 0.0 {
+                return []
+            }
+            let songObject = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
+            saveCoreData()
+            amplitude.track(eventType: "NetEase Fetch")
+            if spotifyOrAppleMusic {
+                if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                }
+            } else {
+                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                }
+            }
+            try Task.checkCancellation()
+            return parser.lyrics
+        }
+        // and then custom spotify album call to get the color for karaoke mode
+        
+        // check if not cancelled
+        // save SongObject and IDToColor
+        
         return []
     }
     
     func fetchLRCLIBNetworkLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
         let artist = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
         let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
-        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
-            throw CancellationError()
-        }
+//        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+//            throw CancellationError()
+//        }
         // fetch lrc lyrics
 //        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
         if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)") {
