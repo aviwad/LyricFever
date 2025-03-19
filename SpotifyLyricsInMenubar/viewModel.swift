@@ -69,7 +69,7 @@ import NaturalLanguage
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
-    @Published var translate = false
+    @AppStorage("translate") var translate = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
     @AppStorage("showSongDetailsInMenubar") var showSongDetailsInMenubar = true
