@@ -70,6 +70,7 @@ import NaturalLanguage
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
     @AppStorage("translate") var translate = false
+    @AppStorage("hasMigrated") var hasMigrated = false
     @Published var translatedLyric: [String] = []
     @Published var showLyrics = true
     @AppStorage("showSongDetailsInMenubar") var showSongDetailsInMenubar = true
@@ -184,6 +185,7 @@ import NaturalLanguage
             self.coreDataContainer.viewContext.mergePolicy = NSMergePolicy.overwrite
         }
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = coreDataContainer.viewContext
+        migrateTimestampsIfNeeded(context: coreDataContainer.viewContext)
         
         // Check if user must urgently update (overrides menubar)
         Task {
@@ -200,7 +202,50 @@ import NaturalLanguage
         }
     }
     
-    // Runs once user has completed Spotify log-in. Attemp to extract cookie
+    // Run only on first 2.1 run. Strips whitespace from saved lyrics, and extends final timestamp to prevent karaoke mode racecondition (as well as song on loop race condition)
+    func migrateTimestampsIfNeeded(context: NSManagedObjectContext) {
+        if !hasMigrated {
+            let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
+            do {
+                let objects = try context.fetch(fetchRequest)
+//                for object in objects {
+//                    if object.lyricsWords.count != object.lyricsTimestamps.count {
+//                        context.delete(object)
+//                    }
+//                }
+//                do {
+//                    try context.save() // Persist the deletions
+//                } catch {
+//                    print("Error saving after deletion: \(error)")
+//                }
+                for object in objects {
+                    var timestamps = object.lyricsTimestamps
+                    if let lastIndex = timestamps.indices.last {
+                        timestamps[lastIndex] = timestamps[lastIndex] + 5000
+                        object.lyricsTimestamps = timestamps
+                    }
+                    var strings = object.lyricsWords
+                    let indicesToRemove = strings.indices.filter { strings[$0].isEmpty }
+                    strings.removeAll { $0.isEmpty }
+                    for index in indicesToRemove.reversed() {
+                        timestamps.remove(at: index)
+                    }
+
+                    // Update the object properties
+                    object.lyricsWords = strings
+                    object.lyricsTimestamps = timestamps
+                }
+                try context.save()
+                
+                // Mark migration as done
+                hasMigrated = true
+            } catch {
+                print("Error migrating data: \(error)")
+            }
+        }
+    }
+    
+    // Runs once user has completed Spotify log-in. Attempt to extract cookie
     func checkIfLoggedIn() {
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             if let temporaryCookie = cookies.first(where: {$0.name == "sp_dc"}) {
