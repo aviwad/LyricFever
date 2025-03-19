@@ -231,6 +231,14 @@ struct FullscreenView: View {
                         .listRowSeparator(.hidden)
                         .blur(radius: offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
                 }
+                .onAppear {
+                    Task {
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                        }
+                    }
+                }
                 .padding(.trailing, 100)
                 .safeAreaInset(edge: .top) {
                     Spacer()
