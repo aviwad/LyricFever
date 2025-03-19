@@ -7,7 +7,7 @@ The Best Lyrics Experience for Spotify & Apple Music on macOS. It Just Works.
 ## Installation
 
 ### Manual
-Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/download/v2.0/Lyric.Fever.2.0.dmg).
+Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/download/v2.1/Lyric.Fever.2.1.dmg).
 
 ### Homebrew
 Run `brew install lyric-fever`
