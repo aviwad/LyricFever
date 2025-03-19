@@ -199,7 +199,10 @@ class FloatingPanel<Content: View>: NSPanel {
     
     func fadeOut() {
 //        let lol: NSAnimationContext = .init()
-        self.animator().alphaValue = 0.0
+        NSAnimationContext.runAnimationGroup { hi in
+            hi.duration = 0.1
+            self.animator().alphaValue = 0.0
+        }
     }
     
      
