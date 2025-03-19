@@ -39,7 +39,7 @@ struct SpotifyLyricsInMenubarApp: App {
     var body: some Scene {
         MenuBarExtra(content: {
             Text(songTitle)
-            Toggle("Show Now Playing in Menubar", isOn: $viewmodel.showSongDetailsInMenubar)
+            Toggle("Show Song Details in Menubar", isOn: $viewmodel.showSongDetailsInMenubar)
             Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
