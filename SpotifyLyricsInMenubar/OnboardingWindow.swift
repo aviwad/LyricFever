@@ -483,6 +483,11 @@ struct ApiView: View {
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didLogIn"))) { newValue in
             loggedIn = true
         }
+        .onAppear {
+            if spDcCookie.count > 0 {
+                loggedIn = true
+            }
+        }
          .onReceive(NotificationCenter.default.publisher(for: NSWindow.willMiniaturizeNotification)) { newValue in
             dismiss()
         }
@@ -520,10 +525,10 @@ struct ApiView: View {
                     self.error = true
                     isLoading = false
 //                    do {
-//                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
-//                        if errorWrap.error.code == 401 {
-//                            UserDefaults().set(false, forKey: "hasOnboarded")
-//                        }
+                        let errorWrap = try? JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
+                    if errorWrap?.error.code == 401 {
+                        loggedIn = false
+                        }
 //                    } catch {
 //                        // silently fail
 //                    }
