@@ -78,7 +78,6 @@ struct KaraokeView: View {
     
     var body: some View {
         lyricsView()
-            .drawingGroup()
 //            .animation(.easeInOut(duration: 0.2))
             .lineLimit(2)
             .id(viewmodel.currentlyPlayingLyricsIndex)
@@ -103,13 +102,16 @@ struct KaraokeView: View {
                 .transition(.opacity)
                 .opacity(viewModel.shared.karaokeTransparency/100)
 //                .drawingGroup()
-                .background(VisualEffectView().ignoresSafeArea().padding(-5))
-//                .background(VisualEffectView().animation(nil))
-                .cornerRadius(16)
 //                .transition(.opacity)
 //                .animation(nil)
 //                .animation(.snappy(duration: 0.1), value: viewmodel.currentlyPlayingLyricsIndex)
             }
+            .drawingGroup()
+            .background(
+                VisualEffectView().ignoresSafeArea()
+            )
+            .cornerRadius(16)
+//                .background(VisualEffectView().animation(nil))
             .onHover { hover in
                 if viewmodel.karaokeModeHoveringSetting {
                     viewmodel.karaokeModeHovering = hover
