@@ -95,6 +95,7 @@ import NaturalLanguage
     // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
     private var currentLyricsUpdaterTask: Task<Void,Error>?
+    private var currentLyricsDriftFix: Task<Void,Error>?
     private var currentAppleMusicFetchTask: Task<Void,Error>?
     
     // Apple Music APIs
@@ -386,9 +387,13 @@ import NaturalLanguage
                 }
             }
         } else if !appleMusicOrSpotify {
-            // Only run drift fix for new songs
+            currentLyricsDriftFix?.cancel()
+            currentLyricsDriftFix =             // Only run drift fix for new songs
             Task {
                 try await fixSpotifyLyricDrift()
+            }
+            Task {
+                try await currentLyricsDriftFix?.value
             }
         }
         currentLyricsUpdaterTask = Task {
