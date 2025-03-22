@@ -644,7 +644,15 @@ import NaturalLanguage
         
         // Local file giveaway
         if trackID.count != 22 {
-            return (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+            let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+            if lrc == [] {
+                let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                try Task.checkCancellation()
+                return netease
+            } else {
+                try Task.checkCancellation()
+                return lrc
+            }
         }
         
         try await generateAccessToken()
@@ -653,21 +661,38 @@ import NaturalLanguage
             request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
             print("the access token is \(accessToken.accessToken)")
             request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
-            
+            print("Requesting Spotify lyric data")
+            try Task.checkCancellation()
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
             
             // Song lyrics don't exist on Spotify
             if urlResponseAndData.0.isEmpty {
                 print("F")
+                try Task.checkCancellation()
                 let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
                 if lrc == [] {
+                    try Task.checkCancellation()
                     let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    try Task.checkCancellation()
                     return netease
                 } else {
+                    try Task.checkCancellation()
                     return lrc
                 }
             }
-            
+            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
+            if String(decoding: urlResponseAndData.0, as: UTF8.self) == "too many requests" {
+                try Task.checkCancellation()
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                if lrc == [] {
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    try Task.checkCancellation()
+                    return netease
+                } else {
+                    try Task.checkCancellation()
+                    return lrc
+                }
+            }
             let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
             if !songObject.lyrics.lyricsTimestamps.isEmpty {
                 print("downloaded from internet successfully \(trackID) \(trackName)")
@@ -679,11 +704,14 @@ import NaturalLanguage
                 return lyricsArray
             } else {
                 print("F (no time synced lyrics)")
+                try Task.checkCancellation()
                 let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
                 if lrc == [] {
                     let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    try Task.checkCancellation()
                     return netease
                 } else {
+                    try Task.checkCancellation()
                     return lrc
                 }
             }
