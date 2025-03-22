@@ -447,11 +447,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 .onChange(of: hasOnboarded) { newHasOnboarded in
                     if newHasOnboarded {
                         guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
-                                viewmodel.isPlaying = false
-                                viewmodel.currentlyPlaying = nil
-                                viewmodel.currentlyPlayingName = nil
-                                viewmodel.currentlyPlayingArtist = nil
-                                viewmodel.currentlyPlayingAppleMusicPersistentID = nil
+                            viewmodel.isPlaying = false
+                            viewmodel.currentlyPlaying = nil
+                            viewmodel.currentlyPlayingName = nil
+                            viewmodel.currentlyPlayingArtist = nil
+                            viewmodel.currentlyPlayingAppleMusicPersistentID = nil
                             return
                         }
                         print("Application just started (finished onboarding). lets check whats playing")

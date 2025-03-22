@@ -723,7 +723,7 @@ import NaturalLanguage
     }
     
     func fetchNetEaseLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
-        let artist = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
+        let artist = currentlyPlayingArtist//spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
 //        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
@@ -780,7 +780,7 @@ import NaturalLanguage
     }
     
     func fetchLRCLIBNetworkLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
-        let artist = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
+        let artist = currentlyPlayingArtist//spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
         let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
@@ -909,30 +909,7 @@ extension viewModel {
         MRMediaRemoteGetNowPlayingInfo(DispatchQueue.global(), { (information) in
             self.appleMusicStorePlaybackID =  information["kMRMediaRemoteNowPlayingInfoContentItemIdentifier"] as? String
         })
-        
-//        // run access token generator
-//        if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-//            print("creating new access token from apple music, if this appears multiple times thats suspicious")
-//            if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"), cookie != "" {
-//                var request = URLRequest(url: url)
-//                request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
-//                let accessTokenData = try await URLSession.shared.data(for: request)
-//                do {
-//                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-//                    print("ACCESS TOKEN IS SAVED")
-//                } catch {
-//                    do {
-//                        let errorWrap = try JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
-//                        if errorWrap.error.code == 401 {
-//                            UserDefaults().set(false, forKey: "hasOnboarded")
-//                        }
-//                    } catch {
-//                        // silently fail
-//                    }
-//                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
-//                }
-//            }
-//        }
+
         try await generateAccessToken()
         
         // check for musickit auth
@@ -955,12 +932,14 @@ extension viewModel {
         print("playback ID is \(appleMusicStorePlaybackID) and ISRC is \(isrc)")
         
         // get equivalent spotify ID
-        let spotifyID = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
+        let appleMusicHelperSpotifyConversion = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
         let alternativeID = (appleMusicScript?.currentTrack?.artist ?? "") + (appleMusicScript?.currentTrack?.name ?? "")
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         if !Task.isCancelled {
-            if let spotifyID {
-                self.currentlyPlaying = spotifyID
+            if let appleMusicHelperSpotifyConversion {
+                self.currentlyPlayingName = appleMusicHelperSpotifyConversion.SpotifyName
+                self.currentlyPlayingArtist = appleMusicHelperSpotifyConversion.SpotifyArtist
+                self.currentlyPlaying = appleMusicHelperSpotifyConversion.SpotifyID
             } else if alternativeID != "" {
                 self.currentlyPlaying = alternativeID
             } else {
@@ -1043,7 +1022,13 @@ extension viewModel {
         } while !Task.isCancelled
     }
     
-    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String?) async throws -> String? {
+    struct AppleMusicHelper {
+        let SpotifyID: String
+        let SpotifyName: String
+        let SpotifyArtist: String
+    }
+    
+    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String?) async throws -> AppleMusicHelper? {
         if let accessToken {
             print("AM to Spotify: access token found")
             // Attempt to find Spotify ID using ISRC
@@ -1059,8 +1044,9 @@ extension viewModel {
                     return nil
                 }
                 let response = try decoder.decode(SpotifyResponse.self, from: urlResponseAndData.0)
-                if let spotifyID = response.tracks.items.first?.id {
-                    return spotifyID
+                if let track = response.tracks.items.first, let firstArtistName = track.firstArtistName {
+                    print("Got ID with ISRC conversion")
+                    return AppleMusicHelper(SpotifyID: track.id, SpotifyName: track.name, SpotifyArtist: firstArtistName)
                 }
             }
             // Manually search song name, artist name
@@ -1070,9 +1056,9 @@ extension viewModel {
                     request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
                     request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
                     guard !Task.isCancelled else {return nil}
-                    if let searchData = try? await URLSession.shared.data(for: request), !searchData.0.isEmpty, let searchResponse = try? self.decoder.decode(SpotifyResponse.self, from: searchData.0), let firstItem = searchResponse.tracks.items.first {
-                        print("GOT ID SEARCHING WITH TRACK AND ARTIST")
-                        return firstItem.id
+                    if let searchData = try? await URLSession.shared.data(for: request), !searchData.0.isEmpty, let searchResponse = try? self.decoder.decode(SpotifyResponse.self, from: searchData.0), let track = searchResponse.tracks.items.first, let firstArtistName = track.firstArtistName {
+                        print("Got ID with manual search")
+                        return AppleMusicHelper(SpotifyID: track.id, SpotifyName: track.name, SpotifyArtist: firstArtistName)
                     }
                 }
             }

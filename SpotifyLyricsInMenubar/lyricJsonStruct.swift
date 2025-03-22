@@ -92,7 +92,16 @@ struct Tracks: Codable {
 
 struct Item: Codable {
     let type: String
+    let name: String
+    let artists: [Artist]
+    var firstArtistName: String? {
+        return artists.first?.name
+    }
     let id: String
+}
+
+struct Artist: Codable {
+    let name: String
 }
 
 struct ErrorWrapper: Codable {
