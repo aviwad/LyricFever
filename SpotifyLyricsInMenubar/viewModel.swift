@@ -194,11 +194,14 @@ import NaturalLanguage
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let url = URL(string: "https://raw.githubusercontent.com/aviwad/LyricFeverHomepage/master/urgentUpdateVersion.md")  {
                 let request = URLRequest(url: url)
                 let urlResponseAndData = try await URLSession(configuration: .ephemeral).data(for: request)
-                if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Double(internetUrgentVersionString), let currentVersion = Double(version), currentVersion < internetUrgentVersion {
-                    print("NOT EQUAL")
-                    mustUpdateUrgent = true
-                } else {
-                    print("EQUAL")
+                if let internetUrgentVersionString = String(bytes:urlResponseAndData.0, encoding: .utf8), let internetUrgentVersion = Double(internetUrgentVersionString), let currentVersion = Double(version) {
+                    print("current version is \(currentVersion), internet urgent version is \(internetUrgentVersion)")
+                    if currentVersion < internetUrgentVersion {
+                     print("NOT EQUAL")
+                     mustUpdateUrgent = true
+                 } else {
+                     print("EQUAL")
+                 }
                 }
             }
         }
