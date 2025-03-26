@@ -102,6 +102,10 @@ struct SpotifyLyricsInMenubarApp: App {
                             }
                         }
                     }
+                } else {
+                    Button("Delete Lyrics (wrong lyrics)") {
+                        viewmodel.deleteLyric(trackID: currentlyPlaying)
+                    }
                 }
             // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
             // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil

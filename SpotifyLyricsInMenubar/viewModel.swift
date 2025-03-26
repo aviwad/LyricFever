@@ -835,6 +835,24 @@ import NaturalLanguage
         return []
     }
     
+    func deleteLyric(trackID: String) {
+        do {
+            let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", trackID)
+            let object = try coreDataContainer.viewContext.fetch(fetchRequest).first
+            object?.lyricsTimestamps.removeAll()
+            object?.lyricsWords.removeAll()
+            try coreDataContainer.viewContext.save()
+            currentlyPlayingLyricsIndex = nil
+            currentlyPlayingLyrics = []
+            if translate {
+                translatedLyric = []
+            }
+        } catch {
+            print("Error deleting data: \(error)")
+        }
+    }
+    
     func fetchFromCoreData(for trackID: String) -> [LyricLine]? {
         let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", trackID) // Replace trackID with the desired value
