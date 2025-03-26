@@ -936,7 +936,11 @@ extension viewModel {
         
         // get equivalent spotify ID
         let appleMusicHelperSpotifyConversion = try await musicToSpotifyHelper(accessToken: accessToken, isrc: isrc)
-        let alternativeID = (appleMusicScript?.currentTrack?.artist ?? "") + (appleMusicScript?.currentTrack?.name ?? "")
+        var alternativeID = (appleMusicScript?.currentTrack?.artist ?? "") + (appleMusicScript?.currentTrack?.name ?? "")
+        // Ensure only Spotify tracks have track ID of length 22
+        if alternativeID.count == 22 {
+            alternativeID.append("_")
+        }
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         if !Task.isCancelled {
             if let appleMusicHelperSpotifyConversion {
