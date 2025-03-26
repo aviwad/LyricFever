@@ -506,12 +506,12 @@ struct ApiView: View {
         isLoading = true
         do {
             let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
-            let serverTimeData = try await URLSession.shared.data(for: serverTimeRequest).0
+            let serverTimeData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
             let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
             if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)") {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
-                let accessTokenData = try await URLSession.shared.data(for: request)
+                let accessTokenData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                 do {
                     try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)

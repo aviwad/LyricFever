@@ -610,7 +610,7 @@ import NaturalLanguage
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
             repeat {
                 let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
-                let serverTimeData = try await URLSession.shared.data(for: serverTimeRequest).0
+                let serverTimeData = try await fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
                 let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
                 if let totp = TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)"), cookie != "" {
                     var request = URLRequest(url: url)
@@ -1046,7 +1046,7 @@ extension viewModel {
                 request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
                 // Invalidate this request if cancelled (means this song is old, user rapidly skipped)
                 guard !Task.isCancelled else {return nil}
-                let urlResponseAndData = try await URLSession.shared.data(for: request)
+                let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
                 if urlResponseAndData.0.isEmpty {
                     return nil
                 }
@@ -1063,7 +1063,7 @@ extension viewModel {
                     request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
                     request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
                     guard !Task.isCancelled else {return nil}
-                    if let searchData = try? await URLSession.shared.data(for: request), !searchData.0.isEmpty, let searchResponse = try? self.decoder.decode(SpotifyResponse.self, from: searchData.0), let track = searchResponse.tracks.items.first, let firstArtistName = track.firstArtistName {
+                    if let searchData = try? await fakeSpotifyUserAgentSession.data(for: request), !searchData.0.isEmpty, let searchResponse = try? self.decoder.decode(SpotifyResponse.self, from: searchData.0), let track = searchResponse.tracks.items.first, let firstArtistName = track.firstArtistName {
                         print("Got ID with manual search")
                         return AppleMusicHelper(SpotifyID: track.id, SpotifyName: track.name, SpotifyArtist: firstArtistName)
                     }
