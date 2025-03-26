@@ -179,6 +179,12 @@ struct FullscreenView: View {
                     currentHover = hover ? .volumehigh : .none
                 }
                 .keyboardShortcut(KeyEquivalent.upArrow, modifiers: [])
+                
+                if let currentlyPlaying = viewmodel.currentlyPlaying, currentlyPlaying.count == 22 {
+                    ShareLink(item: URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")!) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
             }
             Text(displayHoverTooltip())
                 .textCase(.uppercase)
