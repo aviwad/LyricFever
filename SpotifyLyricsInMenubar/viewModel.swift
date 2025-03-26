@@ -17,6 +17,7 @@ import WebKit
 import UniformTypeIdentifiers
 import SwiftOTP
 import NaturalLanguage
+import StringMetric
 
 @MainActor class viewModel: ObservableObject {
     // View Model
@@ -733,18 +734,31 @@ import NaturalLanguage
         // fetch lrc lyrics
 //        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
         
-        if let currentlyPlayingArtist, let album, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(album) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
+        if let currentlyPlayingArtist, let album, let albumEncoded, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(albumEncoded) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
             print("the netease search call is \(url.absoluteString)")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
             let neteasesearch = try decoder.decode(NetEaseSearch.self, from: urlResponseAndData.0)
             print(neteasesearch)
-            guard let neteaseId = neteasesearch.result.songs.first?.id else {
+            guard let neteaseResult = neteasesearch.result.songs.first, let neteaseArtist = neteaseResult.artists.first else {
                 return []
             }
-            print("Similarity index: for track \(trackName) and netease reply \(neteasesearch.result.songs.first?.name) is ")
-//            print("Similarity index: for album \(album) and netease reply \(neteasesearch.result.songs.first?.album.name) is ")
-            print("Similarity index: for artist \(currentlyPlayingArtist) and netease reply \(neteasesearch.result.songs.first?.artists.first?.name) is ")
+            let neteaseId = neteaseResult.id
+            let conditions = [
+                trackName.distance(between: neteaseResult.name) > 0.75,
+                currentlyPlayingArtist.distance(between: neteaseArtist.name) > 0.75,
+                album.distance(between: neteaseResult.album.name) > 0.75
+            ]
+
+            let trueCount = conditions.filter { $0 }.count
+            print("Similarity index: for track \(trackName) and netease reply \(neteaseResult.name) is \(trackName.distance(between: neteaseResult.name))")
+            print("Similarity index: for album \(album) and netease reply \(neteaseResult.album.name) is \(album.distance(between: neteaseResult.album.name))")
+            print("Similarity index: for artist \(currentlyPlayingArtist) and netease reply \(neteaseArtist.name) is \(currentlyPlayingArtist.distance(between: neteaseArtist.name))")
+            // I need at least 2 conditions to be met: track name, or album, or artist name, match 75% of the way
+            if trueCount < 2 {
+                print("similarity conditions passed for NetEase: \(trueCount) is less than 2, therefore failing this NetEase search.")
+                return []
+            }
             let lyricRequest = URLRequest(url: URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/lyric?id=\(neteaseId)")!)
             let urlResponseAndDataLyrics = try await fakeSpotifyUserAgentSession.data(for: lyricRequest)
             let neteaseLyrics = try decoder.decode(NetEaseLyrics.self, from: urlResponseAndDataLyrics.0)

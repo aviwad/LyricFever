@@ -22,6 +22,7 @@
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
 		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
+		8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8196862D93CCDC00F03741 /* StringMetric */; };
 		8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 8F832CAC2D6BEC52008C1C2B /* FontPicker */; };
 		8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */; };
 		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
@@ -92,6 +93,7 @@
 				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */,
+				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
 				8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */,
@@ -212,6 +214,7 @@
 				8FF184EC2D626F1E0026D2A2 /* CompactSlider */,
 				8F832CAC2D6BEC52008C1C2B /* FontPicker */,
 				8FFED07A2D8A26E700EA1510 /* SwiftOTP */,
+				8F8196862D93CCDC00F03741 /* StringMetric */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -250,6 +253,7 @@
 				8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */,
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
+				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -551,6 +555,14 @@
 				kind = branch;
 			};
 		};
+		8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/autozimu/StringMetric.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.2;
+			};
+		};
 		8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tyagishi/FontPicker";
@@ -611,6 +623,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
+		};
+		8F8196862D93CCDC00F03741 /* StringMetric */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */;
+			productName = StringMetric;
 		};
 		8F832CAC2D6BEC52008C1C2B /* FontPicker */ = {
 			isa = XCSwiftPackageProductDependency;
