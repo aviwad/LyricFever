@@ -356,7 +356,7 @@ struct FullscreenView: View {
                 else if spotifyOrAppleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
                     newAppleMusicArtworkImage = artwork
                 }
-                else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
+                else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.currentTrack?.album : viewmodel.spotifyScript?.currentTrack?.album {
                     print("\(artistName) \(albumName)")
                     Task {
                         if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
