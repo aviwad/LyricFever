@@ -608,7 +608,7 @@ import NaturalLanguage
          */
         
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
-            while accessToken?.accessToken.range(of: "[-_]", options: .regularExpression) == nil {
+            repeat {
                 let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
                 let serverTimeData = try await URLSession.shared.data(for: serverTimeRequest).0
                 let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
@@ -633,7 +633,7 @@ import NaturalLanguage
                     }
                     
                 }
-            }
+            } while accessToken?.accessToken.range(of: "[-_]", options: .regularExpression) == nil
         }
     }
     
