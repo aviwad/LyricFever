@@ -670,7 +670,7 @@ import NaturalLanguage
             
             // Song lyrics don't exist on Spotify
             if urlResponseAndData.0.isEmpty {
-                print("F")
+                print("Empty Response from Spotify: Either the song lyrics don't exist or the access token is faulty.")
                 try Task.checkCancellation()
                 let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
                 if lrc == [] {
@@ -698,7 +698,7 @@ import NaturalLanguage
             }
             let songObject = try decoder.decode(SongObjectParent.self, from: urlResponseAndData.0)
             if !songObject.lyrics.lyricsTimestamps.isEmpty {
-                print("downloaded from internet successfully \(trackID) \(trackName)")
+                print("downloaded from Spotify successfully \(trackID) \(trackName)")
                 saveCoreData()
                 let lyricsArray = zip(songObject.lyrics.lyricsTimestamps, songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
                 
@@ -723,16 +723,17 @@ import NaturalLanguage
     }
     
     func fetchNetEaseLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
-        let artist = currentlyPlayingArtist//spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
-//        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
+        let artist = currentlyPlayingArtist?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
+        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
+        let trackName = trackName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
 //        }
         // fetch lrc lyrics
 //        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
         
-        if let artist, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist)") {
-            print("the netease search call is \("https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist)")")
+        if let artist, let trackName = trackName, let album, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist) \(album)") {
+            print("the netease search call is \("https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName) \(artist) \(album)")")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
             let neteasesearch = try decoder.decode(NetEaseSearch.self, from: urlResponseAndData.0)
@@ -780,17 +781,19 @@ import NaturalLanguage
     }
     
     func fetchLRCLIBNetworkLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
-        let artist = currentlyPlayingArtist//spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.artist : spotifyScript?.currentTrack?.artist
-        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
+        let artist = currentlyPlayingArtist?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
+        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26") : spotifyScript?.currentTrack?.album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
+        let trackName = trackName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
 //        }
         // fetch lrc lyrics
 //        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
-        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)") {
+        if let trackName, let artist = artist, let album = album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)") {
             print("the lrclib call is \("https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)")")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
+            print(String(describing: urlResponseAndData.0))
             let lrcLyrics = try decoder.decode(LRCLyrics.self, from: urlResponseAndData.0)
             print(lrcLyrics)
             
