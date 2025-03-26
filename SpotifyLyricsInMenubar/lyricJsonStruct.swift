@@ -248,7 +248,17 @@ struct NetEaseSearch: Decodable {
         struct Song: Decodable {
             let name: String
             let id: Int
-            let duration: Int // msec
+            let duration: Int // milliseconds
+            let album: Album
+            let artists: [Artist]
+        }
+        
+        struct Album: Decodable {
+            let name: String
+        }
+        
+        struct Artist: Decodable {
+            let name: String
         }
     }
 }
