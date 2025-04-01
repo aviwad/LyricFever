@@ -28,6 +28,7 @@ Run `brew install lyric-fever`
 - Offline caching! Lyrics are automatically stored offline efficiently using CoreData
 - Play some music on the Spotify / Apple Music app and watch the lyrics play on the menu bar automatically.
 - Lyrics fetched from Spotify, LRCLIB, and NetEase as a backup lyric provider
+- Simplified Chinese language support in app UI, thanks to @InTheManXG
 
 ## YouTube Promo Vid:
 
@@ -54,8 +55,13 @@ Run `brew install lyric-fever`
 - Spiritual successor to LyricsX (95% more efficient, 0.1% CPU usage of Lyric Fever vs 3% of LyricsX)
 - Technical write-up coming soon
 
+## Translation Help
+[Crowdin Translation website](https://crowdin.com/project/lyric-fever/invite?h=29165351cb7d916e369d00386e37ef602390778)
+
+Please open a GitHub issue request to translate to more languages. Thank you very much.
 
 ## Other Contributors
+- [InTheManXG](https://github.com/InTheManXG) for Simplified Chinese translations
 - [lcandy2](https://github.com/lcandy2) For their [pull request](https://github.com/aviwad/LyricFever/pull/68)
 
 ## Acknowledgements / Special Thanks
@@ -66,6 +72,7 @@ Run `brew install lyric-fever`
 - [Apple Music:](https://music.apple.com/us/browse) Another platform that this project depends on
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
+- autozimu for https://github.com/autozimu/StringMetric.swift, used to determine how similar NetEase search results are from search query
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
 - NetEase for their Lyrics, used when LRCLIB and Spotify fail.
 - https://neteasecloudmusicapi-ten-wine.vercel.app for their NetEase API
