@@ -1,0 +1,1008 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "**2.1 Changes**" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "**2.1 Changes**"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "**If lyrics aren't loading, please log out and log back in.**" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "**If lyrics aren't loading, please log out and log back in.**"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld Characters" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 字符"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        }
+      }
+    },
+    "⚠️ Complete Setup (Click Settings)" : {
+
+    },
+    "⚠️ Please Update (Click Check Updates)" : {
+
+    },
+    "API Key: Advanced" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key: 高级"
+          }
+        }
+      }
+    },
+    "Apple Music" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Music"
+          }
+        }
+      }
+    },
+    "Apple Music fullscreen support" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Apple Music fullscreen support"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Back" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        }
+      }
+    },
+    "Better Apple Music support" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Better Apple Music support"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Better local file support (for both Apple Music and Spotify)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Better local file support (for both Apple Music and Spotify)"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Can hide song details and only show icon in menubar" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Can hide song details and only show icon in menubar"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Check for Lyrics Again" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新搜索歌词"
+          }
+        }
+      }
+    },
+    "Check for Updates…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新…"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
+    "Correctly translate to user's locale" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Correctly translate to user's locale"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Customizable karaoke mode, with font, color settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Customizable karaoke mode, with font, color settings"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Deal with new Spotify login mechanism (a cat and mouse chase...)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Deal with new Spotify login mechanism (a cat and mouse chase...)"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Decrease Offset to %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将延迟设置为 %lld"
+          }
+        }
+      }
+    },
+    "Decrease Size to %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏歌词设置为 %lld"
+          }
+        }
+      }
+    },
+    "Decrease volume by 5 (Down Arrow)" : {
+
+    },
+    "Delete Lyrics (wrong lyrics)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除歌词（错误歌词）"
+          }
+        }
+      }
+    },
+    "Display local file album art using MusicBrainz" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Display local file album art using MusicBrainz"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Done" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        }
+      }
+    },
+    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.1" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.1"
+          }
+        }
+      }
+    },
+    "Enter your SP_DC Cookie Here" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此输入您的 SP_DC Cookie"
+          }
+        }
+      }
+    },
+    "Font Selected: %@, Size: %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "所选字体: %1$@, 字体大小: %2$lld"
+          }
+        }
+      }
+    },
+    "Fullscreen" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全屏歌词"
+          }
+        }
+      }
+    },
+    "Give Apple Music Library Permissions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授予访问 Apple Music 音乐库权限"
+          }
+        }
+      }
+    },
+    "Give Apple Music Permissions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授予访问 Apple Music权限"
+          }
+        }
+      }
+    },
+    "Give Spotify Permissions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授予访问 Spotify 权限"
+          }
+        }
+      }
+    },
+    "Hide Karaoke window when mouse passes by" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标经过时隐藏 K歌 窗口"
+          }
+        }
+      }
+    },
+    "Hide lyrics (⌘ + H)" : {
+
+    },
+    "Hide translations (⌘ + T)" : {
+
+    },
+    "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)" : {
+
+    },
+    "Improve fullscreen mode animations" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Improve fullscreen mode animations"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Increase Offset to %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将延迟设置为 %lld"
+          }
+        }
+      }
+    },
+    "Increase Size to %lld " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏歌词设置为 %lld "
+          }
+        }
+      }
+    },
+    "Increase volume by 5 (Up Arrow)" : {
+
+    },
+    "Karaoke Background Appearance" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌 歌词背景样式"
+          }
+        }
+      }
+    },
+    "Karaoke Behaviour" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌模式设置"
+          }
+        }
+      }
+    },
+    "Karaoke Font Appearance" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K歌 歌词字体样式"
+          }
+        }
+      }
+    },
+    "Karaoke Mode" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌模式"
+          }
+        }
+      }
+    },
+    "Karaoke Mode (Enable Show Lyrics)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌模式（启用显示歌词）"
+          }
+        }
+      }
+    },
+    "Karaoke Window" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌模式设置"
+          }
+        }
+      }
+    },
+    "Key" : {
+      "extractionState" : "manual"
+    },
+    "Launch at Login" : {
+
+    },
+    "Local LRC File Support" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Local LRC File Support"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Log Out" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注销"
+          }
+        }
+      }
+    },
+    "Lyric Fever: Fullscreen" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever: 全屏"
+          }
+        }
+      }
+    },
+    "Lyric Fever: Onboarding" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever: 引导"
+          }
+        }
+      }
+    },
+    "Lyric Fever: Update 2.1" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever: 更新 2.1"
+          }
+        }
+      }
+    },
+    "Lyrics Found 😃" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找到歌词 😃"
+          }
+        }
+      }
+    },
+    "Main Settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主设置"
+          }
+        }
+      }
+    },
+    "Many minor bug fixes" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Many minor bug fixes"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Menubar Size is %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前菜单歌词大小为 %lld"
+          }
+        }
+      }
+    },
+    "NetEase used as 3rd provider" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "NetEase used as 3rd provider"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "New options: hide karaoke mode on hover, display multilingual lyrics (original + translation)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "New options: hide karaoke mode on hover, display multilingual lyrics (original + translation)"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "New Romanization option" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "New Romanization option"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Next" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一步"
+          }
+        }
+      }
+    },
+    "No Lyrics (Couldn't find Spotify ID) ☹️" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无歌词（找不到 Spotify ID） ☹️"
+          }
+        }
+      }
+    },
+    "No Lyrics Found ☹️" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到歌词 ☹️"
+          }
+        }
+      }
+    },
+    "No Translation ☹️" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无翻译 ☹️"
+          }
+        }
+      }
+    },
+    "Now Paused: %@ - %@" : {
+      "comment" : "Now Paused: Song - Artist"
+    },
+    "Now Playing: %@ - %@" : {
+      "comment" : "Now Playing: Song - Artist"
+    },
+    "Offset is %lld ms" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前延迟为 %lld 毫秒"
+          }
+        }
+      }
+    },
+    "Opacity Level:" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明度等级："
+          }
+        }
+      }
+    },
+    "Opacity Level: %lld%%" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明度等级： %lld%%"
+          }
+        }
+      }
+    },
+    "Open %@!" : {
+
+    },
+    "Open Automation Panel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开自动化面板"
+          }
+        }
+      }
+    },
+    "Open Music Panel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开音乐面板"
+          }
+        }
+      }
+    },
+    "Open Spotify on the Web" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在网页中打开Spotify"
+          }
+        }
+      }
+    },
+    "Open Spotify!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "test"
+          }
+        }
+      }
+    },
+    "Pause (spacebar)" : {
+
+    },
+    "Pause animations (saves battery) (⌘ + A)" : {
+
+    },
+    "Play (spacebar)" : {
+
+    },
+    "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/" : {
+      "extractionState" : "manual"
+    },
+    "Please give required permissions!" : {
+      "extractionState" : "manual"
+    },
+    "Please give us Apple Music Library permissions!" : {
+      "extractionState" : "manual"
+    },
+    "Please give us Apple Music permissions!" : {
+      "extractionState" : "manual"
+    },
+    "Please give us required permissions!" : {
+      "extractionState" : "manual"
+    },
+    "Please log into Spotify" : {
+
+    },
+    "Please open Apple Music!" : {
+      "extractionState" : "manual"
+    },
+    "Please open Spotify!" : {
+      "extractionState" : "manual"
+    },
+    "Please pick between Spotify and Apple Music" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择 Spotify 或 Apple Music"
+          }
+        }
+      }
+    },
+    "Quit" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        }
+      }
+    },
+    "Refresh Lyrics" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新歌词"
+          }
+        }
+      }
+    },
+    "Remember whether to translate on startup" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记住是否在启动时翻译"
+          }
+        }
+      }
+    },
+    "Reset to default" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置设置"
+          }
+        }
+      }
+    },
+    "Romanize" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拼音化文字"
+          }
+        }
+      }
+    },
+    "Select a Font:" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择字体："
+          }
+        }
+      }
+    },
+    "Set a background color" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置背景颜色"
+          }
+        }
+      }
+    },
+    "Set the Lyric Size" : {
+
+    },
+    "Settings (New Karaoke Settings!)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置（新增 K 歌设置）"
+          }
+        }
+      }
+    },
+    "Show Lyrics" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示歌词"
+          }
+        }
+      }
+    },
+    "Show lyrics (⌘ + H)" : {
+
+    },
+    "Show multilingual lyrics when translating in Karaoke window" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌窗口翻译时，显示多语言"
+          }
+        }
+      }
+    },
+    "Show Song Details in Menubar" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在菜单栏显示歌曲详情"
+          }
+        }
+      }
+    },
+    "Spotify" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify"
+          }
+        }
+      }
+    },
+    "Spotify Connect Audio Delay" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify 连接音频延迟"
+          }
+        }
+      }
+    },
+    "Spotify Login" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify 登录"
+          }
+        }
+      }
+    },
+    "Thanks for updating to Lyric Fever 2.1! 🎉" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Thanks for updating to Lyric Fever 2.1! 🎉"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "This depends on how much free space you have in your menu bar!" : {
+
+    },
+    "Translate lyrics (⌘ + T)" : {
+
+    },
+    "Translate To %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译为 %@"
+          }
+        }
+      }
+    },
+    "Translated Lyrics 😃" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译歌词 😃"
+          }
+        }
+      }
+    },
+    "Translation Help" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译帮助"
+          }
+        }
+      }
+    },
+    "Truncation Length" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏歌词大小"
+          }
+        }
+      }
+    },
+    "Unpause animations (uses battery) (⌘ + A)" : {
+
+    },
+    "Update to macOS 14.0 to use fullscreen" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新至 macOS 14.0 以使用全屏歌词"
+          }
+        }
+      }
+    },
+    "Update to macOS 15 to enable translation" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新至 macOS 15 以启用翻译"
+          }
+        }
+      }
+    },
+    "Upload Local LRC File" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上传本地歌词文件"
+          }
+        }
+      }
+    },
+    "Use album color for Karaoke window" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用专辑颜色作为 K 歌窗口颜色"
+          }
+        }
+      }
+    },
+    "Welcome to Lyric Fever! 🎉" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎使用 Lyric Fever! 🎉"
+          }
+        }
+      }
+    },
+    "WRONG SP DC COOKIE TRY AGAIN ⚠️" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SP DC Cookie 错误，请重试 ⚠️"
+          }
+        }
+      }
+    },
+    "You're Logged In 🙂" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您已登录 🙂"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
