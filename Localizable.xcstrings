@@ -11,28 +11,6 @@
         }
       }
     },
-    "**2.1 Changes**" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "**2.1 Changes**"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "**If lyrics aren't loading, please log out and log back in.**" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "**If lyrics aren't loading, please log out and log back in.**"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "%lld Characters" : {
       "localizations" : {
         "zh-Hans" : {
@@ -79,17 +57,6 @@
         }
       }
     },
-    "Apple Music fullscreen support" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Apple Music fullscreen support"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "Back" : {
       "localizations" : {
         "zh-Hans" : {
@@ -99,39 +66,6 @@
           }
         }
       }
-    },
-    "Better Apple Music support" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Better Apple Music support"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "Better local file support (for both Apple Music and Spotify)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Better local file support (for both Apple Music and Spotify)"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "Can hide song details and only show icon in menubar" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Can hide song details and only show icon in menubar"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "Check for Lyrics Again" : {
       "localizations" : {
@@ -162,39 +96,6 @@
           }
         }
       }
-    },
-    "Correctly translate to user's locale" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Correctly translate to user's locale"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "Customizable karaoke mode, with font, color settings" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Customizable karaoke mode, with font, color settings"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "Deal with new Spotify login mechanism (a cat and mouse chase...)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Deal with new Spotify login mechanism (a cat and mouse chase...)"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "Decrease Offset to %lld" : {
       "localizations" : {
@@ -228,17 +129,6 @@
           }
         }
       }
-    },
-    "Display local file album art using MusicBrainz" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Display local file album art using MusicBrainz"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "Done" : {
       "localizations" : {
@@ -339,17 +229,6 @@
     "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)" : {
 
     },
-    "Improve fullscreen mode animations" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Improve fullscreen mode animations"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "Increase Offset to %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -439,17 +318,6 @@
     "Launch at Login" : {
 
     },
-    "Local LRC File Support" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Local LRC File Support"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "Log Out" : {
       "localizations" : {
         "zh-Hans" : {
@@ -510,17 +378,6 @@
         }
       }
     },
-    "Many minor bug fixes" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Many minor bug fixes"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "Menubar Size is %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -530,39 +387,6 @@
           }
         }
       }
-    },
-    "NetEase used as 3rd provider" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "NetEase used as 3rd provider"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "New options: hide karaoke mode on hover, display multilingual lyrics (original + translation)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "New options: hide karaoke mode on hover, display multilingual lyrics (original + translation)"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "New Romanization option" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "New Romanization option"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "Next" : {
       "localizations" : {
@@ -747,16 +571,6 @@
         }
       }
     },
-    "Remember whether to translate on startup" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "记住是否在启动时翻译"
-          }
-        }
-      }
-    },
     "Reset to default" : {
       "localizations" : {
         "zh-Hans" : {
@@ -872,17 +686,6 @@
           }
         }
       }
-    },
-    "Thanks for updating to Lyric Fever 2.1! 🎉" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Thanks for updating to Lyric Fever 2.1! 🎉"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "This depends on how much free space you have in your menu bar!" : {
 
