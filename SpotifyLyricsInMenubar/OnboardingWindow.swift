@@ -463,7 +463,7 @@ struct ApiView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(isLoading || spDcCookie.count == 0)
             }
-            .padding(.vertical, 5)
+            .padding(.vertical, 15)
             
         }
         .padding(.horizontal, 20)
@@ -571,14 +571,18 @@ struct FinalTruncationView: View {
         VStack(alignment: .leading, spacing: 16) {
             StepView(title: "Set the Lyric Size", description: "This depends on how much free space you have in your menu bar!")
             
-            Image("\(truncationLength)")
-                .resizable()
-                .scaledToFit()
-                .onAppear() {
-                    if truncationLength == 0 {
-                        truncationLength = 40
+            HStack {
+                Spacer()
+                Image("\(truncationLength)")
+                    .resizable()
+                    .scaledToFit()
+                    .onAppear() {
+                        if truncationLength == 0 {
+                            truncationLength = 40
+                        }
                     }
-                }
+                Spacer()
+            }
             
             HStack {
                 Spacer()
@@ -602,6 +606,7 @@ struct FinalTruncationView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
+            .padding(.vertical, 15)
             
         }
         .onChange(of: truncationLength) { newLength in
