@@ -163,15 +163,6 @@ struct SpotifyLyricsInMenubarApp: App {
                 Text("Update to macOS 14.0 to use fullscreen")
             }
             Toggle(viewmodel.showLyrics ? "Karaoke Mode" : "Karaoke Mode (Enable Show Lyrics)", isOn: $viewmodel.karaoke)
-//            Button("Karaoke") {
-////                        openWindow(id: "karaoke")
-//                //NSApplication.shared.activate(ignoringOtherApps: true)
-//                viewmodel.karaoke = true
-////                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics {
-////                            viewmodel.stopLyricUpdater()
-////                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-////                        }
-//            }
                 .disabled(!hasOnboarded || !viewmodel.showLyrics)
                 .keyboardShortcut("k")
             Divider()
@@ -228,18 +219,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .floatingPanel(isPresented: $viewmodel.displayKaraoke, content: {
                     KaraokeView()
-//                        .drawingGroup()
                         .environmentObject(viewmodel)
-//                        .id(viewmodel.currentlyPlayingLyricsIndex)
-//                        .transition(.opacity)
-//                        .animation(.linear)
-//                        .contentTransition(.interpolate)
-//                        .animation(.snappy(duration: 0.1), value: viewmodel.currentlyPlayingLyricsIndex)
-//                    ZStack {
-//                        Rectangle()
-//                            .fill(.white)
-//                        Text("I'm a floating panel. Click anywhere to dismiss me.")
-//                    }
                 })
                 .onAppear {
                     print("on appear running")

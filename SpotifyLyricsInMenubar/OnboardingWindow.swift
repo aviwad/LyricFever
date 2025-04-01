@@ -358,18 +358,7 @@ struct OnboardingWindow: View {
                  .tabItem {
                      Label("Karaoke Window", systemImage: "person.crop.circle")
                  }
-             
-//                 AppearanceSettingsView()
-//                     .tabItem {
-//                         Label("Appearance", systemImage: "paintpalette")
-//                     }
-             
-//                 PrivacySettingsView()
-//                     .tabItem {
-//                         Label("Privacy", systemImage: "hand.raised")
-//                     }
         }
-//        NavigationStack()
     }
 }
 

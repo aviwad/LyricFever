@@ -36,16 +36,6 @@ struct VisualEffectView: NSViewRepresentable {
 struct KaraokeView: View {
     @EnvironmentObject var viewmodel: viewModel
     @Namespace var animation
-    
-//    @State var displayOptions = false
-    
-//    func lyrics() -> String {
-//        if let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
-//            return viewmodel.translate && !viewmodel.translatedLyric.isEmpty ? viewmodel.translatedLyric[currentlyPlayingLyricsIndex] : viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words
-//        }
-//        return ""
-//    }
-    
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
             if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
@@ -55,11 +45,7 @@ struct KaraokeView: View {
             }
             Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9*(viewmodel.karaokeFont.pointSize)))
-//                .font(.system(size: 0.9*(viewmodel.karaokeFontSize), weight: .semibold, design: .default))
                 .opacity(0.85)
-//                .border(.gray)
-//                .multilineTextAlignment(.center)
-//                .font(.system(size: 30, weight: .regular, design: .default))
         }
     }
     
