@@ -22,7 +22,7 @@ struct OnboardingWindow: View {
 //    @State private var selection: Int? = nil
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    @State var errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+    @State var errorMessage: String = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
     var body: some View {
         TabView {
             
@@ -88,7 +88,7 @@ struct OnboardingWindow: View {
                         
                     
                         
-                            Text(.init(errorMessage))
+                        Text(LocalizedStringKey(errorMessage))
                             .transition(.opacity)
                             .id(errorMessage)
                         
@@ -104,19 +104,19 @@ struct OnboardingWindow: View {
                                     // See: https://forums.developer.apple.com/forums/thread/666528
                                     guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
                                         withAnimation {
-                                            errorMessage = "Please Open Spotify First!"
+                                            errorMessage = "Please open Spotify!"
                                         }
                                         return
                                     }
                                     let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                                     switch status {
                                         case -600:
-                                            errorMessage = "Please Open Spotify First!"
+                                            errorMessage = "Please open Spotify!"
                                         case -0:
                                         withAnimation {
                                             permissionMissing = false
                                                 spotifyPermission = true
-                                            errorMessage = "Please Click Next 😀"
+                                            errorMessage = ""
                                         }
                                         default:
                                         withAnimation {
@@ -133,14 +133,14 @@ struct OnboardingWindow: View {
                                     let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
                                     guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
                                         withAnimation {
-                                            errorMessage = "Please Open Apple Music First!"
+                                            errorMessage = "Please open Apple Music!"
                                         }
                                         return
                                     }
                                     let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                                     switch status {
                                         case -600:
-                                        errorMessage = "Please Open Apple Music First!"
+                                        errorMessage = "Please open Apple Music!"
                                         case -0:
                                         withAnimation {
                                             appleMusicPermission = true
@@ -148,15 +148,15 @@ struct OnboardingWindow: View {
                                         }
                                         isAnimating = false
                                         if appleMusicLibraryPermission {
-                                            errorMessage = "Please Click Next 😀"
+                                            errorMessage = ""
                                         } else {
-                                            errorMessage = "Please Give Library Permission"
+                                            errorMessage = "Please give us Apple Music Library permissions!"
                                         }
                                         default:
                                         withAnimation {
                                             permissionMissing = true
                                         }
-                                        errorMessage = "Please give required permissions!"
+                                        errorMessage = "Please give us required permissions!"
                                         permissionMissing = true
                                         isAnimating = true
                                             // OPEN AUTOMATION PANEL
@@ -175,13 +175,13 @@ struct OnboardingWindow: View {
                                             }
                                             isAnimating = false
                                             if appleMusicPermission {
-                                                errorMessage = "Please Click Next 😀"
+                                                errorMessage = ""
                                             } else {
-                                                errorMessage = "Please Give Music Permission"
+                                                errorMessage = "Please give us Apple Music permissions!"
                                             }
                                         }
                                         else {
-                                            errorMessage = "Please give required permissions!"
+                                            errorMessage = "Please give us required permissions!"
                                             withAnimation {
                                                 permissionMissing = true
                                             }
@@ -205,12 +205,12 @@ struct OnboardingWindow: View {
                 }
                 .onAppear {
                     if spotifyOrAppleMusic {
-                        errorMessage = "Please Open Apple Music!"
+                        errorMessage = "Please open Apple Music!"
                         spotifyPermission = true
                         appleMusicPermission = false
                         appleMusicLibraryPermission = false
                     } else {
-                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
                         appleMusicPermission = true
                         appleMusicLibraryPermission = true
                         spotifyPermission = false
@@ -219,7 +219,7 @@ struct OnboardingWindow: View {
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickSettings"))) { newValue in
                     if spotifyOrAppleMusic {
                         // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
-                        errorMessage = "Please Open Apple Music!"
+                        errorMessage = "Please open Apple Music!"
                         spotifyPermission = true
                         appleMusicPermission = false
                         appleMusicLibraryPermission = false
@@ -228,7 +228,7 @@ struct OnboardingWindow: View {
                         // Check Apple Music Automation permission
                         guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
                             withAnimation {
-                                errorMessage = "Please Open Spotify First!"
+                                errorMessage = "Please open Apple Music!"
                             }
                             return
                         }
@@ -236,15 +236,15 @@ struct OnboardingWindow: View {
                         let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                         switch status {
                             case -600:
-                            errorMessage = "Please Open Apple Music First!"
+                            errorMessage = "Please open Apple Music!"
                             case -0:
                             appleMusicPermission = true
                             permissionMissing = false
                             isAnimating = false
                             if appleMusicLibraryPermission {
-                                errorMessage = "Please Click Next 😀"
+                                errorMessage = ""
                             } else {
-                                errorMessage = "Please Give Library Permission"
+                                errorMessage = "Please give us Apple Music Library permissions!"
                             }
     //                                case -1744:
     //                                Alert(title: Text("Please give permission by going to the Automation panel"))
@@ -252,7 +252,7 @@ struct OnboardingWindow: View {
                             withAnimation {
                                 permissionMissing = true
                             }
-                            errorMessage = "Please give required permissions!"
+                            errorMessage = "Please give us required permissions!"
                             permissionMissing = true
                             isAnimating = true
                                 // OPEN AUTOMATION PANEL
@@ -269,13 +269,13 @@ struct OnboardingWindow: View {
                                 }
                                 isAnimating = false
                                 if appleMusicPermission {
-                                    errorMessage = "Please Click Next 😀"
+                                    errorMessage = ""
                                 } else {
-                                    errorMessage = "Please Give Music Permission"
+                                    errorMessage = "Please give us Apple Music permissions!"
                                 }
                             }
                             else {
-                                errorMessage = "Please give required permissions!"
+                                errorMessage = "Please give us required permissions!"
                                 withAnimation {
                                     permissionMissing = true
                                 }
@@ -291,7 +291,7 @@ struct OnboardingWindow: View {
                         // Check Spotify
                         guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
                             withAnimation {
-                                errorMessage = "Please Open Spotify First!"
+                                errorMessage = "Please open Spotify!"
                             }
                             return
                         }
@@ -299,12 +299,12 @@ struct OnboardingWindow: View {
                         let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
                         switch status {
                             case -600:
-                                errorMessage = "Please Open Spotify First!"
+                                errorMessage = "Please open Spotify!"
                             case -0:
                             withAnimation {
                                 permissionMissing = false
                                     spotifyPermission = true
-                                errorMessage = "Please Click Next 😀"
+                                errorMessage = ""
                             }
     //                                case -1744:
     //                                Alert(title: Text("Please give permission by going to the Automation panel"))
@@ -329,7 +329,7 @@ struct OnboardingWindow: View {
                 .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
                     print("Updating permission booleans based on media player change")
                     if spotifyOrAppleMusic {
-                        errorMessage = "Please Open Apple Music!"
+                        errorMessage = "Please open Apple Music!"
                         spotifyPermission = true
                         appleMusicPermission = false
                         appleMusicLibraryPermission = false
@@ -384,7 +384,7 @@ struct ApiView: View {
     @State var loggedIn = false
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "1. Spotify Login (EVEN IF YOU USE APPLE MUSIC!)", description: "I download lyrics from Spotify.")
+            StepView(title: "Please log into Spotify", description: "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)")
             
             Picker("", selection: $loginMethod) {
                 Text("Spotify Login").tag(true)
@@ -578,7 +578,7 @@ struct FinalTruncationView: View {
     let allTruncations = [30,40,50,60]
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "2. Set the Lyric Size", description: "This depends on how much free space you have in your menu bar!")
+            StepView(title: "Set the Lyric Size", description: "This depends on how much free space you have in your menu bar!")
             
             Image("\(truncationLength)")
                 .resizable()
@@ -633,8 +633,8 @@ struct FinalTruncationView: View {
 
 
 struct StepView: View {
-    var title: String
-    var description: String
+    var title: LocalizedStringKey
+    var description: LocalizedStringKey
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -642,7 +642,7 @@ struct StepView: View {
                 .font(.title2)
                 .bold()
             
-            Text(.init(description))
+            Text(description)
                 .font(.title3)
         }
     }

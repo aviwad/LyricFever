@@ -200,7 +200,7 @@ struct SpotifyLyricsInMenubarApp: App {
                 // send notification to check auth
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
-            LaunchAtLogin.Toggle("Launch at Login")
+            LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
             .disabled(!hasOnboarded)
             .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
@@ -608,9 +608,13 @@ struct SpotifyLyricsInMenubarApp: App {
             .windowStyle(.hiddenTitleBar)
     }
     
-    var songTitle: String {
+    var songTitle: LocalizedStringKey {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
-            return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
+            if viewmodel.isPlaying {
+                return "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc(length: truncationLength)
+            } else {
+                return "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc(length: truncationLength)
+            }
         }
         return "Open \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )!"
     }
@@ -618,7 +622,7 @@ struct SpotifyLyricsInMenubarApp: App {
     var menuBarTitle: String? {
         // Update message takes priority
         if viewmodel.mustUpdateUrgent {
-            return "⚠️ Please Update (Click Check Updates)".trunc(length: truncationLength)
+            return String(localized: "⚠️ Please Update (Click Check Updates)").trunc(length: truncationLength)
         } else if hasOnboarded {
             // Try to work through lyric logic if onboarded
             // NEW: Revert to song name if fullscreen / karaoke activated
@@ -626,24 +630,32 @@ struct SpotifyLyricsInMenubarApp: App {
                 // Attempt to display translations
                 // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
                 if viewmodel.translateAndExists {
+                    // I don't localize, because I deliver the lyric verbatim
                     return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
                 } else {
                     // Attempt to display Romanization
                     if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
+                        // I don't localize, because I deliver the lyric verbatim
                         return toLatin.trunc(length: truncationLength)
                     } else {
+                        // I don't localize, because I deliver the lyric verbatim
                         return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
                     }
                 }
             // Backup: Display name and artist
             } else if viewmodel.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
-                return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
+                if viewmodel.isPlaying {
+                    return String(localized: "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc(length: truncationLength)//.trunc(length: truncationLength)
+                } else {
+                    return String(localized: "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc(length: truncationLength)//.trunc(length: truncationLength)
+                }
+//                return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
             }
             // Onboarded but app is not open
             return nil
         } else {
             // Hasn't onboarded
-            return "⚠️ Complete Setup (Click Settings)".trunc(length: truncationLength)
+            return String(localized: "⚠️ Complete Setup (Click Settings)").trunc(length: truncationLength)
         }
         
     }

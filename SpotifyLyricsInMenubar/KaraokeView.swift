@@ -49,11 +49,11 @@ struct KaraokeView: View {
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
             if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
-                Text(toLatin)
+                Text(verbatim: toLatin)
             } else {
-                Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
+                Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
             }
-            Text(viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
+            Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9*(viewmodel.karaokeFont.pointSize)))
 //                .font(.system(size: 0.9*(viewmodel.karaokeFontSize), weight: .semibold, design: .default))
                 .opacity(0.85)
@@ -70,13 +70,13 @@ struct KaraokeView: View {
                     multilingualView(currentlyPlayingLyricsIndex)
                 }
                 else {
-                    Text(viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
+                    Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 }
             } else {
                 if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
-                    Text(toLatin)
+                    Text(verbatim: toLatin)
                 } else {
-                    Text(viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
+                    Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
                 }
             }
         } else {

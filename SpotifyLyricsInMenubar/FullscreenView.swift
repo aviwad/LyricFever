@@ -78,11 +78,11 @@ struct FullscreenView: View {
                     .frame(width: canDisplayLyrics ? 550 : 650, height: canDisplayLyrics ? 550 : 650)
             }
             Group {
-                Text(viewmodel.currentlyPlayingName ?? "")
+                Text(verbatim: viewmodel.currentlyPlayingName ?? "")
                     .font(.title)
                     .bold()
                     .padding(.top, 30)
-                Text(viewmodel.currentlyPlayingArtist ?? "")
+                Text(verbatim: viewmodel.currentlyPlayingArtist ?? "")
                     .font(.title2)
             }
             .frame(height: 35)
@@ -194,7 +194,7 @@ struct FullscreenView: View {
         }
     }
     
-    func displayHoverTooltip() -> String {
+    func displayHoverTooltip() -> LocalizedStringKey {
         switch currentHover {
             case .playpause:
                 viewmodel.isPlaying ? "Pause (spacebar)" : "Play (spacebar)"
@@ -216,14 +216,14 @@ struct FullscreenView: View {
     @ViewBuilder func lyricLineView(for element: LyricLine, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             if viewmodel.romanize, let toLatin = element.words.applyingTransform(.toLatin, reverse: false) {
-                Text(toLatin)
+                Text(verbatim: toLatin)
                     .foregroundStyle(.white)
             } else {
-                Text(element.words)
+                Text(verbatim: element.words)
                     .foregroundStyle(.white)
             }
             if viewmodel.translateAndExists {
-                Text(viewmodel.translatedLyric[index])
+                Text(verbatim: viewmodel.translatedLyric[index])
                     .font(.system(size: 33, weight: .semibold, design: .default))
                     .opacity(0.85)
             }
