@@ -312,9 +312,6 @@
         }
       }
     },
-    "Key" : {
-      "extractionState" : "manual"
-    },
     "Launch at Login" : {
 
     },
