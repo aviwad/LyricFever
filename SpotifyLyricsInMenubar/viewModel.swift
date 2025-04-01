@@ -726,7 +726,7 @@ import StringMetric
     func fetchNetEaseLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
 //        let artistEncoded = currentlyPlayingArtist?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
         let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
-        let albumEncoded = album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
+//        let albumEncoded = album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
 //        let trackNameEncoded = trackName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
@@ -734,7 +734,7 @@ import StringMetric
         // fetch lrc lyrics
 //        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
         
-        if let currentlyPlayingArtist, let album, let albumEncoded, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(albumEncoded) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
+        if let currentlyPlayingArtist, let album, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
             print("the netease search call is \(url.absoluteString)")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
