@@ -94,6 +94,8 @@ struct OnboardingWindow: View {
                         
                         if spotifyPermission && appleMusicPermission && appleMusicLibraryPermission {
                             NavigationLink("Next", destination: ApiView())
+                                .font(.headline)
+                                .controlSize(.large)
                                 .buttonStyle(.borderedProminent)
                         } else {
                             HStack {
