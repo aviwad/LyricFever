@@ -286,7 +286,7 @@ struct OnboardingWindow: View {
                         }
                         
                     } else {
-                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
                         appleMusicPermission = true
                         appleMusicLibraryPermission = true
                         spotifyPermission = false
@@ -336,7 +336,7 @@ struct OnboardingWindow: View {
                         appleMusicPermission = false
                         appleMusicLibraryPermission = false
                     } else {
-                        errorMessage = "Please download the [official Spotify Desktop client](https://www.spotify.com/in-en/download/mac/)"
+                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
                         appleMusicPermission = true
                         appleMusicLibraryPermission = true
                         spotifyPermission = false
