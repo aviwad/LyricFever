@@ -37,6 +37,7 @@ struct FullscreenView: View {
         case volumehigh
         case translate
         case none
+        case sharing
     }
     
     @ViewBuilder var albumArt: some View {
@@ -184,6 +185,9 @@ struct FullscreenView: View {
                     ShareLink(item: URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")!) {
                         Image(systemName: "square.and.arrow.up")
                     }
+                    .onHover { hover in
+                        currentHover = hover ? .sharing : .none
+                    }
                 }
             }
             Text(displayHoverTooltip())
@@ -210,6 +214,8 @@ struct FullscreenView: View {
                 ""
             case .translate:
                 viewmodel.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
+            case .sharing:
+                "Share Spotify link"
         }
     }
     
