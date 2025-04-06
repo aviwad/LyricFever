@@ -499,19 +499,26 @@ struct ApiView: View {
             let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
             let serverTimeData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
             let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
-            if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)") {
+            if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
                 let accessTokenData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                 do {
-                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                    print("ACCESS TOKEN IS SAVED")
-                    // set onboarded to true here, no need to wait for user to finish selecting truncation
-                    UserDefaults().set(true, forKey: "hasOnboarded")
-                    error = false
-                    isLoading = false
-                    isShowingDetailView = true
+                    let access = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                    viewModel.shared.accessToken = access
+                    if await !viewModel.shared.fetchHomeTest() {
+                        viewModel.shared.accessToken = nil
+                        self.error = true
+                        isLoading = false
+                    } else {
+                        print("ACCESS TOKEN IS SAVED")
+                        // set onboarded to true here, no need to wait for user to finish selecting truncation
+                        UserDefaults().set(true, forKey: "hasOnboarded")
+                        error = false
+                        isLoading = false
+                        isShowingDetailView = true
+                    }
                 } catch {
                     self.error = true
                     isLoading = false
