@@ -617,13 +617,13 @@
         }
       }
     },
-    "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/" : {
+    "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请下载 [Spotify 官方桌面客户端](https://www.spotify.com/in-en/download/mac/"
+            "value" : "请下载 [Spotify 官方桌面客户端](https://www.spotify.com/in-en/download/mac/)"
           }
         }
       }
