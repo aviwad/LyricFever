@@ -48,6 +48,9 @@ struct SpotifyLyricsInMenubarApp: App {
     @Environment(\.openURL) var openURL
     var body: some Scene {
         MenuBarExtra(content: {
+            if let userName = viewmodel.userName {
+                Text("Hi \(userName)!")
+            }
             Text(songTitle)
             Toggle("Show Song Details in Menubar", isOn: $viewmodel.showSongDetailsInMenubar)
             Divider()
