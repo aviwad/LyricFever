@@ -74,7 +74,7 @@ struct KaraokeView: View {
         lyricsView()
 //            .animation(.easeInOut(duration: 0.2))
             .lineLimit(2)
-            .id(viewmodel.currentlyPlayingLyricsIndex)
+//            .id(viewmodel.currentlyPlayingLyricsIndex)
             .foregroundStyle(.white)
             .minimumScaleFactor(0.9)
 //            .animation(.smooth(duration: 0.2))
