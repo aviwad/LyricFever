@@ -234,6 +234,9 @@
         }
       }
     },
+    "Hi %@!" : {
+
+    },
     "Hide Karaoke window when mouse passes by" : {
       "localizations" : {
         "zh-Hans" : {
