@@ -49,6 +49,14 @@ struct SongObjectParent: Decodable {
     let colors: SpotifyColorData
 }
 
+struct SpotifyUser: Codable {
+    let displayName: String
+
+    enum CodingKeys: String, CodingKey {
+        case displayName = "display_name"
+    }
+}
+
 struct SpotifyColorData: Codable {
     let background, text, highlightText: Int
     

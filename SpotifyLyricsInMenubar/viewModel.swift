@@ -23,6 +23,9 @@ import StringMetric
     // View Model
     static let shared = viewModel()
     
+    // User name
+    @Published var userName: String?
+    
     // Karaoke Font
     @Published var karaokeFont: NSFont
     
@@ -161,7 +164,7 @@ import StringMetric
     
         
         // Set user agents for Spotify and LRCLIB
-        fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Spotify/121000760 Win32/0 (PC laptop)"]
+        fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
         LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.1 (https://github.com/aviwad/LyricFever)"]
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
@@ -594,6 +597,10 @@ import StringMetric
          }
      }
     
+    enum AccessTokenError: Error {
+        case toomanytries
+    }
+    
     func generateAccessToken() async throws {
         
         // NEW: generate TOTP
@@ -607,19 +614,24 @@ import StringMetric
                 then continue with lyric fetch
          otherwise []
          */
-        
+        var repeatCount = 0
+        var fetchHomeResult = false
         if accessToken == nil || (accessToken!.accessTokenExpirationTimestampMs <= Date().timeIntervalSince1970*1000) {
             repeat {
+                if repeatCount == 3 {
+                    throw AccessTokenError.toomanytries
+                }
                 let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
                 let serverTimeData = try await fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
                 let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
-                if let totp = TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player&totpVer=5&ts=\(Int(Date().timeIntervalSince1970))&totp=\(totp)"), cookie != "" {
+                if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
                     var request = URLRequest(url: url)
                     request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
                     let accessTokenData = try await fakeSpotifyUserAgentSession.data(for: request)
                     print(String(decoding: accessTokenData.0, as: UTF8.self))
                     do {
                         accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                        
                         print("ACCESS TOKEN IS SAVED")
                     } catch {
                         do {
@@ -634,8 +646,30 @@ import StringMetric
                     }
                     
                 }
-            } while accessToken?.accessToken.range(of: "[-_]", options: .regularExpression) == nil
+                try await Task.sleep(for: .seconds(1))
+                fetchHomeResult = await fetchHomeTest()
+                repeatCount += 1
+                // Make sure (access token contains "-" or "_") and we could access the our user page (working token)
+            } while accessToken?.accessToken.range(of: "[-_]", options: .regularExpression) == nil && !fetchHomeResult
         }
+    }
+    
+    func fetchHomeTest() async -> Bool {
+        let url = URL(string: "https://api.spotify.com/v1/me")
+        var request = URLRequest(url: url!)
+        guard let accessToken = accessToken?.accessToken else {
+            return false
+        }
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "authorization")
+        guard let urlResponseAndData = try? await fakeSpotifyUserAgentSession.data(for: request) else {
+            return false
+        }
+        if let userData = try? JSONDecoder().decode(SpotifyUser.self, from: urlResponseAndData.0) {
+            userName = userData.displayName
+        }
+        
+        print("FETCHED HOME: \(!urlResponseAndData.0.isEmpty)")
+        return !urlResponseAndData.0.isEmpty
     }
     
     func fetchNetworkLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
