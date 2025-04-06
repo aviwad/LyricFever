@@ -493,7 +493,9 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
                 .onChange(of: viewmodel.currentlyPlaying) { nowPlaying in
                     print("song change")
-                    viewmodel.currentlyPlayingLyricsIndex = nil
+                    withAnimation {
+                        viewmodel.currentlyPlayingLyricsIndex = nil
+                    }
                     viewmodel.currentlyPlayingLyrics = []
                     viewmodel.translatedLyric = []
                     Task {
