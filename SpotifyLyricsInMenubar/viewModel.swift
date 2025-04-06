@@ -82,7 +82,7 @@ import StringMetric
     @Published var fullscreen = false
     @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false
-    var translateAndExists: Bool { translate && !translatedLyric.isEmpty}
+    var translationExists: Bool { !translatedLyric.isEmpty}
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")

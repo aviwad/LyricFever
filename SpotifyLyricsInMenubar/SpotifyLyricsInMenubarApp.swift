@@ -373,19 +373,13 @@ struct SpotifyLyricsInMenubarApp: App {
                            }
                         .onChange(of: viewmodel.translate) { newTranslate in
                             if newTranslate {
-                                if translationConfigObject.translationConfig == nil {
-                                    // required for newjeans: cool with you (too much english, apple translation can't pick up the language correctly)
-                                    //                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: Locale.Language.init(identifier: "ko"), target: Locale.Language.systemLanguages.first!)
-                                    // required for most hindi songs: lyrics are written in english script and apple translation is very stupid
-//                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: Locale.Language.init(identifier: "hi_IN"), target: Locale.Language.systemLanguages.first!)
-                                    // good backup for now, doesn't replace english songs with french
+                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                    translationConfigObject.translationConfig?.invalidate()
+                                } else {
                                     translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
-                                    // TODO: update translationConfig on song change, pickup song language from spotify and feed it as source locale
-                                    return
                                 }
-                              //  translationConfigObject.translationConfig?.invalidate()
                             } else {
-                                translationConfigObject.translationConfig = nil
+                                viewmodel.translatedLyric = []
                             }
                         }
                         
@@ -612,7 +606,7 @@ struct SpotifyLyricsInMenubarApp: App {
             if !viewmodel.fullscreen, !viewmodel.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
                 // Attempt to display translations
                 // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
-                if viewmodel.translateAndExists {
+                if viewmodel.translationExists {
                     // I don't localize, because I deliver the lyric verbatim
                     return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
                 } else {

@@ -51,7 +51,7 @@ struct KaraokeView: View {
     
     @ViewBuilder func lyricsView() -> some View {
         if let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
-            if viewmodel.translateAndExists {
+            if viewmodel.translationExists {
                 if viewmodel.karaokeShowMultilingual {
                     multilingualView(currentlyPlayingLyricsIndex)
                 }

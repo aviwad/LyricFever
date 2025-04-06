@@ -228,7 +228,7 @@ struct FullscreenView: View {
                 Text(verbatim: element.words)
                     .foregroundStyle(.white)
             }
-            if viewmodel.translateAndExists {
+            if viewmodel.translationExists {
                 Text(verbatim: viewmodel.translatedLyric[index])
                     .font(.system(size: 33, weight: .semibold, design: .default))
                     .opacity(0.85)
