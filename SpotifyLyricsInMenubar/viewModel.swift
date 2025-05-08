@@ -77,6 +77,8 @@ import IPADic
     @Published var isPlaying: Bool = false
     @Published var romanizedLyrics: [String] = []
     @AppStorage("translate") var translate = false
+    @AppStorage("blurFullscreen") var blurFullscreen = true
+    @AppStorage("animateOnStartupFullscreen") var animateOnStartupFullscreen = true
     @AppStorage("romanize") var romanize = false
     @AppStorage("hasMigrated") var hasMigrated = false
     @Published var translatedLyric: [String] = []

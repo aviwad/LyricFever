@@ -9,6 +9,16 @@ import SwiftUI
 import SDWebImageSwiftUI
 import ColorKit
 import Combine
+import TipKit
+
+
+@available(macOS 14.0, *)
+struct NewSettings: Tip {
+    var title: Text {
+        Text("Change fullscreen settings here!")
+    }
+
+}
 
 @available(macOS 14.0, *)
 struct FullscreenView: View {
@@ -18,6 +28,7 @@ struct FullscreenView: View {
     @State var newArtworkUrl: String?
     @State var newAppleMusicArtworkImage: NSImage?
     @State var animate = true
+    @State var showSettingsPopover = false
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
     @State var timer = Timer
         .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
@@ -37,7 +48,146 @@ struct FullscreenView: View {
         case volumehigh
         case translate
         case none
+        case settings
         case sharing
+    }
+    
+    @ViewBuilder func FullscreenButtons() -> some View {
+        let highlightTip = NewSettings()
+        HStack(alignment: .center, spacing: 6) {
+            Button {
+                if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                    viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
+                } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume {
+                    viewmodel.appleMusicScript?.setSoundVolume?(soundVolume-5)
+                }
+            } label: {
+                HoverableIcon(systemName: "speaker.minus")
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in currentHover = hover ? .volumelow : .none }
+            .keyboardShortcut(.downArrow, modifiers: [])
+
+            Button {
+                spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playpause?() : viewmodel.spotifyScript?.playpause?()
+            } label: {
+                HoverableIcon(systemName: viewmodel.isPlaying ? "pause" : "play")
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in currentHover = hover ? .playpause : .none }
+            .keyboardShortcut(" ", modifiers: [])
+
+            Button {
+                if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                    viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
+                } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume {
+                    viewmodel.appleMusicScript?.setSoundVolume?(soundVolume+5)
+                }
+            } label: {
+                HoverableIcon(systemName: "speaker.plus")
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in currentHover = hover ? .volumehigh : .none }
+            .keyboardShortcut(.upArrow, modifiers: [])
+        }
+        .font(.system(size: 15))
+//        .font(.system(size: 16)) // consistent icon size
+        HStack(alignment: .center, spacing: 5) {
+            Button {
+                if viewmodel.showLyrics {
+                    viewmodel.showLyrics = false
+                    viewmodel.stopLyricUpdater()
+                } else {
+                    viewmodel.showLyrics = true
+                    // Only Spotify has access to Fullscreen view
+                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                }
+                
+            } label: {
+                HoverableIcon(systemName: "music.note.list", sideLength: 28, disabled: !viewmodel.showLyrics)
+                    
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in
+                currentHover = hover ? .showlyrics : .none
+            }
+            .keyboardShortcut("h")
+            .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
+            
+            Button {
+                viewmodel.translate.toggle()
+            } label: {
+                HoverableIcon(systemName: "translate", sideLength: 28, disabled: !viewmodel.translate)
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in
+                currentHover = hover ? .translate : .none
+            }
+            .keyboardShortcut("t")
+            .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
+                            
+            
+            
+            Button {
+//                withAnimation {
+                    animate.toggle()
+//                }
+                if animate {
+                    timer = Timer
+                        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
+                        .autoconnect()
+                    withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
+                        points = self.gradient.map { .random(withColor: $0) }
+                    }
+                } else {
+                    timer.upstream.connect().cancel()
+                }
+            } label: {
+                HoverableIcon(systemName: "leaf", sideLength: 28, disabled: !animate)
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .onHover { hover in
+                currentHover = hover ? .pauseanimation : .none
+            }
+            .keyboardShortcut("a")
+            
+            Button {
+                highlightTip.invalidate(reason: .actionPerformed)
+                showSettingsPopover = true
+            } label: {
+                HoverableIcon(systemName: "gear", sideLength: 28)
+            }
+            .buttonStyle(FullscreenButtonIconStyle())
+            .popoverTip(highlightTip, arrowEdge: .bottom)
+            .onHover { hover in
+                currentHover = hover ? .settings : .none
+            }
+            .popover(isPresented: $showSettingsPopover) {
+                VStack(spacing: 7) {
+                    Toggle("Blur surrounding lyrics", isOn: $viewmodel.blurFullscreen)
+                    
+//                        Toggle("Album art size scaling:", isOn: $viewmodel)
+//                        Toggle("Lyrics size scaling: ", isOn: <#T##Binding<Bool>#>)
+                    Toggle("Animate on startup", isOn: $viewmodel.animateOnStartupFullscreen)
+//                        Toggle("Hide dock icon on fullscreen", isOn: $viewmodel.hideDockFullscreen)
+                    Button("Reset to default") {
+                        
+                    }
+                }
+                .padding(10)
+            }
+            if let currentlyPlaying = viewmodel.currentlyPlaying, currentlyPlaying.count == 22 {
+                ShareLink(item: URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")!) {
+                    HoverableIcon(systemName: "square.and.arrow.up.circle.fill", sideLength: 30)
+                }
+                .imageScale(.large)
+                .buttonStyle(FullscreenButtonIconStyle())
+                .onHover { hover in
+                    currentHover = hover ? .sharing : .none
+                }
+            }
+        }
+        .font(.system(size: 12))
     }
     
     @ViewBuilder var albumArt: some View {
@@ -87,109 +237,11 @@ struct FullscreenView: View {
                     .font(.title2)
             }
             .frame(height: 35)
-            HStack {
-                Button {
-                    spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playpause?() : viewmodel.spotifyScript?.playpause?()
-                    
-                } label: {
-                    Image(systemName: "playpause")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .playpause : .none
-                }
-                .keyboardShortcut(KeyEquivalent(" "), modifiers: [])
-                
-                Button {
-                    if viewmodel.showLyrics {
-                        viewmodel.showLyrics = false
-                        viewmodel.stopLyricUpdater()
-                    } else {
-                        viewmodel.showLyrics = true
-                        // Only Spotify has access to Fullscreen view
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                    }
-                    
-                } label: {
-                    Image(systemName: "music.note.list")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .showlyrics : .none
-                }
-                .keyboardShortcut("h")
-                .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
-                
-                Button {
-                    viewmodel.translate.toggle()
-                } label: {
-                    Image(systemName: "translate")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .translate : .none
-                }
-                .keyboardShortcut("t")
-                .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
-                                
-                
-                
-                Button {
-                    withAnimation {
-                        animate.toggle()
-                    }
-                    if animate {
-                        timer = Timer
-                            .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
-                            .autoconnect()
-                        withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
-                            points = self.gradient.map { .random(withColor: $0) }
-                        }
-                    } else {
-                        timer.upstream.connect().cancel()
-                    }
-                } label: {
-                    Image(systemName: "sparkles")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .pauseanimation : .none
-                }
-                .keyboardShortcut("a")
-                
-                Button {
-                    if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
-                        viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
-                    } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume{
-                        viewmodel.appleMusicScript?.setSoundVolume?(soundVolume-5)
-                    }
-                } label: {
-                    Image(systemName: "speaker.minus")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .volumelow : .none
-                }
-                .keyboardShortcut(KeyEquivalent.downArrow, modifiers: [])
-                
-                Button {
-                    if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
-                        viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
-                    } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume{
-                        viewmodel.appleMusicScript?.setSoundVolume?(soundVolume+5)
-                    }
-                } label: {
-                    Image(systemName: "speaker.plus")
-                }
-                .onHover { hover in
-                    currentHover = hover ? .volumehigh : .none
-                }
-                .keyboardShortcut(KeyEquivalent.upArrow, modifiers: [])
-                
-                if let currentlyPlaying = viewmodel.currentlyPlaying, currentlyPlaying.count == 22 {
-                    ShareLink(item: URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")!) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    .onHover { hover in
-                        currentHover = hover ? .sharing : .none
-                    }
-                }
-            }
+            FullscreenButtons()
+            .frame(height: 25)
+            .buttonStyle(.plain)
+            .imageScale(.large)
+            .bold()
             Text(displayHoverTooltip())
                 .textCase(.uppercase)
                 .font(.system(size: 14, weight: .light, design: .monospaced))
@@ -214,6 +266,8 @@ struct FullscreenView: View {
                 ""
             case .translate:
                 viewmodel.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
+            case .settings:
+                "Display fullscreen options"
             case .sharing:
                 "Share Spotify link"
         }
@@ -319,6 +373,18 @@ struct FullscreenView: View {
                 .transition(.opacity)
             }
             .onAppear {
+                if !viewmodel.animateOnStartupFullscreen {
+                    animate = false
+                    timer.upstream.connect().cancel()
+                }
+                do {
+//                    try Tips.resetDatastore()
+                    try Tips.configure()
+                }
+                catch {
+                    print("Error configuring tips: \(error)")
+                }
+
                 if !spotifyOrAppleMusic, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print(artworkUrl)
                     withAnimation {

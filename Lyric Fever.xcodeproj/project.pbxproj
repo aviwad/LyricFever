@@ -30,6 +30,7 @@
 		8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */; };
 		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
 		8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */; };
+		8F91CD652DCB296F00FDF8DC /* FullscreenButtonIconStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */; };
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA4E9772CE73DB900CEEF35 /* ColorKit */; };
 		8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */; };
@@ -67,6 +68,7 @@
 		8F8196882D93E6DA00F03741 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicScripting.swift; sourceTree = "<group>"; };
 		8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
+		8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenButtonIconStyle.swift; sourceTree = "<group>"; };
 		8FA436AD2BC49D480072016C /* newPermissionMac.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newPermissionMac.gif; sourceTree = "<group>"; };
 		8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLoginView.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -173,6 +175,7 @@
 				8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */,
 				8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */,
 				8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */,
+				8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */,
 				8F0849332CB5D1BD00644244 /* KaraokeView.swift */,
 			);
 			path = SpotifyLyricsInMenubar;
@@ -296,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */,
+				8F91CD652DCB296F00FDF8DC /* FullscreenButtonIconStyle.swift in Sources */,
 				8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */,
 				8F4F49522A7EC32D00097888 /* (null) in Sources */,
 				8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */,
