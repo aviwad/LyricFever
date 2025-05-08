@@ -186,6 +186,8 @@ struct SpotifyLyricsInMenubarApp: App {
                      }
                  }
                  Divider()
+                Toggle("AirPlay Audio Delay", isOn: $viewmodel.airplayDelay)
+                    .disabled(!hasOnboarded)
             }
             Divider()
             Button("Settings (New Karaoke Settings!)") {

@@ -85,6 +85,7 @@ import IPADic
     @Published var fullscreen = false
     @AppStorage("karaoke") var karaoke = false
     @Published var spotifyConnectDelay: Bool = false
+    @Published var airplayDelay: Bool = false
     var translationExists: Bool { !translatedLyric.isEmpty}
     @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
@@ -315,7 +316,7 @@ import IPADic
                 stopLyricUpdater()
                 return
             }
-            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0)
+            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0) + (airplayDelay ?  -2000 : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
