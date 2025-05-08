@@ -221,8 +221,8 @@ struct FullscreenView: View {
     
     @ViewBuilder func lyricLineView(for element: LyricLine, index: Int) -> some View {
         VStack(alignment: .leading, spacing: 3) {
-            if viewmodel.romanize, let toLatin = element.words.applyingTransform(.toLatin, reverse: false) {
-                Text(verbatim: toLatin)
+            if !viewmodel.romanizedLyrics.isEmpty {
+                Text(verbatim: viewmodel.romanizedLyrics[index])
                     .foregroundStyle(.white)
             } else {
                 Text(verbatim: element.words)

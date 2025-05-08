@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0849332CB5D1BD00644244 /* KaraokeView.swift */; };
 		8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F10AC8D2D7D04D90036664A /* OverridePrint.swift */; };
+		8F1979952DA72D49008C113D /* IPADic in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979942DA72D49008C113D /* IPADic */; };
+		8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979962DA72D49008C113D /* Mecab-Swift */; };
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
 		8F2D534D2D6C1B50006F33B0 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */; };
@@ -90,6 +92,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F1979952DA72D49008C113D /* IPADic in Frameworks */,
+				8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */,
 				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
 				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
@@ -218,6 +222,8 @@
 				8F832CAC2D6BEC52008C1C2B /* FontPicker */,
 				8FFED07A2D8A26E700EA1510 /* SwiftOTP */,
 				8F8196862D93CCDC00F03741 /* StringMetric */,
+				8F1979942DA72D49008C113D /* IPADic */,
+				8F1979962DA72D49008C113D /* Mecab-Swift */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -258,6 +264,7 @@
 				8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */,
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
+				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -546,6 +553,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/shinjukunian/Mecab-Swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.0;
+			};
+		};
 		8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -621,6 +636,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8F1979942DA72D49008C113D /* IPADic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = IPADic;
+		};
+		8F1979962DA72D49008C113D /* Mecab-Swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */;
+			productName = "Mecab-Swift";
+		};
 		8F28FDC12AA25D2700439D8D /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */;

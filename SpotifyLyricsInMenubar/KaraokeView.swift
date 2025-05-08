@@ -38,8 +38,8 @@ struct KaraokeView: View {
     @Namespace var animation
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
-            if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
-                Text(verbatim: toLatin)
+            if !viewmodel.romanizedLyrics.isEmpty {
+                Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
             } else {
                 Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
             }
@@ -59,8 +59,8 @@ struct KaraokeView: View {
                     Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 }
             } else {
-                if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
-                    Text(verbatim: toLatin)
+                if !viewmodel.romanizedLyrics.isEmpty {
+                    Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
                 } else {
                     Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
                 }

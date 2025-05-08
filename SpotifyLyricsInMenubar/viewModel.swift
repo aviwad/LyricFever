@@ -18,6 +18,8 @@ import UniformTypeIdentifiers
 import SwiftOTP
 import NaturalLanguage
 import StringMetric
+import Mecab_Swift
+import IPADic
 
 @MainActor class viewModel: ObservableObject {
     // View Model
@@ -73,6 +75,7 @@ import StringMetric
     @Published var currentlyPlayingLyricsIndex: Int?
     @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
     @Published var isPlaying: Bool = false
+    @Published var romanizedLyrics: [String] = []
     @AppStorage("translate") var translate = false
     @AppStorage("romanize") var romanize = false
     @AppStorage("hasMigrated") var hasMigrated = false
@@ -898,6 +901,21 @@ import StringMetric
             }
         } catch {
             print("Error deleting data: \(error)")
+        }
+    }
+    
+    func    generateRomanizedLyric(_ lyric: LyricLine) -> String? {
+        if let language = NLLanguageRecognizer.dominantLanguage(for: lyric.words), language == .japanese {
+            let ipadic=IPADic()
+            let ipadicTokenizer = try? Tokenizer(dictionary: ipadic)
+            guard let romajiTokens = ipadicTokenizer?.tokenize(text: lyric.words, transliteration: .romaji) else {
+                return nil
+            }
+            let romanized = romajiTokens.map{$0.reading}.joined()
+            //hachimitsu ha kuma no dai kōbutsu desu 。
+            return romanized
+        } else {
+            return lyric.words.applyingTransform(.toLatin, reverse: false)
         }
     }
     

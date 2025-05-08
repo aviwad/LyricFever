@@ -371,6 +371,16 @@ struct SpotifyLyricsInMenubarApp: App {
                             UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
                             UserDefaults.standard.set(Double(viewmodel.karaokeFont.pointSize), forKey: "karaokeFontSize")
                            }
+                        .onChange(of: viewmodel.romanize) { newRomanize in
+                            if newRomanize {
+                                print("Romanized Lyrics generated from romanize value change for song \(viewmodel.currentlyPlaying)")
+                                viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
+                                    viewmodel.generateRomanizedLyric($0)
+                                })
+                            } else {
+                                viewmodel.romanizedLyrics = []
+                            }
+                        }
                         .onChange(of: viewmodel.translate) { newTranslate in
                             if newTranslate {
                                 if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
@@ -498,6 +508,7 @@ struct SpotifyLyricsInMenubarApp: App {
                     }
                     viewmodel.currentlyPlayingLyrics = []
                     viewmodel.translatedLyric = []
+                    viewmodel.romanizedLyrics = []
                     Task {
                         if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
                             viewmodel.currentlyPlayingLyrics = lyrics
@@ -510,6 +521,12 @@ struct SpotifyLyricsInMenubarApp: App {
                                         translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                     }
                                 }
+                            }
+                            if viewmodel.romanize {
+                                print("Romanized Lyrics generated from song change for \(viewmodel.currentlyPlaying)")
+                                viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
+                                    viewmodel.generateRomanizedLyric($0)
+                                })
                             }
                             viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
                             if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
@@ -639,6 +656,16 @@ struct SpotifyLyricsInMenubarApp: App {
         
     }
 }
+
+// LyricsX
+extension CharacterSet {
+    
+    static let hiragana = CharacterSet(charactersIn: "\u{3040}"..<"\u{30a0}")
+    static let katakana = CharacterSet(charactersIn: "\u{30a0}"..<"\u{3100}")
+    static let kana = CharacterSet(charactersIn: "\u{3040}"..<"\u{3100}")
+    static let kanji = CharacterSet(charactersIn: "\u{4e00}"..<"\u{9fc0}")
+}
+
 
 extension String {
   // https://gist.github.com/budidino/8585eecd55fd4284afaaef762450f98e

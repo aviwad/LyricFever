@@ -80,5 +80,6 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 - [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
 - MusicBrainz & the CoverArtArchive projects for their MBID and Cover Art APIs (used for non-spotify / local files)
 - LyricsX for their Spotify TOTP fix and NetEase lyric provider
+- [Mecab-Swift](https://github.com/shinjukunian/Mecab-Swift) by [shinjukunian](https://github.com/shinjukunian) for the excellent Japanese Romanization 
 - Christian Selig for his efficient image color averaging technique
 - Various StackOverflow snippets
