@@ -291,62 +291,67 @@ struct FullscreenView: View {
     }
     
     @ViewBuilder func lyrics(padding: CGFloat) -> some View {
-        VStack(alignment: .leading){
-            Spacer()
-            ScrollViewReader { proxy in
-                List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { offset, element in
-                    lyricLineView(for: element, index: offset)
-                        .opacity(offset == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : 1)
-                        .font(.system(size: 40, weight: .bold, design: .default))
-                        .padding(20)
-                        .listRowSeparator(.hidden)
-                        .blur(radius: offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 8)
-                }
-                .onAppear {
-                    Task {
-                        try? await Task.sleep(nanoseconds: 1_000_000_000)
-                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                        }
-                    }
-                }
-                .padding(.trailing, 100)
-                .safeAreaInset(edge: .top) {
-                    Spacer()
-                        .id("first")
-                        .frame(height: padding)
-                    }
-                .safeAreaInset(edge: .bottom) {
-                    Spacer()
-                        .id("last")
-                        .frame(height: padding)
-                    }
-                .onChange(of: viewmodel.translatedLyric) {
-                    withAnimation() {
-                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                        } else {
-                            proxy.scrollTo("first", anchor: .top)
-                        }
-                        
-                    }
-                }
-                .onChange(of: viewmodel.currentlyPlayingLyricsIndex) {
-                    withAnimation() {
-                        if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                            proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                        } else {
-                            proxy.scrollTo("first", anchor: .top)
-                        }
-                        
-                    }
-                }
+        ZStack {
+            if viewmodel.currentlyPlayingLyrics.isEmpty {
+                ProgressView()
             }
-            .scrollContentBackground(.hidden)
-            .scrollDisabled(true)
-            .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
-            Spacer()
-            
+            VStack(alignment: .leading){
+                Spacer()
+                ScrollViewReader { proxy in
+                    List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { offset, element in
+                        lyricLineView(for: element, index: offset)
+                            .opacity(offset == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : (offset == viewmodel.currentlyPlayingLyricsIndex ? 1 : 0.8))
+                            .font(.system(size: 40, weight: .bold, design: .default))
+                            .padding(20)
+                            .listRowSeparator(.hidden)
+                            .blur(radius: viewmodel.blurFullscreen ? (offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
+                    }
+                    .onAppear {
+                        Task {
+                            try? await Task.sleep(nanoseconds: 1_000_000_000)
+                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                            }
+                        }
+                    }
+                    .padding(.trailing, 100)
+                    .safeAreaInset(edge: .top) {
+                        Spacer()
+                            .id("first")
+                            .frame(height: padding)
+                        }
+                    .safeAreaInset(edge: .bottom) {
+                        Spacer()
+                            .id("last")
+                            .frame(height: padding)
+                        }
+                    .onChange(of: viewmodel.translatedLyric) {
+                        withAnimation() {
+                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                            } else {
+                                proxy.scrollTo("first", anchor: .top)
+                            }
+                            
+                        }
+                    }
+                    .onChange(of: viewmodel.currentlyPlayingLyricsIndex) {
+                        withAnimation() {
+                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
+                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
+                            } else {
+                                proxy.scrollTo("first", anchor: .top)
+                            }
+                            
+                        }
+                    }
+                }
+                .scrollContentBackground(.hidden)
+                .scrollDisabled(true)
+                .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
+                Spacer()
+                
+            }
         }
     }
     
