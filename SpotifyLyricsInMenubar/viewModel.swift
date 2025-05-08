@@ -898,6 +898,7 @@ import IPADic
             if translate {
                 translatedLyric = []
             }
+            lyricsIsEmptyPostLoad = true
         } catch {
             print("Error deleting data: \(error)")
         }
