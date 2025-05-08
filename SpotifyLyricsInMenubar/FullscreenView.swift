@@ -348,7 +348,8 @@ struct FullscreenView: View {
             }
             .onChange(of: newSpotifyMusicArtworkImage) { newArtwork in
                 print("NEW ARTWORK")
-                if let newArtwork, let dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                if let newArtwork, var dominantColors = try? newArtwork.dominantColors(with: .best, algorithm: .kMeansClustering) {
+                    dominantColors.sort(by: {$0.saturationComponent > $1.saturationComponent})
                     gradient = dominantColors.map({adjustedColor($0)})
                 }
             }

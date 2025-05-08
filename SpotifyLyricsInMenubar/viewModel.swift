@@ -535,24 +535,17 @@ import IPADic
                 saveCoreData()
                 if spotifyOrAppleMusic {
                     if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
-                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
                     } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                     }
                 } else {
                     if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                     } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                     }
                 }
-//                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-//                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
-//                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-//                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-//                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
-//                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
-//                }
                 try Task.checkCancellation()
                 return zip(modifiedLyricsSongObject.lyricsTimestamps, modifiedLyricsSongObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             }
@@ -817,15 +810,15 @@ import IPADic
             amplitude.track(eventType: "NetEase Fetch")
             if spotifyOrAppleMusic {
                 if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
                 } else if let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 }
             } else {
                 if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 } else if let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 }
             }
             try Task.checkCancellation()
@@ -861,15 +854,15 @@ import IPADic
             amplitude.track(eventType: "LRC Fetch")
             if spotifyOrAppleMusic {
                 if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
                 } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 }
             } else {
                 if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
+                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                 }
             }
             try Task.checkCancellation()
@@ -1190,10 +1183,26 @@ extension viewModel {
     }
 }
 
-// credits: Christian Selig https://christianselig.com/2021/04/efficient-average-color/
+
 
 extension NSImage {
-    
+    func findWhiteTextLegibleMostSaturatedDominantColor() -> Int32 {
+        guard let dominantColors = try? self.dominantColors(with: .best, algorithm: .kMeansClustering).map({self.adjustedColor($0)}).sorted(by: { $0.saturationComponent > $1.saturationComponent }) else {
+            return self.findAverageColor()
+        }
+        for color in dominantColors {
+            if color.brightnessComponent > 0.1 {
+                let red = Int(color.redComponent * 255)
+                let green = Int(color.greenComponent * 255)
+                let blue = Int(color.blueComponent * 255)
+                
+                let combinedValue = (max(0,red) << 16) | (max(0,green) << 8) | max(0,blue)
+                return Int32(bitPattern: UInt32(combinedValue))
+            }
+        }
+        return self.findAverageColor()
+    }
+    // credits: Christian Selig https://christianselig.com/2021/04/efficient-average-color/
     func findAverageColor() -> Int32 {
         guard let cgImage = cgImage else { return 0 }
         
@@ -1262,6 +1271,30 @@ extension NSImage {
         print("Find average color: red is \(red), green is \(green), blue is \(blue)")
         let combinedValue = (red << 16) | (green << 8) | blue
         return Int32(bitPattern: UInt32(combinedValue))
+    }
+    func adjustedColor(_ nsColor: NSColor) -> NSColor {
+        // Convert NSColor to HSB components
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        nsColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        
+        // Adjust brightness
+        brightness = max(brightness - 0.2, 0.1)
+        
+        if saturation < 0.9 {
+            // Adjust contrast
+            saturation = max(0.1, saturation * 3)
+        }
+        
+        // Create new NSColor with modified HSB values
+        print("Brightness: \(brightness)")
+//        print("Saturation: \(saturation)")
+        let modifiedNSColor = NSColor(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
+        
+        return modifiedNSColor
     }
     
     private func red(for pixelData: UInt32) -> UInt8 {
