@@ -529,7 +529,8 @@ import IPADic
             let parser = LyricsParser(lyrics: lyricText)
             print(parser.lyrics)
             if !parser.lyrics.isEmpty {
-                _ = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(intDuration+1000))
+                let modifiedLyricsSongObject = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(intDuration+1000))
+                
                 saveCoreData()
                 if spotifyOrAppleMusic {
                     if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
@@ -551,9 +552,11 @@ import IPADic
 //                    // Just instantiates a SpotifyColorData class to save it to CoreData haha....
 //                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findAverageColor())
 //                }
+                try Task.checkCancellation()
+                return zip(modifiedLyricsSongObject.lyricsTimestamps, modifiedLyricsSongObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             }
             try Task.checkCancellation()
-            return parser.lyrics
+            return []
         }
         try Task.checkCancellation()
         return []
@@ -825,7 +828,7 @@ import IPADic
                 }
             }
             try Task.checkCancellation()
-            return parser.lyrics
+            return zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
         }
         // and then custom spotify album call to get the color for karaoke mode
         
@@ -869,7 +872,7 @@ import IPADic
                 }
             }
             try Task.checkCancellation()
-            return lrcLyrics.lyrics
+            return zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
 //            let lyricsArray = zip(songObject., songObject.lyrics.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
             
 //            if urlResponseAndData.0.isEmpty {
