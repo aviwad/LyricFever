@@ -40,7 +40,7 @@ struct SpotifyLyricsInMenubarApp: App {
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    @AppStorage("hasUpdated21") var hasUpdated21: Bool = false
+    @AppStorage("hasUpdated22") var hasUpdated22: Bool = false
     @AppStorage("hasTranslated") var hasTranslated: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
     @StateObject var translationConfigObject: translationConfigObject = .init()
@@ -228,11 +228,11 @@ struct SpotifyLyricsInMenubarApp: App {
                 })
                 .onAppear {
                     print("on appear running")
-                    if !hasUpdated21 {
+                    if !hasUpdated22 {
                     
                         NSApplication.shared.activate(ignoringOtherApps: true)
-                        openWindow(id: "update21")
-                        hasUpdated21 = true
+                        openWindow(id: "update22")
+                        hasUpdated22 = true
                         return
                     }
                     if viewmodel.cookie.count == 0 {
@@ -585,14 +585,14 @@ struct SpotifyLyricsInMenubarApp: App {
                 }
         }.windowResizability(.contentSize)
             .windowStyle(.hiddenTitleBar)
-        Window("Lyric Fever: Update 2.1", id: "update21") { // << here !!
-            Update21Window().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
+        Window("Lyric Fever: Update 2.2", id: "update22") { // << here !!
+            Update22Window().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
                 .environmentObject(viewmodel)
                 .preferredColorScheme(.dark)
                 .onAppear {
                     NSApp.setActivationPolicy(.regular)
                     Task { @MainActor in
-                        let window = NSApp.windows.first {$0.identifier?.rawValue == "update21"}
+                        let window = NSApp.windows.first {$0.identifier?.rawValue == "update22"}
                         window?.level = .floating
                     }
                 }

@@ -51,6 +51,12 @@
         }
       }
     },
+    "AirPlay Audio Delay" : {
+
+    },
+    "Animate on startup" : {
+
+    },
     "API Key: Advanced" : {
       "localizations" : {
         "zh-Hans" : {
@@ -80,6 +86,12 @@
           }
         }
       }
+    },
+    "Blur surrounding lyrics" : {
+
+    },
+    "Change fullscreen settings here!" : {
+
     },
     "Check for Lyrics Again" : {
       "localizations" : {

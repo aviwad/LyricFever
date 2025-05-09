@@ -172,7 +172,7 @@ import IPADic
         // Set user agents for Spotify and LRCLIB
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
-        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.1 (https://github.com/aviwad/LyricFever)"]
+        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.2 (https://github.com/aviwad/LyricFever)"]
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
         
         // Set our user locale for translation language
