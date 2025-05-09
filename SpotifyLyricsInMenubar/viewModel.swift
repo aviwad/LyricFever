@@ -454,6 +454,33 @@ import IPADic
         }
     }
     
+    fileprivate func updatePixelDisplayAndLights(_ red: Double, _ green: Double, _ blue: Double) {
+        //        let object = TODO
+        //        DistributedNotificationCenter.default().post(name: Notification.Name("LyricFeverColorUpdate"), object: object)
+        let colorDict: [String: CGFloat] = [
+            "red": CGFloat(red),
+            "green": CGFloat(green),
+            "blue": CGFloat(blue)
+        ]
+        
+        // Convert dictionary to JSON data
+        if let jsonData = try? JSONSerialization.data(withJSONObject: colorDict, options: []),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            // Send notification with JSON string as object
+            DistributedNotificationCenter.default().post(name: Notification.Name("LyricFeverColorUpdate"), object: jsonString)
+        }
+//        let nsColor = NSColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+//        let hue: Int = Int(nsColor.hueComponent * 360)
+        //        let nonActivatingNSWorkspaceConfig = NSWorkspace.OpenConfiguration()
+        
+//        NSWorkspace.shared.open(
+//            [URL(string: "homecontrol://x-callback-url/run-action?action-type=change-device-property&item-type=device-group&item-name=Table&room-name=Bedroom&home-name=My%20Home&property-type=light-hue&property-value=\(hue)&authentication-token=xkt8keLYSY2qlrBcJzfnVA")!],
+//            withApplicationAt: appURL,
+//            configuration: nonActivatingNSWorkspaceConfig
+//        )
+        //        NSWorkspace.shared.open(URL(string: "shortcuts://run-shortcut?name=LyricFeverColorChange&input=text&text=\(hue)")!)
+    }
+    
     func intToRGB(_ value: Int32) -> Color {//(red: Int, green: Int, blue: Int) {
         // Convert negative numbers to an unsigned 32-bit representation
         let unsignedValue = UInt32(bitPattern: value)

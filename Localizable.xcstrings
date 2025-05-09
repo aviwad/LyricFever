@@ -176,12 +176,12 @@
         }
       }
     },
-    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.1" : {
+    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.1"
+            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2"
           }
         }
       }
@@ -399,6 +399,9 @@
         }
       }
     },
+    "Lyric Fever Search for %@" : {
+
+    },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
         "zh-Hans" : {
@@ -420,6 +423,7 @@
       }
     },
     "Lyric Fever: Update 2.1" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -428,6 +432,9 @@
           }
         }
       }
+    },
+    "Lyric Fever: Update 2.2" : {
+
     },
     "Lyrics Found 😃" : {
       "localizations" : {
@@ -768,6 +775,9 @@
           }
         }
       }
+    },
+    "Search Window" : {
+
     },
     "Select a Font:" : {
       "localizations" : {
