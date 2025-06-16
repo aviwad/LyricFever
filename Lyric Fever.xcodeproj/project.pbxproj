@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -34,18 +34,13 @@
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA4E9772CE73DB900CEEF35 /* ColorKit */; };
 		8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */; };
-		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
+		8FC8E9492A704EEB00F69915 /* LyricFeverViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* LyricFeverViewModel.swift */; };
 		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
 		8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */; };
 		8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF184EC2D626F1E0026D2A2 /* CompactSlider */; };
 		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
-		8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */; };
-		8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */; };
-		8FF9ADAB2C5B5E7500A57A75 /* ColorStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */; };
-		8FF9ADAC2C5B5E7500A57A75 /* GradientParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */; };
-		8FF9ADAD2C5B5E7500A57A75 /* Uniforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */; };
 		8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */; };
 		8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */; };
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
@@ -72,22 +67,21 @@
 		8FA436AD2BC49D480072016C /* newPermissionMac.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newPermissionMac.gif; sourceTree = "<group>"; };
 		8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLoginView.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
+		8FC8E9482A704EEB00F69915 /* LyricFeverViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricFeverViewModel.swift; sourceTree = "<group>"; };
 		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotifyLyricsInMenubar.entitlements; sourceTree = "<group>"; };
+		8FC8E9512A704EED00F69915 /* LyricFever.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LyricFever.entitlements; sourceTree = "<group>"; };
 		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
 		8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyScripting.swift; sourceTree = "<group>"; };
 		8FE454292A891EBD0039EFA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update22Window.swift; sourceTree = "<group>"; };
 		8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Lyrics.xcdatamodel; sourceTree = "<group>"; };
-		8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MulticolorGradientShader.metal; sourceTree = "<group>"; };
-		8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticolorGradient.swift; sourceTree = "<group>"; };
-		8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStop.swift; sourceTree = "<group>"; };
-		8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientParams.swift; sourceTree = "<group>"; };
-		8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uniforms.swift; sourceTree = "<group>"; };
 		8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindow.swift; sourceTree = "<group>"; };
 		8FFA9F362AA1B63500BAEC5C /* crossfade.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = crossfade.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8F4D20712DFFAEB0004A12CA /* LyricProvider */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LyricProvider; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8FC8E9422A704EEB00F69915 /* Frameworks */ = {
@@ -137,7 +131,7 @@
 				8FFA9F362AA1B63500BAEC5C /* crossfade.gif */,
 				8FA436AD2BC49D480072016C /* newPermissionMac.gif */,
 				8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */,
-				8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */,
+				8FC8E9472A704EEB00F69915 /* LyricFever */,
 				8FC8E9462A704EEB00F69915 /* Products */,
 				8FC1F4E42A7969C70043D92A /* Frameworks */,
 			);
@@ -151,52 +145,32 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */ = {
+		8FC8E9472A704EEB00F69915 /* LyricFever */ = {
 			isa = PBXGroup;
 			children = (
-				8FF9AD9E2C5B426C00A57A75 /* Shaders */,
+				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
 				8FE454292A891EBD0039EFA7 /* Info.plist */,
-				8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */,
+				8FC8E9482A704EEB00F69915 /* LyricFeverViewModel.swift */,
 				8F10AC8D2D7D04D90036664A /* OverridePrint.swift */,
 				8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */,
-				8FF9ADAA2C5B5E7500A57A75 /* Model */,
 				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
 				8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */,
 				8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */,
 				8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */,
 				8F2D534A2D6C1B50006F33B0 /* LyricsParser */,
 				8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */,
-				8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */,
 				8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */,
 				8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */,
 				8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */,
 				8FC8E94C2A704EED00F69915 /* Assets.xcassets */,
-				8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */,
+				8FC8E9512A704EED00F69915 /* LyricFever.entitlements */,
 				8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */,
 				8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */,
 				8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */,
 				8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */,
 				8F0849332CB5D1BD00644244 /* KaraokeView.swift */,
 			);
-			path = SpotifyLyricsInMenubar;
-			sourceTree = "<group>";
-		};
-		8FF9AD9E2C5B426C00A57A75 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */,
-			);
-			path = Shaders;
-			sourceTree = "<group>";
-		};
-		8FF9ADAA2C5B5E7500A57A75 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */,
-				8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */,
-				8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */,
-			);
-			path = Model;
+			path = LyricFever;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,6 +187,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
 			);
 			name = "Lyric Fever";
 			packageProductDependencies = (
@@ -305,7 +282,6 @@
 				8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */,
 				8F2D53532D6C1D29006F33B0 /* LyricsHeader.swift in Sources */,
 				8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */,
-				8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */,
 				8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */,
 				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
 				8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */,
@@ -313,18 +289,14 @@
 				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
 				8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */,
 				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,
-				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
+				8FC8E9492A704EEB00F69915 /* LyricFeverViewModel.swift in Sources */,
 				8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */,
 				8F2D53512D6C1B88006F33B0 /* Extensions.swift in Sources */,
 				8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */,
-				8FF9ADAC2C5B5E7500A57A75 /* GradientParams.swift in Sources */,
-				8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */,
 				8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */,
 				8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */,
 				8F2D534D2D6C1B50006F33B0 /* LyricsParser.swift in Sources */,
 				8F58B8CF2C55AEB1009ADA1A /* FullscreenView.swift in Sources */,
-				8FF9ADAD2C5B5E7500A57A75 /* Uniforms.swift in Sources */,
-				8FF9ADAB2C5B5E7500A57A75 /* ColorStop.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,7 +432,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SpotifyLyricsInMenubar/SpotifyLyricsInMenubar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LyricFever/LyricFever.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -473,7 +445,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_FILE = LyricFever/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -499,7 +471,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SpotifyLyricsInMenubar/SpotifyLyricsInMenubar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LyricFever/LyricFever.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -512,7 +484,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_FILE = LyricFever/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;

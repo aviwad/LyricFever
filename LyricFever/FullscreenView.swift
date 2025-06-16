@@ -30,11 +30,7 @@ struct FullscreenView: View {
     @State var animate = true
     @State var showSettingsPopover = false
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
-    @State var timer = Timer
-        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
-        .autoconnect()
     @State var currentHover = hoverOptions.none
-    @State var points: ColorSpots = .init()
     
     var canDisplayLyrics: Bool {
         viewmodel.showLyrics && !viewmodel.lyricsIsEmptyPostLoad
@@ -129,19 +125,7 @@ struct FullscreenView: View {
             
             
             Button {
-//                withAnimation {
-                    animate.toggle()
-//                }
-                if animate {
-                    timer = Timer
-                        .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
-                        .autoconnect()
-                    withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
-                        points = self.gradient.map { .random(withColor: $0) }
-                    }
-                } else {
-                    timer.upstream.connect().cancel()
-                }
+                animate.toggle()
             } label: {
                 HoverableIcon(systemName: "leaf", sideLength: 28, disabled: !animate)
             }
@@ -370,20 +354,11 @@ struct FullscreenView: View {
                     }
                 }
             }
-            .background {
-                ZStack {
-                    BackgroundView(colors: $gradient, timer: $timer, points: $points)
-                }
-                .ignoresSafeArea()
-                .transition(.opacity)
-            }
             .onAppear {
                 if !viewmodel.animateOnStartupFullscreen {
                     animate = false
-                    timer.upstream.connect().cancel()
                 }
                 do {
-//                    try Tips.resetDatastore()
                     try Tips.configure()
                 }
                 catch {
@@ -471,47 +446,5 @@ struct FullscreenView: View {
         
         // Convert NSColor to SwiftUI Color
         return Color(modifiedNSColor)
-    }
-}
-
-@available(macOS 14.0, *)
-struct BackgroundView: View {
-    @Binding var colors: [SwiftUI.Color]
-    @Binding var timer: Publishers.Autoconnect<Timer.TimerPublisher>
-    @Binding var points: ColorSpots
-
-    static let animationDuration: Double = 20
-    @State var bias: Float = 0.002
-    @State var power: Float = 2.5
-    @State var noise: Float = 2
-
-    var body: some View {
-        MulticolorGradient(
-            points: points,
-            bias: bias,
-            power: power,
-            noise: noise
-        )
-        .onChange(of: colors) {
-            print("change color called")
-            withAnimation(.easeInOut(duration: BackgroundView.animationDuration/2)){
-                points = self.colors.map { .random(withColor: $0) }
-            }
-        }
-        .onReceive(timer) { _ in
-            withAnimation(.easeInOut(duration: BackgroundView.animationDuration)) {
-                points = self.colors.map { .random(withColor: $0) }
-            }
-        }
-    }
-    
-}
-
-private extension ColorSpot {
-    static func random(withColor color: SwiftUI.Color) -> ColorSpot {
-        .init(
-            position: .init(x: CGFloat.random(in: 0 ..< 1), y: CGFloat.random(in: 0 ..< 1)),
-            color: color
-        )
     }
 }

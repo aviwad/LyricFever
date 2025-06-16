@@ -399,9 +399,6 @@
         }
       }
     },
-    "Lyric Fever Search for %@" : {
-
-    },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
         "zh-Hans" : {
@@ -775,9 +772,6 @@
           }
         }
       }
-    },
-    "Search Window" : {
-
     },
     "Select a Font:" : {
       "localizations" : {
