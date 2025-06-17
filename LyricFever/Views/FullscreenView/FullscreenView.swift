@@ -11,15 +11,6 @@ import ColorKit
 import Combine
 import TipKit
 
-
-@available(macOS 14.0, *)
-struct NewSettings: Tip {
-    var title: Text {
-        Text("Change fullscreen settings here!")
-    }
-
-}
-
 @available(macOS 14.0, *)
 struct FullscreenView: View {
     @EnvironmentObject var viewmodel: viewModel
