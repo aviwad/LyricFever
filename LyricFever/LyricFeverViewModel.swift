@@ -6,19 +6,8 @@
 //
 
 import SwiftUI
-#if canImport(Translation)
 import Translation
-#endif
 import LaunchAtLogin
-
-class translationConfigObject: ObservableObject {
-    @Published private var _translationConfig: Any?
-    @available(macOS 15, *)
-    var translationConfig: TranslationSession.Configuration? {
-        get { return _translationConfig as? TranslationSession.Configuration }
-        set { _translationConfig = newValue }
-    }
-}
 
 enum MusicType {
     case spotify
@@ -43,7 +32,7 @@ struct SpotifyLyricsInMenubarApp: App {
     @AppStorage("hasUpdated22") var hasUpdated22: Bool = false
     @AppStorage("hasTranslated") var hasTranslated: Bool = false
     @AppStorage("truncationLength") var truncationLength: Int = 40
-    @StateObject var translationConfigObject: translationConfigObject = .init()
+    @State var translationSessionConfig: TranslationSession.Configuration?
     @Environment(\.openWindow) var openWindow
     @Environment(\.openURL) var openURL
     var body: some Scene {
@@ -70,10 +59,10 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.fetchBackgroundColor()
                         if viewmodel.translate {
                             if #available(macOS 15, *) {
-                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                    translationConfigObject.translationConfig?.invalidate()
+                                if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                    translationSessionConfig?.invalidate()
                                 } else {
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                                    translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                 }
                             }
                         }
@@ -92,10 +81,10 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
-                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                        translationConfigObject.translationConfig?.invalidate()
+                                    if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                        translationSessionConfig?.invalidate()
                                     } else {
-                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                                        translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                     }
                                 }
                             }
@@ -339,95 +328,53 @@ struct SpotifyLyricsInMenubarApp: App {
                         viewmodel.currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
                     }
                 })
-                .complexModifier {
-                    if #available(macOS 15.0, *) {
-                        $0.translationTask(translationConfigObject.translationConfig) { session in
-                            print("translation task called")
-                            do {
-                                print("translation task called in do")
-                                let requests = viewModel.shared.currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
-                                let response = try await session.translations(from: requests)
-                                if response.count == viewmodel.currentlyPlayingLyrics.count {
+                .translationTask(translationSessionConfig) { session in
+                    print("translation task called")
+                    do {
+                        print("translation task called in do")
+                        let requests = viewModel.shared.currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
+                        let response = try await session.translations(from: requests)
+                        if response.count == viewmodel.currentlyPlayingLyrics.count {
 //                                    viewmodel.translateSource = response
-                                    viewmodel.translatedLyric = response.map {
-                                        $0.targetText
-                                    }
-                                }
-                                print(response)
-                                
-                            } catch {
-                                if let source = viewmodel.findRealLanguage() {
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(source: source, target: viewmodel.userLocaleLanguage.language)
-                                }
-                                print(error)
+                            viewmodel.translatedLyric = response.map {
+                                $0.targetText
                             }
                         }
-//                        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willBecomeActiveNotification)) { _ in
-//                            if !viewmodel.fullscreenInProgress {
-//                                openWindow(id: "onboarding")
-//                            }
-//                            
-//                           }
-                        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
-                               // This code will be executed just before the app terminates
-                            UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
-                            UserDefaults.standard.set(Double(viewmodel.karaokeFont.pointSize), forKey: "karaokeFontSize")
-                           }
-                        .onChange(of: viewmodel.romanize) { newRomanize in
-                            if newRomanize {
-                                print("Romanized Lyrics generated from romanize value change for song \(viewmodel.currentlyPlaying)")
-                                viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
-                                    viewmodel.generateRomanizedLyric($0)
-                                })
-                            } else {
-                                viewmodel.romanizedLyrics = []
-                            }
-                        }
-                        .onChange(of: viewmodel.translate) { newTranslate in
-                            if newTranslate {
-                                if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                    translationConfigObject.translationConfig?.invalidate()
-                                } else {
-                                    translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
-                                }
-                            } else {
-                                viewmodel.translatedLyric = []
-                            }
-                        }
+                        print(response)
                         
-                    }
-                    else {
-                        $0
+                    } catch {
+                        if let source = viewmodel.findRealLanguage() {
+                            translationSessionConfig = TranslationSession.Configuration(source: source, target: viewmodel.userLocaleLanguage.language)
+                        }
+                        print(error)
                     }
                 }
-//                .translationTask(translationConfig) { session in
-//                    print("translation task called")
-//                    do {
-//                        print("translation task called in do")
-//                        let requests = viewModel.shared.currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
-//                        let response = try await session.translations(from: requests)
-//                        if response.count == viewmodel.currentlyPlayingLyrics.count {
-//                            viewmodel.translatedLyric = response.map {
-//                                $0.targetText
-//                            }
-//                        }
-//                        print(response)
-//                        
-//                    } catch {
-//                        print(error)
-//                    }
-//                }
-//                .onChange(of: viewmodel.translate) { newTranslate in
-//                    if newTranslate {
-//                        if translationConfig == nil {
-//                            translationConfig = TranslationSession.Configuration()
-//                            return
-//                        }
-//                        translationConfig?.invalidate()
-//                    } else {
-//                        translationConfig = nil
-//                    }
-//                }
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+                       // This code will be executed just before the app terminates
+                    UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
+                    UserDefaults.standard.set(Double(viewmodel.karaokeFont.pointSize), forKey: "karaokeFontSize")
+                   }
+                .onChange(of: viewmodel.romanize) { newRomanize in
+                    if newRomanize {
+                        print("Romanized Lyrics generated from romanize value change for song \(viewmodel.currentlyPlaying)")
+                        viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
+                            viewmodel.generateRomanizedLyric($0)
+                        })
+                    } else {
+                        viewmodel.romanizedLyrics = []
+                    }
+                }
+                .onChange(of: viewmodel.translate) { newTranslate in
+                    if newTranslate {
+                        if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                            translationSessionConfig?.invalidate()
+                        } else {
+                            translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                        }
+                    } else {
+                        viewmodel.translatedLyric = []
+                    }
+                }
                 .onChange(of: spotifyOrAppleMusic) { newSpotifyorAppleMusic in
                     hasOnboarded = false
                 }
@@ -517,10 +464,10 @@ struct SpotifyLyricsInMenubarApp: App {
                             viewmodel.fetchBackgroundColor()
                             if viewmodel.translate {
                                 if #available(macOS 15, *) {
-                                    if translationConfigObject.translationConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                        translationConfigObject.translationConfig?.invalidate()
+                                    if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                        translationSessionConfig?.invalidate()
                                     } else {
-                                        translationConfigObject.translationConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                                        translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                     }
                                 }
                             }
@@ -676,11 +623,6 @@ extension String {
   }
 }
 
-extension View {
-    func complexModifier<V: View>(@ViewBuilder _ closure: (Self) -> V) -> some View {
-        closure(self)
-    }
-}
 // https://stackoverflow.com/questions/48136456/locale-current-reporting-wrong-language-on-device
 extension Locale {
     static func preferredLocaleString() -> String? {
