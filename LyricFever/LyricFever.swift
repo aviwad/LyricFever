@@ -23,8 +23,7 @@ enum MusicType {
 //}
 
 @main
-struct SpotifyLyricsInMenubarApp: App {
-//    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+struct LyricFever: App {
     @StateObject var viewmodel = viewModel.shared
     // True: means Apple Music, False: Spotify
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
