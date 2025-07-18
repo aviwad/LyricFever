@@ -11,18 +11,18 @@ import CompactSlider
 import FontPicker
 
 struct KaraokeSettingsView: View {
-    @EnvironmentObject var viewmodel: viewModel
+    @Environment(ViewModel.self) var viewmodel
     var body: some View {
         VStack(spacing: 12) {
-            
+            @Bindable var viewmodel = viewmodel
             Text("Karaoke Behaviour")
 //                .bold()
                 .font(.system(size: 15, weight: .bold))
-            Toggle(isOn: $viewmodel.karaokeModeHoveringSetting) {
+            Toggle(isOn: $viewmodel.userDefaultStorage.karaokeModeHoveringSetting) {
                 Text("Hide Karaoke window when mouse passes by")
             }
             .toggleStyle(.checkbox)
-            Toggle(isOn: $viewmodel.karaokeShowMultilingual) {
+            Toggle(isOn: $viewmodel.userDefaultStorage.karaokeShowMultilingual) {
                 Text("Show multilingual lyrics when translating in Karaoke window")
             }
             .toggleStyle(.checkbox)
@@ -35,18 +35,18 @@ struct KaraokeSettingsView: View {
             Text("Karaoke Background Appearance")
                     .font(.system(size: 15, weight: .bold))
             
-            Toggle(isOn: $viewmodel.karaokeUseAlbumColor.animation(.bouncy)) {
+            Toggle(isOn: $viewmodel.userDefaultStorage.karaokeUseAlbumColor.animation(.bouncy)) {
                 Text("Use album color for Karaoke window")
             }
             .toggleStyle(.checkbox)
-            if !viewmodel.karaokeUseAlbumColor {
+            if !viewmodel.userDefaultStorage.karaokeUseAlbumColor {
                 ColorPicker("Set a background color", selection: viewmodel.colorBinding, supportsOpacity: false)
             }
-            Text("Opacity Level: \(Int(viewmodel.karaokeTransparency))%")
-            CompactSlider(value: $viewmodel.karaokeTransparency, in: 1...100, step: 5) {
+            Text("Opacity Level: \(Int(viewmodel.userDefaultStorage.karaokeTransparency))%")
+            CompactSlider(value: $viewmodel.userDefaultStorage.karaokeTransparency, in: 1...100, step: 5) {
                 Text("Opacity Level:")
                 Spacer()
-                Text("\(Int(viewmodel.karaokeTransparency))%")
+                Text("\(Int(viewmodel.userDefaultStorage.karaokeTransparency))%")
             }
             .frame(width: 300, height: 24)
             .padding(.bottom, 20)
@@ -60,10 +60,10 @@ struct KaraokeSettingsView: View {
             
             .frame(width: 300, height: 24)
             Button("Reset to default") {
-                viewmodel.karaokeModeHoveringSetting = false
-                viewmodel.karaokeUseAlbumColor = true
-                viewmodel.karaokeShowMultilingual = true
-                viewmodel.karaokeTransparency = 50
+                viewmodel.userDefaultStorage.karaokeModeHoveringSetting = false
+                viewmodel.userDefaultStorage.karaokeUseAlbumColor = true
+                viewmodel.userDefaultStorage.karaokeShowMultilingual = true
+                viewmodel.userDefaultStorage.karaokeTransparency = 50
                 viewmodel.karaokeFont = NSFont.boldSystemFont(ofSize: 30)
 //                viewmodel.karaokeFontSize = 30
                 viewmodel.colorBinding.wrappedValue = Color(.sRGB, red: 0.98, green: 0.0, blue: 0.98)

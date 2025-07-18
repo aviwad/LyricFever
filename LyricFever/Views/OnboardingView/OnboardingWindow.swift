@@ -19,8 +19,6 @@ struct OnboardingWindow: View {
     @State var appleMusicLibraryPermission: Bool = false
     @State var permissionMissing: Bool = false
     @State var isAnimating = true
-//    @State private var selection: Int? = nil
-    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
     @State var errorMessage: String = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
     var body: some View {
@@ -39,7 +37,7 @@ struct OnboardingWindow: View {
                                         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Automation")!
                                         NSWorkspace.shared.open(url)
                                     })
-                                    if spotifyOrAppleMusic {
+                                    if ViewModel.shared.currentPlayer == .appleMusic {
                                         Button("Open Music Panel", action: {
                                             let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media")!
                                             NSWorkspace.shared.open(url)
@@ -67,7 +65,8 @@ struct OnboardingWindow: View {
                     .transition(.fade)
                     
                     Group {
-                        Picker("", selection: $spotifyOrAppleMusic) {
+                        
+                        Picker("", selection: ViewModel.shared.userDefaultStorage.$spotifyOrAppleMusic) {
                             VStack {
                                 Image("spotify")
                                     .resizable()
@@ -206,118 +205,116 @@ struct OnboardingWindow: View {
                     
                 }
                 .onAppear {
-                    if spotifyOrAppleMusic {
-                        errorMessage = "Please open Apple Music!"
-                        spotifyPermission = true
-                        appleMusicPermission = false
-                        appleMusicLibraryPermission = false
-                    } else {
-                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
-                        appleMusicPermission = true
-                        appleMusicLibraryPermission = true
-                        spotifyPermission = false
+                    switch ViewModel.shared.currentPlayer {
+                        case .appleMusic:
+                            errorMessage = "Please open Apple Music!"
+                            spotifyPermission = true
+                            appleMusicPermission = false
+                            appleMusicLibraryPermission = false
+                        case .spotify:
+                            errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
+                            appleMusicPermission = true
+                            appleMusicLibraryPermission = true
+                            spotifyPermission = false
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didClickSettings"))) { newValue in
-                    if spotifyOrAppleMusic {
-                        // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
-                        errorMessage = "Please open Apple Music!"
-                        spotifyPermission = true
-                        appleMusicPermission = false
-                        appleMusicLibraryPermission = false
-                        
-                        
-                        // Check Apple Music Automation permission
-                        guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
-                            withAnimation {
-                                errorMessage = "Please open Apple Music!"
-                            }
-                            return
-                        }
-                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
-                        let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                        switch status {
-                            case -600:
+                    switch ViewModel.shared.currentPlayer {
+                        case .appleMusic:
+                            // first set spotify button to true, because we dont run the spotify or apple music boolean check on window open anymore
                             errorMessage = "Please open Apple Music!"
-                            case -0:
-                            appleMusicPermission = true
-                            permissionMissing = false
-                            isAnimating = false
-                            if appleMusicLibraryPermission {
-                                errorMessage = ""
-                            } else {
-                                errorMessage = "Please give us Apple Music Library permissions!"
-                            }
-    //                                case -1744:
-    //                                Alert(title: Text("Please give permission by going to the Automation panel"))
-                            default:
-                            withAnimation {
-                                permissionMissing = true
-                            }
-                            errorMessage = "Please give us required permissions!"
-                            permissionMissing = true
-                            isAnimating = true
-                                // OPEN AUTOMATION PANEL
-                        }
-                        
-                        // Check Media Library Permission
-                        Task {
-                            let status = await MusicKit.MusicAuthorization.request()
+                            spotifyPermission = true
+                            appleMusicPermission = false
+                            appleMusicLibraryPermission = false
                             
-                            if status == .authorized {
+                            
+                            // Check Apple Music Automation permission
+                            guard let music = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.Music").first else {
                                 withAnimation {
-                                    appleMusicLibraryPermission = true
-                                    permissionMissing = false
+                                    errorMessage = "Please open Apple Music!"
                                 }
+                                return
+                            }
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                            let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                            switch status {
+                                case -600:
+                                errorMessage = "Please open Apple Music!"
+                                case -0:
+                                appleMusicPermission = true
+                                permissionMissing = false
                                 isAnimating = false
-                                if appleMusicPermission {
+                                if appleMusicLibraryPermission {
                                     errorMessage = ""
                                 } else {
-                                    errorMessage = "Please give us Apple Music permissions!"
+                                    errorMessage = "Please give us Apple Music Library permissions!"
                                 }
-                            }
-                            else {
-                                errorMessage = "Please give us required permissions!"
+                                default:
                                 withAnimation {
                                     permissionMissing = true
                                 }
-                                isAnimating = true
-                            }
-                        }
-                        
-                    } else {
-                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
-                        appleMusicPermission = true
-                        appleMusicLibraryPermission = true
-                        spotifyPermission = false
-                        // Check Spotify
-                        guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
-                            withAnimation {
-                                errorMessage = "Please open Spotify!"
-                            }
-                            return
-                        }
-                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
-                        let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
-                        switch status {
-                            case -600:
-                                errorMessage = "Please open Spotify!"
-                            case -0:
-                            withAnimation {
-                                permissionMissing = false
-                                    spotifyPermission = true
-                                errorMessage = ""
-                            }
-    //                                case -1744:
-    //                                Alert(title: Text("Please give permission by going to the Automation panel"))
-                            default:
-                            withAnimation {
-                                errorMessage = "Please give required permissions!"
+                                errorMessage = "Please give us required permissions!"
                                 permissionMissing = true
                                 isAnimating = true
+                                    // OPEN AUTOMATION PANEL
                             }
-                                // OPEN AUTOMATION PANEL
-                        }
+                            
+                            // Check Media Library Permission
+                            Task {
+                                let status = await MusicKit.MusicAuthorization.request()
+                                
+                                if status == .authorized {
+                                    withAnimation {
+                                        appleMusicLibraryPermission = true
+                                        permissionMissing = false
+                                    }
+                                    isAnimating = false
+                                    if appleMusicPermission {
+                                        errorMessage = ""
+                                    } else {
+                                        errorMessage = "Please give us Apple Music permissions!"
+                                    }
+                                }
+                                else {
+                                    errorMessage = "Please give us required permissions!"
+                                    withAnimation {
+                                        permissionMissing = true
+                                    }
+                                    isAnimating = true
+                                }
+                            }
+                       
+                        case .spotify:
+                            errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
+                            appleMusicPermission = true
+                            appleMusicLibraryPermission = true
+                            spotifyPermission = false
+                            // Check Spotify
+                            guard let spotify = NSRunningApplication.runningApplications(withBundleIdentifier: "com.spotify.client").first else {
+                                withAnimation {
+                                    errorMessage = "Please open Spotify!"
+                                }
+                                return
+                            }
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                            let status = AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true)
+                            switch status {
+                                case -600:
+                                    errorMessage = "Please open Spotify!"
+                                case -0:
+                                withAnimation {
+                                    permissionMissing = false
+                                        spotifyPermission = true
+                                    errorMessage = ""
+                                }
+                                default:
+                                withAnimation {
+                                    errorMessage = "Please give required permissions!"
+                                    permissionMissing = true
+                                    isAnimating = true
+                                }
+                                    // OPEN AUTOMATION PANEL
+                            }
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
@@ -328,18 +325,19 @@ struct OnboardingWindow: View {
                     isAnimating = false
                     permissionMissing = false
                 }
-                .onChange(of: spotifyOrAppleMusic) { newSpotifyOrAppleMusic in
+                .onChange(of: ViewModel.shared.currentPlayer) {
                     print("Updating permission booleans based on media player change")
-                    if spotifyOrAppleMusic {
-                        errorMessage = "Please open Apple Music!"
-                        spotifyPermission = true
-                        appleMusicPermission = false
-                        appleMusicLibraryPermission = false
-                    } else {
-                        errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
-                        appleMusicPermission = true
-                        appleMusicLibraryPermission = true
-                        spotifyPermission = false
+                    switch ViewModel.shared.currentPlayer {
+                        case .appleMusic:
+                            errorMessage = "Please open Apple Music!"
+                            spotifyPermission = true
+                            appleMusicPermission = false
+                            appleMusicLibraryPermission = false
+                        case .spotify:
+                            errorMessage = "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
+                            appleMusicPermission = true
+                            appleMusicLibraryPermission = true
+                            spotifyPermission = false
                     }
                 }
                 .onChange(of: controlActiveState) { newState in
@@ -409,7 +407,7 @@ struct ApiView: View {
                             Button("Log Out") {
                                 Task {
                                     loggedIn = false
-                                    viewModel.shared.cookie = ""
+                                    ViewModel.shared.userDefaultStorage.cookie = ""
                                     navigationState.webView.load(URLRequest(url: URL(string: "https://www.spotify.com/logout/")!))
                                     try await Task.sleep(nanoseconds: 2000000000)
                                     navigationState.webView.load(URLRequest(url: URL(string: "https://accounts.spotify.com/en/login?continue=https%3A%2F%2Fopen.spotify.com%2F")!))
@@ -455,10 +453,6 @@ struct ApiView: View {
                     Task {
                         await checkForLogin()
                     }
-                    // replace button with spinner
-                    // check if the cookie is legit
-                   // isLoading = false
-                    //isShowingDetailView = true
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(isLoading || spDcCookie.count == 0)
@@ -468,9 +462,6 @@ struct ApiView: View {
         }
         .padding(.horizontal, 20)
         .navigationBarBackButtonHidden(true)
-//        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { newValue in
-//            dismiss()
-//        }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("didLogIn"))) { newValue in
             loggedIn = true
         }
@@ -497,18 +488,18 @@ struct ApiView: View {
         isLoading = true
         do {
             let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
-            let serverTimeData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
+            let serverTimeData = try await ViewModel.shared.fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
             let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
-            if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
+            if let totp = ViewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
                 var request = URLRequest(url: url)
                 request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
-                let accessTokenData = try await viewModel.shared.fakeSpotifyUserAgentSession.data(for: request)
+                let accessTokenData = try await ViewModel.shared.fakeSpotifyUserAgentSession.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                 do {
                     let access = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-                    viewModel.shared.accessToken = access
-                    if await !viewModel.shared.fetchHomeTest() {
-                        viewModel.shared.accessToken = nil
+                    ViewModel.shared.accessToken = access
+                    if await !ViewModel.shared.fetchHomeTest() {
+                        ViewModel.shared.accessToken = nil
                         self.error = true
                         isLoading = false
                     } else {
@@ -522,15 +513,10 @@ struct ApiView: View {
                 } catch {
                     self.error = true
                     isLoading = false
-//                    do {
                         let errorWrap = try? JSONDecoder().decode(ErrorWrapper.self, from: accessTokenData.0)
                     if errorWrap?.error.code == 401 {
                         loggedIn = false
                         }
-//                    } catch {
-//                        // silently fail
-//                    }
-//                    print("json error decoding the access token, therefore bad cookie therefore un-onboard")
                 }
                 
             }
@@ -538,33 +524,6 @@ struct ApiView: View {
             self.error = true
             isLoading = false
         }
-//        if let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"){//&totp=\(getTotp())&totpVer=5&ts=\(getTimestamp())") {
-//            do {
-//                var request = URLRequest(url: url)
-//                request.setValue("sp_dc=\(spDcCookie)", forHTTPHeaderField: "Cookie")
-//                let accessTokenData = try await URLSession.shared.data(for: request)
-//                print(String(decoding: accessTokenData.0, as: UTF8.self))
-//                do {
-//                    try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
-//                    
-//                    print("ACCESS TOKEN IS SAVED")
-//                    // set onboarded to true here, no need to wait for user to finish selecting truncation
-//                    UserDefaults().set(true, forKey: "hasOnboarded")
-//                    error = false
-//                    isLoading = false
-//                    isShowingDetailView = true
-//                }
-//                catch {
-//                    print("JSON ERROR CAUGHT")
-//                    self.error = true
-//                    isLoading = false
-//                }
-//            }
-//            catch {
-//                self.error = true
-//                isLoading = false
-//            }
-//        }
     }
 }
 

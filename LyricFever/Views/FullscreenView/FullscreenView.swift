@@ -13,9 +13,9 @@ import TipKit
 
 @available(macOS 14.0, *)
 struct FullscreenView: View {
-    @EnvironmentObject var viewmodel: viewModel
+    @Environment(ViewModel.self) var viewmodel
     @State var newSpotifyMusicArtworkImage: NSImage?
-    @Binding var spotifyOrAppleMusic: Bool
+    @Binding var currentPlayer: PlayerType
     @State var newArtworkUrl: String?
     @State var newAppleMusicArtworkImage: NSImage?
     @State var animate = true
@@ -43,9 +43,9 @@ struct FullscreenView: View {
         let highlightTip = NewSettings()
         HStack(alignment: .center, spacing: 6) {
             Button {
-                if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                if currentPlayer == .spotify, let soundVolume = viewmodel.spotifyScript?.soundVolume {
                     viewmodel.spotifyScript?.setSoundVolume?(soundVolume-5)
-                } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume {
+                } else if currentPlayer == .appleMusic, let soundVolume = viewmodel.appleMusicScript?.soundVolume {
                     viewmodel.appleMusicScript?.setSoundVolume?(soundVolume-5)
                 }
             } label: {
@@ -56,7 +56,11 @@ struct FullscreenView: View {
             .keyboardShortcut(.downArrow, modifiers: [])
 
             Button {
-                spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playpause?() : viewmodel.spotifyScript?.playpause?()
+                if currentPlayer == .appleMusic {
+                    viewmodel.appleMusicScript?.playpause?()
+                } else if currentPlayer == .spotify {
+                    viewmodel.spotifyScript?.playpause?()
+                }
             } label: {
                 HoverableIcon(systemName: viewmodel.isPlaying ? "pause" : "play")
             }
@@ -65,9 +69,9 @@ struct FullscreenView: View {
             .keyboardShortcut(" ", modifiers: [])
 
             Button {
-                if !spotifyOrAppleMusic, let soundVolume = viewmodel.spotifyScript?.soundVolume {
+                if currentPlayer == .spotify, let soundVolume = viewmodel.spotifyScript?.soundVolume {
                     viewmodel.spotifyScript?.setSoundVolume?(soundVolume+5)
-                } else if let soundVolume = viewmodel.appleMusicScript?.soundVolume {
+                } else if currentPlayer == .appleMusic, let soundVolume = viewmodel.appleMusicScript?.soundVolume {
                     viewmodel.appleMusicScript?.setSoundVolume?(soundVolume+5)
                 }
             } label: {
@@ -78,7 +82,6 @@ struct FullscreenView: View {
             .keyboardShortcut(.upArrow, modifiers: [])
         }
         .font(.system(size: 15))
-//        .font(.system(size: 16)) // consistent icon size
         HStack(alignment: .center, spacing: 5) {
             Button {
                 if viewmodel.showLyrics {
@@ -87,7 +90,7 @@ struct FullscreenView: View {
                 } else {
                     viewmodel.showLyrics = true
                     // Only Spotify has access to Fullscreen view
-                    viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                    viewmodel.startLyricUpdater()
                 }
                 
             } label: {
@@ -102,9 +105,9 @@ struct FullscreenView: View {
             .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
             
             Button {
-                viewmodel.translate.toggle()
+                viewmodel.userDefaultStorage.translate.toggle()
             } label: {
-                HoverableIcon(systemName: "translate", sideLength: 28, disabled: !viewmodel.translate)
+                HoverableIcon(systemName: "translate", sideLength: 28, disabled: !viewmodel.userDefaultStorage.translate)
             }
             .buttonStyle(FullscreenButtonIconStyle())
             .onHover { hover in
@@ -138,13 +141,10 @@ struct FullscreenView: View {
                 currentHover = hover ? .settings : .none
             }
             .popover(isPresented: $showSettingsPopover) {
+                @Bindable var viewmodel = viewmodel
                 VStack(spacing: 7) {
-                    Toggle("Blur surrounding lyrics", isOn: $viewmodel.blurFullscreen)
-                    
-//                        Toggle("Album art size scaling:", isOn: $viewmodel)
-//                        Toggle("Lyrics size scaling: ", isOn: <#T##Binding<Bool>#>)
-                    Toggle("Animate on startup", isOn: $viewmodel.animateOnStartupFullscreen)
-//                        Toggle("Hide dock icon on fullscreen", isOn: $viewmodel.hideDockFullscreen)
+                    Toggle("Blur surrounding lyrics", isOn: $viewmodel.userDefaultStorage.blurFullscreen)
+                    Toggle("Animate on startup", isOn: $viewmodel.userDefaultStorage.animateOnStartupFullscreen)
                     Button("Reset to default") {
                         
                     }
@@ -168,14 +168,14 @@ struct FullscreenView: View {
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
-            if spotifyOrAppleMusic, let newAppleMusicArtworkImage {
+            if currentPlayer == .appleMusic , let newAppleMusicArtworkImage {
                 Image(nsImage: newAppleMusicArtworkImage)
                                         .resizable()
                                         .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                                         .shadow(radius: 5)
                                         .frame(width: canDisplayLyrics ? 550 : 700, height: canDisplayLyrics ? 550 : 700)
             }
-            else if let newArtworkUrl  {
+            else if currentPlayer == .spotify, let newArtworkUrl  {
                 WebImage(url: .init(string: newArtworkUrl), options: .queryMemoryData)
                     .resizable()
                     .placeholder(content: {
@@ -240,7 +240,7 @@ struct FullscreenView: View {
             case .none:
                 ""
             case .translate:
-                viewmodel.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
+                viewmodel.userDefaultStorage.translate ? "Hide translations (⌘ + T)" : "Translate lyrics (⌘ + T)"
             case .settings:
                 "Display fullscreen options"
             case .sharing:
@@ -279,7 +279,7 @@ struct FullscreenView: View {
                             .font(.system(size: 40, weight: .bold, design: .default))
                             .padding(20)
                             .listRowSeparator(.hidden)
-                            .blur(radius: viewmodel.blurFullscreen ? (offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
+                            .blur(radius: viewmodel.userDefaultStorage.blurFullscreen ? (offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
                     }
                     .onAppear {
                         Task {
@@ -346,7 +346,7 @@ struct FullscreenView: View {
                 }
             }
             .onAppear {
-                if !viewmodel.animateOnStartupFullscreen {
+                if !viewmodel.userDefaultStorage.animateOnStartupFullscreen {
                     animate = false
                 }
                 do {
@@ -356,13 +356,13 @@ struct FullscreenView: View {
                     print("Error configuring tips: \(error)")
                 }
 
-                if !spotifyOrAppleMusic, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                if currentPlayer == .spotify, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print(artworkUrl)
                     withAnimation {
                         self.newArtworkUrl = artworkUrl
                     }
                 }
-                else if spotifyOrAppleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
+                else if currentPlayer == .appleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
                     newAppleMusicArtworkImage = artwork
                 }
                 else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = viewmodel.spotifyScript?.currentTrack?.album {
@@ -391,19 +391,19 @@ struct FullscreenView: View {
                 }
             }
             .onChange(of: viewmodel.currentlyPlayingName) { _ in
-                if !spotifyOrAppleMusic, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
+                if currentPlayer == .spotify, let artworkUrl = viewmodel.spotifyScript?.currentTrack?.artworkUrl, artworkUrl != "" {
                     print("spotify artwork is \(artworkUrl)")
                     withAnimation {
                         self.newArtworkUrl = artworkUrl
                     }
                 }
-                else if spotifyOrAppleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
+                else if currentPlayer == .appleMusic, let artwork = (viewmodel.appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data  {
                     newAppleMusicArtworkImage = artwork
                 }
-                else if let artistName = viewmodel.currentlyPlayingArtist, let albumName = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.currentTrack?.album : viewmodel.spotifyScript?.currentTrack?.album {
-                    print("\(artistName) \(albumName)")
+                else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
+                    print("\(artistName) \(currentAlbumName)")
                     Task {
-                        if let mbid = await viewmodel.findMbid(albumName: albumName, artistName: artistName) {
+                        if let mbid = await viewmodel.findMbid(albumName: currentAlbumName, artistName: artistName) {
                             withAnimation {
                                 print("setting newartwork url to: https://coverartarchive.org/release/\(mbid)/front")
                                 self.newArtworkUrl = "https://coverartarchive.org/release/\(mbid)/front"

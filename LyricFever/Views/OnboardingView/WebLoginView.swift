@@ -21,15 +21,8 @@ extension NavigationState: WKNavigationDelegate {
         print("url is \(self.url)")
         
         if ((self.url?.absoluteString.starts(with: "https://open.spotify.com")) ?? false) {
-            Task {
-                await viewModel.shared.checkIfLoggedIn()
-            }
+            ViewModel.shared.checkIfLoggedIn()
         }
-//        Task {
-//            if await viewModel.shared. == true {
-//                await FriendActivityBackend.shared.checkIfLoggedIn()
-//            }
-//        }
         
         if (self.url?.absoluteString.starts(with: "https://accounts.google.com/") ?? false) {
             print("google link discovered woah \(self.url?.absoluteString ?? "none" )")
@@ -48,27 +41,5 @@ struct WebView: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: WKWebView, context: Context) {
-        // Update code if needed
     }
 }
-
-//struct WebviewLogin: View {
-//    @StateObject var navigationState = NavigationState()
-//
-//    var body: some View {
-//        VStack {
-//            WebView(request: URLRequest(url: URL(string: "https://accounts.spotify.com/en/login?continue=https%3A%2F%2Fopen.spotify.com%2F")!), navigationState: navigationState)
-//        }
-////        .onAppear() {
-////            HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-////            print("All cookies deleted")
-////
-////            WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-////                records.forEach { record in
-////                    WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-////                    print("Cookie ::: \(record) deleted")
-////                }
-////            }
-////        }
-//    }
-//}

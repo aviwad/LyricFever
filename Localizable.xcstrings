@@ -51,7 +51,7 @@
         }
       }
     },
-    "AirPlay Audio Delay" : {
+    "AirPlay 1 Audio Delay" : {
 
     },
     "Animate on startup" : {
@@ -245,9 +245,6 @@
           }
         }
       }
-    },
-    "Hi %@!" : {
-
     },
     "Hide Karaoke window when mouse passes by" : {
       "localizations" : {
@@ -957,6 +954,7 @@
       }
     },
     "Update to macOS 14.0 to use fullscreen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -967,6 +965,7 @@
       }
     },
     "Update to macOS 15 to enable translation" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

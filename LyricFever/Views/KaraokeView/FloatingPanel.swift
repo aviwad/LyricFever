@@ -42,8 +42,8 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
                     panel?.fadeOut()
                 }
             }
-            .onChange(of: viewModel.shared.karaoke) {
-                if !viewModel.shared.karaoke {
+            .onChange(of: ViewModel.shared.userDefaultStorage.karaoke) {
+                if !ViewModel.shared.userDefaultStorage.karaoke {
                     panel?.close()
                 }
             }

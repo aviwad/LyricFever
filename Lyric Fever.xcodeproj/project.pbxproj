@@ -12,21 +12,20 @@
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		8F5BC2D62E124EF800F887A5 /* ObservableUserDefault in Frameworks */ = {isa = PBXBuildFile; productRef = 8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */; };
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
-		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
+		8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */; };
 		8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8196862D93CCDC00F03741 /* StringMetric */; };
 		8F8196892D93E6DA00F03741 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F8196882D93E6DA00F03741 /* Localizable.xcstrings */; };
 		8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 8F832CAC2D6BEC52008C1C2B /* FontPicker */; };
 		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA4E9772CE73DB900CEEF35 /* ColorKit */; };
-		8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */; };
 		8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* LyricFever.swift */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */; };
 		8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF184EC2D626F1E0026D2A2 /* CompactSlider */; };
-		8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */; };
 		8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */; };
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
 		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
@@ -35,15 +34,13 @@
 /* Begin PBXFileReference section */
 		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
-		8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		8F8196882D93E6DA00F03741 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8FA436AD2BC49D480072016C /* newPermissionMac.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newPermissionMac.gif; sourceTree = "<group>"; };
-		8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLoginView.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* LyricFever.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricFever.swift; sourceTree = "<group>"; };
 		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
 		8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update22Window.swift; sourceTree = "<group>"; };
-		8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindow.swift; sourceTree = "<group>"; };
 		8FFA9F362AA1B63500BAEC5C /* crossfade.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = crossfade.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,9 +57,10 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		8F4D20712DFFAEB0004A12CA /* LyricProvider */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LyricProvider; sourceTree = "<group>"; };
 		8F4D20782E0131A4004A12CA /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
-		8F4D20792E013221004A12CA /* PlayerIntegration */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PlayerIntegration; sourceTree = "<group>"; };
+		8F4D20792E013221004A12CA /* Players */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Players; sourceTree = "<group>"; };
 		8F4D20852E013263004A12CA /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		8F4D208B2E0132B4004A12CA /* Support Files */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8F4D208C2E013333004A12CA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Support Files"; sourceTree = "<group>"; };
+		8FB58B862E29ED5C002B307D /* Past Updates */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Past Updates"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +70,7 @@
 			files = (
 				8F1979952DA72D49008C113D /* IPADic in Frameworks */,
 				8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */,
+				8F5BC2D62E124EF800F887A5 /* ObservableUserDefault in Frameworks */,
 				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
 				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
@@ -118,17 +117,16 @@
 		8FC8E9472A704EEB00F69915 /* LyricFever */ = {
 			isa = PBXGroup;
 			children = (
+				8FB58B862E29ED5C002B307D /* Past Updates */,
 				8F4D208B2E0132B4004A12CA /* Support Files */,
 				8F4D20852E013263004A12CA /* Views */,
-				8F4D20792E013221004A12CA /* PlayerIntegration */,
+				8F4D20792E013221004A12CA /* Players */,
 				8F4D20782E0131A4004A12CA /* Models */,
 				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
 				8FC8E9482A704EEB00F69915 /* LyricFever.swift */,
-				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
 				8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */,
 				8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */,
-				8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */,
-				8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */,
+				8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */,
 				8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */,
 			);
 			path = LyricFever;
@@ -152,9 +150,10 @@
 			fileSystemSynchronizedGroups = (
 				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
 				8F4D20782E0131A4004A12CA /* Models */,
-				8F4D20792E013221004A12CA /* PlayerIntegration */,
+				8F4D20792E013221004A12CA /* Players */,
 				8F4D20852E013263004A12CA /* Views */,
 				8F4D208B2E0132B4004A12CA /* Support Files */,
+				8FB58B862E29ED5C002B307D /* Past Updates */,
 			);
 			name = "Lyric Fever";
 			packageProductDependencies = (
@@ -169,6 +168,7 @@
 				8F8196862D93CCDC00F03741 /* StringMetric */,
 				8F1979942DA72D49008C113D /* IPADic */,
 				8F1979962DA72D49008C113D /* Mecab-Swift */,
+				8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -210,6 +210,7 @@
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
+				8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -241,12 +242,10 @@
 			files = (
 				8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */,
 				8F4F49522A7EC32D00097888 /* (null) in Sources */,
-				8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */,
 				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
 				8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */,
-				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,
+				8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */,
 				8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */,
-				8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -495,6 +494,14 @@
 				minimumVersion = 2.4.2;
 			};
 		};
+		8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davidsteppenbeck/ObservableUserDefault.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.1;
+			};
+		};
 		8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/amplitude/Amplitude-Swift";
@@ -576,6 +583,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */;
+			productName = ObservableUserDefault;
 		};
 		8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */ = {
 			isa = XCSwiftPackageProductDependency;

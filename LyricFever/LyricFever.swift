@@ -8,89 +8,37 @@
 import SwiftUI
 import Translation
 import LaunchAtLogin
+import ObservableUserDefault
 
 enum MusicType {
     case spotify
     case appleMusic
 }
 
-//final class AppDelegate: NSObject, NSApplicationDelegate {
-////    @Environment(\.openWindow) private var openWindow
-//    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-////        openWindow(id: "onboarding")
-//        return false
-//    }
-//}
-
 @main
 struct LyricFever: App {
-    @StateObject var viewmodel = viewModel.shared
-    // True: means Apple Music, False: Spotify
-    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
-    @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    @AppStorage("hasUpdated22") var hasUpdated22: Bool = false
-    @AppStorage("hasTranslated") var hasTranslated: Bool = false
-    @AppStorage("truncationLength") var truncationLength: Int = 40
-    @State var translationSessionConfig: TranslationSession.Configuration?
+    @State var viewmodel = ViewModel.shared
     @Environment(\.openWindow) var openWindow
     @Environment(\.openURL) var openURL
+    
     var body: some Scene {
-        MenuBarExtra(content: {
-            if let userName = viewmodel.userName {
-                Text("Hi \(userName)!")
-            }
+        MenuBarExtra {
             Text(songTitle)
-            Toggle("Show Song Details in Menubar", isOn: $viewmodel.showSongDetailsInMenubar)
+            Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
             Divider()
             if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
                 Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
                 Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check for Lyrics Again" : "Refresh Lyrics") {
                     
                     Task {
-                        if spotifyOrAppleMusic {
-                            try await viewmodel.appleMusicNetworkFetch()
-                        }
-                        let tempLyrics = try await viewmodel.fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
-                        if tempLyrics.isEmpty {
-                            viewmodel.currentlyPlayingLyricsIndex = nil
-                        }
-                        viewmodel.currentlyPlayingLyrics = tempLyrics
-                        viewmodel.fetchBackgroundColor()
-                        if viewmodel.translate {
-                            if #available(macOS 15, *) {
-                                if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                    translationSessionConfig?.invalidate()
-                                } else {
-                                    translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
-                                }
-                            }
-                        }
-                        viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
-                        print("HELLOO")
-                        if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                        }
+                        try await viewmodel.refreshLyrics()
                     }
                 }
                 .keyboardShortcut("r")
                 if viewmodel.currentlyPlayingLyrics.isEmpty {
                     Button("Upload Local LRC File") {
                         Task {
-                            try await viewmodel.currentlyPlayingLyrics = viewmodel.localFetch(for: currentlyPlaying, currentlyPlayingName, spotifyOrAppleMusic)
-                            viewmodel.fetchBackgroundColor()
-                            if viewmodel.translate {
-                                if #available(macOS 15, *) {
-                                    if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                        translationSessionConfig?.invalidate()
-                                    } else {
-                                        translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
-                                    }
-                                }
-                            }
-                            viewmodel.lyricsIsEmptyPostLoad = viewmodel.currentlyPlayingLyrics.isEmpty
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
-                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
-                            }
+                            try await viewmodel.uploadLocalLRCFile()
                         }
                     }
                 } else {
@@ -111,72 +59,62 @@ struct LyricFever: App {
                 .keyboardShortcut("r")
             }
             Toggle("Show Lyrics", isOn: $viewmodel.showLyrics)
-            .disabled(!hasOnboarded)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
             .keyboardShortcut("h")
             Divider()
-            if #available(macOS 15, *) {
-                if viewmodel.translate {
-                    Text(!viewmodel.translatedLyric.isEmpty ? "Translated Lyrics 😃" : "No Translation ☹️")
-                    if viewmodel.translatedLyric.isEmpty {
-                        Button("Translation Help") {
-                            openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
-                        }
+            if viewmodel.userDefaultStorage.translate {
+                Text(!viewmodel.translatedLyric.isEmpty ? "Translated Lyrics 😃" : "No Translation ☹️")
+                if viewmodel.translatedLyric.isEmpty {
+                    Button("Translation Help") {
+                        openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
                     }
                 }
-                
-                Toggle("Translate To \(viewmodel.userLocaleLanguageString)", isOn: $viewmodel.translate)
-                .disabled(!hasOnboarded)
             }
-            else {
-                Text("Update to macOS 15 to enable translation")
-            }
+            Toggle("Translate To \(viewmodel.userLocaleLanguageString)", isOn: $viewmodel.userDefaultStorage.translate)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
             Divider()
-            Toggle("Romanize", isOn: $viewmodel.romanize)
+            Toggle("Romanize", isOn: $viewmodel.userDefaultStorage.romanize)
             Divider()
-            Text("Menubar Size is \(truncationLength)")
-            if truncationLength != 60 {
-                Button("Increase Size to \(truncationLength+10) ") {
-                    truncationLength = truncationLength + 10
+            Text("Menubar Size is \(viewmodel.userDefaultStorage.truncationLength)")
+            if viewmodel.userDefaultStorage.truncationLength != 60 {
+                Button("Increase Size to \(viewmodel.userDefaultStorage.truncationLength+10) ") {
+                    viewmodel.userDefaultStorage.truncationLength = viewmodel.userDefaultStorage.truncationLength + 10
                 }
                 .keyboardShortcut("+")
             }
-            if truncationLength != 30 {
-                Button("Decrease Size to \(truncationLength-10)") {
-                    truncationLength = truncationLength - 10
+            if viewmodel.userDefaultStorage.truncationLength != 30 {
+                Button("Decrease Size to \(viewmodel.userDefaultStorage.truncationLength-10)") {
+                    viewmodel.userDefaultStorage.truncationLength = viewmodel.userDefaultStorage.truncationLength - 10
                 }
                 .keyboardShortcut("-")
             }
             Divider()
-            if #available(macOS 14.0, *) {
-                Toggle("Fullscreen", isOn: $viewmodel.displayFullscreen)
-                .disabled(!hasOnboarded)
-            } else {
-                Text("Update to macOS 14.0 to use fullscreen")
-            }
-            Toggle(viewmodel.showLyrics ? "Karaoke Mode" : "Karaoke Mode (Enable Show Lyrics)", isOn: $viewmodel.karaoke)
-                .disabled(!hasOnboarded || !viewmodel.showLyrics)
+            Toggle("Fullscreen", isOn: $viewmodel.displayFullscreen)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
+            Toggle(viewmodel.showLyrics ? "Karaoke Mode" : "Karaoke Mode (Enable Show Lyrics)", isOn: $viewmodel.userDefaultStorage.karaoke)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded || !viewmodel.showLyrics)
                 .keyboardShortcut("k")
             Divider()
-            if !spotifyOrAppleMusic {
+            if viewmodel.currentPlayer == .spotify {
                  Toggle("Spotify Connect Audio Delay", isOn: $viewmodel.spotifyConnectDelay)
-                     .disabled(!hasOnboarded)
+                    .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
                  if viewmodel.spotifyConnectDelay {
-                     Text("Offset is \(viewmodel.spotifyConnectDelayCount) ms")
-                     if viewmodel.spotifyConnectDelayCount != 3000 {
-                         Button("Increase Offset to \(viewmodel.spotifyConnectDelayCount+100)") {
-                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount + 100
+                     Text("Offset is \(viewmodel.userDefaultStorage.spotifyConnectDelayCount) ms")
+                     if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 3000 {
+                         Button("Increase Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount+100)") {
+                             viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount + 100
                          }
                      }
-                     if viewmodel.spotifyConnectDelayCount != 300 {
-                         Button("Decrease Offset to \(viewmodel.spotifyConnectDelayCount-100)") {
-                             viewmodel.spotifyConnectDelayCount = viewmodel.spotifyConnectDelayCount - 100
+                     if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 300 {
+                         Button("Decrease Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount-100)") {
+                             viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount - 100
                          }
                      }
                  }
                  Divider()
-                Toggle("AirPlay Audio Delay", isOn: $viewmodel.airplayDelay)
-                    .disabled(!hasOnboarded)
             }
+            Toggle("AirPlay 1 Audio Delay", isOn: $viewmodel.airplayDelay)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
             Divider()
             Button("Settings (New Karaoke Settings!)") {
                 openWindow(id: "onboarding")
@@ -185,7 +123,7 @@ struct LyricFever: App {
                 NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
             }.keyboardShortcut("s")
             LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
-            .disabled(!hasOnboarded)
+                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
             .keyboardShortcut("l")
             Button("Check for Updates…", action: {viewmodel.updaterController.checkForUpdates(nil)})
             //    .disabled(!viewmodel.canCheckForUpdates)
@@ -193,7 +131,7 @@ struct LyricFever: App {
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }.keyboardShortcut("q")
-        } , label: {
+        } label: {
             // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else
             Group {
                 if let menuBarTitle {
@@ -205,81 +143,85 @@ struct LyricFever: App {
                 .onChange(of: viewmodel.showLyrics) { newShowLyricsIn in
                     print("ON CHANGE OF SHOW LYRICS")
                     if newShowLyricsIn {
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                        viewmodel.startLyricUpdater()
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
                 }
                 .floatingPanel(isPresented: $viewmodel.displayKaraoke, content: {
                     KaraokeView()
-                        .environmentObject(viewmodel)
+                        .environment(viewmodel)
                 })
                 .onAppear {
                     print("on appear running")
-                    if !hasUpdated22 {
+                    if !viewmodel.userDefaultStorage.hasUpdated22 {
                     
                         NSApplication.shared.activate(ignoringOtherApps: true)
                         openWindow(id: "update22")
-                        hasUpdated22 = true
+                        viewmodel.userDefaultStorage.hasUpdated22 = true
                         return
                     }
-                    if viewmodel.cookie.count == 0 {
-                        hasOnboarded = false
+                    if viewmodel.userDefaultStorage.cookie.count == 0 {
+                        viewmodel.userDefaultStorage.hasOnboarded = false
                     }
-                    guard hasOnboarded else {
+                    guard viewmodel.userDefaultStorage.hasOnboarded else {
                         NSApplication.shared.activate(ignoringOtherApps: true)
                         openWindow(id: "onboarding")
                         return
                     }
-                    guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
+                    guard viewmodel.isPlayerRunning else {
                         return
                     }
                     print("Application just started. lets check whats playing")
-                    if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
-                        viewmodel.isPlaying = true
-                    }
-                    if spotifyOrAppleMusic {
-                        Task {
-                            let status = await viewmodel.requestMusicKitAuthorization()
-                            print("APP STARTUP MusicKit auth status is \(status)")
-                            
-                            if status != .authorized {
-                                hasOnboarded = false
+                    switch viewmodel.currentPlayer {
+                        case .appleMusic:
+                            if viewmodel.appleMusicScript?.playerState == .playing {
+                                viewmodel.isPlaying = true
                             }
-                        }
-                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
-                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
-                            hasOnboarded = false
-                            return
-                        }
-                        if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
-                            // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
-                            if currentTrackName == "" {
-                                viewmodel.currentlyPlayingName = nil
-                                viewmodel.currentlyPlayingArtist = nil
-                            } else {
+                            Task {
+                                let status = await viewmodel.requestMusicKitAuthorization()
+                                print("APP STARTUP MusicKit auth status is \(status)")
+                                
+                                if status != .authorized {
+                                    viewmodel.userDefaultStorage.hasOnboarded = false
+                                }
+                            }
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.apple.Music")
+                            guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                                viewmodel.userDefaultStorage.hasOnboarded = false
+                                return
+                            }
+                            if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
+                                // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
+                                if currentTrackName == "" {
+                                    viewmodel.currentlyPlayingName = nil
+                                    viewmodel.currentlyPlayingArtist = nil
+                                } else {
+                                    viewmodel.currentlyPlayingName = currentTrackName
+                                    viewmodel.currentlyPlayingArtist = currentArtistName
+                                }
+                                print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
+                                viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                            }
+                        case .spotify:
+                            if viewmodel.spotifyScript?.playerState == .playing {
+                                viewmodel.isPlaying = true
+                            }
+                            let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
+                            guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
+                                viewmodel.userDefaultStorage.hasOnboarded = false
+                                return
+                            }
+                            if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                                viewmodel.currentlyPlaying = currentTrack
                                 viewmodel.currentlyPlayingName = currentTrackName
                                 viewmodel.currentlyPlayingArtist = currentArtistName
+                                print(currentTrack)
                             }
-                            print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
-                            viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
-                        }
-                    } else {
-                        let target = NSAppleEventDescriptor(bundleIdentifier: "com.spotify.client")
-                        guard AEDeterminePermissionToAutomateTarget(target.aeDesc, typeWildCard, typeWildCard, true) == 0 else {
-                            hasOnboarded = false
-                            return
-                        }
-                        if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
-                            viewmodel.currentlyPlaying = currentTrack
-                            viewmodel.currentlyPlayingName = currentTrackName
-                            viewmodel.currentlyPlayingArtist = currentArtistName
-                            print(currentTrack)
-                        }
                     }
                 }
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.apple.Music.playerInfo")), perform: { notification in
-                    guard spotifyOrAppleMusic == true else {
+                    guard viewmodel.currentPlayer == .appleMusic else {
                         print("#TODO we are still listening to apple music playback state changes even when user selected Spotify")
                         return
                     }
@@ -305,7 +247,7 @@ struct LyricFever: App {
                     viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
                 })
                 .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged")), perform: { notification in
-                    guard spotifyOrAppleMusic == false else {
+                    guard viewmodel.currentPlayer == .spotify else {
                         print("#TODO we are still listening to spotify playback state changes even when user selected Apple Music")
                         return
                     }
@@ -327,11 +269,11 @@ struct LyricFever: App {
                         viewmodel.currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
                     }
                 })
-                .translationTask(translationSessionConfig) { session in
+                .translationTask(viewmodel.translationSessionConfig) { session in
                     print("translation task called")
                     do {
                         print("translation task called in do")
-                        let requests = viewModel.shared.currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
+                        let requests = viewmodel.currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
                         let response = try await session.translations(from: requests)
                         if response.count == viewmodel.currentlyPlayingLyrics.count {
 //                                    viewmodel.translateSource = response
@@ -343,7 +285,7 @@ struct LyricFever: App {
                         
                     } catch {
                         if let source = viewmodel.findRealLanguage() {
-                            translationSessionConfig = TranslationSession.Configuration(source: source, target: viewmodel.userLocaleLanguage.language)
+                            viewmodel.translationSessionConfig = TranslationSession.Configuration(source: source, target: viewmodel.userLocaleLanguage.language)
                         }
                         print(error)
                     }
@@ -353,8 +295,8 @@ struct LyricFever: App {
                     UserDefaults.standard.set(viewmodel.karaokeFont.fontName, forKey: "karaokeFontName")
                     UserDefaults.standard.set(Double(viewmodel.karaokeFont.pointSize), forKey: "karaokeFontSize")
                    }
-                .onChange(of: viewmodel.romanize) { newRomanize in
-                    if newRomanize {
+                .onChange(of: viewmodel.userDefaultStorage.romanize) {
+                    if viewmodel.userDefaultStorage.romanize {
                         print("Romanized Lyrics generated from romanize value change for song \(viewmodel.currentlyPlaying)")
                         viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
                             viewmodel.generateRomanizedLyric($0)
@@ -363,29 +305,29 @@ struct LyricFever: App {
                         viewmodel.romanizedLyrics = []
                     }
                 }
-                .onChange(of: viewmodel.translate) { newTranslate in
-                    if newTranslate {
-                        if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                            translationSessionConfig?.invalidate()
+                .onChange(of: viewmodel.userDefaultStorage.translate) {
+                    if viewmodel.userDefaultStorage.translate {
+                        if viewmodel.translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                            viewmodel.translationSessionConfig?.invalidate()
                         } else {
-                            translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
+                            viewmodel.translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                         }
                     } else {
                         viewmodel.translatedLyric = []
                     }
                 }
-                .onChange(of: spotifyOrAppleMusic) { newSpotifyorAppleMusic in
-                    hasOnboarded = false
+                .onChange(of: viewmodel.currentPlayer) {
+                    viewmodel.userDefaultStorage.hasOnboarded = false
                 }
-                .onChange(of: viewmodel.fullscreen) { newFullscreen in
-                    if newFullscreen {
+                .onChange(of: viewmodel.fullscreen) {
+                    if viewmodel.fullscreen {
                         openWindow(id: "fullscreen")
                         NSApplication.shared.activate(ignoringOtherApps: true)
                     }
                 }
-                .onChange(of: hasOnboarded) { newHasOnboarded in
-                    if newHasOnboarded {
-                        guard let isRunning = spotifyOrAppleMusic ? viewmodel.appleMusicScript?.isRunning : viewmodel.spotifyScript?.isRunning, isRunning else {
+                .onChange(of: viewmodel.userDefaultStorage.hasOnboarded) {
+                    if viewmodel.userDefaultStorage.hasOnboarded {
+                        guard viewmodel.isPlayerRunning else {
                             viewmodel.isPlaying = false
                             viewmodel.currentlyPlaying = nil
                             viewmodel.currentlyPlayingName = nil
@@ -394,49 +336,50 @@ struct LyricFever: App {
                             return
                         }
                         print("Application just started (finished onboarding). lets check whats playing")
-                        if  spotifyOrAppleMusic ? viewmodel.appleMusicScript?.playerState == .playing :  viewmodel.spotifyScript?.playerState == .playing {
+                        if viewmodel.isPlayerPlaying {
                             viewmodel.isPlaying = true
                         }
-                        if spotifyOrAppleMusic {
-                            if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
-                                // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
-                                if currentTrackName == "" {
-                                    viewmodel.currentlyPlayingName = nil
-                                    viewmodel.currentlyPlayingArtist = nil
-                                } else {
+                        switch viewmodel.currentPlayer {
+                            case .appleMusic:
+                                if let currentTrackName = viewmodel.appleMusicScript?.currentTrack?.name, let currentArtistName = viewmodel.appleMusicScript?.currentTrack?.artist {
+                                    // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
+                                    if currentTrackName == "" {
+                                        viewmodel.currentlyPlayingName = nil
+                                        viewmodel.currentlyPlayingArtist = nil
+                                    } else {
+                                        viewmodel.currentlyPlayingName = currentTrackName
+                                        viewmodel.currentlyPlayingArtist = currentArtistName
+                                    }
+                                    print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
+                                    viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
+                                }
+                            case .spotify:
+                                if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
+                                    viewmodel.currentlyPlaying = currentTrack
                                     viewmodel.currentlyPlayingName = currentTrackName
                                     viewmodel.currentlyPlayingArtist = currentArtistName
+                                    print(currentTrack)
                                 }
-                                print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
-                                viewmodel.currentlyPlayingAppleMusicPersistentID = viewmodel.appleMusicScript?.currentTrack?.persistentID
-                            }
-                        } else {
-                            if let currentTrack = viewmodel.spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl(), let currentTrackName = viewmodel.spotifyScript?.currentTrack?.name, let currentArtistName =  viewmodel.spotifyScript?.currentTrack?.artist, currentTrack != "", currentTrackName != "" {
-                                viewmodel.currentlyPlaying = currentTrack
-                                viewmodel.currentlyPlayingName = currentTrackName
-                                viewmodel.currentlyPlayingArtist = currentArtistName
-                                print(currentTrack)
-                            }
                         }
-                        viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                        viewmodel.startLyricUpdater()
                     } else {
                         viewmodel.stopLyricUpdater()
                     }
                 }
-                .onChange(of: viewmodel.translate) { newTranslate in
-                    if !hasTranslated {
+                .onChange(of: viewmodel.userDefaultStorage.translate) {
+                    if !viewmodel.userDefaultStorage.hasTranslated {
                         openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
                     }
-                    hasTranslated = true
+                    viewmodel.userDefaultStorage.hasTranslated = true
                 }
-                .onChange(of: viewmodel.cookie) { newCookie in
+                .onChange(of: viewmodel.userDefaultStorage.cookie) {
                     viewmodel.accessToken = nil
                 }
-                .onChange(of: viewmodel.isPlaying) { nowPlaying in
-                    if nowPlaying, viewmodel.showLyrics, hasOnboarded {
+                .onChange(of: viewmodel.isPlaying) {
+                    if viewmodel.isPlaying, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
                         if !viewmodel.currentlyPlayingLyrics.isEmpty  {
                             print("timer started for spotify change, lyrics not nil")
-                            viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                            viewmodel.startLyricUpdater()
                         }
                     } else {
                         viewmodel.stopLyricUpdater()
@@ -458,68 +401,65 @@ struct LyricFever: App {
                     viewmodel.translatedLyric = []
                     viewmodel.romanizedLyrics = []
                     Task {
-                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName, spotifyOrAppleMusic) {
+                        if let nowPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: nowPlaying, currentlyPlayingName) {
                             viewmodel.currentlyPlayingLyrics = lyrics
                             viewmodel.fetchBackgroundColor()
-                            if viewmodel.translate {
-                                if #available(macOS 15, *) {
-                                    if translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
-                                        translationSessionConfig?.invalidate()
-                                    } else {
-                                        translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
-                                    }
+                            if viewmodel.userDefaultStorage.translate {
+                                if viewmodel.translationSessionConfig == TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language) {
+                                    viewmodel.translationSessionConfig?.invalidate()
+                                } else {
+                                    viewmodel.translationSessionConfig = TranslationSession.Configuration(target: viewmodel.userLocaleLanguage.language)
                                 }
                             }
-                            if viewmodel.romanize {
+                            if viewmodel.userDefaultStorage.romanize {
                                 print("Romanized Lyrics generated from song change for \(viewmodel.currentlyPlaying)")
                                 viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
                                     viewmodel.generateRomanizedLyric($0)
                                 })
                             }
                             viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, hasOnboarded {
+                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
                                 print("STARTING UPDATER")
-                                viewmodel.startLyricUpdater(appleMusicOrSpotify: spotifyOrAppleMusic)
+                                viewmodel.startLyricUpdater()
                             }
                         }
                     }
                 }
-        })
-        if #available(macOS 14.0, *) {
-            Window("Lyric Fever: Fullscreen", id: "fullscreen") {
-                FullscreenView(spotifyOrAppleMusic: $spotifyOrAppleMusic)
-                    .preferredColorScheme(.dark)
-                    .environmentObject(viewmodel)
-                    .onAppear {
-                        // Block "Esc" button
-                        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (aEvent) -> NSEvent? in
-                                if aEvent.keyCode == 53 { // if esc pressed
-                                    return nil
-                                }
-                                    
-                                return aEvent
+        }
+        Window("Lyric Fever: Fullscreen", id: "fullscreen") {
+            FullscreenView(currentPlayer: $viewmodel.currentPlayer)
+                .preferredColorScheme(.dark)
+                .environment(viewmodel)
+//                .environmentObject(viewmodel)
+                .onAppear {
+                    // Block "Esc" button
+                    NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (aEvent) -> NSEvent? in
+                            if aEvent.keyCode == 53 { // if esc pressed
+                                return nil
                             }
-                        Task { @MainActor in
-                            let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-                            window?.collectionBehavior = .fullScreenPrimary
-                            if window?.styleMask.rawValue != 49167 {
-                                window?.toggleFullScreen(true)
-                                withAnimation() {
-                                    viewmodel.fullscreenInProgress = false
-                                }
+                                
+                            return aEvent
+                        }
+                    Task { @MainActor in
+                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
+                        window?.collectionBehavior = .fullScreenPrimary
+                        if window?.styleMask.rawValue != 49167 {
+                            window?.toggleFullScreen(true)
+                            withAnimation() {
+                                viewmodel.fullscreenInProgress = false
                             }
                         }
                     }
-                    .onDisappear {
-                        NSApp.setActivationPolicy(.accessory)
-                        viewmodel.fullscreen = false
-                        viewmodel.fullscreenInProgress = true
-                    }
-            }
+                }
+                .onDisappear {
+                    NSApp.setActivationPolicy(.accessory)
+                    viewmodel.fullscreen = false
+                    viewmodel.fullscreenInProgress = true
+                }
         }
         Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
-                .environmentObject(viewmodel)
+                .environment(viewmodel)
                 .preferredColorScheme(.dark)
                 .onAppear {
                     NSApp.setActivationPolicy(.regular)
@@ -533,7 +473,7 @@ struct LyricFever: App {
             .windowStyle(.hiddenTitleBar)
         Window("Lyric Fever: Update 2.2", id: "update22") { // << here !!
             Update22Window().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
-                .environmentObject(viewmodel)
+                .environment(viewmodel)
                 .preferredColorScheme(.dark)
                 .onAppear {
                     NSApp.setActivationPolicy(.regular)
@@ -555,51 +495,51 @@ struct LyricFever: App {
     var songTitle: LocalizedStringKey {
         if let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
             if viewmodel.isPlaying {
-                return "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc(length: truncationLength)
+                return "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc()
             } else {
-                return "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc(length: truncationLength)
+                return "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)"//.trunc()
             }
         }
-        return "Open \(spotifyOrAppleMusic ? "Apple Music" : "Spotify" )!"
+        return "Open \(viewmodel.currentPlayer.description)!"
     }
     
     var menuBarTitle: String? {
         // Update message takes priority
         if viewmodel.mustUpdateUrgent {
-            return String(localized: "⚠️ Please Update (Click Check Updates)").trunc(length: truncationLength)
-        } else if hasOnboarded {
+            return String(localized: "⚠️ Please Update (Click Check Updates)").trunc(length: viewmodel.userDefaultStorage.truncationLength)
+        } else if viewmodel.userDefaultStorage.hasOnboarded {
             // Try to work through lyric logic if onboarded
             // NEW: Revert to song name if fullscreen / karaoke activated
-            if !viewmodel.fullscreen, !viewmodel.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+            if !viewmodel.fullscreen, !viewmodel.userDefaultStorage.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
                 // Attempt to display translations
                 // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
                 if viewmodel.translationExists {
                     // I don't localize, because I deliver the lyric verbatim
-                    return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc(length: truncationLength)
+                    return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc()
                 } else {
                     // Attempt to display Romanization
-                    if viewmodel.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
+                    if viewmodel.userDefaultStorage.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
                         // I don't localize, because I deliver the lyric verbatim
-                        return toLatin.trunc(length: truncationLength)
+                        return toLatin.trunc()
                     } else {
                         // I don't localize, because I deliver the lyric verbatim
-                        return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc(length: truncationLength)
+                        return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc()
                     }
                 }
             // Backup: Display name and artist
-            } else if viewmodel.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
+            } else if viewmodel.userDefaultStorage.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
                 if viewmodel.isPlaying {
-                    return String(localized: "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc(length: truncationLength)//.trunc(length: truncationLength)
+                    return String(localized: "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc()//.trunc()
                 } else {
-                    return String(localized: "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc(length: truncationLength)//.trunc(length: truncationLength)
+                    return String(localized: "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc()//.trunc()
                 }
-//                return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc(length: truncationLength)
+//                return "Now \(viewmodel.isPlaying ? "Playing" : "Paused"): \(currentlyPlayingName) - \(currentlyPlayingArtist)".trunc()
             }
             // Onboarded but app is not open
             return nil
         } else {
             // Hasn't onboarded
-            return String(localized: "⚠️ Complete Setup (Click Settings)").trunc(length: truncationLength)
+            return String(localized: "⚠️ Complete Setup (Click Settings)").trunc()
         }
         
     }
@@ -617,9 +557,11 @@ extension CharacterSet {
 
 extension String {
   // https://gist.github.com/budidino/8585eecd55fd4284afaaef762450f98e
-  func trunc(length: Int, trailing: String = "…") -> String {
-    return (self.count > length) ? self.prefix(length) + trailing : self
-  }
+    @MainActor
+    func trunc(length: Int? = nil, trailing: String = "…") -> String {
+        let length = length ?? ViewModel.shared.userDefaultStorage.truncationLength
+        return (self.count > length) ? self.prefix(length) + trailing : self
+    }
 }
 
 // https://stackoverflow.com/questions/48136456/locale-current-reporting-wrong-language-on-device

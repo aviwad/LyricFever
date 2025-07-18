@@ -9,7 +9,7 @@
 import Foundation
 
 extension CharacterSet {
-    public static var quotes = CharacterSet(charactersIn: "\"'")
+    public static let quotes = CharacterSet(charactersIn: "\"'")
 }
 
 extension String {

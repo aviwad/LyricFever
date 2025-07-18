@@ -7,7 +7,7 @@
 
 import Foundation
 import ScriptingBridge
-import CoreData
+@preconcurrency import CoreData
 import AmplitudeSwift
 import Sparkle
 import MusicKit
@@ -19,24 +19,30 @@ import SwiftOTP
 import NaturalLanguage
 import StringMetric
 import Mecab_Swift
+import ObservableUserDefault
 import IPADic
+import Translation
 
-@MainActor class viewModel: ObservableObject {
+@MainActor
+@Observable class ViewModel {
+    var translationSessionConfig: TranslationSession.Configuration?
+    var userDefaultStorage = UserDefaultStorage()
+
     // View Model
-    static let shared = viewModel()
+    @MainActor static let shared = ViewModel()
     
     // User name
-    @Published var userName: String?
+    var userName: String?
     
     // Karaoke Font
-    @Published var karaokeFont: NSFont
+    var karaokeFont: NSFont
     
     // nil to deal with previously saved songs that don't have lang saved with them
     // or for LRCLIB
-    @Published var currentBackground: Color? = nil
-    @Published var fullscreenInProgress = true
+    var currentBackground: Color? = nil
+    var fullscreenInProgress = true
     var appleMusicStorePlaybackID: String? = nil
-    @Published var currentlyPlaying: String?
+    var currentlyPlaying: String?
     
     var animatedDisplay: Bool {
         get {
@@ -49,7 +55,7 @@ import IPADic
     
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
         }
         set {
             
@@ -71,25 +77,17 @@ import IPADic
     }
     var currentlyPlayingName: String?
     var currentlyPlayingArtist: String?
-    @Published var currentlyPlayingLyrics: [LyricLine] = []
-    @Published var currentlyPlayingLyricsIndex: Int?
-    @Published var currentlyPlayingAppleMusicPersistentID: String? = nil
-    @Published var isPlaying: Bool = false
-    @Published var romanizedLyrics: [String] = []
-    @AppStorage("translate") var translate = false
-    @AppStorage("blurFullscreen") var blurFullscreen = true
-    @AppStorage("animateOnStartupFullscreen") var animateOnStartupFullscreen = true
-    @AppStorage("romanize") var romanize = false
-    @AppStorage("hasMigrated") var hasMigrated = false
-    @Published var translatedLyric: [String] = []
-    @Published var showLyrics = true
-    @AppStorage("showSongDetailsInMenubar") var showSongDetailsInMenubar = true
-    @Published var fullscreen = false
-    @AppStorage("karaoke") var karaoke = false
-    @Published var spotifyConnectDelay: Bool = false
-    @Published var airplayDelay: Bool = false
+    var currentlyPlayingLyrics: [LyricLine] = []
+    var currentlyPlayingLyricsIndex: Int?
+    var currentlyPlayingAppleMusicPersistentID: String? = nil
+    var isPlaying: Bool = false
+    var romanizedLyrics: [String] = []
+    var translatedLyric: [String] = []
+    var showLyrics = true
+    var fullscreen = false
+    var spotifyConnectDelay: Bool = false
+    var airplayDelay: Bool = false
     var translationExists: Bool { !translatedLyric.isEmpty}
-    @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
     var spotifyScript: SpotifyApplication? = SBApplication(bundleIdentifier: "com.spotify.client")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     
@@ -116,7 +114,6 @@ import IPADic
     
     // Authentication tokens
     var accessToken: accessTokenJSON?
-    @AppStorage("spDcCookie") var cookie = ""
     let decoder = JSONDecoder()
     
     // Fake Spotify User Agent
@@ -133,31 +130,72 @@ import IPADic
     let userLocaleLanguageString: String
     
     // Override menubar with an update message
-    @Published var mustUpdateUrgent: Bool = false
+    var mustUpdateUrgent: Bool = false
     
     // Delayed variable to hook onto for fullscreen (whether to display lyrics or not)
     // Prevents flickering that occurs when we directly bind to currentlyPlayingLyrics.isEmpty()
-    @Published var lyricsIsEmptyPostLoad: Bool = true
+    var lyricsIsEmptyPostLoad: Bool = true
     
-    // User setting: hide karaoke on hover
-    @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     
     // UI element used to hide if karaokeModeHoveringSetting is true
-    @Published var karaokeModeHovering: Bool = false
+    var karaokeModeHovering: Bool = false
     
-    // User setting: use album art color or user-set currentBackground
-    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
-    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
-    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
-    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     var colorBinding: Binding<Color> {
         Binding<Color> {
-            Color(NSColor(hexString: self.fixedKaraokeColorHex)!)
+            Color(NSColor(hexString: self.userDefaultStorage.fixedKaraokeColorHex)!)
         } set: { newValue in
-            self.fixedKaraokeColorHex = NSColor(newValue).hexString!
+            self.userDefaultStorage.fixedKaraokeColorHex = NSColor(newValue).hexString!
         }
     }
-
+    
+    var currentAlbumName: String? {
+        // Fix: Compare wrappedValue and use full enum type name
+        if currentPlayer == PlayerType.appleMusic {
+            return appleMusicScript?.currentTrack?.album
+        } else {
+            return spotifyScript?.currentTrack?.album
+        }
+    }
+    var currentPlayer: PlayerType {
+        get {
+            if self.userDefaultStorage.spotifyOrAppleMusic {
+                return .appleMusic
+            } else {
+                return .spotify
+            }
+        } set {
+            if newValue == .appleMusic {
+                self.userDefaultStorage.spotifyOrAppleMusic = true
+            } else {
+                self.userDefaultStorage.spotifyOrAppleMusic = false
+            }
+        }
+    }
+    
+    var currentDuration: Int? {
+        switch currentPlayer {
+            case .appleMusic:
+                appleMusicScript?.currentTrack?.duration.map(Int.init)
+            case .spotify:
+                spotifyScript?.currentTrack?.duration
+        }
+    }
+    var isPlayerRunning: Bool {
+        switch currentPlayer {
+            case .appleMusic:
+                return appleMusicScript?.isRunning ?? false
+            case .spotify:
+                return spotifyScript?.isRunning ?? false
+        }
+    }
+    var isPlayerPlaying: Bool {
+        switch currentPlayer {
+            case .appleMusic:
+                appleMusicScript?.playerState == .playing
+            case .spotify:
+                spotifyScript?.playerState == .playing
+        }
+    }
     
     init() {
         // Load Apple Music private api framework
@@ -217,9 +255,36 @@ import IPADic
         }
     }
     
+    func refreshLyrics() async throws {
+        if userDefaultStorage.spotifyOrAppleMusic {
+            try await appleMusicNetworkFetch()
+        }
+        guard let currentlyPlaying, let currentlyPlayingName else {
+            return
+        }
+        let tempLyrics = try await fetchNetworkLyrics(for: currentlyPlaying, currentlyPlayingName)
+        if tempLyrics.isEmpty {
+            currentlyPlayingLyricsIndex = nil
+        }
+        currentlyPlayingLyrics = tempLyrics
+        fetchBackgroundColor()
+        if userDefaultStorage.translate {
+            if translationSessionConfig == TranslationSession.Configuration(target: userLocaleLanguage.language) {
+                translationSessionConfig?.invalidate()
+            } else {
+                translationSessionConfig = TranslationSession.Configuration(target: userLocaleLanguage.language)
+            }
+        }
+        lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
+        print("HELLOO")
+        if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+            startLyricUpdater()
+        }
+    }
+    
     // Run only on first 2.1 run. Strips whitespace from saved lyrics, and extends final timestamp to prevent karaoke mode racecondition (as well as song on loop race condition)
     func migrateTimestampsIfNeeded(context: NSManagedObjectContext) {
-        if !hasMigrated {
+        if !userDefaultStorage.hasMigrated {
             let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
             do {
                 let objects = try context.fetch(fetchRequest)
@@ -253,7 +318,7 @@ import IPADic
                 try context.save()
                 
                 // Mark migration as done
-                hasMigrated = true
+                userDefaultStorage.hasMigrated = true
             } catch {
                 print("Error migrating data: \(error)")
             }
@@ -265,7 +330,7 @@ import IPADic
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             if let temporaryCookie = cookies.first(where: {$0.name == "sp_dc"}) {
                 print("found the sp_dc cookie")
-                self.cookie = temporaryCookie.value
+                self.userDefaultStorage.cookie = temporaryCookie.value
                 NotificationCenter.default.post(name: Notification.Name("didLogIn"), object: nil)
             }
         }
@@ -318,7 +383,7 @@ import IPADic
                 stopLyricUpdater()
                 return
             }
-            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0) + (airplayDelay ?  -2000 : 0)
+            let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(userDefaultStorage.spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0) + (airplayDelay ?  -2000 : 0)
             guard let lastIndex: Int = upcomingIndex(currentTime) else {
                 stopLyricUpdater()
                 return
@@ -351,14 +416,14 @@ import IPADic
         } while !Task.isCancelled
     }
     
-    func startLyricUpdater(appleMusicOrSpotify: Bool) {
+    func startLyricUpdater() {
         currentLyricsUpdaterTask?.cancel()
         if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
             return
         }
         // If an index exists, we're unpausing: meaning we must instantly find the current lyric
         if currentlyPlayingLyricsIndex != nil {
-            if appleMusicOrSpotify {
+            if currentPlayer == .appleMusic {
                 guard let playerPosition = appleMusicScript?.playerPosition else {
                     print("no player position hence stopped")
                     // pauses the timer bc there's no player position
@@ -386,7 +451,7 @@ import IPADic
                     stopLyricUpdater()
                     return
                 }
-                let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0)
+                let currentTime = playerPosition * 1000 + (spotifyConnectDelay ? Double(userDefaultStorage.spotifyConnectDelayCount) : 0) + (animatedDisplay ? 400 : 0)
                 guard let lastIndex: Int = upcomingIndex(currentTime) else {
                     stopLyricUpdater()
                     return
@@ -399,7 +464,7 @@ import IPADic
                     }
                 }
             }
-        } else if !appleMusicOrSpotify {
+        } else if currentPlayer == .spotify {
             currentLyricsDriftFix?.cancel()
             currentLyricsDriftFix =             // Only run drift fix for new songs
             Task {
@@ -411,7 +476,11 @@ import IPADic
         }
         currentLyricsUpdaterTask = Task {
             do {
-                try await appleMusicOrSpotify ? lyricUpdaterAppleMusic() : lyricUpdater()
+                if currentPlayer == .spotify {
+                    try await lyricUpdater()
+                } else if currentPlayer == .appleMusic {
+                    try await lyricUpdaterAppleMusic()
+                }
             } catch {
                 print("lyrics were canceled \(error)")
             }
@@ -440,10 +509,10 @@ import IPADic
         }
     }
     
-    func fetch(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async -> [LyricLine]? {
+    func fetch(for trackID: String, _ trackName: String) async -> [LyricLine]? {
         currentFetchTask?.cancel()
         let newFetchTask = Task {
-            try await self.fetchLyrics(for: trackID, trackName, spotifyOrAppleMusic)
+            try await self.fetchLyrics(for: trackID, trackName)
         }
         currentFetchTask = newFetchTask
         do {
@@ -551,24 +620,24 @@ import IPADic
     }
 
     
-    func localFetch(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
-        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+    func localFetch(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+        guard let currentDuration = currentDuration else {
             throw CancellationError()
         }
         if let fileUrl = await selectLRC(), let lyricText = try? String(contentsOf: fileUrl, encoding: .utf8) {
             let parser = LyricsParser(lyrics: lyricText)
             print(parser.lyrics)
             if !parser.lyrics.isEmpty {
-                let modifiedLyricsSongObject = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(intDuration+1000))
+                let modifiedLyricsSongObject = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: TimeInterval(currentDuration+1000))
                 
                 saveCoreData()
-                if spotifyOrAppleMusic {
+                if currentPlayer == .appleMusic {
                     if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
                         SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
                     } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                         SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                     }
-                } else {
+                } else if currentPlayer == .spotify {
                     if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
                         SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
                     } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
@@ -585,7 +654,7 @@ import IPADic
         return []
     }
     
-    func fetchLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
+    func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
         if let lyrics = fetchFromCoreData(for: trackID) {
             print("got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
@@ -593,7 +662,7 @@ import IPADic
             return lyrics
         }
         print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
-        return try await fetchNetworkLyrics(for: trackID, trackName, spotifyOrAppleMusic)
+        return try await fetchNetworkLyrics(for: trackID, trackName)
     }
     
     // Thanks to Mx-lris
@@ -653,9 +722,9 @@ import IPADic
                 let serverTimeRequest = URLRequest(url: .init(string: "https://open.spotify.com/server-time")!)
                 let serverTimeData = try await fakeSpotifyUserAgentSession.data(for: serverTimeRequest).0
                 let serverTime = try JSONDecoder().decode(SpotifyServerTime.self, from: serverTimeData).serverTime
-                if let totp = viewModel.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
+                if let totp = Self.TOTPGenerator.generate(serverTimeSeconds: serverTime), let url = URL(string: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player&totp=\(totp)&totpServer=\(Int(Date().timeIntervalSince1970))&totpVer=5&sTime=\(serverTime)&cTime=\(serverTime)") {
                     var request = URLRequest(url: url)
-                    request.setValue("sp_dc=\(cookie)", forHTTPHeaderField: "Cookie")
+                    request.setValue("sp_dc=\(userDefaultStorage.cookie)", forHTTPHeaderField: "Cookie")
                     let accessTokenData = try await fakeSpotifyUserAgentSession.data(for: request)
                     print(String(decoding: accessTokenData.0, as: UTF8.self))
                     do {
@@ -701,19 +770,27 @@ import IPADic
         return !urlResponseAndData.0.isEmpty
     }
     
-    func fetchNetworkLyrics(for trackID: String, _ trackName: String, _ spotifyOrAppleMusic: Bool) async throws -> [LyricLine] {
-        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
+    func fetchNetworkLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
+        guard let intDuration = currentDuration else {
             throw CancellationError()
         }
         decoder.userInfo[CodingUserInfoKey.trackID] = trackID
         decoder.userInfo[CodingUserInfoKey.trackName] = trackName
-        decoder.userInfo[CodingUserInfoKey.duration] = spotifyOrAppleMusic ? TimeInterval((intDuration*1000) + 1000) : TimeInterval(intDuration+10)
+        decoder.userInfo[CodingUserInfoKey.duration] = {
+            switch currentPlayer {
+                case .appleMusic:
+                    TimeInterval((intDuration*1000) + 1000)
+                case .spotify:
+                    TimeInterval(intDuration+10)
+            }
+//            spotifyOrAppleMusic ? TimeInterval((intDuration*1000) + 1000) : TimeInterval(intDuration+10)
+        }()
         
         // Local file giveaway
         if trackID.count != 22 {
-            let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+            let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, trackID: trackID)) ?? []
             if lrc == [] {
-                let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                let netease = (try? await fetchNetEaseLyrics( trackName: trackName, trackID: trackID)) ?? []
                 try Task.checkCancellation()
                 return netease
             } else {
@@ -736,10 +813,10 @@ import IPADic
             if urlResponseAndData.0.isEmpty {
                 print("Empty Response from Spotify: Either the song lyrics don't exist or the access token is faulty.")
                 try Task.checkCancellation()
-                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, trackID: trackID)) ?? []
                 if lrc == [] {
                     try Task.checkCancellation()
-                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, trackID: trackID)) ?? []
                     try Task.checkCancellation()
                     return netease
                 } else {
@@ -750,9 +827,9 @@ import IPADic
             print(String(decoding: urlResponseAndData.0, as: UTF8.self))
             if String(decoding: urlResponseAndData.0, as: UTF8.self) == "too many requests" {
                 try Task.checkCancellation()
-                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, trackID: trackID)) ?? []
                 if lrc == [] {
-                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, trackID: trackID)) ?? []
                     try Task.checkCancellation()
                     return netease
                 } else {
@@ -772,9 +849,9 @@ import IPADic
             } else {
                 print("F (no time synced lyrics)")
                 try Task.checkCancellation()
-                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                let lrc = (try? await fetchLRCLIBNetworkLyrics( trackName: trackName, trackID: trackID)) ?? []
                 if lrc == [] {
-                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, spotifyOrAppleMusic: spotifyOrAppleMusic, trackID: trackID)) ?? []
+                    let netease = (try? await fetchNetEaseLyrics( trackName: trackName, trackID: trackID)) ?? []
                     try Task.checkCancellation()
                     return netease
                 } else {
@@ -786,18 +863,8 @@ import IPADic
         return []
     }
     
-    func fetchNetEaseLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
-//        let artistEncoded = currentlyPlayingArtist?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
-        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album : spotifyScript?.currentTrack?.album
-//        let albumEncoded = album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
-//        let trackNameEncoded = trackName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
-//        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
-//            throw CancellationError()
-//        }
-        // fetch lrc lyrics
-//        if let artist, let album, let url = URL(string: "https://lrclib.net/api/get?artist_name=\(artist)&track_name=\(trackName)&album_name=\(album)&duration=\(spotifyOrAppleMusic ? intDuration : intDuration / 1000)") {
-        
-        if let currentlyPlayingArtist, let album, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
+    func fetchNetEaseLyrics(trackName: String, trackID: String) async throws -> [LyricLine] {
+        if let currentlyPlayingArtist, let currentAlbumName, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
             print("the netease search call is \(url.absoluteString)")
             let request = URLRequest(url: url)
             let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
@@ -810,12 +877,12 @@ import IPADic
             let conditions = [
                 trackName.distance(between: neteaseResult.name) > 0.75,
                 currentlyPlayingArtist.distance(between: neteaseArtist.name) > 0.75,
-                album.distance(between: neteaseResult.album.name) > 0.75
+                currentAlbumName.distance(between: neteaseResult.album.name) > 0.75
             ]
 
             let trueCount = conditions.filter { $0 }.count
             print("Similarity index: for track \(trackName) and netease reply \(neteaseResult.name) is \(trackName.distance(between: neteaseResult.name))")
-            print("Similarity index: for album \(album) and netease reply \(neteaseResult.album.name) is \(album.distance(between: neteaseResult.album.name))")
+            print("Similarity index: for album \(currentAlbumName) and netease reply \(neteaseResult.album.name) is \(currentAlbumName.distance(between: neteaseResult.album.name))")
             print("Similarity index: for artist \(currentlyPlayingArtist) and netease reply \(neteaseArtist.name) is \(currentlyPlayingArtist.distance(between: neteaseArtist.name))")
             // I need at least 2 conditions to be met: track name, or album, or artist name, match 75% of the way
             if trueCount < 2 {
@@ -837,18 +904,20 @@ import IPADic
             let songObject = SongObject(from: parser.lyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
             saveCoreData()
             amplitude.track(eventType: "NetEase Fetch")
-            if spotifyOrAppleMusic {
-                if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
-                } else if let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                }
-            } else {
-                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                } else if let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                }
+            
+            switch currentPlayer {
+                case .appleMusic:
+                    if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
+                    } else if let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    }
+                case .spotify:
+                    if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    } else if let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: currentlyPlayingArtist), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    }
             }
             try Task.checkCancellation()
             return zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
@@ -861,9 +930,9 @@ import IPADic
         return []
     }
     
-    func fetchLRCLIBNetworkLyrics(trackName: String, spotifyOrAppleMusic: Bool, trackID: String) async throws -> [LyricLine] {
+    func fetchLRCLIBNetworkLyrics(trackName: String, trackID: String) async throws -> [LyricLine] {
         let artist = currentlyPlayingArtist?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
-        let album = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26") : spotifyScript?.currentTrack?.album?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
+        let album = currentAlbumName?.replacingOccurrences(of: "&", with: "%26")
         let trackName = trackName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?.replacingOccurrences(of: "&", with: "%26")
 //        guard let intDuration = spotifyOrAppleMusic ? appleMusicScript?.currentTrack?.duration.map(Int.init) : spotifyScript?.currentTrack?.duration else {
 //            throw CancellationError()
@@ -881,18 +950,19 @@ import IPADic
             let songObject = SongObject(from: lrcLyrics, with: coreDataContainer.viewContext, trackID: trackID, trackName: trackName, duration: decoder.userInfo[CodingUserInfoKey.duration] as! TimeInterval)
             saveCoreData()
             amplitude.track(eventType: "LRC Fetch")
-            if spotifyOrAppleMusic {
-                if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
-                } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                }
-            } else {
-                if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
-                    SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
-                }
+            switch currentPlayer {
+                case .appleMusic:
+                    if let artwork = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: artwork.findWhiteTextLegibleMostSaturatedDominantColor())
+                    } else if let artistName = currentlyPlayingArtist, let albumName = appleMusicScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    }
+                case .spotify:
+                    if let artworkUrlString = spotifyScript?.currentTrack?.artworkUrl, let artworkUrl = URL(string: artworkUrlString), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    } else if let artistName = currentlyPlayingArtist, let albumName = spotifyScript?.currentTrack?.album,  let mbid = await findMbid(albumName: albumName, artistName: artistName), let artworkUrl = mbidAlbumArt(mbid), let imageData = try? await URLSession.shared.data(from: artworkUrl), let image = NSImage(data: imageData.0) {
+                        SpotifyColorData(trackID: trackID, context: coreDataContainer.viewContext, background: image.findWhiteTextLegibleMostSaturatedDominantColor())
+                    }
             }
             try Task.checkCancellation()
             return zip(songObject.lyricsTimestamps, songObject.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
@@ -922,7 +992,7 @@ import IPADic
             try coreDataContainer.viewContext.save()
             currentlyPlayingLyricsIndex = nil
             currentlyPlayingLyrics = []
-            if translate {
+            if userDefaultStorage.translate {
                 translatedLyric = []
             }
             lyricsIsEmptyPostLoad = true
@@ -971,10 +1041,29 @@ import IPADic
         let status = await MusicAuthorization.request()
         return status
     }
+    
+    func uploadLocalLRCFile() async throws {
+        guard let currentlyPlaying, let currentlyPlayingName else {
+            throw CancellationError()
+        }
+        try await currentlyPlayingLyrics = localFetch(for: currentlyPlaying, currentlyPlayingName)
+        fetchBackgroundColor()
+        if userDefaultStorage.translate {
+            if translationSessionConfig == TranslationSession.Configuration(target: userLocaleLanguage.language) {
+                translationSessionConfig?.invalidate()
+            } else {
+                translationSessionConfig = TranslationSession.Configuration(target: userLocaleLanguage.language)
+            }
+        }
+        lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
+        if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+            startLyricUpdater()
+        }
+    }
 }
 
 // Apple Music Code
-extension viewModel {
+extension ViewModel {
     // Similar structure to my other Async functions. Only 1 appleMusicFetch() can run at any given moment
     func appleMusicStarter() async {
         print("apple music test called again, cancelling previous")
@@ -1372,3 +1461,4 @@ extension NSColor {
         self.init(srgbRed: r, green: g, blue: b, alpha: 1)
     }
 }
+
