@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import SDWebImageSwiftUI
+import SDWebImage
 import ColorKit
 import Combine
 
@@ -29,25 +29,23 @@ struct VisualEffectView: NSViewRepresentable {
 
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
-    @Namespace var animation
+    
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
-            if !viewmodel.romanizedLyrics.isEmpty {
-                Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
-            } else {
-                Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
-            }
+            Text(verbatim: viewmodel.romanizedLyrics.isEmpty ? viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words : viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
             Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9*(viewmodel.karaokeFont.pointSize)))
                 .opacity(0.85)
         }
     }
     
-    @ViewBuilder func lyricsView() -> some View {
+    @ViewBuilder
+    func lyricsView() -> some View {
         if let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             if viewmodel.translationExists {
                 if viewmodel.userDefaultStorage.karaokeShowMultilingual {
                     multilingualView(currentlyPlayingLyricsIndex)
+                        .compositingGroup()
                 }
                 else {
                     Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
@@ -65,36 +63,43 @@ struct KaraokeView: View {
     }
     
     var body: some View {
-        lyricsView()
-            .lineLimit(2)
-            .foregroundStyle(.white)
-            .minimumScaleFactor(0.9)
-            .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
-            .padding(10)
-            .padding(.horizontal, 10)
-            .background {
-                Group {
-                    if viewmodel.userDefaultStorage.karaokeUseAlbumColor, let currentBackground = viewmodel.currentBackground {
-                        currentBackground
-                    } else {
-                        viewmodel.colorBinding.wrappedValue
+            lyricsView()
+    //            .animation(.easeInOut(duration: 0.2))
+                .lineLimit(2)
+    //            .id(viewmodel.currentlyPlayingLyricsIndex)
+                .foregroundStyle(.white)
+                .minimumScaleFactor(0.9)
+    //            .animation(.smooth(duration: 0.2))
+    //            .transition( AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
+                
+    //            .minimumScaleFactor(0.1)
+                .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
+    //            .font(.system(size: viewmodel.karaokeFontSize, weight: .bold, design: .default))
+                .padding(10)
+                .padding(.horizontal, 10)
+                .background {
+                    viewmodel.currentAlbumArt
+                    .transition(.opacity)
+                    .opacity(viewmodel.userDefaultStorage.karaokeTransparency/100)
+    //                .drawingGroup()
+    //                .transition(.opacity)
+    //                .animation(nil)
+    //                .animation(.snappy(duration: 0.1), value: viewmodel.currentlyPlayingLyricsIndex)
+                }
+                .drawingGroup()
+                .background(
+                    VisualEffectView().ignoresSafeArea()
+                )
+                .cornerRadius(16)
+    //                .background(VisualEffectView().animation(nil))
+                .onHover { hover in
+                    if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
+                        viewmodel.karaokeModeHovering = hover
                     }
                 }
-                .transition(.opacity)
-                .opacity(ViewModel.shared.userDefaultStorage.karaokeTransparency/100)
-            }
-            .drawingGroup()
-            .background(
-                VisualEffectView().ignoresSafeArea()
-            )
-            .cornerRadius(16)
-            .onHover { hover in
-                if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
-                    viewmodel.karaokeModeHovering = hover
-                }
-            }
-            .multilineTextAlignment(.center)
-            .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
+                .multilineTextAlignment(.center)
+                .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
+    //            .animation(.default, value: viewmodel.currentlyPlayingLyricsIndex)
 
-    }
+        }
 }

@@ -12,10 +12,10 @@
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
-		8F5BC2D62E124EF800F887A5 /* ObservableUserDefault in Frameworks */ = {isa = PBXBuildFile; productRef = 8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */; };
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
 		8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */; };
+		8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 8F7C7EE72E34338900CA9041 /* ObservableDefaults */; };
 		8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8196862D93CCDC00F03741 /* StringMetric */; };
 		8F8196892D93E6DA00F03741 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F8196882D93E6DA00F03741 /* Localizable.xcstrings */; };
 		8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 8F832CAC2D6BEC52008C1C2B /* FontPicker */; };
@@ -55,6 +55,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8F4C0B7E2E355C1000D748AA /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
 		8F4D20712DFFAEB0004A12CA /* LyricProvider */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LyricProvider; sourceTree = "<group>"; };
 		8F4D20782E0131A4004A12CA /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		8F4D20792E013221004A12CA /* Players */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Players; sourceTree = "<group>"; };
@@ -70,12 +71,12 @@
 			files = (
 				8F1979952DA72D49008C113D /* IPADic in Frameworks */,
 				8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */,
-				8F5BC2D62E124EF800F887A5 /* ObservableUserDefault in Frameworks */,
 				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
 				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */,
+				8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */,
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
@@ -117,6 +118,7 @@
 		8FC8E9472A704EEB00F69915 /* LyricFever */ = {
 			isa = PBXGroup;
 			children = (
+				8F4C0B7E2E355C1000D748AA /* Services */,
 				8FB58B862E29ED5C002B307D /* Past Updates */,
 				8F4D208B2E0132B4004A12CA /* Support Files */,
 				8F4D20852E013263004A12CA /* Views */,
@@ -148,6 +150,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				8F4C0B7E2E355C1000D748AA /* Services */,
 				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
 				8F4D20782E0131A4004A12CA /* Models */,
 				8F4D20792E013221004A12CA /* Players */,
@@ -168,7 +171,7 @@
 				8F8196862D93CCDC00F03741 /* StringMetric */,
 				8F1979942DA72D49008C113D /* IPADic */,
 				8F1979962DA72D49008C113D /* Mecab-Swift */,
-				8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */,
+				8F7C7EE72E34338900CA9041 /* ObservableDefaults */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -210,7 +213,7 @@
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
-				8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */,
+				8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -494,20 +497,20 @@
 				minimumVersion = 2.4.2;
 			};
 		};
-		8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/davidsteppenbeck/ObservableUserDefault.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.1;
-			};
-		};
 		8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/amplitude/Amplitude-Swift";
 			requirement = {
 				branch = main;
 				kind = branch;
+			};
+		};
+		8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fatbobman/ObservableDefaults";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.8;
 			};
 		};
 		8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */ = {
@@ -584,15 +587,15 @@
 			package = 8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
 		};
-		8F5BC2D52E124EF800F887A5 /* ObservableUserDefault */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8F5BC2D42E124EF800F887A5 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */;
-			productName = ObservableUserDefault;
-		};
 		8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
+		};
+		8F7C7EE72E34338900CA9041 /* ObservableDefaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */;
+			productName = ObservableDefaults;
 		};
 		8F8196862D93CCDC00F03741 /* StringMetric */ = {
 			isa = XCSwiftPackageProductDependency;

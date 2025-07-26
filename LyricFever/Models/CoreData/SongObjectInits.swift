@@ -15,7 +15,7 @@ public class SongObject: NSManagedObject, Decodable {
         case lines, language, syncType
     }
     
-    convenience init(from LRCLyrics: LRCLyrics, with context: NSManagedObjectContext, trackID: String, trackName: String, duration: TimeInterval) {
+    convenience init(from LRCLyrics: LRCLIBLyrics, with context: NSManagedObjectContext, trackID: String, trackName: String, duration: TimeInterval) {
         self.init(context: context)
         self.id = trackID
         self.title = trackName

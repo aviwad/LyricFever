@@ -51,9 +51,11 @@ struct HoverableIcon: View {
             .frame(width: sideLength, height: sideLength)
 //            .padding(6)
             .background(isHovering ? Color.gray.opacity(0.4) : Color.clear)
+        #if os(macOS)
             .onHover { hover in
                 isHovering = hover
             }
+        #endif
             .overlay(
                 RoundedRectangle(cornerRadius: 6)
                     .stroke(Color.gray.opacity(0.2), lineWidth: isHovering ? 1 : 0)

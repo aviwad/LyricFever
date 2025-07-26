@@ -5,3 +5,61 @@
 //  Created by Avi Wadhwa on 2025-06-16.
 //
 
+import Foundation
+import StringMetric
+
+class NetEaseLyricProvider: LyricProvider {
+    var providerName = "NetEase Lyric Provider"
+    // Fake Spotify User Agent
+    // Spotify's started blocking my app's useragent. A win honestly 🤣
+    let fakeSpotifyUserAgentconfig = URLSessionConfiguration.default
+    let fakeSpotifyUserAgentSession: URLSession
+    
+    init() {
+        // Set user agents for Spotify and LRCLIB
+        fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"]
+        fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
+    }
+    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String? ) async throws -> [LyricLine] {
+        if let currentlyPlayingArtist, let currentAlbumName, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
+            print("the netease search call is \(url.absoluteString)")
+            let request = URLRequest(url: url)
+            let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
+            let neteasesearch = try JSONDecoder().decode(NetEaseSearch.self, from: urlResponseAndData.0)
+            print(neteasesearch)
+            guard let neteaseResult = neteasesearch.result.songs.first, let neteaseArtist = neteaseResult.artists.first else {
+                return []
+            }
+            let neteaseId = neteaseResult.id
+            let conditions = [
+                trackName.distance(between: neteaseResult.name) > 0.75,
+                currentlyPlayingArtist.distance(between: neteaseArtist.name) > 0.75,
+                currentAlbumName.distance(between: neteaseResult.album.name) > 0.75
+            ]
+
+            let trueCount = conditions.filter { $0 }.count
+            print("Similarity index: for track \(trackName) and netease reply \(neteaseResult.name) is \(trackName.distance(between: neteaseResult.name))")
+            print("Similarity index: for album \(currentAlbumName) and netease reply \(neteaseResult.album.name) is \(currentAlbumName.distance(between: neteaseResult.album.name))")
+            print("Similarity index: for artist \(currentlyPlayingArtist) and netease reply \(neteaseArtist.name) is \(currentlyPlayingArtist.distance(between: neteaseArtist.name))")
+            // I need at least 2 conditions to be met: track name, or album, or artist name, match 75% of the way
+            if trueCount < 2 {
+                print("similarity conditions passed for NetEase: \(trueCount) is less than 2, therefore failing this NetEase search.")
+                return []
+            }
+            let lyricRequest = URLRequest(url: URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/lyric?id=\(neteaseId)")!)
+            let urlResponseAndDataLyrics = try await fakeSpotifyUserAgentSession.data(for: lyricRequest)
+            let neteaseLyrics = try JSONDecoder().decode(NetEaseLyrics.self, from: urlResponseAndDataLyrics.0)
+            guard let neteaselrc = neteaseLyrics.lrc, let neteaseLrcString = neteaselrc.lyric else {
+                return []
+            }
+            let parser = LyricsParser(lyrics: neteaseLrcString)
+            print(parser.lyrics)
+            // NetEase incorrectly advertises lyrics for EVERY song when it only has the name, artist, composer at 0.0 *sigh*
+            if parser.lyrics.last?.startTimeMS == 0.0 {
+                return []
+            }
+            return parser.lyrics
+        }
+        return []
+    }
+}

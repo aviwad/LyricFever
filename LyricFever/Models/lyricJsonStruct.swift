@@ -61,17 +61,10 @@ struct SpotifyColorData: Codable {
     let background, text, highlightText: Int
     
     init(from decoder: any Decoder) throws {
-        guard let context = decoder.userInfo[CodingUserInfoKey.managedObjectContext] as? NSManagedObjectContext, let trackID = decoder.userInfo[CodingUserInfoKey.trackID] as? String, let trackName = decoder.userInfo[CodingUserInfoKey.trackName] as? String, let duration = decoder.userInfo[CodingUserInfoKey.duration] as? TimeInterval else {
-            fatalError()
-        }
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.background = try container.decode(Int.self, forKey: .background)
         self.text = try container.decode(Int.self, forKey: .text)
         self.highlightText = try container.decode(Int.self, forKey: .highlightText)
-        let newColorMapping = IDToColor(context: context)
-        newColorMapping.id = trackID
-        newColorMapping.songColor = Int32(background)
-        try context.save()
     }
     
     init(trackID: String, context: NSManagedObjectContext, background: Int32) {
@@ -121,7 +114,7 @@ struct ErrorWrapper: Codable {
     let error: Error
 }
 
-struct LRCLyrics: Decodable {
+struct LRCLIBLyrics: Decodable {
     let id: Int
     let name, trackName, artistName, albumName: String
     let duration: Int
@@ -180,7 +173,7 @@ struct LRCLyrics: Decodable {
         } else {
             self.plainLyrics = try container.decode(String.self, forKey: .plainLyrics)
             self.syncedLyrics = try container.decode(String.self, forKey: .syncedLyrics)
-            self.lyrics = LRCLyrics.decodeLyrics(input: syncedLyrics)
+            self.lyrics = LRCLIBLyrics.decodeLyrics(input: syncedLyrics)
         }
 //        self.lyrics = try container.decode([LyricLine].self, forKey: .lyrics)
     }

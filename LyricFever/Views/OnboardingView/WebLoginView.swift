@@ -18,7 +18,7 @@ extension NavigationState: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         self.url = webView.url
         
-        print("url is \(self.url)")
+        print("url is \(String(describing: self.url))")
         
         if ((self.url?.absoluteString.starts(with: "https://open.spotify.com")) ?? false) {
             ViewModel.shared.checkIfLoggedIn()

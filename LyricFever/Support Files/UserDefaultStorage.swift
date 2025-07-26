@@ -7,32 +7,41 @@
 
 import Combine
 import SwiftUI
+import ObservableDefaults
 
-class UserDefaultStorage: ObservableObject {
-    @AppStorage("karaoke") var karaoke: Bool = false
-    @AppStorage("translate") var translate: Bool = false
-    @AppStorage("showSongDetailsInMenubar") var showSongDetailsInMenubar: Bool = true
-    @AppStorage("blurFullscreen") var blurFullscreen: Bool = true
-    @AppStorage("animateOnStartupFullscreen") var animateOnStartupFullscreen: Bool = true
-    @AppStorage("romanize") var romanize: Bool = false
-    @AppStorage("spotifyConnectDelayCount") var spotifyConnectDelayCount: Int = 400
-    @AppStorage("hasMigrated") var hasMigrated: Bool = false
+@ObservableDefaults
+class UserDefaultStorage {
+    var translate: Bool = false
+    #if os(macOS)
+    var showSongDetailsInMenubar: Bool = true
+    #endif
+    var blurFullscreen: Bool = true
+    var animateOnStartupFullscreen: Bool = true
+    var romanize: Bool = false
+    #if os(macOS)
+    var spotifyConnectDelayCount: Int = 400
+    var hasMigrated: Bool = false
     
     // User setting: use album art color or user-set currentBackground
-    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
-    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
-    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
-    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
+    var karaoke: Bool = false
+    var karaokeUseAlbumColor: Bool = true
+    var karaokeShowMultilingual: Bool = true
+    var karaokeTransparency: Double = 50
+    var fixedKaraokeColorHex: String = "#2D3CCC"
     
     // User setting: hide karaoke on hover
-    @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
+    var karaokeModeHoveringSetting: Bool = false
+    #endif
+
+    @DefaultsKey(userDefaultsKey: "spDcCookie")
+    var cookie: String = ""
     
-    @AppStorage("spDcCookie") var cookie: String = ""
-    
+    #if os(macOS)
     // True: means Apple Music, False: Spotify
-    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
-    @AppStorage("hasOnboarded") var hasOnboarded: Bool = false
-    @AppStorage("hasUpdated22") var hasUpdated22: Bool = false
-    @AppStorage("hasTranslated") var hasTranslated: Bool = false
-    @AppStorage("truncationLength") var truncationLength: Int = 40
+    var spotifyOrAppleMusic: Bool = false
+    var latestUpdateWindowShown: Int = 0
+    #endif
+    var hasOnboarded: Bool = false
+    var hasTranslated: Bool = false
+    var truncationLength: Int = 40
 }

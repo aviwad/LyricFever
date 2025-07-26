@@ -51,7 +51,7 @@
         }
       }
     },
-    "AirPlay 1 Audio Delay" : {
+    "AirPlay Audio Delay" : {
 
     },
     "Animate on startup" : {
@@ -68,6 +68,7 @@
       }
     },
     "Apple Music" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -217,6 +218,7 @@
       }
     },
     "Give Apple Music Library Permissions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -427,7 +429,7 @@
         }
       }
     },
-    "Lyric Fever: Update 2.2" : {
+    "Lyric Fever: Update 2.3" : {
 
     },
     "Lyrics Found 😃" : {
@@ -573,6 +575,7 @@
       }
     },
     "Open Music Panel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -854,6 +857,7 @@
       }
     },
     "Spotify" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
