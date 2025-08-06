@@ -150,6 +150,7 @@ struct LyricFever: App {
         .menuBarExtraStyle(.window)
         Window("Lyric Fever: Fullscreen", id: "fullscreen") {
             FullscreenView()
+                .windowFullScreenBehavior(.enabled)
                 .preferredColorScheme(.dark)
                 .environment(viewmodel)
                 .onAppear {
