@@ -21,6 +21,7 @@ import Translation
 @Observable class ViewModel {
     static let shared = ViewModel()
     var currentlyPlaying: String?
+    var artworkImage: NSImage?
     
     
     #if os(macOS)
@@ -68,6 +69,9 @@ import Translation
         }
     }
     
+    var canDisplayLyrics: Bool {
+        showLyrics && !lyricsIsEmptyPostLoad
+    }
     var displayKaraoke: Bool {
         get {
             showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)

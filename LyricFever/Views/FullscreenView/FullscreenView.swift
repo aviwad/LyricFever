@@ -15,11 +15,6 @@ struct FullscreenView: View {
     @Environment(ViewModel.self) var viewmodel
     
     // View
-    #if os(macOS)
-    @State var artworkImage: NSImage?
-    #else
-    @State var artworkImage: UIImage?
-    #endif
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
     
     // Fullscreen options
@@ -32,10 +27,6 @@ struct FullscreenView: View {
             .autoconnect()
     @State var points: ColorSpots = .init()
     @State var showSettingsPopover = false
-    
-    var canDisplayLyrics: Bool {
-        viewmodel.showLyrics && !viewmodel.lyricsIsEmptyPostLoad
-    }
     
     enum HoverOptions {
         case playpause
@@ -170,13 +161,13 @@ struct FullscreenView: View {
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
-            if let artworkImage {
+            if let artworkImage = viewmodel.artworkImage {
                 #if os(macOS)
                 Image(nsImage: artworkImage)
                     .resizable()
                     .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                     .shadow(radius: 5)
-                    .frame(width: canDisplayLyrics ? 550 : 700, height: canDisplayLyrics ? 550 : 700)
+                    .frame(width: viewmodel.canDisplayLyrics ? 550 : 700, height: viewmodel.canDisplayLyrics ? 550 : 700)
                 #else
                 Image(uiImage: artworkImage)
                     .resizable()
@@ -193,7 +184,7 @@ struct FullscreenView: View {
                     .background(.gray)
                     .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                     .shadow(radius: 5)
-                    .frame(width: canDisplayLyrics ? 550 : 650, height: canDisplayLyrics ? 550 : 650)
+                    .frame(width: viewmodel.canDisplayLyrics ? 550 : 650, height: viewmodel.canDisplayLyrics ? 550 : 650)
             }
             Group {
                 Text(verbatim: viewmodel.currentlyPlayingName ?? "")
@@ -330,8 +321,8 @@ struct FullscreenView: View {
         GeometryReader { geo in
             HStack {
                 albumArt
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
-                if canDisplayLyrics {
+                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: viewmodel.canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
+                if viewmodel.canDisplayLyrics {
                     lyrics(padding: 0.5*(geo.size.height))
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
                 }
@@ -351,20 +342,10 @@ struct FullscreenView: View {
                 print("Error configuring tips: \(error)")
             }
         }
-        .onChange(of: artworkImage) {
+        .task(id: viewmodel.artworkImage) {
             print("NEW ARTWORK")
-            if let artworkImage, let dominantColors = try? artworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
+            if let artworkImage = viewmodel.artworkImage, let dominantColors = try? artworkImage.dominantColors(with: .best, algorithm: .kMeansClustering) {
                 gradient = dominantColors.map({adjustedColor($0)})
-            }
-        }
-        .task(id: viewmodel.currentlyPlayingName) {
-            if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
-                self.artworkImage = artworkImage
-            }
-            else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
-                if let mbid = await MusicBrainzArtworkService.findMbid(albumName: currentAlbumName, artistName: artistName) {
-                    self.artworkImage = await MusicBrainzArtworkService.artworkImage(for: mbid)
-                }
             }
         }
     }
