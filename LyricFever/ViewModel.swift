@@ -294,6 +294,7 @@ import Translation
                 translationSessionConfig = TranslationSession.Configuration(target: userLocaleLanguage.language)
             }
         }
+        setBackgroundColor()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         print("HELLOO")
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
@@ -630,7 +631,7 @@ import Translation
         return Color(red: red/255, green: green/255, blue: blue/255) //(red, green, blue)
     }
     
-    func fetchBackgroundColor() {
+    func setBackgroundColor() {
         guard let currentlyPlaying else {
             return
         }
@@ -725,7 +726,7 @@ import Translation
             throw CancellationError()
         }
         try await currentlyPlayingLyrics = localFileUploadProvider.localFetch(for: currentlyPlaying, currentlyPlayingName)
-        fetchBackgroundColor()
+        setBackgroundColor()
         reloadTranslationConfigIfTranslating()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
