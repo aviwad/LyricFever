@@ -140,6 +140,7 @@ import Translation
     private var currentFetchTask: Task<[LyricLine], Error>?
     private var currentLyricsUpdaterTask: Task<Void,Error>?
     private var currentLyricsDriftFix: Task<Void,Error>?
+    var isFetching = false
     private var currentAppleMusicFetchTask: Task<Void,Error>?
     
     // Songs are translated to user locale
@@ -650,12 +651,13 @@ import Translation
     
     func fetch(for trackID: String, _ trackName: String) async -> [LyricLine]? {
         currentFetchTask?.cancel()
-        let newFetchTask = Task {
-            try await self.fetchLyrics(for: trackID, trackName)
+        isFetching = true
+        defer {
+            isFetching = false
         }
-        currentFetchTask = newFetchTask
+        currentFetchTask = Task { try await self.fetchLyrics(for: trackID, trackName) }
         do {
-            return try await newFetchTask.value
+            return try await currentFetchTask?.value
         } catch {
             print("error \(error)")
             return nil
