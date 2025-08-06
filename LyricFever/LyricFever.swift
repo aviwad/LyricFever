@@ -28,7 +28,6 @@ struct LyricFever: App {
     @State var viewmodel = ViewModel.shared
     @Environment(\.openWindow) var openWindow
     @Environment(\.openURL) var openURL
-    @State var artworkImage: NSImage?
     
     var body: some Scene {
         MenuBarExtra {
@@ -36,21 +35,21 @@ struct LyricFever: App {
                 .environment(viewmodel)
         } label: {
             // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else
-            Group {
-                if let menuBarTitle {
-                    Text(menuBarTitle)
-                } else {
-                    Image(systemName: "music.note.list")
-                }
-            }
-//            .task(id: viewmodel.currentlyPlayingLyrics) {
-//                guard let currentlyPlayingLyrics = viewmodel.currentlyPlayingLyrics else {
-//                    return
-//                }
-//                
-//            }
+            MenubarLabelView()
+                .environment(viewmodel)
             .task(id: viewmodel.currentlyPlaying) {
-                artworkImage = await viewmodel.currentPlayerInstance.artworkImage
+                do {
+                    print("Fetching new artwork image for currentlyPlaying change")
+                    if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
+                        viewmodel.artworkImage = artworkImage
+                    } else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
+                        if let mbid = await MusicBrainzArtworkService.findMbid(albumName: currentAlbumName, artistName: artistName) {
+                            viewmodel.artworkImage = await MusicBrainzArtworkService.artworkImage(for: mbid)
+                        }
+                    }
+                } catch {
+                    print("Error fetching artwork image for currentlyPlaying: \(error)")
+                }
             }
             .task(id: viewmodel.userDefaultStorage.latestUpdateWindowShown) {
                 if viewmodel.userDefaultStorage.latestUpdateWindowShown < 23 {
@@ -227,46 +226,6 @@ struct LyricFever: App {
             .windowResizability(.contentSize)
             .windowStyle(.hiddenTitleBar)
             .windowLevel(.floating)
-    }
-    
-    var menuBarTitle: String? {
-        // Update message takes priority
-        if viewmodel.mustUpdateUrgent {
-            return String(localized: "⚠️ Please Update (Click Check Updates)").trunc(length: viewmodel.userDefaultStorage.truncationLength)
-        } else if viewmodel.userDefaultStorage.hasOnboarded {
-            // Try to work through lyric logic if onboarded
-            // NEW: Revert to song name if fullscreen / karaoke activated
-            if !viewmodel.fullscreen, !viewmodel.userDefaultStorage.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
-                // Attempt to display translations
-                // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
-                if viewmodel.translationExists {
-                    // I don't localize, because I deliver the lyric verbatim
-                    return viewmodel.translatedLyric[currentlyPlayingLyricsIndex].trunc()
-                } else {
-                    // Attempt to display Romanization
-                    if viewmodel.userDefaultStorage.romanize, let toLatin = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.applyingTransform(.toLatin, reverse: false) {
-                        // I don't localize, because I deliver the lyric verbatim
-                        return toLatin.trunc()
-                    } else {
-                        // I don't localize, because I deliver the lyric verbatim
-                        return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words.trunc()
-                    }
-                }
-            // Backup: Display name and artist
-            } else if viewmodel.userDefaultStorage.showSongDetailsInMenubar, let currentlyPlayingName = viewmodel.currentlyPlayingName, let currentlyPlayingArtist = viewmodel.currentlyPlayingArtist {
-                if viewmodel.isPlaying {
-                    return String(localized: "Now Playing: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc()//.trunc()
-                } else {
-                    return String(localized: "Now Paused: \(currentlyPlayingName) - \(currentlyPlayingArtist)").trunc()//.trunc()
-                }
-            }
-            // Onboarded but app is not open
-            return nil
-        } else {
-            // Hasn't onboarded
-            return String(localized: "⚠️ Complete Setup (Click Settings)").trunc()
-        }
-        
     }
 }
 
