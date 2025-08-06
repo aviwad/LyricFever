@@ -719,6 +719,7 @@ import Translation
             currentlyPlayingLyrics = []
             if userDefaultStorage.translate {
                 translatedLyric = []
+                romanizedLyrics = []
             }
             lyricsIsEmptyPostLoad = true
         } catch {
