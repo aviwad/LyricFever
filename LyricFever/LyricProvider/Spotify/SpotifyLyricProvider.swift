@@ -8,16 +8,6 @@
 import Foundation
 import SwiftOTP
 
-struct SpotifyParent: Decodable {
-    let lyrics: SpotifyLyrics
-    let colors: SpotifyColorData
-}
-struct AppleMusicHelper {
-    let SpotifyID: String
-    let SpotifyName: String
-    let SpotifyArtist: String
-}
-
 
 struct SpotifyLyrics: Decodable {
     let downloadDate: Date
@@ -59,7 +49,7 @@ struct SecretVersion: Codable {
 class SpotifyLyricProvider: LyricProvider {
     var providerName = "Spotify Lyric Provider"
     // Authentication tokens
-    var accessToken: accessTokenJSON?
+    var accessToken: AccessTokenJSON?
     
     var isAccessTokenAlive: Bool {
         guard let expiration = accessToken?.accessTokenExpirationTimestampMs else { return false }
@@ -138,7 +128,7 @@ class SpotifyLyricProvider: LyricProvider {
                 let accessTokenData = try await fakeSpotifyUserAgentSession.data(for: request)
                 print(String(decoding: accessTokenData.0, as: UTF8.self))
                 do {
-                    accessToken = try JSONDecoder().decode(accessTokenJSON.self, from: accessTokenData.0)
+                    accessToken = try JSONDecoder().decode(AccessTokenJSON.self, from: accessTokenData.0)
                     print("ACCESS TOKEN IS SAVED")
                 } catch {
                     do {
