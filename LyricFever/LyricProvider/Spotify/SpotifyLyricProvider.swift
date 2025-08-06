@@ -175,11 +175,13 @@ class SpotifyLyricProvider: LyricProvider {
             if urlResponseAndData.0.isEmpty {
                 return []
             }
-            print(String(decoding: urlResponseAndData.0, as: UTF8.self))
+
             if String(decoding: urlResponseAndData.0, as: UTF8.self) == "too many requests" {
                 throw SpotifyLyricError.tooManyTries
             }
             let spotifyParent = try JSONDecoder().decode(SpotifyParent.self, from: urlResponseAndData.0)
+            print("Successfully fetched Spotify lyric data")
+            ColorDataService.saveColorToCoreData(trackID: trackID, songColor: spotifyParent.colors.background)
             return spotifyParent.lyrics.lyrics
         }
         return []
