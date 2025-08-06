@@ -39,7 +39,7 @@ struct BackgroundView: View {
         }
         .onChange(of: colors) {
             print("change color called")
-            withAnimation(.easeInOut(duration: BackgroundView.animationDuration/2)){
+            withAnimation(.easeInOut(duration: BackgroundView.animationDuration/4)){
                 points = self.colors.map { .random(withColor: $0) }
             }
         }
