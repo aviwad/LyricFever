@@ -20,5 +20,22 @@ struct MusicBrainzReply: Codable {
             // Decode all releases and filter out "Bootleg" ones
             let allReleases = try container.decode([MusicBrainzRelease].self, forKey: .releases)
             self.releases = allReleases.filter { $0.status != "Bootleg" }
+    }
+    
+    struct MusicBrainzRelease: Codable {
+        let id: String
+        let status: String?
+        
+        enum CodingKeys: CodingKey {
+            case id,status
         }
+        
+        init(from decoder: any Decoder) throws {
+            
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.id = try container.decode(String.self, forKey: .id)
+            self.status = try? container.decode(String.self, forKey: .status)
+        }
+    }
+
 }
