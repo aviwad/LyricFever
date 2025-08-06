@@ -122,7 +122,7 @@ struct MenubarWindowView: View {
                 dismiss()
             }
             MenubarButton(buttonText: "", imageText: "dock.rectangle", buttonState: displayKaraoke) {
-                viewmodel.displayKaraokeInMenuBar.toggle()
+                viewmodel.userDefaultStorage.karaoke.toggle()
             }
 //            if viewmodel.currentlyPlayingLyrics.isEmpty {
 //                sampleButton(buttonText: "lol", imageText: "arrow.up.document") {
