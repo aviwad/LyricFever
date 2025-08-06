@@ -7,7 +7,6 @@
 
 import Foundation
 #if os(macOS)
-import ScriptingBridge
 #endif
 @preconcurrency import CoreData
 import AmplitudeSwift
@@ -15,14 +14,8 @@ import SwiftUI
 import MediaPlayer
 #if os(macOS)
 import WebKit
-#endif
-import UniformTypeIdentifiers
-import SwiftOTP
-import NaturalLanguage
-import StringMetric
-import Mecab_Swift
-import IPADic
 import Translation
+#endif
 
 @MainActor
 @Observable class ViewModel {
