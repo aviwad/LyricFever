@@ -62,44 +62,35 @@ struct KaraokeView: View {
         }
     }
     
+    @ViewBuilder
+    var finalKaraokeView: some View {
+        lyricsView()
+            .lineLimit(2)
+            .foregroundStyle(.white)
+            .minimumScaleFactor(0.9)
+            .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
+            .padding(10)
+            .padding(.horizontal, 10)
+            .background {
+               viewmodel.currentAlbumArt
+               .transition(.opacity)
+               .opacity(viewmodel.userDefaultStorage.karaokeTransparency/100)
+           }
+           .drawingGroup()
+           .background(
+               VisualEffectView().ignoresSafeArea()
+           )
+           .cornerRadius(16)
+            .onHover { hover in
+                if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
+                    viewmodel.karaokeModeHovering = hover
+                }
+            }
+            .multilineTextAlignment(.center)
+            .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
+    }
+    
     var body: some View {
-            lyricsView()
-    //            .animation(.easeInOut(duration: 0.2))
-                .lineLimit(2)
-    //            .id(viewmodel.currentlyPlayingLyricsIndex)
-                .foregroundStyle(.white)
-                .minimumScaleFactor(0.9)
-    //            .animation(.smooth(duration: 0.2))
-    //            .transition( AnyTransition.asymmetric(insertion: .scale, removal: .opacity))
-                
-    //            .minimumScaleFactor(0.1)
-                .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
-    //            .font(.system(size: viewmodel.karaokeFontSize, weight: .bold, design: .default))
-                .padding(10)
-                .padding(.horizontal, 10)
-                .background {
-                    viewmodel.currentAlbumArt
-                    .transition(.opacity)
-                    .opacity(viewmodel.userDefaultStorage.karaokeTransparency/100)
-    //                .drawingGroup()
-    //                .transition(.opacity)
-    //                .animation(nil)
-    //                .animation(.snappy(duration: 0.1), value: viewmodel.currentlyPlayingLyricsIndex)
-                }
-                .drawingGroup()
-                .background(
-                    VisualEffectView().ignoresSafeArea()
-                )
-                .cornerRadius(16)
-    //                .background(VisualEffectView().animation(nil))
-                .onHover { hover in
-                    if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
-                        viewmodel.karaokeModeHovering = hover
-                    }
-                }
-                .multilineTextAlignment(.center)
-                .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
-    //            .animation(.default, value: viewmodel.currentlyPlayingLyricsIndex)
-
-        }
+        finalKaraokeView
+    }
 }
