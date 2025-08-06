@@ -364,6 +364,24 @@ import Translation
         userDefaultStorage.hasTranslated = true
     }
     
+    @MainActor
+    func translationTask(_ session: TranslationSession) async {
+        let translationResponse = await TranslationService.translationTask(session, request: currentlyPlayingLyrics.map { TranslationSession.Request(lyric: $0) })
+        
+        switch translationResponse {
+            case .success(let array):
+                if currentlyPlayingLyrics.count == array.count {
+                    translatedLyric = array.map {
+                        $0.targetText
+                    }
+                }
+            case .needsConfigUpdate(let language):
+                translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage.language)
+            case .failure:
+                return
+        }
+    }
+    
     func romanizeDidChange() {
         if userDefaultStorage.romanize {
             print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying)")
@@ -457,27 +475,6 @@ import Translation
         }
     }
     
-    func translationTask(_ session: TranslationSession) async {
-        print("translation task called")
-        do {
-            print("translation task called in do")
-            let requests = currentlyPlayingLyrics.map { TranslationSession.Request(sourceText: $0.words, clientIdentifier: $0.id.uuidString) }
-            let response = try await session.translations(from: requests)
-            if response.count == currentlyPlayingLyrics.count {
-//                                    viewmodel.translateSource = response
-                translatedLyric = response.map {
-                    $0.targetText
-                }
-            }
-            print(response)
-            
-        } catch {
-            if let source = findRealLanguage() {
-                translationSessionConfig = TranslationSession.Configuration(source: source, target: userLocaleLanguage.language)
-            }
-            print(error)
-        }
-    }
     #else
     func setCurrentProperties() {
         currentlyPlaying = spotifyPlayer.currentTrack?.uri?.spotifyProcessedUrl()
@@ -485,32 +482,7 @@ import Translation
         currentlyPlayingArtist = spotifyPlayer.artistName
     }
     #endif
-    
-    func findRealLanguage() -> Locale.Language? {
-        var langCount: [Locale.Language: Int] = [:]
-        let recognizer = NLLanguageRecognizer()
-        for lyric in currentlyPlayingLyrics {
-            recognizer.reset()
-            recognizer.processString(lyric.words)
-            
-          //  if recognizer.dominantLanguage !=
-            if let dominantLanguage = recognizer.dominantLanguage {
-                let value: Locale.Language = .init(identifier: dominantLanguage.rawValue)
-                if value != Locale.Language.systemLanguages.first! {
-                    langCount[value, default: 0] += 1
-                }
-                print(value)
-            }
-        }
-        if let lol =  langCount.sorted( by: { $1.value < $0.value}).first {
-            if lol.value >= 3 {
-                return lol.key
-            }
-        }
-        return nil
-    }
-    
-    
+
     func upcomingIndex(_ currentTime: Double) -> Int? {
         if let currentlyPlayingLyricsIndex {
             let newIndex = currentlyPlayingLyricsIndex + 1
