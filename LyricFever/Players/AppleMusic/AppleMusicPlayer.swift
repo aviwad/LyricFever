@@ -76,6 +76,12 @@ class AppleMusicPlayer: Player {
     func togglePlayback() {
         appleMusicScript?.playpause?()
     }
+    func rewind() {
+        appleMusicScript?.previousTrack?()
+    }
+    func forward() {
+        appleMusicScript?.nextTrack?()
+    }
     
     var artworkImage: NSImage? {
         guard let artworkImage = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data else {
@@ -83,5 +89,9 @@ class AppleMusicPlayer: Player {
             return nil
         }
         return artworkImage
+    }
+    
+    func activate() {
+        appleMusicScript?.activate()
     }
 }

@@ -28,8 +28,13 @@ protocol Player {
     func decreaseVolume()
     func increaseVolume()
     func togglePlayback()
+    func rewind()
+    func forward()
     
     // fullscreen album art
     @MainActor
     var artworkImage: NSImage? { get async }
+    
+    // menubar behaviour
+    func activate()
 }

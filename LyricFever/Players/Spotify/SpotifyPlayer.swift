@@ -80,6 +80,12 @@ class SpotifyPlayer: @MainActor Player {
     func togglePlayback() {
         spotifyScript?.playpause?()
     }
+    func rewind() {
+        spotifyScript?.previousTrack?()
+    }
+    func forward() {
+        spotifyScript?.nextTrack?()
+    }
     
     var artworkImage: NSImage? {
         get async {
@@ -95,5 +101,9 @@ class SpotifyPlayer: @MainActor Player {
                 return nil
             }
         }
+    }
+    
+    func activate() {
+        spotifyScript?.activate()
     }
 }
