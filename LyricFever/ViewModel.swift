@@ -892,7 +892,7 @@ extension ViewModel {
         return nil
     }
     
-    private func musicToSpotifyHelper(accessToken: accessTokenJSON?, isrc: String?) async throws -> AppleMusicHelper? {
+    private func musicToSpotifyHelper(accessToken: AccessTokenJSON?, isrc: String?) async throws -> AppleMusicHelper? {
         // Manually search song name, artist name
         guard let currentlyPlayingArtist, let currentlyPlayingName else {
             print("\(#function) currentlyPlayingName or currentlyPlayingArtist missing")
