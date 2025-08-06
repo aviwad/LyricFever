@@ -451,8 +451,31 @@ import Translation
     }
     
     func onAppear(_ openWindow: OpenWindowAction) {
-        
         setCurrentProperties()
+    }
+    
+    func onCurrentlyPlayingIDChange() async {
+        currentlyPlayingLyricsIndex = nil
+        currentlyPlayingLyrics = []
+        translatedLyric = []
+        romanizedLyrics = []
+        
+        if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName) {
+            currentlyPlayingLyrics = lyrics
+            setBackgroundColor()
+            reloadTranslationConfigIfTranslating()
+            if userDefaultStorage.romanize {
+                print("Romanized Lyrics generated from song change for \(currentlyPlaying)")
+                romanizedLyrics = currentlyPlayingLyrics.compactMap({
+                    RomanizerService.generateRomanizedLyric($0)
+                })
+            }
+            lyricsIsEmptyPostLoad = lyrics.isEmpty
+            if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+                print("STARTING UPDATER")
+                startLyricUpdater()
+            }
+        }
     }
     
     private func setCurrentProperties() {

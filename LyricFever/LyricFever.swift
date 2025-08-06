@@ -70,102 +70,82 @@ struct LyricFever: App {
                     }
                 }
             }
-                .onChange(of: viewmodel.showLyrics) {
-                    viewmodel.toggleLyrics()
-                }
-                .floatingPanel(isPresented: $viewmodel.displayKaraoke) {
-                    KaraokeView()
-                        .animation(.easeIn(duration: 0.2))
-                        .environment(viewmodel)
-                }
-                .onAppear {
-                    viewmodel.onAppear(openWindow)
-                }
-                .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.apple.Music.playerInfo"))) { notification in
-                    viewmodel.appleMusicPlaybackDidChange(notification)
-                }
-                .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged"))) { notification in
-                    viewmodel.spotifyPlaybackDidChange(notification)
-                }
-                .translationTask(viewmodel.translationSessionConfig) { session in
-                    await viewmodel.translationTask(session)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
-                    viewmodel.saveKaraokeFontOnTermination()
-                }
-                .onChange(of: viewmodel.userDefaultStorage.romanize) {
-                    viewmodel.romanizeDidChange()
-                }
-                .onChange(of: viewmodel.userDefaultStorage.translate) {
-                    if !viewmodel.reloadTranslationConfigIfTranslating() {
-                        viewmodel.translatedLyric = []
-                    }
-                }
-                .onChange(of: viewmodel.currentPlayer) {
-                    print("Setting hasOnboarded to false due to player change")
-                    viewmodel.userDefaultStorage.hasOnboarded = false
-                }
-                .onChange(of: viewmodel.fullscreen) {
-                    if viewmodel.fullscreen {
-                        openWindow(id: "fullscreen")
-                        NSApplication.shared.activate(ignoringOtherApps: true)
-                    }
-                }
-                .onChange(of: viewmodel.userDefaultStorage.hasOnboarded) {
-                    if viewmodel.userDefaultStorage.hasOnboarded {
-                        viewmodel.didOnboard()
-                    } else {
-                        viewmodel.stopLyricUpdater()
-                    }
-                }
-                .onChange(of: viewmodel.userDefaultStorage.translate) {
-                    viewmodel.openTranslationHelpOnFirstRun(openURL)
-                }
-                .onChange(of: viewmodel.userDefaultStorage.cookie) {
-                    viewmodel.spotifyLyricProvider.accessToken = nil
-                }
-                .onChange(of: viewmodel.isPlaying) {
-                    if viewmodel.isPlaying, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
-                        if !viewmodel.currentlyPlayingLyrics.isEmpty  {
-                            print("timer started for spotify change, lyrics not nil")
-                            viewmodel.startLyricUpdater()
-                        }
-                    } else {
-                        viewmodel.stopLyricUpdater()
-                    }
-                }
-                .task(id: viewmodel.currentlyPlayingAppleMusicPersistentID) {
-                    if viewmodel.currentlyPlayingAppleMusicPersistentID != nil {
-                        print("Apple Music: calling Starter on new persistent ID")
-                        await viewmodel.appleMusicStarter()
-                    }
-                }
-                .onChange(of: viewmodel.currentlyPlaying) {
-                    print("song change")
-                    viewmodel.currentlyPlayingLyricsIndex = nil
-                    viewmodel.currentlyPlayingLyrics = []
+            .onChange(of: viewmodel.showLyrics) {
+                viewmodel.toggleLyrics()
+            }
+            .floatingPanel(isPresented: $viewmodel.displayKaraoke) {
+                KaraokeView()
+                    .animation(.easeIn(duration: 0.2))
+                    .environment(viewmodel)
+            }
+            .onAppear {
+                viewmodel.onAppear(openWindow)
+            }
+            .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.apple.Music.playerInfo"))) { notification in
+                viewmodel.appleMusicPlaybackDidChange(notification)
+            }
+            .onReceive(DistributedNotificationCenter.default().publisher(for: Notification.Name(rawValue:  "com.spotify.client.PlaybackStateChanged"))) { notification in
+                viewmodel.spotifyPlaybackDidChange(notification)
+            }
+            .translationTask(viewmodel.translationSessionConfig) { session in
+                await viewmodel.translationTask(session)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+                viewmodel.saveKaraokeFontOnTermination()
+            }
+            .onChange(of: viewmodel.userDefaultStorage.romanize) {
+                viewmodel.romanizeDidChange()
+            }
+            .onChange(of: viewmodel.userDefaultStorage.translate) {
+                if !viewmodel.reloadTranslationConfigIfTranslating() {
                     viewmodel.translatedLyric = []
-                    viewmodel.romanizedLyrics = []
-                    
-                    Task {
-                        if viewmodel.userDefaultStorage.hasOnboarded, let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName, let lyrics = await viewmodel.fetch(for: currentlyPlaying, currentlyPlayingName) {
-                            viewmodel.currentlyPlayingLyrics = lyrics
-                            viewmodel.fetchBackgroundColor()
-                            viewmodel.reloadTranslationConfigIfTranslating()
-                            if viewmodel.userDefaultStorage.romanize {
-                                print("Romanized Lyrics generated from song change for \(viewmodel.currentlyPlaying)")
-                                viewmodel.romanizedLyrics = viewmodel.currentlyPlayingLyrics.compactMap({
-                                    RomanizerService.generateRomanizedLyric($0)
-                                })
-                            }
-                            viewmodel.lyricsIsEmptyPostLoad = lyrics.isEmpty
-                            if viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
-                                print("STARTING UPDATER")
-                                viewmodel.startLyricUpdater()
-                            }
-                        }
-                    }
                 }
+            }
+            .onChange(of: viewmodel.currentPlayer) {
+                print("Setting hasOnboarded to false due to player change")
+                viewmodel.userDefaultStorage.hasOnboarded = false
+            }
+            .onChange(of: viewmodel.fullscreen) {
+                if viewmodel.fullscreen {
+                    openWindow(id: "fullscreen")
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                }
+            }
+            .onChange(of: viewmodel.userDefaultStorage.hasOnboarded) {
+                if viewmodel.userDefaultStorage.hasOnboarded {
+                    viewmodel.didOnboard()
+                } else {
+                    viewmodel.stopLyricUpdater()
+                }
+            }
+            .onChange(of: viewmodel.userDefaultStorage.translate) {
+                viewmodel.openTranslationHelpOnFirstRun(openURL)
+            }
+            .onChange(of: viewmodel.userDefaultStorage.cookie) {
+                viewmodel.spotifyLyricProvider.accessToken = nil
+            }
+            .onChange(of: viewmodel.isPlaying) {
+                if viewmodel.isPlaying, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
+                    if !viewmodel.currentlyPlayingLyrics.isEmpty  {
+                        print("timer started for spotify change, lyrics not nil")
+                        viewmodel.startLyricUpdater()
+                    }
+                } else {
+                    viewmodel.stopLyricUpdater()
+                }
+            }
+            .task(id: viewmodel.currentlyPlayingAppleMusicPersistentID) {
+                if viewmodel.currentlyPlayingAppleMusicPersistentID != nil {
+                    print("Apple Music: calling Starter on new persistent ID")
+                    await viewmodel.appleMusicStarter()
+                }
+            }
+            .onChange(of: viewmodel.currentlyPlaying) {
+                print("song change")
+                Task {
+                    await viewmodel.onCurrentlyPlayingIDChange()
+                }
+            }
         }
         .menuBarExtraStyle(.window)
         Window("Lyric Fever: Fullscreen", id: "fullscreen") {
