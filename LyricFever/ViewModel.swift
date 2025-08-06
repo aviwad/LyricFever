@@ -22,6 +22,8 @@ import Translation
     static let shared = ViewModel()
     var currentlyPlaying: String?
     var artworkImage: NSImage?
+    var duration: Int = 0
+    var currentTime = CurrentTimeWithStoredDate(currentTime: 0)
     var formattedCurrentTime: String {
         let baseTime = currentTime.currentTime
         let delta = Date().timeIntervalSince(currentTime.storedDate)
@@ -459,10 +461,11 @@ import Translation
         print(notification.userInfo?["Track ID"] as? String)
         let currentlyPlaying = (notification.userInfo?["Track ID"] as? String)?.spotifyProcessedUrl()
         let currentlyPlayingName = (notification.userInfo?["Name"] as? String)
-        if currentlyPlaying != "", currentlyPlayingName != "" {
+        if currentlyPlaying != "", currentlyPlayingName != "", let duration = currentPlayerInstance.duration {
             self.currentlyPlaying = currentlyPlaying
             self.currentlyPlayingName = currentlyPlayingName
             self.currentlyPlayingArtist = spotifyPlayer.artistName
+            self.duration = duration
         }
     }
     
@@ -510,10 +513,11 @@ import Translation
                     currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
                 }
             case .spotify:
-                if let currentTrack = spotifyPlayer.trackID, let currentTrackName = spotifyPlayer.trackName, let currentArtistName =  spotifyPlayer.artistName, currentTrack != "", currentTrackName != "" {
+                if let currentTrack = spotifyPlayer.trackID, let currentTrackName = spotifyPlayer.trackName, let currentArtistName =  spotifyPlayer.artistName, currentTrack != "", currentTrackName != "", let duration = spotifyPlayer.duration {
                     currentlyPlaying = currentTrack
                     currentlyPlayingName = currentTrackName
                     currentlyPlayingArtist = currentArtistName
+                    self.duration = duration
                     print(currentTrack)
                 }
         }
