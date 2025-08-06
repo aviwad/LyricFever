@@ -22,7 +22,23 @@ import Translation
     static let shared = ViewModel()
     var currentlyPlaying: String?
     var artworkImage: NSImage?
+    var formattedCurrentTime: String {
+        let baseTime = currentTime.currentTime
+        let delta = Date().timeIntervalSince(currentTime.storedDate)
+        let totalSeconds = Int((baseTime + delta) / 1000)
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter.string(from: TimeInterval(totalSeconds)) ?? "0:00"
+    }
     
+    var formattedDuration: String {
+        let totalSeconds = duration / 1000
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter.string(from: TimeInterval(totalSeconds)) ?? "0:00"
+    }
     
     #if os(macOS)
     var updaterService = UpdaterService()
