@@ -305,15 +305,8 @@ import Translation
             currentlyPlayingLyricsIndex = nil
         }
         currentlyPlayingLyrics = finalLyrics
-        fetchBackgroundColor()
-        if userDefaultStorage.translate {
-            if translationSessionConfig == TranslationSession.Configuration(target: userLocaleLanguage.language) {
-                translationSessionConfig?.invalidate()
-            } else {
-                translationSessionConfig = TranslationSession.Configuration(target: userLocaleLanguage.language)
-            }
-        }
         setBackgroundColor()
+        reloadTranslationConfigIfTranslating()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         print("HELLOO")
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
