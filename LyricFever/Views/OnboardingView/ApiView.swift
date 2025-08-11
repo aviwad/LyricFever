@@ -84,7 +84,7 @@ struct ApiView: View {
                 Spacer()
                 NavigationLink(destination: FinalTruncationView(), isActive: $isShowingDetailView) {EmptyView()}
                     .hidden()
-                if let errorMessage, !isLoading {
+                if errorMessage != nil, !isLoading {
                     Text("WRONG SP DC COOKIE TRY AGAIN ⚠️")
                         .foregroundStyle(.red)
                 }
