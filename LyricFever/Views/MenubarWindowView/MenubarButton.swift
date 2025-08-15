@@ -35,7 +35,6 @@ public struct MenubarButton: View {
                 }
             }
             .animation(.bouncy, value: buttonState)
-            .foregroundStyle(.foreground)
             .frame(minWidth: 50, maxWidth: .infinity)
             .padding(.vertical, 16)
             .background(

@@ -121,6 +121,7 @@ struct MenubarWindowView: View {
                 viewmodel.displayFullscreen.toggle()
                 dismiss()
             }
+            .foregroundStyle(.white)
             MenubarButton(buttonText: "", imageText: "dock.rectangle", buttonState: displayKaraoke) {
                 viewmodel.userDefaultStorage.karaoke.toggle()
             }
@@ -377,6 +378,7 @@ struct MenubarWindowView: View {
             Divider()
             systemControlView
         }
+        .foregroundStyle(.white)
         .padding(20)
         .background(
             viewmodel.currentBackground
