@@ -13,14 +13,6 @@ class SpotifyPlayer: @MainActor Player {
     var trackID: String? {
         spotifyScript?.currentTrack?.spotifyUrl?.spotifyProcessedUrl()
     }
-    @MainActor
-    func fixSpotifyLyricDrift() async throws {
-        try await Task.sleep(nanoseconds: 2000000000)
-        if isPlaying {
-            print("LYRIC UPDATER'S LYRIC DRIFT FIX CALLED")
-            spotifyScript?.play?()
-        }
-    }
     
     var albumName: String? {
         spotifyScript?.currentTrack?.album
@@ -63,6 +55,16 @@ class SpotifyPlayer: @MainActor Player {
             return false
         }
         return true
+    }
+    
+    
+    @MainActor
+    func fixSpotifyLyricDrift() async throws {
+        try await Task.sleep(nanoseconds: 2000000000)
+        if isPlaying {
+            print("LYRIC UPDATER'S LYRIC DRIFT FIX CALLED")
+            spotifyScript?.play?()
+        }
     }
     
     func decreaseVolume() {
