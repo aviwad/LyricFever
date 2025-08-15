@@ -246,6 +246,13 @@ struct FullscreenView: View {
                     .opacity(0.85)
             }
         }
+        .opacity(index == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : (index == viewmodel.currentlyPlayingLyricsIndex ? 1 : 0.8))
+        .font(.system(size: 40, weight: .bold, design: .default))
+        .padding(20)
+        #if os(macOS)
+        .listRowSeparator(.hidden)
+        #endif
+        .blur(radius: viewmodel.userDefaultStorage.blurFullscreen ? (index == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
     }
     
     @ViewBuilder func lyrics(padding: CGFloat) -> some View {
@@ -256,15 +263,8 @@ struct FullscreenView: View {
             VStack(alignment: .leading){
                 Spacer()
                 ScrollViewReader { proxy in
-                    List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { offset, element in
-                        lyricLineView(for: element, index: offset)
-                            .opacity(offset == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : (offset == viewmodel.currentlyPlayingLyricsIndex ? 1 : 0.8))
-                            .font(.system(size: 40, weight: .bold, design: .default))
-                            .padding(20)
-                        #if os(macOS)
-                            .listRowSeparator(.hidden)
-                        #endif
-                            .blur(radius: viewmodel.userDefaultStorage.blurFullscreen ? (offset == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
+                    List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { index, element in
+                        lyricLineView(for: element, index: index)
                     }
                     .onAppear {
                         Task {
