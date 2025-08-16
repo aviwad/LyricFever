@@ -295,10 +295,11 @@ import Translation
     
     #if os(macOS)
     func refreshLyrics() async throws {
-        if userDefaultStorage.spotifyOrAppleMusic {
+        // todo: romanize
+        if currentPlayer == .appleMusic {
             try await appleMusicNetworkFetch()
         }
-        guard let currentlyPlaying, let currentlyPlayingName else {
+        guard let currentlyPlaying, let currentlyPlayingName, let currentDuration = currentPlayerInstance.durationAsTimeInterval else {
             return
         }
         
@@ -490,13 +491,8 @@ import Translation
         if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName) {
             currentlyPlayingLyrics = lyrics
             setBackgroundColor()
+            romanizeDidChange()
             reloadTranslationConfigIfTranslating()
-            if userDefaultStorage.romanize {
-                print("Romanized Lyrics generated from song change for \(currentlyPlaying)")
-                romanizedLyrics = currentlyPlayingLyrics.compactMap({
-                    RomanizerService.generateRomanizedLyric($0)
-                })
-            }
             lyricsIsEmptyPostLoad = lyrics.isEmpty
             if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
                 print("STARTING UPDATER")
@@ -782,6 +778,7 @@ import Translation
         try await currentlyPlayingLyrics = localFileUploadProvider.localFetch(for: currentlyPlaying, currentlyPlayingName)
         setBackgroundColor()
         reloadTranslationConfigIfTranslating()
+        romanizeDidChange()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()

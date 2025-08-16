@@ -38,3 +38,13 @@ protocol Player {
     // menubar behaviour
     func activate()
 }
+
+extension Player {
+    var durationAsTimeInterval: TimeInterval? {
+        if let duration {
+            return TimeInterval(duration*1000)
+        } else {
+            return nil
+        }
+    }
+}
