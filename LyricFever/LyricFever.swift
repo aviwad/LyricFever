@@ -32,6 +32,7 @@ struct LyricFever: App {
     var body: some Scene {
         MenuBarExtra {
             MenubarWindowView()
+                .preferredColorScheme(.dark)
                 .environment(viewmodel)
         } label: {
             // Text(Image) Doesn't render propertly in MenubarExtra. Stupid Apple. Must resort to if/else
