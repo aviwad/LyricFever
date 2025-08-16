@@ -18,7 +18,7 @@ class LRCLIBLyricProvider: LyricProvider {
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
     }
     
-    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String?) async throws -> [LyricLine] {
+    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String?) async throws -> NetworkFetchReturn {
         let artist = currentlyPlayingArtist?.replacingOccurrences(of: "&", with: "")
         let album = currentAlbumName?.replacingOccurrences(of: "&", with: "")
         let trackName = trackName.replacingOccurrences(of: "&", with: "")
@@ -28,8 +28,8 @@ class LRCLIBLyricProvider: LyricProvider {
             let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: request)
             print(String(describing: urlResponseAndData.0))
             let lrcLyrics = try JSONDecoder().decode(LRCLIBLyrics.self, from: urlResponseAndData.0)
-            return lrcLyrics.lyrics
+            return NetworkFetchReturn(lyrics: lrcLyrics.lyrics, colorData: nil)
         }
-        return []
+        return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
 }

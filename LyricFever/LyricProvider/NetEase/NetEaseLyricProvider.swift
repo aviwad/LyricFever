@@ -20,7 +20,7 @@ class NetEaseLyricProvider: LyricProvider {
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
     }
-    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String? ) async throws -> [LyricLine] {
+    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String? ) async throws -> NetworkFetchReturn {
         if let currentlyPlayingArtist, let currentAlbumName, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
             print("the netease search call is \(url.absoluteString)")
             let request = URLRequest(url: url)
@@ -28,7 +28,7 @@ class NetEaseLyricProvider: LyricProvider {
             let neteasesearch = try JSONDecoder().decode(NetEaseSearch.self, from: urlResponseAndData.0)
             print(neteasesearch)
             guard let neteaseResult = neteasesearch.result.songs.first, let neteaseArtist = neteaseResult.artists.first else {
-                return []
+                return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
             let neteaseId = neteaseResult.id
             let conditions = [
@@ -44,22 +44,22 @@ class NetEaseLyricProvider: LyricProvider {
             // I need at least 2 conditions to be met: track name, or album, or artist name, match 75% of the way
             if trueCount < 2 {
                 print("similarity conditions passed for NetEase: \(trueCount) is less than 2, therefore failing this NetEase search.")
-                return []
+                return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
             let lyricRequest = URLRequest(url: URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/lyric?id=\(neteaseId)")!)
             let urlResponseAndDataLyrics = try await fakeSpotifyUserAgentSession.data(for: lyricRequest)
             let neteaseLyrics = try JSONDecoder().decode(NetEaseLyrics.self, from: urlResponseAndDataLyrics.0)
             guard let neteaselrc = neteaseLyrics.lrc, let neteaseLrcString = neteaselrc.lyric else {
-                return []
+                return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
             let parser = LyricsParser(lyrics: neteaseLrcString)
             print(parser.lyrics)
             // NetEase incorrectly advertises lyrics for EVERY song when it only has the name, artist, composer at 0.0 *sigh*
             if parser.lyrics.last?.startTimeMS == 0.0 {
-                return []
+                return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
-            return parser.lyrics
+            return NetworkFetchReturn(lyrics: parser.lyrics, colorData: nil)
         }
-        return []
+        return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
 }

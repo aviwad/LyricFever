@@ -145,7 +145,7 @@ class SpotifyLyricProvider: LyricProvider {
     }
 
     @MainActor
-    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String? = nil, currentAlbumName: String? = nil ) async throws -> [LyricLine] {
+    func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String? = nil, currentAlbumName: String? = nil ) async throws -> NetworkFetchReturn {
         // Local file giveaway
         if trackID.count != 22 {
             throw SpotifyLyricError.isLocalFile
@@ -163,7 +163,7 @@ class SpotifyLyricProvider: LyricProvider {
             
             // Song lyrics don't exist on Spotify
             if urlResponseAndData.0.isEmpty {
-                return []
+                return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
 
             if String(decoding: urlResponseAndData.0, as: UTF8.self) == "too many requests" {
@@ -171,10 +171,9 @@ class SpotifyLyricProvider: LyricProvider {
             }
             let spotifyParent = try JSONDecoder().decode(SpotifyParent.self, from: urlResponseAndData.0)
             print("Successfully fetched Spotify lyric data")
-            ColorDataService.saveColorToCoreData(trackID: trackID, songColor: spotifyParent.colors.background)
-            return spotifyParent.lyrics.lyrics
+            return NetworkFetchReturn(lyrics: spotifyParent.lyrics.lyrics, colorData: Int32(spotifyParent.colors.background))
         }
-        return []
+        return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
     
     #if os(macOS)

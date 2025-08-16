@@ -6,10 +6,10 @@
 //
 @MainActor
 class ColorDataService {
-    static func saveColorToCoreData(trackID: String, songColor: Int) {
+    static func saveColorToCoreData(trackID: String, songColor: Int32) {
         let newColorMapping = IDToColor(context: ViewModel.shared.coreDataContainer.viewContext)
         newColorMapping.id = trackID
-        newColorMapping.songColor = Int32(songColor)
+        newColorMapping.songColor = songColor
         do {
             try ViewModel.shared.coreDataContainer.viewContext.save()
             print("ColorDataService: Successfully saved color \(songColor) for trackID \(trackID)")
