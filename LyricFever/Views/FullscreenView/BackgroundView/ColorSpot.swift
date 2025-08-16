@@ -77,7 +77,7 @@ private extension UnitPoint {
 
 typealias ColorSpots = [ColorSpot]
 
-extension ColorSpots: Animatable {
+extension ColorSpots: @retroactive Animatable {
     public var animatableData: ColorSpotsAnimatableData {
         get { .init(values: map { point in point.animatableData }) }
         set { self = newValue.values.map { .init($0) } }
