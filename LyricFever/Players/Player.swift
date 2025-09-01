@@ -38,6 +38,7 @@ protocol Player {
     // fullscreen album art
     @MainActor
     var artworkImage: NSImage? { get async }
+//    var artworkImageURL: URL? { get }
     
     // menubar behaviour
     func activate()
@@ -48,6 +49,16 @@ extension Player {
         if let duration {
             return TimeInterval(duration*1000)
         } else {
+            return nil
+        }
+    }
+    
+    func artwork(for artworkURL: URL) async -> NSImage? {
+        do {
+            let artwork = try await URLSession.shared.data(for: URLRequest(url: artworkURL))
+            return NSImage(data: artwork.0)
+        } catch {
+            print("\(#function) failed to download artwork \(error)")
             return nil
         }
     }

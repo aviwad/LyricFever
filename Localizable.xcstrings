@@ -11,6 +11,12 @@
         }
       }
     },
+    "..." : {
+
+    },
+    "%lld" : {
+
+    },
     "%lld Characters" : {
       "localizations" : {
         "zh-Hans" : {
@@ -68,7 +74,6 @@
       }
     },
     "Apple Music" : {
-      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -95,6 +100,7 @@
 
     },
     "Check for Lyrics Again" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -135,6 +141,7 @@
       }
     },
     "Decrease Size to %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -155,6 +162,7 @@
       }
     },
     "Delete Lyrics (wrong lyrics)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -208,6 +216,7 @@
       }
     },
     "Fullscreen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -299,6 +308,7 @@
       }
     },
     "Increase Size to %lld " : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -349,6 +359,7 @@
       }
     },
     "Karaoke Mode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -359,6 +370,7 @@
       }
     },
     "Karaoke Mode (Enable Show Lyrics)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -433,6 +445,7 @@
 
     },
     "Lyrics Found 😃" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -452,7 +465,11 @@
         }
       }
     },
+    "Menubar Size" : {
+
+    },
     "Menubar Size is %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -461,6 +478,12 @@
           }
         }
       }
+    },
+    "More options" : {
+
+    },
+    "More options, AirPlay delay enabled" : {
+
     },
     "Next" : {
       "localizations" : {
@@ -473,6 +496,7 @@
       }
     },
     "No Lyrics (Couldn't find Spotify ID) ☹️" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -483,6 +507,7 @@
       }
     },
     "No Lyrics Found ☹️" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -555,6 +580,7 @@
       }
     },
     "Open %@!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -744,6 +770,7 @@
       }
     },
     "Refresh Lyrics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -817,6 +844,7 @@
 
     },
     "Show Lyrics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -857,7 +885,6 @@
       }
     },
     "Spotify" : {
-      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -896,6 +923,9 @@
           }
         }
       }
+    },
+    "TODO" : {
+
     },
     "Translate lyrics (⌘ + T)" : {
       "localizations" : {
@@ -980,6 +1010,7 @@
       }
     },
     "Upload Local LRC File" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -998,6 +1029,9 @@
           }
         }
       }
+    },
+    "Volume" : {
+
     },
     "Welcome to Lyric Fever! 🎉" : {
       "localizations" : {

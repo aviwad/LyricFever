@@ -146,6 +146,7 @@ class SpotifyLyricProvider: LyricProvider {
 
     @MainActor
     func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String? = nil, currentAlbumName: String? = nil ) async throws -> NetworkFetchReturn {
+        try? await Task.sleep(for: .seconds(2))
         // Local file giveaway
         if trackID.count != 22 {
             throw SpotifyLyricError.isLocalFile

@@ -13,25 +13,38 @@ struct MenubarWindowView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(ViewModel.self) var viewmodel
     @Environment(\.dismiss) var dismiss
+    @State var currentHoveredItem = MenubarButtonHighlight.none
     
     @ViewBuilder
     var profilePicViewHeaderView: some View {
-        if let artworkImage = viewmodel.artworkImage {
-            Image(nsImage: artworkImage)
-                .resizable()
-                .frame(width: 112, height: 112)
-                .clipShape(.rect(cornerRadius: 12))
-                .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
-                .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
-        } else {
-            Image(systemName: "music.note.list")
-                .resizable()
-                .shadow(radius: 1)
-                .scaleEffect(0.5)
-                .background(.gray)
-                .frame(width: 112, height: 112)
-                .clipShape(.rect(cornerRadius: 12))
+        ZStack {
+            if let artworkImage = viewmodel.artworkImage {
+                Image(nsImage: artworkImage)
+                    .resizable()
+                    .frame(width: 112, height: 112)
+                    .clipShape(.rect(cornerRadius: 9))
+                    .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
+                    .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
+            } else {
+                Image(systemName: "music.note.list")
+                    .resizable()
+                    .shadow(radius: 1)
+                    .scaleEffect(0.5)
+                    .background(.gray)
+                    .frame(width: 112, height: 112)
+                    .clipShape(.rect(cornerRadius: 9))
+            }
+            
+            if viewmodel.isFetching {
+                Rectangle()
+                    .fill(Color.black.opacity(0.5))
+                    .clipShape(.rect(cornerRadius: 9))
+                
+                ProgressView()
+            }
         }
+        .frame(width: 112, height: 112)
+        .animation(.smooth, value: viewmodel.isFetching)
     }
     
     @ViewBuilder
@@ -55,13 +68,22 @@ struct MenubarWindowView: View {
             SongControlButton(systemImage: "backward.fill") {
                 viewmodel.currentPlayerInstance.rewind()
             }
+            .onHover { isHovering in
+                currentHoveredItem = isHovering ? .rewind : .none
+            }
             SongControlButton(systemImage: viewmodel.isPlaying ? "pause.fill" : "play.fill", wiggle: false) {
                 viewmodel.currentPlayerInstance.togglePlayback()
+            }
+            .onHover { isHovering in
+                currentHoveredItem = isHovering ? (viewmodel.isPlaying ? .pause : .play) : .none
             }
             .contentTransition(.symbolEffect(.replace, options: .speed(2)))
             
             SongControlButton(systemImage: "forward.fill") {
                 viewmodel.currentPlayerInstance.forward()
+            }
+            .onHover { isHovering in
+                currentHoveredItem = isHovering ? .forward : .none
             }
         }
         .frame(height: 30)
@@ -72,6 +94,9 @@ struct MenubarWindowView: View {
     var headerView: some View {
         HStack(spacing: 12) {
             profilePicViewHeaderView
+                .onHover { isHovering in
+                    currentHoveredItem = isHovering ? .activateMusicPlayer : .none
+                }
                 .onTapGesture {
                     viewmodel.currentPlayerInstance.activate()
                     dismiss()
@@ -80,14 +105,19 @@ struct MenubarWindowView: View {
                 HStack {
                     songDetails
                     LikeButton()
+                        .onHover { isHovering in
+                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .heart : .unheart) : .none
+                        }
                 }
                 songControls
                 
-                ProgressView(value: viewmodel.currentTime.currentTime, total: Double(viewmodel.duration))
-                    .frame(height: 6)
+                ProgressView(value: viewmodel.currentTime.adjustedCurrentTime(for: Date()), total: Double(viewmodel.duration))
+                    .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
+                    .frame(height: 4)
                     .padding(.horizontal, 4)
+                
                 HStack {
-                    Text(viewmodel.formattedCurrentTime)
+                    Text(viewmodel.formattedCurrentTime(for: Date()))
                         .font(.caption2)
                     Spacer()
                     Text(viewmodel.formattedDuration)
@@ -96,6 +126,8 @@ struct MenubarWindowView: View {
                 .padding(.horizontal, 4)
             }
         }
+        // even out vertical padding with divider as compared to Menubar button
+        .padding(.bottom, 2)
     }
     
     var displayLyrics: ButtonState {
@@ -117,14 +149,23 @@ struct MenubarWindowView: View {
             MenubarButton(buttonText: "", imageText: "music.note.list", buttonState: displayLyrics) {
                 viewmodel.showLyrics.toggle()
             }
+            .onHover { isHovering in
+                currentHoveredItem = isHovering ? (displayLyrics == .enabled ? .disableLyrics : .enableLyrics) : .none
+            }
             MenubarButton(buttonText: "", imageText: "arrow.up.left.and.arrow.down.right", buttonState: displayFullscreen) {
                 viewmodel.displayFullscreen.toggle()
                 dismiss()
             }
-            .foregroundStyle(.white)
+            .onHover { isHovering in
+                currentHoveredItem = isHovering ? .enableFullscreen : .none
+            }
+//            .foregroundStyle(.white)
             MenubarButton(buttonText: "", imageText: "dock.rectangle", buttonState: displayKaraoke) {
                 viewmodel.userDefaultStorage.karaoke.toggle()
             }
+//            .onHover { isHovering in
+//                currentHoveredItem = isHovering ? () : .none
+//            }
 //            if viewmodel.currentlyPlayingLyrics.isEmpty {
 //                sampleButton(buttonText: "lol", imageText: "arrow.up.document") {
 //                    
@@ -176,16 +217,7 @@ struct MenubarWindowView: View {
 //        .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
 //        .keyboardShortcut("h")
     }
-    
-    @ViewBuilder
-    var searchButton: some View {
-        Button {
-            
-        } label: {
-            Image(systemName: "magnifyingglass")
-        }
-    }
-    
+
     @ViewBuilder
     var translationAndRomanizationView: some View {
         @Bindable var viewmodel = viewmodel
@@ -221,22 +253,47 @@ struct MenubarWindowView: View {
     }
     
     var displayKaraoke: ButtonState {
-        if !viewmodel.userDefaultStorage.hasOnboarded {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
             return .disabled
-        } else if !viewmodel.showLyrics {
+        }
+        guard viewmodel.showLyrics else {
             return .disabled
-        } else if viewmodel.lyricsIsEmptyPostLoad {
+        }
+        guard !viewmodel.lyricsIsEmptyPostLoad else {
             return .disabled
-        } else if !viewmodel.userDefaultStorage.karaoke {
-            return .clickable
-        } else {
+        }
+        if viewmodel.userDefaultStorage.karaoke {
             return .enabled
+        } else {
+            return .clickable
         }
     }
     
     var refreshState: ButtonState {
         if viewmodel.isFetching {
+            return .loading
+        } else {
+            return .clickable
+        }
+    }
+    
+    var translationState: ButtonState {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
             return .disabled
+        }
+        guard !viewmodel.lyricsIsEmptyPostLoad else {
+            return .disabled
+        }
+        if viewmodel.userDefaultStorage.romanize {
+            return .enabled
+        } else if viewmodel.userDefaultStorage.translate {
+            if viewmodel.translationExists {
+                return .enabled
+            } else if viewmodel.isFetchingTranslation {
+                return .loading
+            } else {
+                return .missing
+            }
         } else {
             return .clickable
         }
@@ -246,26 +303,33 @@ struct MenubarWindowView: View {
     var viewSelector: some View {
         @Bindable var viewmodel = viewmodel
         HStack {
-            ZStack {
-                MenubarButton(buttonText: "", imageText: "arrow.clockwise", buttonState: refreshState) {
-                    Task {
-                        do {
-                            try await viewmodel.refreshLyrics()
-                        } catch {
-                            print("Couldn't refresh lyrics: error \(String(describing: error))")
-                        }
+            SmallMenubarButton(buttonText: "", imageText: "arrow.clockwise", buttonState: refreshState) {
+                Task {
+                    do {
+                        try await viewmodel.refreshLyrics()
+                    } catch {
+                        print("Couldn't refresh lyrics: error \(String(describing: error))")
                     }
                 }
-                if viewmodel.isFetching {
-                    ProgressView()
-                    .controlSize(.small)
-                    .padding(.vertical, 16)
-                }
             }
-            MenubarButton(buttonText: "", imageText: "magnifyingglass", buttonState: .clickable) {
+            SmallMenubarButton(buttonText: "", imageText: "magnifyingglass", buttonState: .clickable) {
                 
             }
-            MenubarButton(buttonText: "", imageText: viewmodel.lyricsIsEmptyPostLoad ? "arrow.up.document" : "trash", buttonState: .clickable) {
+            Menu {
+                translationAndRomanizationView
+            } label: {
+                HStack(spacing: 6) {
+                    Text("...")
+                    if viewmodel.airplayDelay {
+                        Image(systemName: "airplayaudio")
+                            .imageScale(.medium)
+                    }
+                }
+                .accessibilityLabel(viewmodel.airplayDelay ? Text("More options, AirPlay delay enabled") : Text("More options"))
+            }
+            .disabled(translationState == .disabled)
+            .buttonStyle(SmallMenubarButtonStyle(imageText: "translate", buttonState: translationState))
+            SmallMenubarButton(buttonText: "", imageText: viewmodel.lyricsIsEmptyPostLoad ? "arrow.up.document" : "trash", buttonState: .clickable) {
                 if viewmodel.lyricsIsEmptyPostLoad {
                 } else {
                     guard let currentlyPlaying = viewmodel.currentlyPlaying else { return }
@@ -302,58 +366,90 @@ struct MenubarWindowView: View {
     }
     
     @ViewBuilder
-    var systemControlView: some View {
+    var otherOptions: some View {
         @Bindable var viewmodel = viewmodel
+        Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
+        Divider()
+        streamingDelayView
+        Button("Settings (New Karaoke Settings!)") {
+            openWindow(id: "onboarding")
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            // send notification to check auth
+            NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
+        }.keyboardShortcut("s")
+        LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
+        .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
+        .keyboardShortcut("l")
+        Button("Check for Updates…") {
+            viewmodel.updaterService.updaterController.checkForUpdates(nil)
+        }
+        //    .disabled(!viewmodel.canCheckForUpdates)
+            .keyboardShortcut("u")
+    }
+    
+    @ViewBuilder
+    var systemControlView: some View {
         HStack {
             Menu {
-                Divider()
-                Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
-                Divider()
-                streamingDelayView
-                Button("Settings (New Karaoke Settings!)") {
-                    openWindow(id: "onboarding")
-                    NSApplication.shared.activate(ignoringOtherApps: true)
-                    // send notification to check auth
-                    NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
-                }.keyboardShortcut("s")
-                LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
-                .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
-                .keyboardShortcut("l")
-                Button("Check for Updates…") {
-                    viewmodel.updaterService.updaterController.checkForUpdates(nil)
-                }
-                //    .disabled(!viewmodel.canCheckForUpdates)
-                    .keyboardShortcut("u")
+                otherOptions
+                    .foregroundStyle(viewmodel.currentBackground ?? .primary)
             } label: {
-                Image(systemName: "ellipsis")
+//                HStack(spacing: 6) {
+                    Text("...")
+//                    .font(.caption)
+//                }
+//                .accessibilityLabel(viewmodel.airplayDelay ? Text("More options, AirPlay delay enabled") : Text("More options"))
             }
-            .buttonStyle(.bordered)
+//            .buttonStyle(.bordered)
             .menuIndicator(.hidden)
+            if viewmodel.airplayDelay {
+                Image(systemName: "airplayaudio")
+                    .opacity(0.8)
+            }
+            if viewmodel.spotifyConnectDelay {
+                Image(systemName: "tortoise")
+                    .opacity(0.8)
+            }
+            Spacer()
+            Text(currentHoveredItem.description)
+                .textCase(.uppercase)
+                .font(.system(size: 12, weight: .light, design: .monospaced))
             Spacer()
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }
         }
+        .padding(.top, 8)
+    }
+    
+    var menubarSizeSliderBinding: Binding<Double> {
+        Binding (
+            get: { Double(viewmodel.userDefaultStorage.truncationLength) },
+            set: { newValue in
+                let steps = [30, 40, 50, 60]
+                let closest = steps.min(by: { abs(Double($0) - newValue) < abs(Double($1) - newValue) }) ?? 40
+                viewmodel.userDefaultStorage.truncationLength = closest
+            }
+        )
     }
     
     @ViewBuilder
-    var menubarSizePicker: some View {
+    var menubarSizeSlider: some View {
         @Bindable var viewmodel = viewmodel
         HStack {
             Image(systemName: "textformat.size")
-            Slider(value: .init(
-                get: { Double(viewmodel.userDefaultStorage.truncationLength) },
-                set: { newValue in
-                    let steps = [30, 40, 50, 60]
-                    let closest = steps.min(by: { abs(Double($0) - newValue) < abs(Double($1) - newValue) }) ?? 40
-                    viewmodel.userDefaultStorage.truncationLength = closest
-                }
-            ), in: 30...60, step: 10, label: {
+                .frame(width: 30)
+            Slider(value: menubarSizeSliderBinding, in: 30...60, step: 10, label: {
                 Text("Menubar Size")
             })
             .labelsHidden()
             .frame(width: 160)
             Text("\(viewmodel.userDefaultStorage.truncationLength)")
+                .frame(width: 23)
+        }
+        .tint(viewmodel.currentBackground)
+    }
+    
     var volumeBinding: Binding<Double> {
         Binding(
             get: { Double(viewmodel.currentVolume) },
@@ -387,17 +483,13 @@ struct MenubarWindowView: View {
     var body: some View {
         VStack {
             headerView
-                .animation(.smooth, value: viewmodel.artworkImage)
+//                .animation(.smooth, value: viewmodel.artworkImage)
             Divider()
             lyricModifierView
             Divider()
             viewSelector
             Divider()
-            searchButton
-            Divider()
-            translationAndRomanizationView
-            Divider()
-            menubarSizePicker
+            menubarSizeSlider
             volumeSlider
             if viewmodel.spotifyConnectDelay {
                 Divider()
@@ -406,12 +498,13 @@ struct MenubarWindowView: View {
             Divider()
             systemControlView
         }
+        .preferredColorScheme(.dark)
         .foregroundStyle(.white)
-        .padding(20)
+        .padding(14)
         .background(
             viewmodel.currentBackground
-                .brightness(-0.3)
-                .opacity(0.5)
+                .brightness(-0.4)
+                .opacity(0.6)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
         .onAppear {

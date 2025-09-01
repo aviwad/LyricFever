@@ -25,12 +25,17 @@ import Translation
     var currentVolume: Int = 0
     
     var artworkImage: NSImage?
+    var currentArtworkURL: URL?
+
     var duration: Int = 0
     var currentTime = CurrentTimeWithStoredDate(currentTime: 0)
-    var formattedCurrentTime: String {
+    
+    func formattedCurrentTime(for date: Date) -> String {
         let baseTime = currentTime.currentTime
-        let delta = Date().timeIntervalSince(currentTime.storedDate)
+        let delta = date.timeIntervalSince(currentTime.storedDate)
+        print("Formatted Current Time: delta is \(delta)")
         let totalSeconds = Int((baseTime + delta) / 1000)
+        print("total seconds should be \(totalSeconds)")
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = [.pad]
@@ -132,6 +137,7 @@ import Translation
     var spotifyConnectDelay: Bool = false
     var airplayDelay: Bool = false
     #endif
+    var isFetchingTranslation = false
     var translationExists: Bool { !translatedLyric.isEmpty}
     
     // CoreData container (for saved lyrics)
@@ -139,6 +145,8 @@ import Translation
     
     // Logging / Analytics
     let amplitude = Amplitude(configuration: .init(apiKey: amplitudeKey))
+    
+    var isHearted = false
     
     // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
@@ -285,9 +293,13 @@ import Translation
         }
         for networkLyricProvider in allNetworkLyricProviders {
             do {
+                print("FetchAllNetworkLyrics: fetching from \(networkLyricProvider.providerName)")
                 let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: currentlyPlaying, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
                 if !lyrics.lyrics.isEmpty {
+                    print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
                     return lyrics
+                } else {
+                    print("FetchAllNetworkLyrics: no lyrics from \(networkLyricProvider.providerName)")
                 }
             } catch {
                 print("Caught exception on \(networkLyricProvider.providerName): \(error)")
@@ -305,7 +317,7 @@ import Translation
         guard let currentlyPlaying, let currentlyPlayingName, let currentDuration = currentPlayerInstance.durationAsTimeInterval else {
             return
         }
-        
+        print("Calling refresh lyrics")
         let finalLyrics = await fetchAllNetworkLyrics()
         if finalLyrics.lyrics.isEmpty {
             currentlyPlayingLyricsIndex = nil
@@ -401,18 +413,24 @@ import Translation
     
     @MainActor
     func translationTask(_ session: TranslationSession) async {
+        isFetchingTranslation = true
         let translationResponse = await TranslationService.translationTask(session, request: currentlyPlayingLyrics.map { TranslationSession.Request(lyric: $0) })
         
         switch translationResponse {
             case .success(let array):
+                print("Translation Service: isFetchingTranslation set to false due to success")
+                isFetchingTranslation = false
                 if currentlyPlayingLyrics.count == array.count {
                     translatedLyric = array.map {
                         $0.targetText
                     }
                 }
             case .needsConfigUpdate(let language):
+                try? await Task.sleep(for: .seconds(1))
                 translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage.language)
             case .failure:
+                print("Translation Service: isFetchingTranslation set to false due to failure")
+                isFetchingTranslation = false
                 return
         }
     }
@@ -525,6 +543,7 @@ import Translation
                     currentlyPlayingName = currentTrackName
                     currentlyPlayingArtist = currentArtistName
                     self.duration = duration
+                    self.currentTime = CurrentTimeWithStoredDate(currentTime: 0)
                     print(currentTrack)
                 }
         }
@@ -709,11 +728,12 @@ import Translation
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
             return lyrics
+        } else {
+            print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
+            let networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
+            callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
+            return networkLyrics.lyrics
         }
-        print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
-        let networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
-        callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
-        return networkLyrics.lyrics
     }
 
     func deleteLyric(trackID: String) {
