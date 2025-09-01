@@ -37,7 +37,7 @@ class UserDefaultStorage {
     var cookie: String = ""
     
     #if os(macOS)
-    // True: means Apple Music, False: Spotify
+    // False: Spotify, True: Apple Music
     var spotifyOrAppleMusic: Bool = false
     var latestUpdateWindowShown: Int = 0
     #endif
