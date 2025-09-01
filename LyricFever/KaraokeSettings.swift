@@ -55,6 +55,7 @@ struct KaraokeSettingsView: View {
 //                .bold()
                 .font(.system(size: 15, weight: .bold))
             FontPicker("Select a Font:", selection: $viewmodel.karaokeFont)
+                .frame(height: 50)
             Text("Font Selected: \(viewmodel.karaokeFont.displayName ?? ""), Size: \(Int(viewmodel.karaokeFont.pointSize))")
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 13))
             
