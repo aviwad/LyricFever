@@ -32,6 +32,7 @@ struct LyricFever: App {
     var body: some Scene {
         MenuBarExtra {
             MenubarWindowView()
+                .environment(\.colorScheme, .dark)
                 .preferredColorScheme(.dark)
                 .environment(viewmodel)
         } label: {
@@ -64,6 +65,7 @@ struct LyricFever: App {
                     NSApplication.shared.activate(ignoringOtherApps: true)
                     openWindow(id: "onboarding")
                 } else {
+                    // TODO: make refreshLyrics use the same Task<> that fetch(_) uses
                     do {
                         try await viewmodel.refreshLyrics()
                     } catch {
