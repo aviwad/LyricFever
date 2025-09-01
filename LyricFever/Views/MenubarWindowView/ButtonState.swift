@@ -11,15 +11,17 @@ import SwiftUI
 enum ButtonState {
     case enabled
     case disabled
+    case loading
     case clickable
+    case missing
     
     var fillStyle: AnyShapeStyle {
         switch self {
             case .enabled:
-                return AnyShapeStyle(ViewModel.shared.currentAlbumArt)
+                return AnyShapeStyle(ViewModel.shared.currentAlbumArt.opacity(0.8))
             case .disabled:
                 return AnyShapeStyle(.thickMaterial)
-            case .clickable:
+            case .clickable, .loading, .missing:
                 return AnyShapeStyle(.thickMaterial)
         }
     }
