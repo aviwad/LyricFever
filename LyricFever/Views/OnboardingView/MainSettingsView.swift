@@ -32,7 +32,7 @@ enum MainSettingsError: Error, Identifiable, CaseIterable {
         case .missingAuthorization:
             return "Please give required permissions!"
         case .authorized:
-            return ""
+            return " "
         }
     }
 }
@@ -41,6 +41,7 @@ struct MainSettingsView: View {
     @Environment(ViewModel.self) var viewModel
     @State var permissionDenied: Bool = false
     @State var error: MainSettingsError = .openSpotify
+    @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
     
     @ViewBuilder
     var permissionDeniedView: some View {
@@ -68,7 +69,45 @@ struct MainSettingsView: View {
             .font(.title)
     }
     
+    @ViewBuilder
+    var permissionsOrNextButton: some View {
+        if error == .authorized {
+            NavigationLink("Next", destination: ApiView())
+                .font(.headline)
+                .controlSize(.large)
+                .buttonStyle(.borderedProminent)
+        } else {
+            HStack {
+                Button("Give Spotify Permissions") {
+                    if !viewModel.spotifyPlayer.isRunning {
+                        print("Spotify not running")
+                        error = .openSpotify
+                    } else if !viewModel.spotifyPlayer.isAuthorized {
+                        error = .openSpotify
+                        permissionDenied = true
+                    } else {
+                        error = .authorized
+                    }
+                }
+                .disabled(viewModel.currentPlayer == .appleMusic)
+                
+                Button("Give Apple Music Permissions") {
+                    if !viewModel.appleMusicPlayer.isRunning {
+                        error = .openAppleMusic
+                    } else if !viewModel.appleMusicPlayer.isAuthorized {
+                        error = .openAppleMusic
+                        permissionDenied = true
+                    } else {
+                        error = .authorized
+                    }
+                }
+                .disabled(viewModel.currentPlayer == .spotify)
+            }
+        }
+    }
+    
     var body: some View {
+        @Bindable var viewmodel = viewModel
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
                 Group {
@@ -79,18 +118,21 @@ struct MainSettingsView: View {
                     }
                 }
                 .transition(.fade)
-                        
-                @Bindable var viewModel = viewModel
-                Picker("", selection: $viewModel.currentPlayer) {
-                    ForEach(PlayerType.allCases) { player in
-                        VStack {
-                            Image(player.imageName)
-                                .resizable()
-                                .frame(width: 70.0, height: 70.0)
-                            Text(player.description)
-                        }
-                        .tag(player)
-                    }
+                
+                Picker("", selection: $spotifyOrAppleMusic) {
+                    let _ = print("Binding \(spotifyOrAppleMusic)")
+                    VStack {
+                        Image("spotify")
+                            .resizable()
+                            .frame(width: 70.0, height: 70.0)
+                        Text("Spotify")
+                    }.tag(false)
+                    VStack {
+                        Image("music")
+                            .resizable()
+                            .frame(width: 70.0, height: 70.0)
+                        Text("Apple Music")
+                    }.tag(true)
                 }
                 .font(.title2)
                 .frame(width: 500)
@@ -100,39 +142,8 @@ struct MainSettingsView: View {
                 Text(error.description)
                     .transition(.opacity)
                             
-                if error == .authorized {
-                    NavigationLink("Next", destination: ApiView())
-                        .font(.headline)
-                        .controlSize(.large)
-                        .buttonStyle(.borderedProminent)
-                } else {
-                    HStack {
-                        Button("Give Spotify Permissions") {
-                            if !viewModel.spotifyPlayer.isRunning {
-                                print("Spotify not running")
-                                error = .openSpotify
-                            } else if !viewModel.spotifyPlayer.isAuthorized {
-                                error = .openSpotify
-                                permissionDenied = true
-                            } else {
-                                error = .authorized
-                            }
-                        }
-                        .disabled(viewModel.currentPlayer == .appleMusic)
-                        
-                        Button("Give Apple Music Permissions") {
-                            if !viewModel.appleMusicPlayer.isRunning {
-                                error = .openAppleMusic
-                            } else if !viewModel.appleMusicPlayer.isAuthorized {
-                                error = .openAppleMusic
-                                permissionDenied = true
-                            } else {
-                                error = .authorized
-                            }
-                        }
-                        .disabled(viewModel.currentPlayer == .spotify)
-                    }
-                }
+                permissionsOrNextButton
+                    .frame(height: 50)
                 
                 Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2")
                     .multilineTextAlignment(.center)
