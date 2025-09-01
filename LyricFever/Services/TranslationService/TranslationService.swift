@@ -21,7 +21,7 @@ class TranslationService {
         } catch {
             print("Translation Service, couldn't generate response")
             if let source = findRealLanguage(for: request) {
-                print("Translation Service: Real Language Found: \(source.languageCode)")
+                print("Translation Service: Real Language Found: \(String(describing: source.languageCode))")
                 return .needsConfigUpdate(source)
             } else {
                 print("Translation Service: Unexpected Error Translating: \(error)")
