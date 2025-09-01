@@ -61,6 +61,10 @@ class AppleMusicPlayer: Player {
         }
     }
     
+    var volume: Int {
+        appleMusicScript?.soundVolume ?? 0
+    }
+    
     func decreaseVolume() {
         guard let soundVolume = appleMusicScript?.soundVolume else {
             return
@@ -72,6 +76,9 @@ class AppleMusicPlayer: Player {
             return
         }
         appleMusicScript?.setSoundVolume?(soundVolume+5)
+    }
+    func setVolume(to newVolume: Double) {
+        appleMusicScript?.setSoundVolume?(Int(newVolume))
     }
     func togglePlayback() {
         appleMusicScript?.playpause?()

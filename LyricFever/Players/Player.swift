@@ -24,9 +24,13 @@ protocol Player {
     var isPlaying: Bool { get }
     var isRunning: Bool { get }
     
+    // additional menubar functions
+    var volume: Int { get }
+    
     // fullscreen functions
     func decreaseVolume()
     func increaseVolume()
+    func setVolume(to newVolume: Double)
     func togglePlayback()
     func rewind()
     func forward()

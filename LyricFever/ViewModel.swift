@@ -21,6 +21,9 @@ import Translation
 @Observable class ViewModel {
     static let shared = ViewModel()
     var currentlyPlaying: String?
+    
+    var currentVolume: Int = 0
+    
     var artworkImage: NSImage?
     var duration: Int = 0
     var currentTime = CurrentTimeWithStoredDate(currentTime: 0)

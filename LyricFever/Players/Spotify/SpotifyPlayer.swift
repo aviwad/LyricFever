@@ -67,6 +67,10 @@ class SpotifyPlayer: @MainActor Player {
         }
     }
     
+    var volume: Int {
+        spotifyScript?.soundVolume ?? 0
+    }
+    
     func decreaseVolume() {
         guard let soundVolume = spotifyScript?.soundVolume else {
             return
@@ -78,6 +82,9 @@ class SpotifyPlayer: @MainActor Player {
             return
         }
         spotifyScript?.setSoundVolume?(soundVolume+5)
+    }
+    func setVolume(to newVolume: Double) {
+        spotifyScript?.setSoundVolume?(Int(newVolume))
     }
     func togglePlayback() {
         spotifyScript?.playpause?()

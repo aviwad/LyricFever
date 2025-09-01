@@ -354,7 +354,34 @@ struct MenubarWindowView: View {
             .labelsHidden()
             .frame(width: 160)
             Text("\(viewmodel.userDefaultStorage.truncationLength)")
+    var volumeBinding: Binding<Double> {
+        Binding(
+            get: { Double(viewmodel.currentVolume) },
+            set: { newValue in
+                viewmodel.currentPlayerInstance.setVolume(to: newValue)
+                viewmodel.currentVolume = Int(newValue)
+            }
+        )
+    }
+    
+    @ViewBuilder
+    var volumeSlider: some View {
+        @Bindable var viewmodel = viewmodel
+        HStack {
+            Image(systemName: "speaker.wave.3")
+                .frame(width: 30)
+            Slider(value: volumeBinding, in: 0...100) {
+                Text("Volume")
+            } ticks: {
+                
+            }
+            
+            .labelsHidden()
+            .frame(width: 160)
+            Text("\(viewmodel.currentVolume)")
+                .frame(width: 23)
         }
+        .tint(viewmodel.currentBackground)
     }
     
     var body: some View {
@@ -371,6 +398,7 @@ struct MenubarWindowView: View {
             translationAndRomanizationView
             Divider()
             menubarSizePicker
+            volumeSlider
             if viewmodel.spotifyConnectDelay {
                 Divider()
                 spotifyConnectDelayPicker
@@ -386,6 +414,9 @@ struct MenubarWindowView: View {
                 .opacity(0.5)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
+        .onAppear {
+            viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+        }
     }
 }
 
