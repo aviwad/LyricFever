@@ -39,11 +39,15 @@ struct KaraokeView: View {
         }
     }
     
+    func originalAndTranslationAreDifferent(for currentlyPlayingLyricsIndex: Int) -> Bool {
+        viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words != viewmodel.translatedLyric[currentlyPlayingLyricsIndex]
+    }
+    
     @ViewBuilder
     func lyricsView() -> some View {
         if let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             if viewmodel.translationExists {
-                if viewmodel.userDefaultStorage.karaokeShowMultilingual {
+                if viewmodel.userDefaultStorage.karaokeShowMultilingual, originalAndTranslationAreDifferent(for: currentlyPlayingLyricsIndex) {
                     multilingualView(currentlyPlayingLyricsIndex)
                         .compositingGroup()
                 }
