@@ -152,9 +152,9 @@ struct MainSettingsView: View {
             }
             .animation(.bouncy, value: permissionDenied)
             .animation(.bouncy, value: error)
-            .onChange(of: viewModel.currentPlayer) { newValue in
+            .onChange(of: viewModel.currentPlayer) {
                 print("Updating permission booleans based on media player change")
-                switch newValue {
+                switch viewModel.currentPlayer {
                 case .appleMusic:
                         error = .openAppleMusic
                 case .spotify:
