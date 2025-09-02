@@ -144,7 +144,7 @@ struct MainSettingsView: View {
                 permissionsOrNextButton
                     .frame(height: 50)
                 
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2")
+                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0")
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)
