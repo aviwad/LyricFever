@@ -94,7 +94,7 @@ struct MenubarWindowView: View {
         HStack(spacing: 12) {
             profilePicViewHeaderView
                 .onHover { isHovering in
-                    currentHoveredItem = isHovering ? .activateMusicPlayer : .none
+                    currentHoveredItem = isHovering ? viewmodel.currentPlayerInstance.currentHoverItem : .none
                 }
                 .onTapGesture {
                     viewmodel.currentPlayerInstance.activate()
@@ -105,7 +105,7 @@ struct MenubarWindowView: View {
                     songDetails
                     LikeButton()
                         .onHover { isHovering in
-                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .heart : .unheart) : .none
+                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .unheart : .heart) : .none
                         }
                 }
                 songControls
@@ -149,7 +149,20 @@ struct MenubarWindowView: View {
                 viewmodel.showLyrics.toggle()
             }
             .onHover { isHovering in
-                currentHoveredItem = isHovering ? (displayLyrics == .enabled ? .disableLyrics : .enableLyrics) : .none
+                if isHovering {
+                    switch displayLyrics {
+                        case .enabled:
+                            currentHoveredItem = .disableLyrics
+                        case .disabled:
+                            currentHoveredItem = .unavailableLyrics
+                        case .clickable:
+                            currentHoveredItem = .enableLyrics
+                        default:
+                            currentHoveredItem = .none
+                    }
+                } else {
+                    currentHoveredItem = .none
+                }
             }
             MenubarButton(buttonText: "", imageText: "arrow.up.left.and.arrow.down.right", buttonState: displayFullscreen) {
                 viewmodel.displayFullscreen.toggle()
@@ -162,9 +175,22 @@ struct MenubarWindowView: View {
             MenubarButton(buttonText: "", imageText: "dock.rectangle", buttonState: displayKaraoke) {
                 viewmodel.userDefaultStorage.karaoke.toggle()
             }
-//            .onHover { isHovering in
-//                currentHoveredItem = isHovering ? () : .none
-//            }
+            .onHover { isHovering in
+                if isHovering {
+                    switch displayKaraoke {
+                        case .enabled:
+                            currentHoveredItem = .disableKaraoke
+                        case .disabled:
+                            currentHoveredItem = .unavailableKaraoke
+                        case .clickable:
+                            currentHoveredItem = .enableKaraoke
+                        default:
+                            currentHoveredItem = .none
+                    }
+                } else {
+                    currentHoveredItem = .none
+                }
+            }
 //            if viewmodel.currentlyPlayingLyrics.isEmpty {
 //                sampleButton(buttonText: "lol", imageText: "arrow.up.document") {
 //                    
@@ -269,6 +295,9 @@ struct MenubarWindowView: View {
     }
     
     var refreshState: ButtonState {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
+            return .disabled
+        }
         if viewmodel.isFetching {
             return .loading
         } else {
@@ -298,6 +327,13 @@ struct MenubarWindowView: View {
         }
     }
     
+    var searchState: ButtonState {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
+            return .disabled
+        }
+        return .clickable
+    }
+    
     @ViewBuilder
     var viewSelector: some View {
         @Bindable var viewmodel = viewmodel
@@ -311,8 +347,26 @@ struct MenubarWindowView: View {
                     }
                 }
             }
-            SmallMenubarButton(buttonText: "", imageText: "magnifyingglass", buttonState: .clickable) {
-                
+            .disabled(refreshState == .loading)
+            .onHover { isHovering in
+                if isHovering {
+                    switch refreshState {
+                        case .loading:
+                            currentHoveredItem = .refreshingLyrics
+                        case .disabled:
+                            currentHoveredItem = .none
+                        case .clickable:
+                            currentHoveredItem = .refreshLyrics
+                        default:
+                            currentHoveredItem = .none
+                    }
+                } else {
+                    currentHoveredItem = .none
+                }
+            }
+            SmallMenubarButton(buttonText: "", imageText: "magnifyingglass", buttonState: searchState) {
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                openWindow(id: "search")
             }
             Menu {
                 translationAndRomanizationView
@@ -328,11 +382,40 @@ struct MenubarWindowView: View {
             }
             .disabled(translationState == .disabled)
             .buttonStyle(SmallMenubarButtonStyle(imageText: "translate", buttonState: translationState))
+            .onHover { isHovering in
+                if isHovering {
+                    switch translationState {
+                        case .enabled:
+                            currentHoveredItem = .translateEnabled
+                        case .disabled:
+                            currentHoveredItem = .none
+                        case .loading:
+                            currentHoveredItem = .translationLoading
+                        case .clickable:
+                            currentHoveredItem = .translate
+                        case .missing:
+                            currentHoveredItem = .translationFail
+                    }
+                } else {
+                    currentHoveredItem = .none
+                }
+            }
             SmallMenubarButton(buttonText: "", imageText: viewmodel.lyricsIsEmptyPostLoad ? "arrow.up.document" : "trash", buttonState: .clickable) {
                 if viewmodel.lyricsIsEmptyPostLoad {
                 } else {
                     guard let currentlyPlaying = viewmodel.currentlyPlaying else { return }
                     viewmodel.deleteLyric(trackID: currentlyPlaying)
+                }
+            }
+            .onHover { isHovering in
+                if isHovering {
+                    if viewmodel.lyricsIsEmptyPostLoad {
+                        currentHoveredItem = .upload
+                    } else {
+                        currentHoveredItem = .delete
+                    }
+                } else {
+                    currentHoveredItem = .none
                 }
             }
             .contentTransition(.symbolEffect(.replace))
@@ -471,7 +554,6 @@ struct MenubarWindowView: View {
                 } ticks: {
                     
                 }
-                
                 .labelsHidden()
                 .frame(width: 160)
             } else {

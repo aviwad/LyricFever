@@ -105,4 +105,5 @@ class AppleMusicPlayer: Player {
     func activate() {
         appleMusicScript?.activate()
     }
+    var currentHoverItem: MenubarButtonHighlight = .activateAppleMusic
 }

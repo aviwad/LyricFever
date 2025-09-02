@@ -115,4 +115,5 @@ class SpotifyPlayer: @MainActor Player {
     func activate() {
         spotifyScript?.activate()
     }
+    var currentHoverItem: MenubarButtonHighlight = .activateSpotify
 }
