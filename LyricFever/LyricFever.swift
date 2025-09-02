@@ -40,6 +40,10 @@ struct LyricFever: App {
             MenubarLabelView()
                 .environment(viewmodel)
             .task(id: viewmodel.currentlyPlaying) {
+                if viewmodel.currentlyPlaying == nil {
+                    print("Incorrect task fired. Ignored on nil currentlyPlaying value")
+                    return
+                }
                 do {
                     print("Fetching new artwork image for currentlyPlaying change")
                     if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
