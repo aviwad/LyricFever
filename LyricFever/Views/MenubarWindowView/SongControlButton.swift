@@ -20,6 +20,6 @@ struct SongControlButton: View {
         } label: {
             Image(systemName: systemImage)
         }
-        .symbolEffect(.wiggle, value: wiggle ? toggled : false)
+        .symbolEffect(.bounce.down.byLayer, value: wiggle ? toggled : false)
     }
 }
