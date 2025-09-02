@@ -6,7 +6,8 @@
 //
 
 enum MenubarButtonHighlight: CustomStringConvertible {
-    case activateMusicPlayer
+    case activateSpotify
+    case activateAppleMusic
     case rewind
     case play
     case pause
@@ -25,6 +26,8 @@ enum MenubarButtonHighlight: CustomStringConvertible {
     case search
     case translate
     case translateEnabled
+    case translationFail
+    case translationLoading
     case upload
     case delete
     case quit
@@ -34,8 +37,10 @@ enum MenubarButtonHighlight: CustomStringConvertible {
     
     var description: String {
         switch self {
-            case .activateMusicPlayer:
+            case .activateSpotify:
                 "Open Spotify"
+            case .activateAppleMusic:
+                "Open Apple Music"
             case .rewind:
                 "Rewind"
             case .play:
@@ -49,33 +54,37 @@ enum MenubarButtonHighlight: CustomStringConvertible {
             case .unheart:
                 "Unheart"
             case .enableLyrics:
-                "Click to Enable Lyrics"
+                "Enable Lyrics"
             case .disableLyrics:
-                "Click to Disable Lyrics"
+                "Disable Lyrics"
             case .unavailableLyrics:
-                "Lyrics are unavailable."
+                "Lyrics unavailable."
             case .enableFullscreen:
-                "Click to open fullscreen"
+                "Open Fullscreen"
             case .enableKaraoke:
-                "Click to enable karaoke"
+                "enable karaoke"
             case .disableKaraoke:
-                "Click to disable karaoke"
+                "disable karaoke"
             case .unavailableKaraoke:
-                "Karaoke is unavailable"
+                "Karaoke unavailable"
             case .refreshLyrics:
-                "Refresh lyrics from internet"
+                "Redownload lyrics"
             case .refreshingLyrics:
-                "Currently refreshing lyrics..."
+                "refreshing lyrics..."
             case .search:
                 "Click to search for lyrics"
             case .translate:
-                "Click to translate"
+                "Translation options"
             case .translateEnabled:
-                "Translate is enabled"
+                "Translation enabled"
+            case .translationFail:
+                "Translation Failure"
+            case .translationLoading:
+                "Translating..."
             case .upload:
-                "Click to use LRC file"
+                "Upload lrc file"
             case .delete:
-                "Delete these lyrics"
+                "Delete lyrics"
             case .quit:
                 "Quit Lyric Fever (⌘ + Q)"
             case .none:
