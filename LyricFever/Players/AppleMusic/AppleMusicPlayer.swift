@@ -38,7 +38,11 @@ class AppleMusicPlayer: Player {
         return playerPosition * 1000 + 400 + (viewmodel.animatedDisplay ? 400 : 0) + (viewmodel.airplayDelay ?  -2000 : 0)
     }
     var duration: Int? {
-        appleMusicScript?.currentTrack?.duration.map(Int.init)
+        guard let seconds = appleMusicScript?.currentTrack?.duration.map(Int.init) else {
+            print("Apple Music Player: Couldn't fetch duration")
+            return nil
+        }
+        return seconds * 1000
     }
     
     var isAuthorized: Bool {

@@ -33,9 +33,9 @@ import Translation
     func formattedCurrentTime(for date: Date) -> String {
         let baseTime = currentTime.currentTime
         let delta = date.timeIntervalSince(currentTime.storedDate)
-        print("Formatted Current Time: delta is \(delta)")
+//        print("Formatted Current Time: delta is \(delta)")
         let totalSeconds = Int((baseTime + delta) / 1000)
-        print("total seconds should be \(totalSeconds)")
+//        print("total seconds should be \(totalSeconds)")
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = [.pad]
@@ -312,19 +312,23 @@ import Translation
     func refreshLyrics() async throws {
         // todo: romanize
         if currentPlayer == .appleMusic {
+            print("Refresh Lyrics: Calling Apple Music Network fetch")
             try await appleMusicNetworkFetch()
         }
         guard let currentlyPlaying, let currentlyPlayingName, let currentDuration = currentPlayerInstance.durationAsTimeInterval else {
             return
         }
         print("Calling refresh lyrics")
-        let finalLyrics = await fetchAllNetworkLyrics()
-        if finalLyrics.lyrics.isEmpty {
+        guard let finalLyrics = await self.fetch(for: currentlyPlaying, currentlyPlayingName, checkCoreDataFirst: false) else {
+            print("Refresh Lyrics: Failed to run network fetch")
+            return
+        }
+        if finalLyrics.isEmpty {
             currentlyPlayingLyricsIndex = nil
         }
-        currentlyPlayingLyrics = finalLyrics.lyrics
+        currentlyPlayingLyrics = finalLyrics
         
-        SongObject(from: finalLyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName, duration: currentDuration)
+        SongObject(from: finalLyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName, duration: currentDuration)
         saveCoreData()
         setBackgroundColor()
         romanizeDidChange()
@@ -334,7 +338,8 @@ import Translation
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()
         }
-        callColorDataServiceOnLyricColorOrArtwork(colorData: finalLyrics.colorData)
+        // we call this in self.fetch
+//        callColorDataServiceOnLyricColorOrArtwork(colorData: finalLyrics.colorData)
     }
     
     func callColorDataServiceOnLyricColorOrArtwork(colorData: Int32?) {
@@ -472,6 +477,9 @@ import Translation
         } else {
             self.currentlyPlayingName = currentlyPlayingName
             currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
+            if let duration = currentPlayerInstance.duration {
+                self.duration = duration
+            }
         }
         currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
     }
@@ -525,7 +533,7 @@ import Translation
     private func setCurrentProperties() {
         switch currentPlayer {
             case .appleMusic:
-                if let currentTrackName = appleMusicPlayer.trackName, let currentArtistName = appleMusicPlayer.artistName {
+                if let currentTrackName = appleMusicPlayer.trackName, let currentArtistName = appleMusicPlayer.artistName, let duration = appleMusicPlayer.duration {
                     // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                     if currentTrackName == "" {
                         currentlyPlayingName = nil
@@ -533,6 +541,7 @@ import Translation
                     } else {
                         currentlyPlayingName = currentTrackName
                         currentlyPlayingArtist = currentArtistName
+                        self.duration = duration
                     }
                     print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
                     currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
@@ -675,13 +684,13 @@ import Translation
         }
     }
     
-    func fetch(for trackID: String, _ trackName: String) async -> [LyricLine]? {
+    func fetch(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool = true) async -> [LyricLine]? {
         currentFetchTask?.cancel()
-        isFetching = true
+        // i don't set isFetching to true here to prevent "flashes" for CoreData fetches
         defer {
             isFetching = false
         }
-        currentFetchTask = Task { try await self.fetchLyrics(for: trackID, trackName) }
+        currentFetchTask = Task { try await self.fetchLyrics(for: trackID, trackName, checkCoreDataFirst: checkCoreDataFirst) }
         do {
             return try await currentFetchTask?.value
         } catch {
@@ -722,14 +731,16 @@ import Translation
     }
     #endif
     
-    func fetchLyrics(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
-        if let lyrics = fetchFromCoreData(for: trackID) {
-            print("got lyrics from core data :D \(trackID) \(trackName)")
+    func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
+        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID) {
+            print("ViewModel FetchLyrics: got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
             return lyrics
         } else {
-            print("no lyrics from core data, going to download from internet \(trackID) \(trackName)")
+            print("ViewModel FetchLyrics: no lyrics from core data, going to download from internet \(trackID) \(trackName)")
+            print("ViewModel FetchLyrics: isFetching set to true")
+            isFetching = true
             let networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
             callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
             return networkLyrics.lyrics
@@ -846,7 +857,7 @@ import Translation
 #if os(macOS)
 // Apple Music Code
 extension ViewModel {
-    // Similar structure to my other Async functions. Only 1 appleMusicFetch() can run at any given moment
+    // Similar structure to my other Async functions. Only 1 appleMusic) can run at any given moment
     func appleMusicStarter() async {
         print("apple music test called again, cancelling previous")
         currentAppleMusicFetchTask?.cancel()
@@ -876,7 +887,7 @@ extension ViewModel {
     }
     
     func appleMusicNetworkFetch() async throws {
-        
+        isFetching = true
         // coredata didn't get us anything
         try await spotifyLyricProvider.generateAccessToken()
         
