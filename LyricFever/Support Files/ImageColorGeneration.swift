@@ -114,8 +114,6 @@ extension NSImage {
         }
         
         // Create new NSColor with modified HSB values
-        print("Brightness: \(brightness)")
-//        print("Saturation: \(saturation)")
         let modifiedNSColor = NSColor(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
         
         return modifiedNSColor
