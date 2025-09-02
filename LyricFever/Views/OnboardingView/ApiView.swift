@@ -32,10 +32,12 @@ struct ApiView: View {
                     // Blurred web view
                     WebView(request: URLRequest(url: URL(string: "https://accounts.spotify.com/en/login?continue=https%3A%2F%2Fopen.spotify.com%2F")!), navigationState: navigationState)
                         .disabled(loggedIn)
-                        .brightness(loggedIn ? -0.4 : 0)
                         .blur(radius: loggedIn ? 15 : 0)
                     
                     if loggedIn {
+                        Rectangle()
+                            .fill(Color.black.opacity(0.5))
+                        
                         VStack {
                             Text("You're Logged In 🙂")
                                 .font(.largeTitle)
@@ -62,6 +64,7 @@ struct ApiView: View {
                         }
                     }
                 }
+                .clipShape(RoundedRectangle(cornerRadius: 20))
             } else {
                 HStack {
                     Spacer()
@@ -77,10 +80,12 @@ struct ApiView: View {
                 Button("Back") {
                     dismiss()
                 }
-                Button("Open Spotify on the Web", action: {
-                    let url = URL(string: "https://open.spotify.com")!
-                    NSWorkspace.shared.open(url)
-                })
+                if !loginMethod {
+                    Button("Open Spotify on the Web") {
+                        let url = URL(string: "https://open.spotify.com")!
+                        NSWorkspace.shared.open(url)
+                    }
+                }
                 Spacer()
                 NavigationLink(destination: FinalTruncationView(), isActive: $isShowingDetailView) {EmptyView()}
                     .hidden()

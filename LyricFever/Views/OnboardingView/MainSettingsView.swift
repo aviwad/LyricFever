@@ -120,7 +120,6 @@ struct MainSettingsView: View {
                 .transition(.fade)
                 
                 Picker("", selection: $spotifyOrAppleMusic) {
-                    let _ = print("Binding \(spotifyOrAppleMusic)")
                     VStack {
                         Image("spotify")
                             .resizable()

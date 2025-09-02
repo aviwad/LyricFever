@@ -24,6 +24,7 @@ struct FinalTruncationView: View {
                 Image("\(truncationLength)")
                     .resizable()
                     .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                     .onAppear() {
                         if truncationLength == 0 {
                             truncationLength = 40
