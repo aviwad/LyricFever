@@ -1,4 +1,4 @@
-# Lyric Fever (Update will be out August 30 2025)
+# Lyric Fever (Update will be out September 1 or 2)
 
 <img src="logo.png" alt="Logo" width="15%">
 
