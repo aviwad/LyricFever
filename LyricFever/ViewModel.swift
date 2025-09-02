@@ -471,6 +471,11 @@ import Translation
             // manually cancels the lyric-updater task bc media is paused
         }
         let currentlyPlayingName = (notification.userInfo?["Name"] as? String)
+        guard let currentlyPlayingName else {
+            self.currentlyPlayingName = nil
+            currentlyPlayingArtist = nil
+            return
+        }
         if currentlyPlayingName == "" {
             self.currentlyPlayingName = nil
             currentlyPlayingArtist = nil
@@ -480,8 +485,9 @@ import Translation
             if let duration = currentPlayerInstance.duration {
                 self.duration = duration
             }
+            print("REOPEN: currentlyPlayingName is \(currentlyPlayingName)")
+            currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
         }
-        currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
     }
     
     func spotifyPlaybackDidChange(_ notification: Notification) {
