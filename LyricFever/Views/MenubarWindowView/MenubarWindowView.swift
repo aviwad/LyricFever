@@ -44,7 +44,6 @@ struct MenubarWindowView: View {
             }
         }
         .frame(width: 112, height: 112)
-        .animation(.smooth, value: viewmodel.isFetching)
     }
     
     @ViewBuilder
@@ -491,7 +490,6 @@ struct MenubarWindowView: View {
     var body: some View {
         VStack {
             headerView
-//                .animation(.smooth, value: viewmodel.artworkImage)
             Divider()
             lyricModifierView
             Divider()
