@@ -643,13 +643,15 @@ import Translation
             }
         } else {
             #if os(macOS)
-            currentLyricsDriftFix?.cancel()
-            currentLyricsDriftFix =             // Only run drift fix for new songs
-            Task {
-                try await spotifyPlayer.fixSpotifyLyricDrift()
-            }
-            Task {
-                try await currentLyricsDriftFix?.value
+            if currentPlayer == .spotify {
+                currentLyricsDriftFix?.cancel()
+                currentLyricsDriftFix =             // Only run drift fix for new songs
+                Task {
+                    try await spotifyPlayer.fixSpotifyLyricDrift()
+                }
+                Task {
+                    try await currentLyricsDriftFix?.value
+                }
             }
             #endif
         }
