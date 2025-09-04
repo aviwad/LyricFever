@@ -15,17 +15,15 @@ public class SongObject: NSManagedObject {
         case lines, language, syncType
     }
     
-    convenience init(from LocalLyrics: [LyricLine], with context: NSManagedObjectContext, trackID: String, trackName: String, duration: TimeInterval) {
+    convenience init(from LocalLyrics: [LyricLine], with context: NSManagedObjectContext, trackID: String, trackName: String) {
         self.init(context: context)
         self.id = trackID
         self.title = trackName
         self.downloadDate = Date.now
         self.language = ""
         if !LocalLyrics.isEmpty {
-            var newLyrics = LocalLyrics
-            newLyrics.append(LyricLine(startTime: duration+5000, words: "Now Playing: \(title)"))
-            self.lyricsTimestamps = newLyrics.map {$0.startTimeMS}
-            self.lyricsWords = newLyrics.map {$0.words}
+            self.lyricsTimestamps = LocalLyrics.map {$0.startTimeMS}
+            self.lyricsWords = LocalLyrics.map {$0.words}
         } else {
             self.lyricsTimestamps = []
             self.lyricsWords = []
