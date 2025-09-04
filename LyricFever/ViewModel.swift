@@ -308,6 +308,9 @@ import Translation
                 let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: currentlyPlaying, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
                 if !lyrics.lyrics.isEmpty {
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
+                    //TODO: save lyrics here
+                    SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    saveCoreData()
                     return lyrics
                 } else {
                     print("FetchAllNetworkLyrics: no lyrics from \(networkLyricProvider.providerName)")
@@ -338,9 +341,6 @@ import Translation
             currentlyPlayingLyricsIndex = nil
         }
         currentlyPlayingLyrics = finalLyrics
-        
-        SongObject(from: finalLyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName, duration: currentDuration)
-        saveCoreData()
         setBackgroundColor()
         romanizeDidChange()
         reloadTranslationConfigIfTranslating()
@@ -442,6 +442,7 @@ import Translation
                     }
                 }
             case .needsConfigUpdate(let language):
+                // TODO: why do i sleep?
                 try? await Task.sleep(for: .seconds(1))
                 translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage.language)
             case .failure:
@@ -700,6 +701,8 @@ import Translation
                 print("core data error \(error)")
                 // Show some error here
             }
+        } else {
+            print("BAD COREDATA CALL!!")
         }
     }
     
