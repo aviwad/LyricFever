@@ -18,7 +18,13 @@ enum ButtonState {
     var fillStyle: AnyShapeStyle {
         switch self {
             case .enabled:
-                return AnyShapeStyle(ViewModel.shared.currentAlbumArt.opacity(0.8))
+                if let bg = ViewModel.shared.currentBackground {
+                    // Use the color with desired opacity
+                    return AnyShapeStyle(bg.opacity(0.8))
+                } else {
+                    // Fall back to a material; set opacity on the shape usage, not here
+                    return AnyShapeStyle(.primary)
+                }
             case .disabled:
                 return AnyShapeStyle(.thickMaterial)
             case .clickable, .loading, .missing:
