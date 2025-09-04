@@ -11,6 +11,12 @@
         }
       }
     },
+    "..." : {
+
+    },
+    "%lld" : {
+
+    },
     "%lld Characters" : {
       "localizations" : {
         "zh-Hans" : {
@@ -94,6 +100,7 @@
 
     },
     "Check for Lyrics Again" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -134,6 +141,7 @@
       }
     },
     "Decrease Size to %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -154,6 +162,7 @@
       }
     },
     "Delete Lyrics (wrong lyrics)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -207,6 +216,7 @@
       }
     },
     "Fullscreen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -217,6 +227,7 @@
       }
     },
     "Give Apple Music Library Permissions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -245,9 +256,6 @@
           }
         }
       }
-    },
-    "Hi %@!" : {
-
     },
     "Hide Karaoke window when mouse passes by" : {
       "localizations" : {
@@ -300,6 +308,7 @@
       }
     },
     "Increase Size to %lld " : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -350,6 +359,7 @@
       }
     },
     "Karaoke Mode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -360,6 +370,7 @@
       }
     },
     "Karaoke Mode (Enable Show Lyrics)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -399,9 +410,6 @@
         }
       }
     },
-    "Lyric Fever Search for %@" : {
-
-    },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
         "zh-Hans" : {
@@ -433,10 +441,11 @@
         }
       }
     },
-    "Lyric Fever: Update 2.2" : {
+    "Lyric Fever: Update 2.3" : {
 
     },
     "Lyrics Found 😃" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -456,7 +465,11 @@
         }
       }
     },
+    "Menubar Size" : {
+
+    },
     "Menubar Size is %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -465,6 +478,12 @@
           }
         }
       }
+    },
+    "More options" : {
+
+    },
+    "More options, AirPlay delay enabled" : {
+
     },
     "Next" : {
       "localizations" : {
@@ -477,6 +496,7 @@
       }
     },
     "No Lyrics (Couldn't find Spotify ID) ☹️" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -487,6 +507,7 @@
       }
     },
     "No Lyrics Found ☹️" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -559,6 +580,7 @@
       }
     },
     "Open %@!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -579,6 +601,7 @@
       }
     },
     "Open Music Panel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -747,6 +770,7 @@
       }
     },
     "Refresh Lyrics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -775,9 +799,6 @@
           }
         }
       }
-    },
-    "Search Window" : {
-
     },
     "Select a Font:" : {
       "localizations" : {
@@ -823,6 +844,7 @@
 
     },
     "Show Lyrics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -902,6 +924,9 @@
         }
       }
     },
+    "TODO" : {
+
+    },
     "Translate lyrics (⌘ + T)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -963,6 +988,7 @@
       }
     },
     "Update to macOS 14.0 to use fullscreen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -973,6 +999,7 @@
       }
     },
     "Update to macOS 15 to enable translation" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -983,6 +1010,7 @@
       }
     },
     "Upload Local LRC File" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1001,6 +1029,9 @@
           }
         }
       }
+    },
+    "Volume" : {
+
     },
     "Welcome to Lyric Fever! 🎉" : {
       "localizations" : {
