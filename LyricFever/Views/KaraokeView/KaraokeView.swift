@@ -29,6 +29,7 @@ struct VisualEffectView: NSViewRepresentable {
 
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
+    @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
     
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
@@ -78,7 +79,7 @@ struct KaraokeView: View {
             .background {
                viewmodel.currentAlbumArt
                .transition(.opacity)
-               .opacity(viewmodel.userDefaultStorage.karaokeTransparency/100)
+               .opacity(karaokeTransparency/100)
            }
            .drawingGroup()
            .background(
