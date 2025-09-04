@@ -24,7 +24,7 @@ struct MenubarWindowView: View {
                     .resizable()
                     .frame(width: 112, height: 112)
                     .clipShape(.rect(cornerRadius: 9))
-                    .animation(.smooth(duration: 0.3))
+                    .animation(.smooth(duration: 0.3), value: artworkImage)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
             } else {
@@ -78,7 +78,7 @@ struct MenubarWindowView: View {
             SongControlButton(systemImage: viewmodel.isPlaying ? "pause.fill" : "play.fill", wiggle: false) {
                 viewmodel.currentPlayerInstance.togglePlayback()
             }
-            .controlSize(.large)
+//            .controlSize(.large)
             .onHover { isHovering in
                 currentHoveredItem = isHovering ? (viewmodel.isPlaying ? .pause : .play) : .none
             }
@@ -91,7 +91,7 @@ struct MenubarWindowView: View {
                 currentHoveredItem = isHovering ? .forward : .none
             }
         }
-        .frame(height: 30)
+//        .frame(height: 30)
 //        .buttonStyle(.accessoryBar)
     }
     
@@ -128,13 +128,13 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(value: viewmodel.currentTime.currentTime, total: Double(viewmodel.duration))
+                ProgressView(value: displayLyrics == .clickable ? 0 : viewmodel.currentTime.currentTime, total: Double(viewmodel.duration))
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
                 
                 HStack {
-                    Text(viewmodel.formattedCurrentTime)
+                    Text(displayLyrics == .clickable ? "--:--" : viewmodel.formattedCurrentTime)
                         .font(.caption2)
                     Spacer()
                     Text(viewmodel.formattedDuration)
@@ -509,18 +509,27 @@ struct MenubarWindowView: View {
     @ViewBuilder
     var systemControlView: some View {
         HStack {
-            Menu {
-                otherOptions
-                    .foregroundStyle(viewmodel.currentBackground ?? .primary)
-            } label: {
-//                HStack(spacing: 6) {
-                    Text("...")
-//                    .font(.caption)
-//                }
-//                .accessibilityLabel(viewmodel.airplayDelay ? Text("More options, AirPlay delay enabled") : Text("More options"))
+            if #available(macOS 26.0, *) {
+                Menu {
+                    otherOptions
+                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
+                } label: {
+
+                        Text("...")
+                }
+                .menuIndicator(.hidden)
+            } else {
+                Menu {
+                    otherOptions
+                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
+                } label: {
+
+                        Text("...")
+                }
+                .frame(width: 30)
+                .menuIndicator(.hidden)
             }
 //            .buttonStyle(.bordered)
-            .menuIndicator(.hidden)
             if viewmodel.airplayDelay {
                 Image(systemName: "airplayaudio")
                     .opacity(0.8)

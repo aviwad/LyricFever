@@ -20,17 +20,18 @@ struct SongControlButton: View {
             action()
         } label: {
             Image(systemName: systemImage)
-                .frame(width: 25, height: 18)
+//                .frame(width: 25, height: 18)
         }
-        .background {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.gray.opacity(isHovering ? 0.5 : 0.0))
-        }
-        .onHover { hovering in
-            isHovering = hovering
-        }
-        .tint(.secondary)
+//        .background {
+//            RoundedRectangle(cornerRadius: 10)
+//                .fill(.gray.opacity(isHovering ? 0.5 : 0.0))
+//        }
+//        .onHover { hovering in
+//            isHovering = hovering
+//        }
+        .buttonStyle(.accessoryBar)
+//        .tint(.secondary)
         .symbolEffect(.bounce.down.byLayer, value: wiggle ? toggled : false)
-        .padding(2) // small outer padding to match accessory bar spacing
+//        .padding(2) // small outer padding to match accessory bar spacing
     }
 }
