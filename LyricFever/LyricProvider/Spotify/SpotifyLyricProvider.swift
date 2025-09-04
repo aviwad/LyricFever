@@ -143,10 +143,32 @@ class SpotifyLyricProvider: LyricProvider {
                 }
         }
     }
+    
+//    @MainActor
+//    func checkHeartedStatusFor(trackID: String) async throws -> Bool {
+//        try await generateAccessToken()
+//        if let accessToken, let url = URL(string: "https://api.spotify.com/v1/me/tracks/contains?ids=\(trackID)") {
+//            var request = URLRequest(url: url)
+////            request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
+//            print("the access token is \(accessToken.accessToken)")
+//            request.addValue("Bearer \(accessToken.accessToken)", forHTTPHeaderField: "authorization")
+//            print("Requesting Spotify hearted boolean for track ID \(trackID)")
+//            try Task.checkCancellation()
+//            let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
+//            print(String(bytes: urlResponseAndData.0, encoding: String.Encoding.utf8))
+//            let result = try JSONDecoder().decode([Bool].self, from: urlResponseAndData.0)
+//            guard let resultBool = result.first else {
+//                print("Spotify hearted status returned an empty bool")
+//                return false
+//            }
+//            return resultBool
+//        }
+//        return false
+//    }
 
     @MainActor
     func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String? = nil, currentAlbumName: String? = nil ) async throws -> NetworkFetchReturn {
-        try? await Task.sleep(for: .seconds(2))
+//        try? await Task.sleep(for: .seconds(2))
         // Local file giveaway
         if trackID.count != 22 {
             throw SpotifyLyricError.isLocalFile
