@@ -810,10 +810,8 @@ import Translation
             try coreDataContainer.viewContext.save()
             currentlyPlayingLyricsIndex = nil
             currentlyPlayingLyrics = []
-            if userDefaultStorage.translate {
-                translatedLyric = []
-                romanizedLyrics = []
-            }
+            translatedLyric = []
+            romanizedLyrics = []
             lyricsIsEmptyPostLoad = true
         } catch {
             print("Error deleting data: \(error)")
