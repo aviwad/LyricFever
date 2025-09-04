@@ -69,7 +69,11 @@ struct LyricFever: App {
                     NSApplication.shared.activate(ignoringOtherApps: true)
                     openWindow(id: "onboarding")
                 } else {
-                    // TODO: make refreshLyrics use the same Task<> that fetch(_) uses
+                    guard !viewmodel.isFirstFetch else {
+                        print("Onboarding Task: ignoring false runtime call, cannot refresh as first fetch")
+                        return
+                    }
+                    // make refreshLyrics use the same Task<> that fetch(_) uses
                     do {
                         try await viewmodel.refreshLyrics()
                     } catch {

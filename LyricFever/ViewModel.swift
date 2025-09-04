@@ -227,6 +227,8 @@ import Translation
     #endif
     @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
     
+    var isFirstFetch = true
+    
     init() {
         // Set our user locale for translation language
         userLocaleLanguage = Locale.preferredLocale()
@@ -693,6 +695,10 @@ import Translation
     }
     
     func fetch(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool = true) async -> [LyricLine]? {
+        if isFirstFetch {
+            isFirstFetch = false
+        }
+        print("Fetch Called for trackID \(trackID), trackName \(trackName), checkCoreDataFirst: \(checkCoreDataFirst)")
         currentFetchTask?.cancel()
         // i don't set isFetching to true here to prevent "flashes" for CoreData fetches
         defer {
