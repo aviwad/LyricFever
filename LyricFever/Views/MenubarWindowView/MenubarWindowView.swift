@@ -110,13 +110,13 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(value: viewmodel.currentTime.adjustedCurrentTime(for: Date()), total: Double(viewmodel.duration))
+                ProgressView(value: viewmodel.currentTime.currentTime, total: Double(viewmodel.duration))
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
                 
                 HStack {
-                    Text(viewmodel.formattedCurrentTime(for: Date()))
+                    Text(viewmodel.formattedCurrentTime)
                         .font(.caption2)
                     Spacer()
                     Text(viewmodel.formattedDuration)

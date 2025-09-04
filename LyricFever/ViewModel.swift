@@ -30,6 +30,15 @@ import Translation
     var duration: Int = 0
     var currentTime = CurrentTimeWithStoredDate(currentTime: 0)
     
+    var formattedCurrentTime: String {
+        let baseTime = currentTime.currentTime
+        let totalSeconds = Int(baseTime) / 1000
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter.string(from: TimeInterval(totalSeconds)) ?? "0:00"
+    }
+    
     func formattedCurrentTime(for date: Date) -> String {
         let baseTime = currentTime.currentTime
         let delta = date.timeIntervalSince(currentTime.storedDate)
