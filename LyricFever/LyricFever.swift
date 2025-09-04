@@ -202,6 +202,19 @@ struct LyricFever: App {
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .windowLevel(.floating)
+        Window("Lyric Fever: Searching for \(viewmodel.currentlyPlayingName ?? "-") by \(viewmodel.currentlyPlayingArtist ?? "-")", id: "search") {
+            SearchWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
+                .environment(viewmodel)
+                .preferredColorScheme(.dark)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                }
+                .onDisappear {
+                    if !viewmodel.fullscreen {
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+                }
+        }
         Window("Lyric Fever: Update 2.3", id: "update") { // << here !!
             UpdateWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
                 .environment(viewmodel)

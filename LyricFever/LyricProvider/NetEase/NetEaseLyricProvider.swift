@@ -20,6 +20,7 @@ class NetEaseLyricProvider: LyricProvider {
         fakeSpotifyUserAgentconfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"]
         fakeSpotifyUserAgentSession = URLSession(configuration: fakeSpotifyUserAgentconfig)
     }
+    
     func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String? ) async throws -> NetworkFetchReturn {
         if let currentlyPlayingArtist, let currentAlbumName, let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(trackName.replacingOccurrences(of: "&", with: "%26")) \(currentlyPlayingArtist.replacingOccurrences(of: "&", with: "%26"))&limit=1") {
             print("the netease search call is \(url.absoluteString)")
@@ -52,7 +53,11 @@ class NetEaseLyricProvider: LyricProvider {
             guard let neteaselrc = neteaseLyrics.lrc, let neteaseLrcString = neteaselrc.lyric else {
                 return NetworkFetchReturn(lyrics: [], colorData: nil)
             }
-            let parser = LyricsParser(lyrics: neteaseLrcString)
+            
+            // Sanitize HTML entities and stray escapes before parsing
+            let cleaned = unescapeHTMLEntities(in: neteaseLrcString)
+            
+            let parser = LyricsParser(lyrics: cleaned)
             print(parser.lyrics)
             // NetEase incorrectly advertises lyrics for EVERY song when it only has the name, artist, composer at 0.0 *sigh*
             if parser.lyrics.last?.startTimeMS == 0.0 {
@@ -62,4 +67,23 @@ class NetEaseLyricProvider: LyricProvider {
         }
         return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
+}
+
+// MARK: - HTML entity unescape
+private func unescapeHTMLEntities(in text: String) -> String {
+    var s = text
+    // Common named entities
+    s = s.replacingOccurrences(of: "&apos;", with: "'")
+    s = s.replacingOccurrences(of: "&quot;", with: "\"")
+    s = s.replacingOccurrences(of: "&amp;", with: "&")
+    s = s.replacingOccurrences(of: "&lt;", with: "<")
+    s = s.replacingOccurrences(of: "&gt;", with: ">")
+    // Common numeric entity often used for apostrophe
+    s = s.replacingOccurrences(of: "&#39;", with: "'")
+    s = s.replacingOccurrences(of: "&#x27;", with: "'")
+    // Normalize stray backslashes that sometimes trail lines from API payloads
+    // Keep escaped newlines for LyricsParser to convert, but remove trailing backslashes.
+    s = s.replacingOccurrences(of: "\\\n", with: "\n")
+    // If payload includes escaped newline markers already, LyricsParser handles "\\n" -> "\n".
+    return s
 }

@@ -13,6 +13,7 @@ struct MenubarWindowView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(ViewModel.self) var viewmodel
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
     @State var currentHoveredItem = MenubarButtonHighlight.none
     
     @ViewBuilder
@@ -23,6 +24,7 @@ struct MenubarWindowView: View {
                     .resizable()
                     .frame(width: 112, height: 112)
                     .clipShape(.rect(cornerRadius: 9))
+                    .animation(.smooth(duration: 0.3))
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
             } else {
@@ -35,13 +37,16 @@ struct MenubarWindowView: View {
                     .clipShape(.rect(cornerRadius: 9))
             }
             
-            if viewmodel.isFetching {
-                Rectangle()
-                    .fill(Color.black.opacity(0.5))
-                    .clipShape(.rect(cornerRadius: 9))
-                
-                ProgressView()
+            ZStack {
+                if viewmodel.isFetching {
+                    Rectangle()
+                        .fill(Color.black.opacity(0.5))
+                        .clipShape(.rect(cornerRadius: 9))
+                    
+                    ProgressView()
+                }
             }
+            .animation(.smooth(duration: 2), value: viewmodel.isFetching)
         }
         .frame(width: 112, height: 112)
     }
@@ -73,6 +78,7 @@ struct MenubarWindowView: View {
             SongControlButton(systemImage: viewmodel.isPlaying ? "pause.fill" : "play.fill", wiggle: false) {
                 viewmodel.currentPlayerInstance.togglePlayback()
             }
+            .controlSize(.large)
             .onHover { isHovering in
                 currentHoveredItem = isHovering ? (viewmodel.isPlaying ? .pause : .play) : .none
             }
@@ -86,7 +92,7 @@ struct MenubarWindowView: View {
             }
         }
         .frame(height: 30)
-        .buttonStyle(.accessoryBar)
+//        .buttonStyle(.accessoryBar)
     }
     
     @ViewBuilder
@@ -103,10 +109,22 @@ struct MenubarWindowView: View {
             VStack {
                 HStack {
                     songDetails
-                    LikeButton()
-                        .onHover { isHovering in
-                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .unheart : .heart) : .none
-                        }
+//                    LikeButton()
+//                        .task(id: viewmodel.currentlyPlaying) {
+//                            guard let currentlyPlaying = viewmodel.currentlyPlaying else {
+//                                print("Ignoring nil currentlyPlaying for heart check")
+//                                return
+//                            }
+//                            print("Task to check if \(viewmodel.currentlyPlaying) is hearted")
+//                            do {
+//                                viewmodel.isHearted = try await viewmodel.spotifyLyricProvider.checkHeartedStatusFor(trackID: currentlyPlaying)
+//                            } catch {
+//                                print(error)
+//                            }
+//                        }
+//                        .onHover { isHovering in
+//                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .unheart : .heart) : .none
+//                        }
                 }
                 songControls
                 
@@ -312,9 +330,7 @@ struct MenubarWindowView: View {
         guard !viewmodel.lyricsIsEmptyPostLoad else {
             return .disabled
         }
-        if viewmodel.userDefaultStorage.romanize {
-            return .enabled
-        } else if viewmodel.userDefaultStorage.translate {
+        if viewmodel.userDefaultStorage.translate {
             if viewmodel.translationExists {
                 return .enabled
             } else if viewmodel.isFetchingTranslation {
@@ -322,6 +338,8 @@ struct MenubarWindowView: View {
             } else {
                 return .missing
             }
+        } else if viewmodel.userDefaultStorage.romanize {
+            return .enabled
         } else {
             return .clickable
         }
@@ -331,6 +349,17 @@ struct MenubarWindowView: View {
         guard viewmodel.userDefaultStorage.hasOnboarded else {
             return .disabled
         }
+        return .clickable
+    }
+    
+    var deleteOrUploadState: ButtonState {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
+            return .disabled
+        }
+        // attach a separate disabled modifier to prevent slash flashing
+//        if viewmodel.isFetching {
+//            return .disabled
+//        }
         return .clickable
     }
     
@@ -388,7 +417,7 @@ struct MenubarWindowView: View {
                         case .enabled:
                             currentHoveredItem = .translateEnabled
                         case .disabled:
-                            currentHoveredItem = .none
+                            currentHoveredItem = .translationUnavailable
                         case .loading:
                             currentHoveredItem = .translationLoading
                         case .clickable:
@@ -400,13 +429,21 @@ struct MenubarWindowView: View {
                     currentHoveredItem = .none
                 }
             }
-            SmallMenubarButton(buttonText: "", imageText: viewmodel.lyricsIsEmptyPostLoad ? "arrow.up.document" : "trash", buttonState: .clickable) {
+            SmallMenubarButton(buttonText: "", imageText: viewmodel.lyricsIsEmptyPostLoad ? "arrow.up.document" : "trash", buttonState: deleteOrUploadState) {
                 if viewmodel.lyricsIsEmptyPostLoad {
+                    Task {
+                        do {
+                            try await viewmodel.uploadLocalLRCFile()
+                        } catch {
+                            print("MenuBarWindowView: Upload LRC: Error occurred: \(error)")
+                        }
+                    }
                 } else {
                     guard let currentlyPlaying = viewmodel.currentlyPlaying else { return }
                     viewmodel.deleteLyric(trackID: currentlyPlaying)
                 }
             }
+            .disabled(viewmodel.isFetching)
             .onHover { isHovering in
                 if isHovering {
                     if viewmodel.lyricsIsEmptyPostLoad {
@@ -529,7 +566,8 @@ struct MenubarWindowView: View {
             Text("\(viewmodel.userDefaultStorage.truncationLength)")
                 .frame(width: 23)
         }
-        .tint(viewmodel.currentBackground)
+        .tint(.secondary)
+//        .tint(colorScheme == .dark ? viewmodel.currentBackground : .white)
     }
     
     var volumeBinding: Binding<Double> {
@@ -546,7 +584,7 @@ struct MenubarWindowView: View {
     var volumeSlider: some View {
         @Bindable var viewmodel = viewmodel
         HStack {
-            Image(systemName: "speaker.wave.3")
+            Image(systemName: "speaker.wave.3", variableValue: Double(viewmodel.currentVolume)/100)
                 .frame(width: 30)
             if #available(macOS 26.0, *) {
                 Slider(value: volumeBinding, in: 0...100) {
@@ -566,7 +604,8 @@ struct MenubarWindowView: View {
             Text("\(viewmodel.currentVolume)")
                 .frame(width: 23)
         }
-        .tint(viewmodel.currentBackground)
+        .tint(.secondary)
+//        .tint(colorScheme == .dark ? viewmodel.currentBackground : .white)
     }
     
     var body: some View {
@@ -586,7 +625,7 @@ struct MenubarWindowView: View {
             Divider()
             systemControlView
         }
-        .preferredColorScheme(.dark)
+//        .preferredColorScheme(.dark)
         .foregroundStyle(.white)
         .padding(14)
         .background(

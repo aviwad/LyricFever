@@ -928,19 +928,26 @@ extension ViewModel {
         // check coredata for apple music persistent id -> spotify id mapping
         if let coreDataSpotifyID = fetchSpotifyIDFromPersistentIDCoreData() {
             if !Task.isCancelled {
-                print("Apple Music Fetch: setting currentlyPlaying to \(coreDataSpotifyID)")
+                print("Apple Music CoreData Fetch: setting currentlyPlaying to \(coreDataSpotifyID)")
                 self.currentlyPlaying = coreDataSpotifyID
                 return
             }
         }
-        
+        print("Apple Music Fetch: No CoreData val. Fetching from network")
         try await appleMusicNetworkFetch()
     }
     
     func appleMusicNetworkFetch() async throws {
         isFetching = true
+//        do {
+//            print("Apple Music Network Fetch: 3 second sleep")
+//            try await Task.sleep(for: .seconds(3))
+//        } catch {
+//            print("Apple Music Network Fetch cancelled during the 3 seconds of sleep")
+//        }
+        print("Apple Music Network Fetch: isFetching set to true")
         // coredata didn't get us anything
-        try await spotifyLyricProvider.generateAccessToken()
+//        try await spotifyLyricProvider.generateAccessToken()
         
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         if !Task.isCancelled {
@@ -951,13 +958,15 @@ extension ViewModel {
             }
             
             if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
-                print("both persistent ID and spotify ID are non nill, so we attempt to save to coredata")
+                print("Apple Music Network Fetch: Saving persistent id \(currentlyPlayingAppleMusicPersistentID) and spotify ID \(currentlyPlaying)")
                 // save the mapping into coredata persistentIDToSpotify
                 let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
                 newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
                 newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
                 saveCoreData()
             }
+        } else {
+            print("Apple Music Network Fetch Cancelled!")
         }
     }
     
@@ -973,6 +982,7 @@ extension ViewModel {
             let results = try coreDataContainer.viewContext.fetch(fetchRequest)
             if let persistentIDToSpotify = results.first {
                 // Found the persistentIDToSpotify object with the matching persistentID
+                print("Apple Music CoreData Fetch: Found SpotifyID \(persistentIDToSpotify.spotifyID) for \(persistentIDToSpotify.persistentID)")
                 return persistentIDToSpotify.spotifyID
             } else {
                 // No SongObject found with the given trackID
@@ -994,3 +1004,4 @@ extension ViewModel {
     }
 }
 #endif
+

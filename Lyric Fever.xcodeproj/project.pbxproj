@@ -25,9 +25,9 @@
 		8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* LyricFever.swift */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
 		8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */; };
-		8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF184EC2D626F1E0026D2A2 /* CompactSlider */; };
 		8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */; };
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
+		8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFB32DE2E694991007D9981 /* CompactSlider */; };
 		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
 /* End PBXBuildFile section */
 
@@ -73,10 +73,10 @@
 				8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */,
 				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
-				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */,
 				8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */,
+				8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */,
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
@@ -165,13 +165,13 @@
 				8F28FDC12AA25D2700439D8D /* Sparkle */,
 				8F89E1102C90DA4900F511EB /* LaunchAtLogin */,
 				8FA4E9772CE73DB900CEEF35 /* ColorKit */,
-				8FF184EC2D626F1E0026D2A2 /* CompactSlider */,
 				8F832CAC2D6BEC52008C1C2B /* FontPicker */,
 				8FFED07A2D8A26E700EA1510 /* SwiftOTP */,
 				8F8196862D93CCDC00F03741 /* StringMetric */,
 				8F1979942DA72D49008C113D /* IPADic */,
 				8F1979962DA72D49008C113D /* Mecab-Swift */,
 				8F7C7EE72E34338900CA9041 /* ObservableDefaults */,
+				8FFB32DE2E694991007D9981 /* CompactSlider */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -208,12 +208,12 @@
 				8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */,
-				8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */,
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
 				8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */,
+				8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -545,20 +545,20 @@
 				kind = branch;
 			};
 		};
-		8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/buh/CompactSlider.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.1.6;
-			};
-		};
 		8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buh/CompactSlider.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.1;
 			};
 		};
 		8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */ = {
@@ -617,15 +617,15 @@
 			package = 8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */;
 			productName = ColorKit;
 		};
-		8FF184EC2D626F1E0026D2A2 /* CompactSlider */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */;
-			productName = CompactSlider;
-		};
 		8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		8FFB32DE2E694991007D9981 /* CompactSlider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */;
+			productName = CompactSlider;
 		};
 		8FFED07A2D8A26E700EA1510 /* SwiftOTP */ = {
 			isa = XCSwiftPackageProductDependency;
