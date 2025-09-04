@@ -28,6 +28,7 @@ enum MenubarButtonHighlight: CustomStringConvertible {
     case translateEnabled
     case translationFail
     case translationLoading
+    case translationUnavailable
     case upload
     case delete
     case quit
@@ -81,6 +82,8 @@ enum MenubarButtonHighlight: CustomStringConvertible {
                 "Translation Failure"
             case .translationLoading:
                 "Translating..."
+            case .translationUnavailable:
+                "translation unavailable"
             case .upload:
                 "Upload lrc file"
             case .delete:
