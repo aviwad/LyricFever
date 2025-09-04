@@ -443,7 +443,7 @@ import Translation
                 }
             case .needsConfigUpdate(let language):
                 // TODO: why do i sleep?
-                try? await Task.sleep(for: .seconds(1))
+//                try? await Task.sleep(for: .seconds(1))
                 translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage.language)
             case .failure:
                 print("Translation Service: isFetchingTranslation set to false due to failure")
