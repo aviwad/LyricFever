@@ -749,7 +749,12 @@ import Translation
             print("ViewModel FetchLyrics: no lyrics from core data, going to download from internet \(trackID) \(trackName)")
             print("ViewModel FetchLyrics: isFetching set to true")
             isFetching = true
-            let networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
+            var networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
+            guard let duration = currentPlayerInstance.duration else {
+                print("FetchLyrics: Couldn't access current player duration. Giving up on netwokr fetch")
+                return []
+            }
+            networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
             callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
             return networkLyrics.lyrics
         }
