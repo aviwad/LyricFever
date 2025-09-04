@@ -12,6 +12,7 @@ struct SongControlButton: View {
     var wiggle: Bool = true
     let action: () -> Void
     @State private var toggled = false
+    @State private var isHovering = false
     
     var body: some View {
         Button {
@@ -19,7 +20,17 @@ struct SongControlButton: View {
             action()
         } label: {
             Image(systemName: systemImage)
+                .frame(width: 25, height: 18)
         }
+        .background {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.gray.opacity(isHovering ? 0.5 : 0.0))
+        }
+        .onHover { hovering in
+            isHovering = hovering
+        }
+        .tint(.secondary)
         .symbolEffect(.bounce.down.byLayer, value: wiggle ? toggled : false)
+        .padding(2) // small outer padding to match accessory bar spacing
     }
 }

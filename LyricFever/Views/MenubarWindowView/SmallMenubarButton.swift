@@ -40,6 +40,7 @@ public struct SmallMenubarButtonStyle: ButtonStyle {
                     }
                 }
             }
+            .frame(height: 15)
         }
         .transition(.scale)
         .animation(.bouncy, value: buttonState)
