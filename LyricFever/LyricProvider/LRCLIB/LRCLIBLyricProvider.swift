@@ -19,6 +19,25 @@ class LRCLIBLyricProvider: LyricProvider {
     }
     
     func fetchNetworkLyrics(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String?) async throws -> NetworkFetchReturn {
+        guard let currentlyPlayingArtist, let currentAlbumName else {
+            print("artist or album missing")
+            return NetworkFetchReturn(lyrics: [], colorData: nil)
+        }
+        guard let url = makeComponents(path: "/api/get", items: [
+            URLQueryItem(name: "artist_name", value: currentlyPlayingArtist),
+            URLQueryItem(name: "track_name", value: trackName),
+            URLQueryItem(name: "album_name", value: currentAlbumName)
+        ]).url else {
+            return NetworkFetchReturn(lyrics: [], colorData: nil)
+        }
+        print("LRCLIB /api/get: \(url.absoluteString)")
+        let req = URLRequest(url: url)
+        let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: req)
+        let lrcLyrics = try JSONDecoder().decode(LRCLIBLyrics.self, from: urlResponseAndData.0)
+        return NetworkFetchReturn(lyrics: lrcLyrics.lyrics, colorData: nil)
+    }
+    
+    func fetchNetworkLyrics2(trackName: String, trackID: String, currentlyPlayingArtist: String?, currentAlbumName: String?) async throws -> NetworkFetchReturn {
         let artist = currentlyPlayingArtist?.replacingOccurrences(of: "&", with: "")
         let album = currentAlbumName?.replacingOccurrences(of: "&", with: "")
         let trackName = trackName.replacingOccurrences(of: "&", with: "")
@@ -31,5 +50,14 @@ class LRCLIBLyricProvider: LyricProvider {
             return NetworkFetchReturn(lyrics: lrcLyrics.lyrics, colorData: nil)
         }
         return NetworkFetchReturn(lyrics: [], colorData: nil)
+    }
+    
+    func makeComponents(path: String, items: [URLQueryItem]) -> URLComponents {
+        var comps = URLComponents()
+        comps.scheme = "https"
+        comps.host = "lrclib.net"
+        comps.path = path
+        comps.queryItems = items
+        return comps
     }
 }
