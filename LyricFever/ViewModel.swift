@@ -758,22 +758,44 @@ import Translation
     #endif
     
     func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
+        let initiatingTrackID = trackID
+        
         if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID) {
             print("ViewModel FetchLyrics: got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
+            // verify non-stale trackID
+            if initiatingTrackID != self.currentlyPlaying {
+                print("FetchLyrics: CoreData result stale (initiated: \(initiatingTrackID), current: \(self.currentlyPlaying ?? "nil")). Throwing.")
+                throw FetchError.staleTrack
+            }
             return lyrics
         } else {
             print("ViewModel FetchLyrics: no lyrics from core data, going to download from internet \(trackID) \(trackName)")
             print("ViewModel FetchLyrics: isFetching set to true")
             isFetching = true
+            
             var networkLyrics: NetworkFetchReturn = await fetchAllNetworkLyrics()
+            
+            // verify non-stale trackID
+            if initiatingTrackID != self.currentlyPlaying {
+                print("FetchLyrics: Network result stale (initiated: \(initiatingTrackID), current: \(self.currentlyPlaying ?? "nil")). Throwing.")
+                throw FetchError.staleTrack
+            }
+            
             guard let duration = currentPlayerInstance.duration else {
                 print("FetchLyrics: Couldn't access current player duration. Giving up on netwokr fetch")
                 return []
             }
             networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
-            callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
+            
+            // verify non-stale trackID
+            if initiatingTrackID == self.currentlyPlaying {
+                callColorDataServiceOnLyricColorOrArtwork(colorData: networkLyrics.colorData)
+            } else {
+                print("FetchLyrics: Skipping color save due to stale track (initiated: \(initiatingTrackID), current: \(self.currentlyPlaying ?? "nil")).")
+                throw FetchError.staleTrack
+            }
             return networkLyrics.lyrics
         }
     }
