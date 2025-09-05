@@ -199,24 +199,90 @@ class SpotifyLyricProvider: LyricProvider {
         return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
     
+    
+    func getDetailsFromSpotifyInternalSearchJSON(data: Data) -> AppleMusicHelper? {
+        do {
+            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let dataDict = json["data"] as? [String: Any],
+               let searchV2 = dataDict["searchV2"] as? [String: Any],
+               let tracksV2 = searchV2["tracksV2"] as? [String: Any],
+               let items = tracksV2["items"] as? [[String: Any]],
+               let firstItem = items.first,
+               let item = firstItem["item"] as? [String: Any],
+               let dataObj = item["data"] as? [String: Any] {
+                
+                let trackName: String? = dataObj["name"] as? String
+                let trackID: String?  = dataObj["id"] as? String
+                
+                let album = dataObj["albumOfTrack"] as? [String: Any]
+                let albumName: String? = album?["name"] as? String
+                
+                let artistName: String?
+                if let artists = dataObj["artists"] as? [String: Any],
+                   let artistItems = artists["items"] as? [[String: Any]],
+                   let firstArtist = artistItems.first,
+                   let profile = firstArtist["profile"] as? [String: Any] {
+                    artistName = profile["name"] as? String
+                } else {
+                    artistName = nil
+                }
+                
+                if let trackID, let trackName, let albumName, let artistName {
+                    print("Apple Music Network Fetch: Internal Search Success")
+                    print("Track name: \(trackName)")
+                    print("Artist name: \(artistName)")
+                    print("Album name: \(albumName)")
+                    print("Track ID: \(trackID)")
+                    return AppleMusicHelper(SpotifyID: trackID, SpotifyName: trackName, SpotifyArtist: artistName, SpotifyAlbum: albumName)
+                }
+            }
+        } catch {
+            print("Error parsing JSON: \(error)")
+        }
+        return nil
+    }
+    
     #if os(macOS)
     @MainActor
-    func searchForTrackForAppleMusic(artist: String, track: String) async -> AppleMusicHelper? {
-        guard let accessToken = accessToken?.accessToken else {
-            print("\(#function) we expected access token")
-            return nil
-        }
-        if let url = URL(string: "https://api.spotify.com/v1/search?q=track:\(track)+artist:\(artist)+&type=track&limit=1") {
+    func searchForTrackForAppleMusic(artist: String, track: String) async throws -> AppleMusicHelper? {
+        try await generateAccessToken()
+        if let url = URL(string: "https://api-partner.spotify.com/pathfinder/v2/query") {
             var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
-            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "authorization")
-            guard !Task.isCancelled else { return nil }
-            if let searchData = try? await fakeSpotifyUserAgentSession.data(for: request), !searchData.0.isEmpty, let searchResponse = try? JSONDecoder().decode(SpotifyResponse.self, from: searchData.0), let track = searchResponse.tracks.items.first, let firstArtistName = track.firstArtistName {
-                print("Got ID with manual search")
-                return AppleMusicHelper(SpotifyID: track.id, SpotifyName: track.name, SpotifyArtist: firstArtistName)
-            } else {
-                return nil
-            }
+            request.addValue("Bearer \(accessToken?.accessToken ?? "")", forHTTPHeaderField: "authorization")
+            let searchTerm = "\(track) \(artist)"
+            let body: [String: Any] = [
+                "variables": [
+                    "searchTerm": searchTerm,
+                    "offset": 0,
+                    "limit": 1,
+                    "numberOfTopResults": 1,
+                    "includeAudiobooks": false,
+                    "includeArtistHasConcertsField": false,
+                    "includePreReleases": false,
+                    "includeLocalConcertsField": false,
+                    "includeAuthors": false
+                ],
+                "operationName": "searchDesktop",
+                "extensions": [
+                    "persistedQuery": [
+                        "version": 1,
+                        "sha256Hash": "d9f785900f0710b31c07818d617f4f7600c1e21217e80f5b043d1e78d74e6026"
+                    ]
+                ]
+            ]
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+            try Task.checkCancellation()
+            let searchData = try await fakeSpotifyUserAgentSession.data(for: request)
+            return getDetailsFromSpotifyInternalSearchJSON(data: searchData.0)
+//            if let searchData = try await fakeSpotifyUserAgentSession.data(for: request), !searchData.0.isEmpty, let searchResponse = try? JSONDecoder().decode(SpotifyResponse.self, from: searchData.0), let track = searchResponse.tracks.items.first, let firstArtistName = track.firstArtistName {
+//                print("Got ID with manual search")
+//                return AppleMusicHelper(SpotifyID: track.id, SpotifyName: track.name, SpotifyArtist: firstArtistName)
+//            } else {
+//                return nil
+//            }
         } else {
             print("\(#function) we expected url")
             return nil

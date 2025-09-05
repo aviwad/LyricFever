@@ -135,6 +135,7 @@ import Translation
     
     var currentlyPlayingName: String?
     var currentlyPlayingArtist: String?
+    var currentAlbumName: String?
     var currentlyPlayingLyrics: [LyricLine] = []
     var currentlyPlayingLyricsIndex: Int?
     var isPlaying: Bool = false
@@ -188,9 +189,6 @@ import Translation
     }
     #endif
     
-    var currentAlbumName: String? {
-        return currentPlayerInstance.albumName
-    }
     #if os(macOS)
     var currentPlayer: PlayerType {
         get {
@@ -486,14 +484,17 @@ import Translation
         guard let currentlyPlayingName else {
             self.currentlyPlayingName = nil
             currentlyPlayingArtist = nil
+            currentAlbumName = nil
             return
         }
         if currentlyPlayingName == "" {
             self.currentlyPlayingName = nil
             currentlyPlayingArtist = nil
+            currentAlbumName = nil
         } else {
             self.currentlyPlayingName = currentlyPlayingName
             currentlyPlayingArtist = (notification.userInfo?["Artist"] as? String)
+            currentAlbumName = (notification.userInfo?["Album"] as? String)
             if let duration = currentPlayerInstance.duration {
                 self.duration = duration
             }
@@ -521,6 +522,7 @@ import Translation
             self.currentlyPlaying = currentlyPlaying
             self.currentlyPlayingName = currentlyPlayingName
             self.currentlyPlayingArtist = spotifyPlayer.artistName
+            self.currentAlbumName = spotifyPlayer.albumName
             self.duration = duration
         }
     }
@@ -551,25 +553,28 @@ import Translation
     private func setCurrentProperties() {
         switch currentPlayer {
             case .appleMusic:
-                if let currentTrackName = appleMusicPlayer.trackName, let currentArtistName = appleMusicPlayer.artistName, let duration = appleMusicPlayer.duration {
+                if let currentTrackName = appleMusicPlayer.trackName, let currentArtistName = appleMusicPlayer.artistName, let duration = appleMusicPlayer.duration, let currentAlbumName = appleMusicPlayer.albumName {
                     // Don't set currentlyPlaying here: the persistentID change triggers the appleMusicFetch which will set spotify's currentlyPlaying
                     if currentTrackName == "" {
                         currentlyPlayingName = nil
                         currentlyPlayingArtist = nil
+                        self.currentAlbumName = nil
                     } else {
                         currentlyPlayingName = currentTrackName
                         currentlyPlayingArtist = currentArtistName
                         self.duration = duration
+                        self.currentAlbumName = currentAlbumName
                     }
                     print("ON APPEAR HAS UPDATED APPLE MUSIC SONG ID")
                     currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
                 }
             case .spotify:
-                if let currentTrack = spotifyPlayer.trackID, let currentTrackName = spotifyPlayer.trackName, let currentArtistName =  spotifyPlayer.artistName, currentTrack != "", currentTrackName != "", let duration = spotifyPlayer.duration {
+                if let currentTrack = spotifyPlayer.trackID, let currentTrackName = spotifyPlayer.trackName, let currentArtistName =  spotifyPlayer.artistName, currentTrack != "", currentTrackName != "", let duration = spotifyPlayer.duration, let currentAlbumName = spotifyPlayer.albumName {
                     currentlyPlaying = currentTrack
                     currentlyPlayingName = currentTrackName
                     currentlyPlayingArtist = currentArtistName
                     self.duration = duration
+                    self.currentAlbumName = currentAlbumName
                     self.currentTime = CurrentTimeWithStoredDate(currentTime: 0)
                     print(currentTrack)
                 }
@@ -950,23 +955,30 @@ extension ViewModel {
 //        try await spotifyLyricProvider.generateAccessToken()
         
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
-        if !Task.isCancelled {
+        
+        // search for equivalent spotify song
+        if let spotifyResult = try await musicToSpotifyHelper() {
+            self.currentlyPlayingName = spotifyResult.SpotifyName
+            self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
+            self.currentAlbumName = spotifyResult.SpotifyAlbum
+            self.currentlyPlaying = spotifyResult.SpotifyID
+        } else {
             if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
+                try Task.checkCancellation()
                 self.currentlyPlaying = alternativeID
             } else {
                 lyricsIsEmptyPostLoad = true
             }
-            
-            if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
-                print("Apple Music Network Fetch: Saving persistent id \(currentlyPlayingAppleMusicPersistentID) and spotify ID \(currentlyPlaying)")
-                // save the mapping into coredata persistentIDToSpotify
-                let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
-                newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
-                newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
-                saveCoreData()
-            }
-        } else {
-            print("Apple Music Network Fetch Cancelled!")
+        }
+        
+        
+        if let currentlyPlayingAppleMusicPersistentID, let currentlyPlaying {
+            print("Apple Music Network Fetch: Saving persistent id \(currentlyPlayingAppleMusicPersistentID) and spotify ID \(currentlyPlaying)")
+            // save the mapping into coredata persistentIDToSpotify
+            let newPersistentIDToSpotifyIDMapping = PersistentIDToSpotify(context: coreDataContainer.viewContext)
+            newPersistentIDToSpotifyIDMapping.persistentID = currentlyPlayingAppleMusicPersistentID
+            newPersistentIDToSpotifyIDMapping.spotifyID = currentlyPlaying
+            saveCoreData()
         }
     }
     
@@ -994,13 +1006,13 @@ extension ViewModel {
         return nil
     }
     
-    private func musicToSpotifyHelper(accessToken: AccessTokenJSON?, isrc: String?) async throws -> AppleMusicHelper? {
+    private func musicToSpotifyHelper() async throws -> AppleMusicHelper? {
         // Manually search song name, artist name
         guard let currentlyPlayingArtist, let currentlyPlayingName else {
             print("\(#function) currentlyPlayingName or currentlyPlayingArtist missing")
             return nil
         }
-        return await spotifyLyricProvider.searchForTrackForAppleMusic(artist: currentlyPlayingArtist, track: currentlyPlayingName)
+        return try await spotifyLyricProvider.searchForTrackForAppleMusic(artist: currentlyPlayingArtist, track: currentlyPlayingName)
     }
 }
 #endif

@@ -91,7 +91,7 @@ struct MenubarWindowView: View {
                 currentHoveredItem = isHovering ? .forward : .none
             }
         }
-//        .frame(height: 30)
+        .frame(height: 30)
 //        .buttonStyle(.accessoryBar)
     }
     
@@ -467,16 +467,16 @@ struct MenubarWindowView: View {
                  .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
             if viewmodel.spotifyConnectDelay {
                  Text("Offset is \(viewmodel.userDefaultStorage.spotifyConnectDelayCount) ms")
-                 if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 3000 {
-                     Button("Increase Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount+100)") {
-                         viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount + 100
-                     }
-                 }
-                if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 300 {
-                     Button("Decrease Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount-100)") {
-                         viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount - 100
-                     }
-                 }
+//                 if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 3000 {
+//                     Button("Increase Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount+100)") {
+//                         viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount + 100
+//                     }
+//                 }
+//                if viewmodel.userDefaultStorage.spotifyConnectDelayCount != 300 {
+//                     Button("Decrease Offset to \(viewmodel.userDefaultStorage.spotifyConnectDelayCount-100)") {
+//                         viewmodel.userDefaultStorage.spotifyConnectDelayCount = viewmodel.userDefaultStorage.spotifyConnectDelayCount - 100
+//                     }
+//                 }
              }
             Toggle("AirPlay Audio Delay", isOn: $viewmodel.airplayDelay)
                 .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
@@ -502,7 +502,6 @@ struct MenubarWindowView: View {
         Button("Check for Updates…") {
             viewmodel.updaterService.updaterController.checkForUpdates(nil)
         }
-        //    .disabled(!viewmodel.canCheckForUpdates)
             .keyboardShortcut("u")
     }
     
@@ -529,7 +528,6 @@ struct MenubarWindowView: View {
                 .frame(width: 30)
                 .menuIndicator(.hidden)
             }
-//            .buttonStyle(.bordered)
             if viewmodel.airplayDelay {
                 Image(systemName: "airplayaudio")
                     .opacity(0.8)
@@ -561,6 +559,16 @@ struct MenubarWindowView: View {
         )
     }
     
+    var spotifyDelayBinding: Binding<Double> {
+        Binding(
+            get: { Double(viewmodel.userDefaultStorage.spotifyConnectDelayCount) },
+            set: { newValue in
+                let snapped = (round(newValue / 100) * 100)
+                viewmodel.userDefaultStorage.spotifyConnectDelayCount = Int(snapped)
+            }
+        )
+    }
+    
     @ViewBuilder
     var menubarSizeSlider: some View {
         @Bindable var viewmodel = viewmodel
@@ -576,7 +584,24 @@ struct MenubarWindowView: View {
                 .frame(width: 23)
         }
         .tint(.secondary)
-//        .tint(colorScheme == .dark ? viewmodel.currentBackground : .white)
+    }
+
+    @ViewBuilder
+    var spotifyDelaySlider: some View {
+        @Bindable var viewmodel = viewmodel
+        HStack {
+            Image(systemName: "tortoise")
+                .frame(width: 34, alignment: .trailing)
+            Slider(value: spotifyDelayBinding, in: 300...3000, step: 100) {
+                Text("Spotify Delay")
+            }
+            .labelsHidden()
+            .frame(width: 160)
+            let seconds = Double(viewmodel.userDefaultStorage.spotifyConnectDelayCount) / 1000.0
+            Text("\(seconds.formatted(.number.precision(.fractionLength(1))))s")
+                .frame(width: 27)
+        }
+        .tint(.secondary)
     }
     
     var volumeBinding: Binding<Double> {
@@ -614,7 +639,6 @@ struct MenubarWindowView: View {
                 .frame(width: 23)
         }
         .tint(.secondary)
-//        .tint(colorScheme == .dark ? viewmodel.currentBackground : .white)
     }
     
     var body: some View {
@@ -629,12 +653,11 @@ struct MenubarWindowView: View {
             volumeSlider
             if viewmodel.spotifyConnectDelay {
                 Divider()
-                spotifyConnectDelayPicker
+                spotifyDelaySlider
             }
             Divider()
             systemControlView
         }
-//        .preferredColorScheme(.dark)
         .foregroundStyle(.white)
         .padding(14)
         .background(
