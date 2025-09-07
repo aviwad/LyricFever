@@ -3,91 +3,66 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0849332CB5D1BD00644244 /* KaraokeView.swift */; };
-		8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F10AC8D2D7D04D90036664A /* OverridePrint.swift */; };
 		8F1979952DA72D49008C113D /* IPADic in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979942DA72D49008C113D /* IPADic */; };
 		8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979962DA72D49008C113D /* Mecab-Swift */; };
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
-		8F2D534D2D6C1B50006F33B0 /* LyricsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */; };
-		8F2D53512D6C1B88006F33B0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2D534E2D6C1B88006F33B0 /* Extensions.swift */; };
-		8F2D53532D6C1D29006F33B0 /* LyricsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2D53522D6C1D29006F33B0 /* LyricsHeader.swift */; };
-		8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
-		8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */; };
-		8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */; };
-		8F58B8CF2C55AEB1009ADA1A /* FullscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */; };
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
-		8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */; };
+		8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */; };
+		8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 8F7C7EE72E34338900CA9041 /* ObservableDefaults */; };
 		8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8196862D93CCDC00F03741 /* StringMetric */; };
 		8F8196892D93E6DA00F03741 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F8196882D93E6DA00F03741 /* Localizable.xcstrings */; };
 		8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 8F832CAC2D6BEC52008C1C2B /* FontPicker */; };
-		8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */; };
 		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
-		8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */; };
-		8F91CD652DCB296F00FDF8DC /* FullscreenButtonIconStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */; };
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA4E9772CE73DB900CEEF35 /* ColorKit */; };
-		8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */; };
-		8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */; };
-		8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8E94C2A704EED00F69915 /* Assets.xcassets */; };
+		8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* LyricFever.swift */; };
 		8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */; };
-		8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */; };
 		8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */; };
-		8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF184EC2D626F1E0026D2A2 /* CompactSlider */; };
-		8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */; };
-		8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */; };
-		8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */; };
-		8FF9ADAB2C5B5E7500A57A75 /* ColorStop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */; };
-		8FF9ADAC2C5B5E7500A57A75 /* GradientParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */; };
-		8FF9ADAD2C5B5E7500A57A75 /* Uniforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */; };
-		8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */; };
 		8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */; };
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
+		8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFB32DE2E694991007D9981 /* CompactSlider */; };
 		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8F0849332CB5D1BD00644244 /* KaraokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeView.swift; sourceTree = "<group>"; };
-		8F10AC8D2D7D04D90036664A /* OverridePrint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverridePrint.swift; sourceTree = "<group>"; };
 		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
-		8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsParser.swift; sourceTree = "<group>"; };
-		8F2D534E2D6C1B88006F33B0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		8F2D53522D6C1D29006F33B0 /* LyricsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsHeader.swift; sourceTree = "<group>"; };
-		8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lyricJsonStruct.swift; sourceTree = "<group>"; };
-		8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SongObject+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenView.swift; sourceTree = "<group>"; };
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
-		8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = viewModel.swift; sourceTree = "<group>"; };
+		8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		8F8196882D93E6DA00F03741 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleMusicScripting.swift; sourceTree = "<group>"; };
-		8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
-		8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenButtonIconStyle.swift; sourceTree = "<group>"; };
 		8FA436AD2BC49D480072016C /* newPermissionMac.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newPermissionMac.gif; sourceTree = "<group>"; };
-		8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLoginView.swift; sourceTree = "<group>"; };
 		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyLyricsInMenubarApp.swift; sourceTree = "<group>"; };
-		8FC8E94C2A704EED00F69915 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpotifyLyricsInMenubar.entitlements; sourceTree = "<group>"; };
+		8FC8E9482A704EEB00F69915 /* LyricFever.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricFever.swift; sourceTree = "<group>"; };
 		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
-		8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyScripting.swift; sourceTree = "<group>"; };
-		8FE454292A891EBD0039EFA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update22Window.swift; sourceTree = "<group>"; };
-		8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Lyrics.xcdatamodel; sourceTree = "<group>"; };
-		8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MulticolorGradientShader.metal; sourceTree = "<group>"; };
-		8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MulticolorGradient.swift; sourceTree = "<group>"; };
-		8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStop.swift; sourceTree = "<group>"; };
-		8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientParams.swift; sourceTree = "<group>"; };
-		8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uniforms.swift; sourceTree = "<group>"; };
-		8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindow.swift; sourceTree = "<group>"; };
 		8FFA9F362AA1B63500BAEC5C /* crossfade.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = crossfade.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8F4D208C2E013333004A12CA /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8FC8E9442A704EEB00F69915 /* Lyric Fever */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8F4C0B7E2E355C1000D748AA /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
+		8F4D20712DFFAEB0004A12CA /* LyricProvider */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LyricProvider; sourceTree = "<group>"; };
+		8F4D20782E0131A4004A12CA /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+		8F4D20792E013221004A12CA /* Players */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Players; sourceTree = "<group>"; };
+		8F4D20852E013263004A12CA /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+		8F4D208B2E0132B4004A12CA /* Support Files */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8F4D208C2E013333004A12CA /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Support Files"; sourceTree = "<group>"; };
+		8FB58B862E29ED5C002B307D /* Past Updates */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Past Updates"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8FC8E9422A704EEB00F69915 /* Frameworks */ = {
@@ -98,9 +73,10 @@
 				8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */,
 				8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */,
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
-				8FF184ED2D626F1E0026D2A2 /* CompactSlider in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */,
+				8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */,
+				8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */,
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
@@ -111,16 +87,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8F2D534A2D6C1B50006F33B0 /* LyricsParser */ = {
-			isa = PBXGroup;
-			children = (
-				8F2D534E2D6C1B88006F33B0 /* Extensions.swift */,
-				8F2D53522D6C1D29006F33B0 /* LyricsHeader.swift */,
-				8F2D53492D6C1B50006F33B0 /* LyricsParser.swift */,
-			);
-			path = LyricsParser;
-			sourceTree = "<group>";
-		};
 		8FC1F4E42A7969C70043D92A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -132,12 +98,10 @@
 			isa = PBXGroup;
 			children = (
 				8F8196882D93E6DA00F03741 /* Localizable.xcstrings */,
-				8F4F495B2A7FB3D400097888 /* SongObject+CoreDataClass.swift */,
 				8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */,
 				8FFA9F362AA1B63500BAEC5C /* crossfade.gif */,
 				8FA436AD2BC49D480072016C /* newPermissionMac.gif */,
-				8F4F495C2A7FB3D400097888 /* SongObject+CoreDataProperties.swift */,
-				8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */,
+				8FC8E9472A704EEB00F69915 /* LyricFever */,
 				8FC8E9462A704EEB00F69915 /* Products */,
 				8FC1F4E42A7969C70043D92A /* Frameworks */,
 			);
@@ -151,52 +115,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8FC8E9472A704EEB00F69915 /* SpotifyLyricsInMenubar */ = {
+		8FC8E9472A704EEB00F69915 /* LyricFever */ = {
 			isa = PBXGroup;
 			children = (
-				8FF9AD9E2C5B426C00A57A75 /* Shaders */,
-				8FE454292A891EBD0039EFA7 /* Info.plist */,
-				8FC8E9482A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift */,
-				8F10AC8D2D7D04D90036664A /* OverridePrint.swift */,
-				8F9193D72CD1A2C7002B24DA /* FloatingPanel.swift */,
-				8FF9ADAA2C5B5E7500A57A75 /* Model */,
-				8FFA9F302AA1B1E600BAEC5C /* OnboardingWindow.swift */,
+				8F4C0B7E2E355C1000D748AA /* Services */,
+				8FB58B862E29ED5C002B307D /* Past Updates */,
+				8F4D208B2E0132B4004A12CA /* Support Files */,
+				8F4D20852E013263004A12CA /* Views */,
+				8F4D20792E013221004A12CA /* Players */,
+				8F4D20782E0131A4004A12CA /* Models */,
+				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
+				8FC8E9482A704EEB00F69915 /* LyricFever.swift */,
 				8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */,
 				8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */,
-				8FBA5E032BEADEC9000E4DEF /* WebLoginView.swift */,
-				8F2D534A2D6C1B50006F33B0 /* LyricsParser */,
-				8F6BD2982A8A6B7D008BBF88 /* viewModel.swift */,
-				8FF9ADA52C5B440B00A57A75 /* MulticolorGradient.swift */,
+				8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */,
 				8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */,
-				8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */,
-				8F39ED8D2A78EB5900574203 /* lyricJsonStruct.swift */,
-				8FC8E94C2A704EED00F69915 /* Assets.xcassets */,
-				8FC8E9512A704EED00F69915 /* SpotifyLyricsInMenubar.entitlements */,
-				8FE454272A8916C30039EFA7 /* SpotifyScripting.swift */,
-				8F85A8212BBFD9F6004A774D /* AppleMusicScripting.swift */,
-				8F58B8CE2C55AEB1009ADA1A /* FullscreenView.swift */,
-				8F91CD642DCB296600FDF8DC /* FullscreenButtonIconStyle.swift */,
-				8F0849332CB5D1BD00644244 /* KaraokeView.swift */,
 			);
-			path = SpotifyLyricsInMenubar;
-			sourceTree = "<group>";
-		};
-		8FF9AD9E2C5B426C00A57A75 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				8FF9AD9F2C5B426C00A57A75 /* MulticolorGradientShader.metal */,
-			);
-			path = Shaders;
-			sourceTree = "<group>";
-		};
-		8FF9ADAA2C5B5E7500A57A75 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				8FF9ADA72C5B5E7500A57A75 /* ColorStop.swift */,
-				8FF9ADA82C5B5E7500A57A75 /* GradientParams.swift */,
-				8FF9ADA92C5B5E7500A57A75 /* Uniforms.swift */,
-			);
-			path = Model;
+			path = LyricFever;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,6 +149,15 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				8F4C0B7E2E355C1000D748AA /* Services */,
+				8F4D20712DFFAEB0004A12CA /* LyricProvider */,
+				8F4D20782E0131A4004A12CA /* Models */,
+				8F4D20792E013221004A12CA /* Players */,
+				8F4D20852E013263004A12CA /* Views */,
+				8F4D208B2E0132B4004A12CA /* Support Files */,
+				8FB58B862E29ED5C002B307D /* Past Updates */,
+			);
 			name = "Lyric Fever";
 			packageProductDependencies = (
 				8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */,
@@ -221,12 +165,13 @@
 				8F28FDC12AA25D2700439D8D /* Sparkle */,
 				8F89E1102C90DA4900F511EB /* LaunchAtLogin */,
 				8FA4E9772CE73DB900CEEF35 /* ColorKit */,
-				8FF184EC2D626F1E0026D2A2 /* CompactSlider */,
 				8F832CAC2D6BEC52008C1C2B /* FontPicker */,
 				8FFED07A2D8A26E700EA1510 /* SwiftOTP */,
 				8F8196862D93CCDC00F03741 /* StringMetric */,
 				8F1979942DA72D49008C113D /* IPADic */,
 				8F1979962DA72D49008C113D /* Mecab-Swift */,
+				8F7C7EE72E34338900CA9041 /* ObservableDefaults */,
+				8FFB32DE2E694991007D9981 /* CompactSlider */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -263,11 +208,12 @@
 				8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
 				8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */,
-				8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F832CAB2D6BEC52008C1C2B /* XCRemoteSwiftPackageReference "FontPicker" */,
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
+				8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */,
+				8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -285,7 +231,6 @@
 			files = (
 				8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */,
 				8F8196892D93E6DA00F03741 /* Localizable.xcstrings in Resources */,
-				8FC8E94D2A704EED00F69915 /* Assets.xcassets in Resources */,
 				8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */,
 				8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */,
 			);
@@ -298,33 +243,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FF59E2E2A798D2B00F0A382 /* Lyrics.xcdatamodeld in Sources */,
-				8F91CD652DCB296F00FDF8DC /* FullscreenButtonIconStyle.swift in Sources */,
 				8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */,
 				8F4F49522A7EC32D00097888 /* (null) in Sources */,
-				8FBA5E042BEADEC9000E4DEF /* WebLoginView.swift in Sources */,
-				8F2D53532D6C1D29006F33B0 /* LyricsHeader.swift in Sources */,
-				8F4F495D2A7FB3D400097888 /* SongObject+CoreDataClass.swift in Sources */,
-				8FF9ADA62C5B440B00A57A75 /* MulticolorGradient.swift in Sources */,
-				8F9193D82CD1A2CA002B24DA /* FloatingPanel.swift in Sources */,
 				8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */,
 				8FEF70F72D8B5CE40069AC01 /* Update22Window.swift in Sources */,
-				8F10AC8E2D7D04DC0036664A /* OverridePrint.swift in Sources */,
-				8F39ED8E2A78EB5900574203 /* lyricJsonStruct.swift in Sources */,
-				8F0849342CB5D1C100644244 /* KaraokeView.swift in Sources */,
-				8F6BD2992A8A6B7D008BBF88 /* viewModel.swift in Sources */,
-				8FC8E9492A704EEB00F69915 /* SpotifyLyricsInMenubarApp.swift in Sources */,
-				8F85A8222BBFD9F6004A774D /* AppleMusicScripting.swift in Sources */,
-				8F2D53512D6C1B88006F33B0 /* Extensions.swift in Sources */,
-				8FE454282A8916C30039EFA7 /* SpotifyScripting.swift in Sources */,
-				8FF9ADAC2C5B5E7500A57A75 /* GradientParams.swift in Sources */,
-				8FF9ADA02C5B426C00A57A75 /* MulticolorGradientShader.metal in Sources */,
-				8FFA9F312AA1B1E600BAEC5C /* OnboardingWindow.swift in Sources */,
-				8F4F495E2A7FB3D400097888 /* SongObject+CoreDataProperties.swift in Sources */,
-				8F2D534D2D6C1B50006F33B0 /* LyricsParser.swift in Sources */,
-				8F58B8CF2C55AEB1009ADA1A /* FullscreenView.swift in Sources */,
-				8FF9ADAD2C5B5E7500A57A75 /* Uniforms.swift in Sources */,
-				8FF9ADAB2C5B5E7500A57A75 /* ColorStop.swift in Sources */,
+				8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */,
+				8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,11 +384,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SpotifyLyricsInMenubar/SpotifyLyricsInMenubar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "LyricFever/Support Files/LyricFever.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
+				CURRENT_PROJECT_VERSION = 3.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -473,7 +397,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_FILE = "LyricFever/Support Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -484,8 +408,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.2;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -499,11 +423,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SpotifyLyricsInMenubar/SpotifyLyricsInMenubar.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "LyricFever/Support Files/LyricFever.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2.2;
+				CURRENT_PROJECT_VERSION = 3.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -512,7 +436,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SpotifyLyricsInMenubar/Info.plist;
+				INFOPLIST_FILE = "LyricFever/Support Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Lyric Fever";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
@@ -523,8 +447,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 2.2;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -581,6 +505,14 @@
 				kind = branch;
 			};
 		};
+		8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fatbobman/ObservableDefaults";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.8;
+			};
+		};
 		8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/autozimu/StringMetric.swift";
@@ -613,20 +545,20 @@
 				kind = branch;
 			};
 		};
-		8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/buh/CompactSlider.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.1.6;
-			};
-		};
 		8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/buh/CompactSlider.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.1;
 			};
 		};
 		8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */ = {
@@ -660,6 +592,11 @@
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
 		};
+		8F7C7EE72E34338900CA9041 /* ObservableDefaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */;
+			productName = ObservableDefaults;
+		};
 		8F8196862D93CCDC00F03741 /* StringMetric */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */;
@@ -680,15 +617,15 @@
 			package = 8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */;
 			productName = ColorKit;
 		};
-		8FF184EC2D626F1E0026D2A2 /* CompactSlider */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FF184EB2D626F1E0026D2A2 /* XCRemoteSwiftPackageReference "CompactSlider" */;
-			productName = CompactSlider;
-		};
 		8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8FFA9F322AA1B3CB00BAEC5C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		8FFB32DE2E694991007D9981 /* CompactSlider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */;
+			productName = CompactSlider;
 		};
 		8FFED07A2D8A26E700EA1510 /* SwiftOTP */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -696,19 +633,6 @@
 			productName = SwiftOTP;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		8FF59E2C2A798D2B00F0A382 /* Lyrics.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */,
-			);
-			currentVersion = 8FF59E2D2A798D2B00F0A382 /* Lyrics.xcdatamodel */;
-			path = Lyrics.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 8FC8E93D2A704EEB00F69915 /* Project object */;
 }
