@@ -114,17 +114,6 @@
     "Change fullscreen settings here!" : {
 
     },
-    "Check for Lyrics Again" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "重新搜索歌词"
-          }
-        }
-      }
-    },
     "Check for Updates…" : {
       "localizations" : {
         "zh-Hans" : {
@@ -148,28 +137,6 @@
         }
       }
     },
-    "Decrease Offset to %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将延迟设置为 %lld"
-          }
-        }
-      }
-    },
-    "Decrease Size to %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏歌词设置为 %lld"
-          }
-        }
-      }
-    },
     "Decrease volume by 5 (Down Arrow)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -180,16 +147,14 @@
         }
       }
     },
-    "Delete Lyrics (wrong lyrics)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除歌词（错误歌词）"
-          }
-        }
-      }
+    "Delete Lyrics" : {
+
+    },
+    "Disable Karaoke" : {
+
+    },
+    "Disable Lyrics" : {
+
     },
     "Display fullscreen options" : {
 
@@ -204,18 +169,20 @@
         }
       }
     },
-    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2" : {
-      "extractionState" : "stale",
+    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 2.2"
+            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
           }
         }
       }
     },
-    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0" : {
+    "Enable Karaoke" : {
+
+    },
+    "Enable Lyrics" : {
 
     },
     "Enter your SP_DC Cookie Here" : {
@@ -238,27 +205,8 @@
         }
       }
     },
-    "Fullscreen" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全屏歌词"
-          }
-        }
-      }
-    },
-    "Give Apple Music Library Permissions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授予访问 Apple Music 音乐库权限"
-          }
-        }
-      }
+    "Forward" : {
+
     },
     "Give Apple Music Permissions" : {
       "localizations" : {
@@ -279,6 +227,9 @@
           }
         }
       }
+    },
+    "Heart" : {
+
     },
     "Hide Karaoke window when mouse passes by" : {
       "localizations" : {
@@ -316,28 +267,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "从Spotify下载歌词（备用渠道是LRCLIB和网易云音乐）"
-          }
-        }
-      }
-    },
-    "Increase Offset to %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将延迟设置为 %lld"
-          }
-        }
-      }
-    },
-    "Increase Size to %lld " : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "菜单栏歌词设置为 %lld "
           }
         }
       }
@@ -382,27 +311,8 @@
         }
       }
     },
-    "Karaoke Mode" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K 歌模式"
-          }
-        }
-      }
-    },
-    "Karaoke Mode (Enable Show Lyrics)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K 歌模式（启用显示歌词）"
-          }
-        }
-      }
+    "Karaoke Unavailable" : {
+
     },
     "Karaoke Window" : {
       "localizations" : {
@@ -464,33 +374,14 @@
         }
       }
     },
-    "Lyric Fever: Update 2.1" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever: 更新 2.1"
-          }
-        }
-      }
-    },
     "Lyric Fever: Update 2.3" : {
 
     },
     "Lyric Provider" : {
 
     },
-    "Lyrics Found 😃" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "找到歌词 😃"
-          }
-        }
-      }
+    "Lyrics unavailable." : {
+
     },
     "Lyrics were applied!" : {
 
@@ -505,19 +396,11 @@
         }
       }
     },
-    "Menubar Size" : {
+    "Manual lyric search" : {
 
     },
-    "Menubar Size is %lld" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当前菜单歌词大小为 %lld"
-          }
-        }
-      }
+    "Menubar Size" : {
+
     },
     "More options" : {
 
@@ -531,28 +414,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下一步"
-          }
-        }
-      }
-    },
-    "No Lyrics (Couldn't find Spotify ID) ☹️" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无歌词（找不到 Spotify ID） ☹️"
-          }
-        }
-      }
-    },
-    "No Lyrics Found ☹️" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未找到歌词 ☹️"
           }
         }
       }
@@ -619,16 +480,8 @@
         }
       }
     },
-    "Open %@!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开 %@！"
-          }
-        }
-      }
+    "Open Apple Music" : {
+
     },
     "Open Automation Panel" : {
       "localizations" : {
@@ -640,16 +493,11 @@
         }
       }
     },
-    "Open Music Panel" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开音乐面板"
-          }
-        }
-      }
+    "Open Fullscreen" : {
+
+    },
+    "Open Spotify" : {
+
     },
     "Open Spotify on the Web" : {
       "localizations" : {
@@ -809,16 +657,14 @@
         }
       }
     },
-    "Refresh Lyrics" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刷新歌词"
-          }
-        }
-      }
+    "Quit Lyric Fever (⌘ + Q)" : {
+
+    },
+    "Redownload lyrics" : {
+
+    },
+    "Refreshing Lyrics..." : {
+
     },
     "Reset to default" : {
       "localizations" : {
@@ -829,6 +675,9 @@
           }
         }
       }
+    },
+    "Rewind" : {
+
     },
     "Romanize" : {
       "localizations" : {
@@ -892,17 +741,6 @@
     },
     "Share Spotify link" : {
 
-    },
-    "Show Lyrics" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示歌词"
-          }
-        }
-      }
     },
     "Show lyrics (⌘ + H)" : {
       "localizations" : {
@@ -1016,6 +854,15 @@
         }
       }
     },
+    "Translating..." : {
+
+    },
+    "Translation Enabled" : {
+
+    },
+    "Translation Failure" : {
+
+    },
     "Translation Help" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1025,6 +872,12 @@
           }
         }
       }
+    },
+    "Translation options" : {
+
+    },
+    "Translation Unavailable" : {
+
     },
     "Truncation Length" : {
       "localizations" : {
@@ -1036,6 +889,9 @@
         }
       }
     },
+    "Unheart" : {
+
+    },
     "Unpause animations (uses battery) (⌘ + A)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1046,38 +902,8 @@
         }
       }
     },
-    "Update to macOS 14.0 to use fullscreen" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新至 macOS 14.0 以使用全屏歌词"
-          }
-        }
-      }
-    },
-    "Update to macOS 15 to enable translation" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更新至 macOS 15 以启用翻译"
-          }
-        }
-      }
-    },
-    "Upload Local LRC File" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "上传本地歌词文件"
-          }
-        }
-      }
+    "Upload LRC File" : {
+
     },
     "Use album color for Karaoke window" : {
       "localizations" : {
