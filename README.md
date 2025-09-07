@@ -39,7 +39,7 @@ Run `brew install lyric-fever`
 
 ### Requirements
 
-- macOS Ventura or higher (Sonoma required for fullscreen, Sequoia required for translation)
+- macOS Sequoia or higher
 - Spotify Desktop Client (if using Spotify)
 
 ## Technical Details
