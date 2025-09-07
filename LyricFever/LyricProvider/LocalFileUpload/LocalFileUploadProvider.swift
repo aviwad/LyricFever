@@ -43,6 +43,7 @@ class LocalFileUploadProvider {
     }
 
 
+    @MainActor
     func localFetch(for trackID: String, _ trackName: String) async throws -> [LyricLine] {
         if let fileUrl = await selectLRC(), let lyricText = try? String(contentsOf: fileUrl, encoding: .utf8) {
             let parser = LyricsParser(lyrics: lyricText)
