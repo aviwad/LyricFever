@@ -234,6 +234,9 @@ import Translation
     #endif
     @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
     
+    // custom order because LRCLIB is tweaking for the time being
+    @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+    
     var isFirstFetch = true
     
     init() {
@@ -338,15 +341,16 @@ import Translation
         if finalLyrics.isEmpty {
             currentlyPlayingLyricsIndex = nil
         }
-        currentlyPlayingLyrics = finalLyrics
-        setBackgroundColor()
-        romanizeDidChange()
-        reloadTranslationConfigIfTranslating()
-        lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
-        print("HELLOO")
-        if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
-            startLyricUpdater()
-        }
+        setNewLyricsColorTranslationRomanizationAndStartUpdater(with: finalLyrics)
+//        currentlyPlayingLyrics = finalLyrics
+//        setBackgroundColor()
+//        romanizeDidChange()
+//        reloadTranslationConfigIfTranslating()
+//        lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
+//        print("HELLOO")
+//        if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+//            startLyricUpdater()
+//        }
         // we call this in self.fetch
 //        callColorDataServiceOnLyricColorOrArtwork(colorData: finalLyrics.colorData)
     }
@@ -538,15 +542,16 @@ import Translation
         romanizedLyrics = []
         
         if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName) {
-            currentlyPlayingLyrics = lyrics
-            setBackgroundColor()
-            romanizeDidChange()
-            reloadTranslationConfigIfTranslating()
-            lyricsIsEmptyPostLoad = lyrics.isEmpty
-            if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
-                print("STARTING UPDATER")
-                startLyricUpdater()
-            }
+            setNewLyricsColorTranslationRomanizationAndStartUpdater(with: lyrics)
+//            currentlyPlayingLyrics = lyrics
+//            setBackgroundColor()
+//            romanizeDidChange()
+//            reloadTranslationConfigIfTranslating()
+//            lyricsIsEmptyPostLoad = lyrics.isEmpty
+//            if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+//                print("STARTING UPDATER")
+//                startLyricUpdater()
+//            }
         }
     }
     
@@ -860,12 +865,8 @@ import Translation
     #endif
     
     #if os(macOS)
-    @MainActor
-    func uploadLocalLRCFile() async throws {
-        guard let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName else {
-            throw CancellationError()
-        }
-        try await currentlyPlayingLyrics = localFileUploadProvider.localFetch(for: currentlyPlaying, currentlyPlayingName)
+    func setNewLyricsColorTranslationRomanizationAndStartUpdater(with newLyrics: [LyricLine]) {
+        currentlyPlayingLyrics = newLyrics
         setBackgroundColor()
         reloadTranslationConfigIfTranslating()
         romanizeDidChange()
@@ -873,6 +874,22 @@ import Translation
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()
         }
+    }
+    
+    @MainActor
+    func uploadLocalLRCFile() async throws {
+        guard let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName else {
+            throw CancellationError()
+        }
+        let duration = self.duration
+        let localLyrics = try await localFileUploadProvider.localFetch(for: currentlyPlaying, currentlyPlayingName)
+        let cleanLyrics = NetworkFetchReturn(lyrics: localLyrics, colorData: nil).processed(withSongName: currentlyPlayingName, duration: duration).lyrics
+        if self.currentlyPlaying == currentlyPlaying {
+            setNewLyricsColorTranslationRomanizationAndStartUpdater(with: cleanLyrics)
+        }
+        
+        SongObject(from: cleanLyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+        saveCoreData()
     }
     #endif
     
