@@ -16,20 +16,23 @@ struct UpdateWindow: View {
                     .resizable()
                     .frame(width: 70, height: 70, alignment: .center)
                 
-                Text(verbatim:"Thanks for updating to Lyric Fever 2.3! 🎉")
+                Text(verbatim:"Thanks for updating to Lyric Fever 3.0! 🎉")
                     .font(.title)
             }
             
-            Text(verbatim:"2.3 Changes")
+            Text(verbatim: "Sorry for 4 months of no updates. I had an Apple internship and was legally forbidden from releasing app updates. I hope you enjoy this new update :-). Future fixes will come much quicker")
+                .padding(.horizontal, 10)
+            
+            Text(verbatim:"3.0 Changes")
                 .font(.title2)
                 .foregroundStyle(.green)
             ScrollView {
-                VStack(spacing: 3) {
+                VStack(alignment: .leading, spacing: 3) {
                     ForEach(updateNotes23, id: \.self) { updateNote in
-                        Text(verbatim: updateNote)
+                        Text(verbatim: "- " + updateNote)
                     }
                 }
-                .multilineTextAlignment(.leading)
+                .frame(alignment: .leading)
                 .padding(.horizontal,10)
                 .padding(.vertical,5)
                 .background(Color(nsColor: NSColor.darkGray).cornerRadius(7))

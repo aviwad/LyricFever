@@ -23,14 +23,14 @@ enum MainSettingsError: Error, Identifiable, CaseIterable {
     
     var id: Self { self }
     
-    var description: String {
+    var description: LocalizedStringKey {
         switch self {
         case .openSpotify:
-            return "Please open Spotify!"
+            return LocalizedStringKey("Please open Spotify!")
         case .openAppleMusic:
-            return "Please open Apple Music!"
+            return LocalizedStringKey("Please open Apple Music!")
         case .missingAuthorization:
-            return "Please give required permissions!"
+            return LocalizedStringKey("Please give required permissions!")
         case .authorized:
             return " "
         }
@@ -86,6 +86,7 @@ struct MainSettingsView: View {
                         error = .openSpotify
                         permissionDenied = true
                     } else {
+                        permissionDenied = false
                         error = .authorized
                     }
                 }
@@ -98,6 +99,7 @@ struct MainSettingsView: View {
                         error = .openAppleMusic
                         permissionDenied = true
                     } else {
+                        permissionDenied = false
                         error = .authorized
                     }
                 }
