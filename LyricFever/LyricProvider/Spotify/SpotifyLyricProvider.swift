@@ -242,9 +242,26 @@ class SpotifyLyricProvider: LyricProvider {
         return nil
     }
     
+    func search(trackName: String, artistName: String) async throws -> [SongResult] {
+        let appleMusicHelper = try await searchForTrackForAppleMusic(artist: artistName, track: trackName)
+        guard let appleMusicHelper else {
+            print("MassSearch: SpotifyLyricProvider, couldn't fetch ID for the searchTerm \(trackName) \(artistName)")
+            return []
+        }
+        let spotifyID = appleMusicHelper.SpotifyID
+        let lyrics = try await fetchNetworkLyrics(trackName: trackName, trackID: spotifyID)
+        if lyrics.lyrics == [] {
+            print("MassSearch: SpotifyLyricProvider, empty lyrics")
+            return []
+        } else {
+            let songResult = SongResult(lyricType: "Spotify", songName: appleMusicHelper.SpotifyName, albumName: appleMusicHelper.SpotifyAlbum, artistName: appleMusicHelper.SpotifyArtist, lyrics: lyrics.lyrics)
+            return [songResult]
+        }
+    }
+    
     #if os(macOS)
     @MainActor
-    func searchForTrackForAppleMusic(artist: String, track: String) async throws -> AppleMusicHelper? {
+    func searchForTrackForAppleMusic(artist: String, track: String, album: String? = nil) async throws -> AppleMusicHelper? {
         try await generateAccessToken()
         if let url = URL(string: "https://api-partner.spotify.com/pathfinder/v2/query") {
             var request = URLRequest(url: url)
@@ -252,7 +269,12 @@ class SpotifyLyricProvider: LyricProvider {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("WebPlayer", forHTTPHeaderField: "app-platform")
             request.addValue("Bearer \(accessToken?.accessToken ?? "")", forHTTPHeaderField: "authorization")
-            let searchTerm = "\(track) \(artist)"
+            let searchTerm: String
+            if let album {
+                searchTerm = "\(track) \(album) \(artist)"
+            } else {
+                searchTerm = "\(track) \(artist)"
+            }
             let body: [String: Any] = [
                 "variables": [
                     "searchTerm": searchTerm,

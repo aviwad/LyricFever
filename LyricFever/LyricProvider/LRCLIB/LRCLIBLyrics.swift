@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct LRCLIBLyrics: Decodable {
+struct LRCLIBLyrics: Codable {
     let id: Int
     let name, trackName, artistName, albumName: String
     let duration: Int

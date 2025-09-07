@@ -87,3 +87,48 @@ private func unescapeHTMLEntities(in text: String) -> String {
     // If payload includes escaped newline markers already, LyricsParser handles "\\n" -> "\n".
     return s
 }
+
+// MARK: - New: Search implementation
+extension NetEaseLyricProvider {
+    func search(trackName: String, artistName: String) async throws -> [SongResult] {
+        let encodedTrack = trackName.replacingOccurrences(of: "&", with: "%26")
+        let encodedArtist = artistName.replacingOccurrences(of: "&", with: "%26")
+        // Ask for up to 5
+        guard let url = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/search?keywords=\(encodedTrack) \(encodedArtist)&limit=5") else {
+            return []
+        }
+        let request = URLRequest(url: url)
+        let urlResponseAndData = try await fakeSpotifyUserAgentSession.data(for: request)
+        let neteasesearch = try JSONDecoder().decode(NetEaseSearch.self, from: urlResponseAndData.0)
+        
+        var results: [SongResult] = []
+        for song in neteasesearch.result.songs {
+            guard let firstArtist = song.artists.first else { continue }
+//            // Similarity checks (reuse thresholds)
+//            let conditions = [
+//                track.distance(between: song.name) > 0.75,
+//                artist.distance(between: firstArtist.name) > 0.75,
+//                (album ?? "").distance(between: song.album.name) > 0.75
+//            ]
+//            let trueCount = conditions.filter { $0 }.count
+//            if trueCount < 2 { continue }
+            
+            // Fetch lyrics
+            guard let lyricURL = URL(string: "https://neteasecloudmusicapi-ten-wine.vercel.app/lyric?id=\(song.id)") else { continue }
+            do {
+                let lyricsData = try await fakeSpotifyUserAgentSession.data(from: lyricURL).0
+                let neteaseLyrics = try JSONDecoder().decode(NetEaseLyrics.self, from: lyricsData)
+                guard let lrcText = neteaseLyrics.lrc?.lyric else { continue }
+                let cleaned = unescapeHTMLEntities(in: lrcText)
+                let parsed = LyricsParser(lyrics: cleaned).lyrics
+                if parsed.last?.startTimeMS == 0.0 { continue }
+                
+                results.append(SongResult(lyricType: "NetEase", songName: song.name, albumName: song.album.name, artistName: firstArtist.name, lyrics: parsed))
+            } catch {
+                // ignore per-item failure
+            }
+        }
+        return results
+    }
+}
+

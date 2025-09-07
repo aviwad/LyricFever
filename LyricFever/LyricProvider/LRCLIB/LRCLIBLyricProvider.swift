@@ -14,7 +14,8 @@ class LRCLIBLyricProvider: LyricProvider {
     let LRCLIBUserAgentSession: URLSession
     
     init() {
-        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v2.3 (https://github.com/aviwad/LyricFever)"]
+//        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_6_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15"]
+        LRCLIBUserAgentConfig.httpAdditionalHeaders = ["User-Agent": "Lyric Fever v3.0 (https://github.com/aviwad/LyricFever)"]
         LRCLIBUserAgentSession = URLSession(configuration: LRCLIBUserAgentConfig)
     }
     
@@ -50,6 +51,28 @@ class LRCLIBLyricProvider: LyricProvider {
             return NetworkFetchReturn(lyrics: lrcLyrics.lyrics, colorData: nil)
         }
         return NetworkFetchReturn(lyrics: [], colorData: nil)
+    }
+    
+    func search(trackName: String, artistName: String) async throws -> [SongResult] {
+        guard let url = makeComponents(path: "/api/search", items: [
+            URLQueryItem(name: "track_name", value: trackName),
+            URLQueryItem(name: "artist_name", value: artistName)
+        ]).url else {
+            print("MassSearch: LRCLIB: failed to generate URl")
+            return []
+        }
+        print("LRCLIB /api/search: \(url.absoluteString)")
+        let req = URLRequest(url: url)
+        print("The request is \(req)")
+        let urlResponseAndData = try await LRCLIBUserAgentSession.data(for: req)
+        let lrcLyrics = try JSONDecoder().decode(PluralLRCLIBLyrics.self, from: urlResponseAndData.0)
+        print("lrc downloaded")
+        var results: [SongResult] = []
+        for lyric in lrcLyrics.lyrics {
+            print("lrc lyric: \(lyric.name)")
+            results.append(SongResult(lyricType: "LRCLIB", songName: lyric.trackName, albumName: lyric.albumName, artistName: lyric.artistName, lyrics: lyric.lyrics))
+        }
+        return results
     }
     
     func makeComponents(path: String, items: [URLQueryItem]) -> URLComponents {
