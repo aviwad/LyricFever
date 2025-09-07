@@ -5,7 +5,9 @@
 //  Created by Avi Wadhwa on 2025-08-15.
 //
 
-enum MenubarButtonHighlight: CustomStringConvertible {
+import SwiftUI
+
+enum MenubarButtonHighlight {
     case activateSpotify
     case activateAppleMusic
     case rewind
@@ -36,60 +38,60 @@ enum MenubarButtonHighlight: CustomStringConvertible {
     case none
     
     
-    var description: String {
+    var description: LocalizedStringKey {
         switch self {
             case .activateSpotify:
-                "Open Spotify"
+                LocalizedStringKey("Open Spotify")
             case .activateAppleMusic:
-                "Open Apple Music"
+                LocalizedStringKey("Open Apple Music")
             case .rewind:
-                "Rewind"
+                LocalizedStringKey("Rewind")
             case .play:
-                "Play"
+                LocalizedStringKey("Play (spacebar)")
             case .pause:
-                "Pause"
+                LocalizedStringKey("Pause (spacebar)")
             case .forward:
-                "Forward"
+                LocalizedStringKey("Forward")
             case .heart:
-                "Heart"
+                LocalizedStringKey("Heart")
             case .unheart:
-                "Unheart"
+                LocalizedStringKey("Unheart")
             case .enableLyrics:
-                "Enable Lyrics"
+                LocalizedStringKey("Enable Lyrics")
             case .disableLyrics:
-                "Disable Lyrics"
+                LocalizedStringKey("Disable Lyrics")
             case .unavailableLyrics:
-                "Lyrics unavailable."
+                LocalizedStringKey("Lyrics unavailable.")
             case .enableFullscreen:
-                "Open Fullscreen"
+                LocalizedStringKey("Open Fullscreen")
             case .enableKaraoke:
-                "enable karaoke"
+                LocalizedStringKey("Enable Karaoke")
             case .disableKaraoke:
-                "disable karaoke"
+                LocalizedStringKey("Disable Karaoke")
             case .unavailableKaraoke:
-                "Karaoke unavailable"
+                LocalizedStringKey("Karaoke Unavailable")
             case .refreshLyrics:
-                "Redownload lyrics"
+                LocalizedStringKey("Redownload lyrics")
             case .refreshingLyrics:
-                "refreshing lyrics..."
+                LocalizedStringKey("Refreshing Lyrics...")
             case .search:
-                "Click to search for lyrics"
+                LocalizedStringKey("Manual lyric search")
             case .translate:
-                "Translation options"
+                LocalizedStringKey("Translation options")
             case .translateEnabled:
-                "Translation enabled"
+                LocalizedStringKey("Translation Enabled")
             case .translationFail:
-                "Translation Failure"
+                LocalizedStringKey("Translation Failure")
             case .translationLoading:
-                "Translating..."
+                LocalizedStringKey("Translating...")
             case .translationUnavailable:
-                "translation unavailable"
+                LocalizedStringKey("Translation Unavailable")
             case .upload:
-                "Upload lrc file"
+                LocalizedStringKey("Upload LRC File")
             case .delete:
-                "Delete lyrics"
+                LocalizedStringKey("Delete Lyrics")
             case .quit:
-                "Quit Lyric Fever (⌘ + Q)"
+                LocalizedStringKey("Quit Lyric Fever (⌘ + Q)")
             case .none:
                 ""
         }

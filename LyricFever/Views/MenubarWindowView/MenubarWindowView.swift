@@ -82,6 +82,7 @@ struct MenubarWindowView: View {
             .onHover { isHovering in
                 currentHoveredItem = isHovering ? (viewmodel.isPlaying ? .pause : .play) : .none
             }
+            .keyboardShortcut(" ", modifiers: [])
             .contentTransition(.symbolEffect(.replace, options: .speed(2)))
             
             SongControlButton(systemImage: "forward.fill") {
@@ -397,6 +398,13 @@ struct MenubarWindowView: View {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 openWindow(id: "search")
             }
+            .onHover { isHovering in
+                if isHovering {
+                    currentHoveredItem = .search
+                } else {
+                    currentHoveredItem = .none
+                }
+            }
             Menu {
                 translationAndRomanizationView
             } label: {
@@ -538,11 +546,19 @@ struct MenubarWindowView: View {
             }
             Spacer()
             Text(currentHoveredItem.description)
+                .minimumScaleFactor(0.8)
                 .textCase(.uppercase)
                 .font(.system(size: 12, weight: .light, design: .monospaced))
             Spacer()
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
+            }
+            .onHover { isHovering in
+                if isHovering {
+                    currentHoveredItem = .quit
+                } else {
+                    currentHoveredItem = .none
+                }
             }
         }
         .padding(.top, 8)
