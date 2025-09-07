@@ -215,6 +215,7 @@ struct LyricFever: App {
                     }
                 }
         }
+        .windowResizability(.contentSize)
         Window("Lyric Fever: Update 2.3", id: "update") { // << here !!
             UpdateWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
                 .environment(viewmodel)
