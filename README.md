@@ -14,6 +14,7 @@ Run `brew install lyric-fever`
 
 ## Screenshots
 [lyricfeverad.webm](https://github.com/user-attachments/assets/8881ae23-69d3-4b81-875b-31f12c577fa0)
+
 <img alt="Screenshot of Lyric Fever's menubar window and floating lyric window" src="https://github.com/user-attachments/assets/a890b685-b4b4-45cc-918c-1184aa10d1bd" width="50%"/>
 
 <img src="superShy.gif" alt="First Screenshot" width="50%">
