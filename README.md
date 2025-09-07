@@ -71,7 +71,6 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 - [Sparkle:](https://github.com/sparkle-project/Sparkle) For app updates
 - [Amplitude:](https://amplitude.com) For app analytics
 - [Spotify:](https://spotify.com) The music platform this project depends on! (for playback, for lyrics)
-- [Apple MusicKit:](https://developer.apple.com/musickit/) Apple Music API
 - [Apple Music:](https://music.apple.com/us/browse) Another platform that this project depends on
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
