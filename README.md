@@ -35,7 +35,7 @@ Run `brew install lyric-fever`
 
 ## YouTube Promo Vid:
 
-[![LyricFever Promo Vid](https://img.youtube.com/vi/Bxc7d-O9-rM/0.jpg)](https://www.youtube.com/watch?v=Bxc7d-O9-rM)
+[![LyricFever Promo Vid]](https://youtu.be/Qgqz43hepQQ)
 
 ### Requirements
 
