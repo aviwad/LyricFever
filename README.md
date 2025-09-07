@@ -13,13 +13,13 @@ Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/downl
 Run `brew install lyric-fever`
 
 ## Screenshots
+[lyricfeverad.webm](https://github.com/user-attachments/assets/8881ae23-69d3-4b81-875b-31f12c577fa0)
 <img alt="Screenshot of Lyric Fever's menubar window and floating lyric window" src="https://github.com/user-attachments/assets/a890b685-b4b4-45cc-918c-1184aa10d1bd" width="50%"/>
 
 <img src="superShy.gif" alt="First Screenshot" width="50%">
 <img src="https://github.com/user-attachments/assets/e3c2c5f1-3d2b-4f7c-9893-d4613340943e" alt="Screenshot 1" width="50%">
 <img alt="Screenshot 2025-09-07 at 4 50 35 PM" src="https://github.com/user-attachments/assets/d1ceea06-f56e-44b3-a2db-b66ac6a95d65" width="50%"/>
 <img alt="image" src="https://github.com/user-attachments/assets/2aae8faf-74a3-41bb-a8f7-2e9774489f17" width="50%"/>
-
 
 ## Features
 - Automatic Lyric Playback on Menubar
