@@ -77,6 +77,7 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 - autozimu for https://github.com/autozimu/StringMetric.swift, used to determine how similar NetEase search results are from search query
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
 - NetEase for their Lyrics, used when LRCLIB and Spotify fail.
+- fatbobman for ObservableDefaults
 - https://neteasecloudmusicapi-ten-wine.vercel.app for their NetEase API
 - [f728743](https://github.com/f728743) for the mesh gradient view.
 - [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
