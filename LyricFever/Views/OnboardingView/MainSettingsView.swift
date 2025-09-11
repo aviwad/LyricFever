@@ -144,9 +144,13 @@ struct MainSettingsView: View {
                     .transition(.opacity)
                             
                 permissionsOrNextButton
-                    .frame(height: 50)
+                    .frame(height: 40)
                 
-                Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0")
+                VStack {
+                    Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support")
+                    Text(verbatim: "⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nTranslations by InTheManXG and ARui-tw")
+                    Text("[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0")
+                }
                     .multilineTextAlignment(.center)
                     .font(.callout)
                     .padding(.top, 10)

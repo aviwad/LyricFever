@@ -67,6 +67,9 @@
         }
       }
     },
+    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0" : {
+
+    },
     "%@s" : {
       "localizations" : {
         "zh-Hans" : {
@@ -648,27 +651,8 @@
         }
       }
     },
-    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "若需任何支援，請寄送電子郵件至： [aviwad@gmail.com](mailto:aviwad@gmail.com)\n⚠️ 免責聲明：本人並未擁有 Spotify 或所呈現之歌詞內容的任何權利。\n歌詞的所有權利均為 Musixmatch 與 Spotify 所擁有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.0"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
-          }
-        }
-      }
+    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support" : {
+
     },
     "Enable Karaoke" : {
       "localizations" : {
