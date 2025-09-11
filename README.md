@@ -1,4 +1,4 @@
-# Lyric Fever (Update will be out September 1 or 2)
+# Lyric Fever
 
 <img src="logo.png" alt="Logo" width="15%">
 
@@ -13,11 +13,14 @@ Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/downl
 Run `brew install lyric-fever`
 
 ## Screenshots
+[lyricfeverad.webm](https://github.com/user-attachments/assets/8881ae23-69d3-4b81-875b-31f12c577fa0)
+
+<img alt="Screenshot of Lyric Fever's menubar window and floating lyric window" src="https://github.com/user-attachments/assets/a890b685-b4b4-45cc-918c-1184aa10d1bd" width="50%"/>
 
 <img src="superShy.gif" alt="First Screenshot" width="50%">
 <img src="https://github.com/user-attachments/assets/e3c2c5f1-3d2b-4f7c-9893-d4613340943e" alt="Screenshot 1" width="50%">
-<img src="https://github.com/user-attachments/assets/8d63d03e-6961-4675-b07a-e29697379c4b" alt="Screenshot 2" width="50%">
-
+<img alt="Screenshot 2025-09-07 at 4 50 35 PM" src="https://github.com/user-attachments/assets/d1ceea06-f56e-44b3-a2db-b66ac6a95d65" width="50%"/>
+<img alt="image" src="https://github.com/user-attachments/assets/2aae8faf-74a3-41bb-a8f7-2e9774489f17" width="50%"/>
 
 ## Features
 - Automatic Lyric Playback on Menubar
@@ -32,11 +35,11 @@ Run `brew install lyric-fever`
 
 ## YouTube Promo Vid:
 
-[![LyricFever Promo Vid](https://img.youtube.com/vi/Bxc7d-O9-rM/0.jpg)](https://www.youtube.com/watch?v=Bxc7d-O9-rM)
+[![LyricFever Promo Vid]](https://youtu.be/Qgqz43hepQQ)
 
 ### Requirements
 
-- macOS Ventura or higher (Sonoma required for fullscreen, Sequoia required for translation)
+- macOS Sequoia or higher
 - Spotify Desktop Client (if using Spotify)
 
 ## Technical Details
@@ -68,13 +71,13 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 - [Sparkle:](https://github.com/sparkle-project/Sparkle) For app updates
 - [Amplitude:](https://amplitude.com) For app analytics
 - [Spotify:](https://spotify.com) The music platform this project depends on! (for playback, for lyrics)
-- [Apple MusicKit:](https://developer.apple.com/musickit/) Apple Music API
 - [Apple Music:](https://music.apple.com/us/browse) Another platform that this project depends on
 - [ColorKit-macOS:](https://github.com/aviwad/ColorKit-macOS) My port of [ColorKit](https://github.com/Boris-Em/ColorKit) for macOS
 - Cindori for their blog post on writing an NSPanel view for SwiftUI
 - autozimu for https://github.com/autozimu/StringMetric.swift, used to determine how similar NetEase search results are from search query
 - [tranxuanthang](https://github.com/tranxuanthang) for [LRCLIB](https://lrclib.net), an open source Lyric library. Used when Spotify fails.
 - NetEase for their Lyrics, used when LRCLIB and Spotify fail.
+- fatbobman for ObservableDefaults
 - https://neteasecloudmusicapi-ten-wine.vercel.app for their NetEase API
 - [f728743](https://github.com/f728743) for the mesh gradient view.
 - [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
