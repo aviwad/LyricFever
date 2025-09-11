@@ -8,20 +8,108 @@
             "state" : "new",
             "value" : ""
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ""
+          }
         }
       }
     },
     " " : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : " "
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : " "
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : " "
+          }
+        }
+      }
     },
     "..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "..."
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "..."
+          }
+        }
+      }
     },
     "%@s" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@s"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%@s"
+          }
+        }
+      }
     },
     "%lld" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%lld"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld Characters" : {
       "localizations" : {
@@ -29,6 +117,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 字符"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個字"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%lld Characters"
           }
         }
       }
@@ -38,6 +138,18 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
             "value" : "%lld%%"
           }
         }
@@ -50,6 +162,18 @@
             "state" : "translated",
             "value" : "⚠️ 完成设置 (点击设置)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 完整設定（點擊設定）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "⚠️ Complete Setup (Click Settings)"
+          }
         }
       }
     },
@@ -60,17 +184,86 @@
             "state" : "translated",
             "value" : "⚠️ 请更新 (点击检查更新)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 請更新 （點擊檢查更新）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "⚠️ Please Update (Click Check Updates)"
+          }
         }
       }
     },
     "AirPlay Audio Delay" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "AirPlay Audio Delay"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirPlay 音訊延遲"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "AirPlay Audio Delay"
+          }
+        }
+      }
     },
     "Album Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Album Name"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "專輯名稱"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Album Name"
+          }
+        }
+      }
     },
     "Animate on startup" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Animate on startup"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟動動畫"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Animate on startup"
+          }
+        }
+      }
     },
     "API Key: Advanced" : {
       "localizations" : {
@@ -78,6 +271,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Key: 高级"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key：進階"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "API Key: Advanced"
           }
         }
       }
@@ -89,17 +294,86 @@
             "state" : "translated",
             "value" : "Apple Music"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Music"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Apple Music"
+          }
         }
       }
     },
     "Arist Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Arist Name"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "藝人名稱"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Arist Name"
+          }
+        }
+      }
     },
     "Artist Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Artist Name"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "藝人名稱"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Artist Name"
+          }
+        }
+      }
     },
     "Artist Name:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Artist Name:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "藝人名稱："
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Artist Name:"
+          }
+        }
+      }
     },
     "Auto" : {
 
@@ -111,14 +385,64 @@
             "state" : "translated",
             "value" : "返回"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Back"
+          }
         }
       }
     },
     "Blur surrounding lyrics" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Blur surrounding lyrics"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模糊周遭的歌詞"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Blur surrounding lyrics"
+          }
+        }
+      }
     },
     "Change fullscreen settings here!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Change fullscreen settings here!"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在這裡更改全螢幕設定！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Change fullscreen settings here!"
+          }
+        }
+      }
     },
     "Check for Updates…" : {
       "localizations" : {
@@ -127,6 +451,18 @@
             "state" : "translated",
             "value" : "检查更新…"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檢查更新…"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Check for Updates…"
+          }
         }
       }
     },
@@ -134,7 +470,26 @@
 
     },
     "Click to Use" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Click to Use"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點擊使用"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Click to Use"
+          }
+        }
+      }
     },
     "Close" : {
       "localizations" : {
@@ -142,6 +497,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Close"
           }
         }
       }
@@ -153,19 +520,110 @@
             "state" : "translated",
             "value" : "音量减少 5 (方向键下)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "降低 5% 的音量（向下鍵）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Decrease volume by 5 (Down Arrow)"
+          }
         }
       }
     },
     "Delete Lyrics" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete Lyrics"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除歌詞"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Delete Lyrics"
+          }
+        }
+      }
     },
     "Disable Karaoke" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable Karaoke"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停用卡拉 OK"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable Karaoke"
+          }
+        }
+      }
     },
     "Disable Lyrics" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable Lyrics"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停用歌詞"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Disable Lyrics"
+          }
+        }
+      }
     },
     "Display fullscreen options" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Display fullscreen options"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示全螢幕選項"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Display fullscreen options"
+          }
+        }
+      }
+    },
+    "Display fullscreen:" : {
 
     },
     "Done" : {
@@ -175,6 +633,18 @@
             "state" : "translated",
             "value" : "完成"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Done"
+          }
         }
       }
     },
@@ -182,17 +652,67 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
+            "state" : "new",
+            "value" : "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
             "state" : "translated",
-            "value" : "请给我发送邮件 [aviwad@gmail.com](mailto:aviwad@gmail.com) 获取帮助\n⚠️ 免责声明: 我不拥有Spotify或展示歌词的版权。\n歌词所有权归Musixmatch和Spotify所有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
+            "value" : "若需任何支援，請寄送電子郵件至： [aviwad@gmail.com](mailto:aviwad@gmail.com)\n⚠️ 免責聲明：本人並未擁有 Spotify 或所呈現之歌詞內容的任何權利。\n歌詞的所有權利均為 Musixmatch 與 Spotify 所擁有。\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.0"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support\n⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\n [Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
           }
         }
       }
     },
     "Enable Karaoke" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable Karaoke"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用卡拉 OK"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable Karaoke"
+          }
+        }
+      }
     },
     "Enable Lyrics" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable Lyrics"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用歌詞"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enable Lyrics"
+          }
+        }
+      }
     },
     "Enter your SP_DC Cookie Here" : {
       "localizations" : {
@@ -200,6 +720,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在此输入您的 SP_DC Cookie"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此輸入你的 SP_DC Cookie"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Enter your SP_DC Cookie Here"
           }
         }
       }
@@ -211,11 +743,42 @@
             "state" : "translated",
             "value" : "所选字体: %@, 大小: %lld"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字體選擇：%@，大小：%lld"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Font Selected: %@, Size: %lld"
+          }
         }
       }
     },
     "Forward" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Forward"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一首"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Forward"
+          }
+        }
+      }
     },
     "Give Apple Music Permissions" : {
       "localizations" : {
@@ -223,6 +786,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授予访问 Apple Music权限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "給予 Apple Music 的權限"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Give Apple Music Permissions"
           }
         }
       }
@@ -234,11 +809,42 @@
             "state" : "translated",
             "value" : "授予访问 Spotify 权限"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "給予 Spotify 的權限"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Give Spotify Permissions"
+          }
         }
       }
     },
     "Heart" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Heart"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "喜歡"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Heart"
+          }
+        }
+      }
     },
     "Hide Karaoke window when mouse passes by" : {
       "localizations" : {
@@ -246,6 +852,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标经过时隐藏 K歌 窗口"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在滑鼠經過時隱藏卡拉 OK 視窗"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Hide Karaoke window when mouse passes by"
           }
         }
       }
@@ -257,6 +875,18 @@
             "state" : "translated",
             "value" : "隐藏歌词 (⌘ + H)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏歌詞（⌘ + H）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Hide lyrics (⌘ + H)"
+          }
         }
       }
     },
@@ -266,6 +896,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隐藏翻译 (⌘ + T)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏翻譯（⌘ + T）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Hide translations (⌘ + T)"
           }
         }
       }
@@ -277,6 +919,18 @@
             "state" : "translated",
             "value" : "从Spotify下载歌词（备用渠道是LRCLIB和网易云音乐）"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我從 Spotify 下載歌詞（然後用 LRCLIB 和 NetEase 作為備案）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)"
+          }
         }
       }
     },
@@ -286,6 +940,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "音量增加 5（方向键上）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "增加 5% 的音量（向上鍵）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Increase volume by 5 (Up Arrow)"
           }
         }
       }
@@ -297,6 +963,18 @@
             "state" : "translated",
             "value" : "K 歌 歌词背景样式"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 背景樣式"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Background Appearance"
+          }
         }
       }
     },
@@ -306,6 +984,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "K 歌模式设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 模式設定"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Behaviour"
           }
         }
       }
@@ -317,11 +1007,42 @@
             "state" : "translated",
             "value" : "K歌 歌词字体样式"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 字體樣式"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Font Appearance"
+          }
         }
       }
     },
     "Karaoke Unavailable" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Unavailable"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法顯示卡拉 OK"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Unavailable"
+          }
+        }
+      }
     },
     "Karaoke Window" : {
       "localizations" : {
@@ -330,8 +1051,23 @@
             "state" : "translated",
             "value" : "K 歌模式设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 視窗"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Karaoke Window"
+          }
         }
       }
+    },
+    "Keyboard Shortcuts" : {
+
     },
     "Launch at Login" : {
       "localizations" : {
@@ -339,6 +1075,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开机自动启动"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開機時啟動"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Launch at Login"
           }
         }
       }
@@ -350,6 +1098,18 @@
             "state" : "translated",
             "value" : "注销"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登出"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Log Out"
+          }
         }
       }
     },
@@ -359,6 +1119,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyric Fever: 全屏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：全螢幕"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Fullscreen"
           }
         }
       }
@@ -370,6 +1142,18 @@
             "state" : "translated",
             "value" : "Lyric Fever: 引导"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：引導"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Onboarding"
+          }
         }
       }
     },
@@ -380,20 +1164,114 @@
             "state" : "new",
             "value" : "Lyric Fever: Searching for %1$@ by %2$@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Searching for %1$@ by %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：搜尋由 %2$@ 演唱的 %1$@"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Searching for %1$@ by %2$@"
+          }
         }
       }
     },
     "Lyric Fever: Update 2.3" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Update 2.3"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：2.3 更新紀錄"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Fever: Update 2.3"
+          }
+        }
+      }
     },
     "Lyric Provider" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Provider"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞提供者"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyric Provider"
+          }
+        }
+      }
     },
     "Lyrics unavailable." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyrics unavailable."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有歌詞。"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyrics unavailable."
+          }
+        }
+      }
     },
     "Lyrics were applied!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyrics were applied!"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已使用歌詞！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Lyrics were applied!"
+          }
+        }
+      }
     },
     "Main Settings" : {
       "localizations" : {
@@ -402,20 +1280,108 @@
             "state" : "translated",
             "value" : "主设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主要設定"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Main Settings"
+          }
         }
       }
     },
     "Manual lyric search" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manual lyric search"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手動歌詞搜尋"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manual lyric search"
+          }
+        }
+      }
     },
     "Menubar Size" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Menubar Size"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選單列大小"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Menubar Size"
+          }
+        }
+      }
     },
     "More options" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "More options"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多選項"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "More options"
+          }
+        }
+      }
     },
     "More options, AirPlay delay enabled" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "More options, AirPlay delay enabled"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多選項，已啟用 AirPlay 延遲"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "More options, AirPlay delay enabled"
+          }
+        }
+      }
     },
     "Next" : {
       "localizations" : {
@@ -423,6 +1389,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下一步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一步"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Next"
           }
         }
       }
@@ -433,6 +1411,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无翻译 ☹️"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有翻譯 ☹️"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "No Translation ☹️"
           }
         }
       }
@@ -445,6 +1435,18 @@
             "state" : "translated",
             "value" : "暂停: %@ - %@"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫停：%@ - %@"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Now Paused: %@ - %@"
+          }
         }
       }
     },
@@ -456,6 +1458,18 @@
             "state" : "translated",
             "value" : "播放: %@ - %@"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放：%@ - %@"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Now Playing: %@ - %@"
+          }
         }
       }
     },
@@ -465,6 +1479,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前延迟为 %lld 毫秒"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目前延遲：%lld ms"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Offset is %lld ms"
           }
         }
       }
@@ -476,6 +1502,18 @@
             "state" : "translated",
             "value" : "透明度等级："
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明度："
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Opacity Level:"
+          }
         }
       }
     },
@@ -486,11 +1524,42 @@
             "state" : "translated",
             "value" : "透明度等级： %lld%%"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "透明度：%lld%%"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Opacity Level: %lld%%"
+          }
         }
       }
     },
     "Open Apple Music" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Apple Music"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 Apple Music"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Apple Music"
+          }
+        }
+      }
     },
     "Open Automation Panel" : {
       "localizations" : {
@@ -499,14 +1568,64 @@
             "state" : "translated",
             "value" : "打开自动化面板"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟自動化面板"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟自動化面板"
+          }
         }
       }
     },
     "Open Fullscreen" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Fullscreen"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟全螢幕"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Fullscreen"
+          }
+        }
+      }
     },
     "Open Spotify" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Spotify"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 Spotify"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Spotify"
+          }
+        }
+      }
     },
     "Open Spotify on the Web" : {
       "localizations" : {
@@ -514,6 +1633,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在网页中打开Spotify"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在網頁中開啟 Spotify"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Spotify on the Web"
           }
         }
       }
@@ -526,6 +1657,18 @@
             "state" : "translated",
             "value" : "打开 Spotify！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟 Spotify！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Open Spotify!"
+          }
         }
       }
     },
@@ -535,6 +1678,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暂停 (空格键)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫停（空格鍵）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Pause (spacebar)"
           }
         }
       }
@@ -546,6 +1701,18 @@
             "state" : "translated",
             "value" : "关闭动画（节省电量） (⌘ + A)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暫停動畫（節省電量）（⌘ + A）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Pause animations (saves battery) (⌘ + A)"
+          }
         }
       }
     },
@@ -556,6 +1723,18 @@
             "state" : "translated",
             "value" : "播放（空格键）"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放（空格鍵）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Play (spacebar)"
+          }
         }
       }
     },
@@ -564,8 +1743,20 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
+            "state" : "new",
+            "value" : "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
             "state" : "translated",
-            "value" : "请下载 [Spotify 官方桌面客户端](https://www.spotify.com/in-en/download/mac/)"
+            "value" : "請下載 [Spotify 官方桌面版](https://www.spotify.com/in-en/download/mac/)"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)"
           }
         }
       }
@@ -578,6 +1769,18 @@
             "state" : "translated",
             "value" : "请授权必要的权限！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請授權必要的權限！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please give required permissions!"
+          }
         }
       }
     },
@@ -588,6 +1791,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请授权 Apple Music 库权限！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請授權我們 Apple Music 庫的權限！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please give us Apple Music Library permissions!"
           }
         }
       }
@@ -600,6 +1815,18 @@
             "state" : "translated",
             "value" : "请授权 Apple Music 权限！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請授權我們 Apple Music 的權限！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please give us Apple Music permissions!"
+          }
         }
       }
     },
@@ -611,6 +1838,18 @@
             "state" : "translated",
             "value" : "请授权必要的权限！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請授權我們必要的權限！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please give us required permissions!"
+          }
         }
       }
     },
@@ -620,6 +1859,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请登录 Spotify"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請登入 Spotify"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please log into Spotify"
           }
         }
       }
@@ -632,6 +1883,18 @@
             "state" : "translated",
             "value" : "请打开 Apple Music！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請開啟 Apple Music！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please open Apple Music!"
+          }
         }
       }
     },
@@ -643,6 +1906,18 @@
             "state" : "translated",
             "value" : "请打开 Spotify！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請開啟 Spotify！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please open Spotify!"
+          }
         }
       }
     },
@@ -652,6 +1927,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请选择 Spotify 或 Apple Music"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請選擇 Spotify 或 Apple Music"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Please pick between Spotify and Apple Music"
           }
         }
       }
@@ -663,17 +1950,86 @@
             "state" : "translated",
             "value" : "退出"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Quit"
+          }
         }
       }
     },
     "Quit Lyric Fever (⌘ + Q)" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Quit Lyric Fever (⌘ + Q)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 Lyric Fever（⌘ + Q）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Quit Lyric Fever (⌘ + Q)"
+          }
+        }
+      }
     },
     "Redownload lyrics" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Redownload lyrics"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新下載歌詞"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Redownload lyrics"
+          }
+        }
+      }
     },
     "Refreshing Lyrics..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Refreshing Lyrics..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新整理歌詞中..."
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Refreshing Lyrics..."
+          }
+        }
+      }
     },
     "Reset to default" : {
       "localizations" : {
@@ -682,11 +2038,42 @@
             "state" : "translated",
             "value" : "重置设置"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置設定"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Reset to default"
+          }
         }
       }
     },
     "Rewind" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rewind"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "倒轉"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rewind"
+          }
+        }
+      }
     },
     "Romanize" : {
       "localizations" : {
@@ -695,12 +2082,42 @@
             "state" : "translated",
             "value" : "拼音化文字"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拼音化文字"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Romanize"
+          }
         }
       }
     },
     "Searching for %@ by %@" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Searching for %1$@ by %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Searching for %1$@ by %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜尋由 %2$@ 演唱的 %1$@"
+          }
+        },
+        "zh-Hant-HK" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Searching for %1$@ by %2$@"
@@ -715,6 +2132,18 @@
             "state" : "translated",
             "value" : "选择字体："
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇字體："
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Select a Font:"
+          }
         }
       }
     },
@@ -724,6 +2153,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置背景颜色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定背景顏色"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set a background color"
           }
         }
       }
@@ -735,6 +2176,18 @@
             "state" : "translated",
             "value" : "设置歌词大小"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定歌詞大小"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set the Lyric Size"
+          }
         }
       }
     },
@@ -745,11 +2198,42 @@
             "state" : "translated",
             "value" : "设置（新增 K 歌设置）"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定（新增卡拉 OK 設定！）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Settings (New Karaoke Settings!)"
+          }
         }
       }
     },
     "Share Spotify link" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Share Spotify link"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享 Spoitfy 連結"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Share Spotify link"
+          }
+        }
+      }
     },
     "Show lyrics (⌘ + H)" : {
       "localizations" : {
@@ -757,6 +2241,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示歌词 (⌘ + H)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示歌詞（⌘ + H）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Show lyrics (⌘ + H)"
           }
         }
       }
@@ -768,6 +2264,18 @@
             "state" : "translated",
             "value" : "K 歌窗口翻译时，显示多语言"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當翻譯開啟時，在卡拉 OK 視窗顯示多語言"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Show multilingual lyrics when translating in Karaoke window"
+          }
         }
       }
     },
@@ -778,14 +2286,64 @@
             "state" : "translated",
             "value" : "在菜单栏显示歌曲详情"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在選單列顯示歌曲細節"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Show Song Details in Menubar"
+          }
         }
       }
     },
     "Song Name" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Song Name"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌名"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Song Name"
+          }
+        }
+      }
     },
     "Song Name:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Song Name:"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌名："
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Song Name:"
+          }
+        }
+      }
     },
     "Source Language" : {
 
@@ -795,6 +2353,18 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Spotify"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
             "value" : "Spotify"
           }
         }
@@ -807,11 +2377,42 @@
             "state" : "translated",
             "value" : "Spotify 连接音频延迟"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify 連接音訊延遲"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotify Connect Audio Delay"
+          }
         }
       }
     },
     "Spotify Delay" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotify Delay"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify 延遲"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotify Delay"
+          }
+        }
+      }
     },
     "Spotify Login" : {
       "localizations" : {
@@ -819,6 +2420,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spotify 登录"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify 登入"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotify Login"
           }
         }
       }
@@ -836,10 +2449,53 @@
             "state" : "translated",
             "value" : "这受限于您菜单栏的可用空间！"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這受限於你的選單列有多少空位！"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This depends on how much free space you have in your menu bar!"
+          }
         }
       }
     },
     "TODO" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "TODO"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待辦事項"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "TODO"
+          }
+        }
+      }
+    },
+    "Toggle displaying lyrics:" : {
+
+    },
+    "Toggle karaoke mode:" : {
+
+    },
+    "Toggle romanizations:" : {
+
+    },
+    "Toggle translations:" : {
 
     },
     "Translate lyrics (⌘ + T)" : {
@@ -848,6 +2504,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻译歌词 (⌘ + T)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯歌詞（⌘ + T）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translate lyrics (⌘ + T)"
           }
         }
       }
@@ -859,6 +2527,18 @@
             "state" : "translated",
             "value" : "翻译为 %@"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯成 %@"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translate To %@"
+          }
         }
       }
     },
@@ -869,17 +2549,86 @@
             "state" : "translated",
             "value" : "翻译歌词 😃"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯的歌詞 😃"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translated Lyrics 😃"
+          }
         }
       }
     },
     "Translating..." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translating..."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯中..."
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translating..."
+          }
+        }
+      }
     },
     "Translation Enabled" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Enabled"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已啟用翻譯"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Enabled"
+          }
+        }
+      }
     },
     "Translation Failure" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Failure"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯失敗"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Failure"
+          }
+        }
+      }
     },
     "Translation Help" : {
       "localizations" : {
@@ -888,11 +2637,42 @@
             "state" : "translated",
             "value" : "翻译帮助"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "幫忙翻譯"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Help"
+          }
         }
       }
     },
     "Translation options" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation options"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯選項"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation options"
+          }
+        }
+      }
     },
     "Translation Options" : {
 
@@ -904,7 +2684,26 @@
 
     },
     "Translation Unavailable" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Unavailable"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有翻譯"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Translation Unavailable"
+          }
+        }
+      }
     },
     "Transliteration Options" : {
 
@@ -916,11 +2715,42 @@
             "state" : "translated",
             "value" : "菜单栏歌词大小"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選單列歌詞長度"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Truncation Length"
+          }
         }
       }
     },
     "Unheart" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Unheart"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不喜歡"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Unheart"
+          }
+        }
+      }
     },
     "Unpause animations (uses battery) (⌘ + A)" : {
       "localizations" : {
@@ -929,11 +2759,42 @@
             "state" : "translated",
             "value" : "启用动画（耗电增加） (⌘ + A)"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用動畫（耗電增加）（⌘ + A）"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Unpause animations (uses battery) (⌘ + A)"
+          }
         }
       }
     },
     "Upload LRC File" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Upload LRC File"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上傳 LRC 檔案"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Upload LRC File"
+          }
+        }
+      }
     },
     "Use album color for Karaoke window" : {
       "localizations" : {
@@ -942,11 +2803,42 @@
             "state" : "translated",
             "value" : "使用专辑颜色作为 K 歌窗口颜色"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用專輯顏色作為卡拉 OK 視窗顏色"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Use album color for Karaoke window"
+          }
         }
       }
     },
     "Volume" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Volume"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Volume"
+          }
+        }
+      }
     },
     "Welcome to Lyric Fever! 🎉" : {
       "localizations" : {
@@ -954,6 +2846,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢迎使用 Lyric Fever! 🎉"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡迎使用 Lyric Fever！🎉"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Welcome to Lyric Fever! 🎉"
           }
         }
       }
@@ -965,6 +2869,18 @@
             "state" : "translated",
             "value" : "SP DC Cookie 错误，请重试 ⚠️"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錯誤的 SP DC Cookie，請重試 ⚠️"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "WRONG SP DC COOKIE TRY AGAIN ⚠️"
+          }
         }
       }
     },
@@ -974,6 +2890,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您已登录 🙂"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已經登入了 🙂"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已經成功登入"
           }
         }
       }

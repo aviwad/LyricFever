@@ -15,6 +15,7 @@ import MediaPlayer
 #if os(macOS)
 import WebKit
 import Translation
+import KeyboardShortcuts
 #endif
 
 @MainActor
@@ -309,6 +310,21 @@ import Translation
         
         isPlaying = currentPlayerInstance.isPlaying
         userDefaultStorage.hasOnboarded = currentPlayerInstance.isAuthorized
+        KeyboardShortcuts.onKeyUp(for: .init("karaoke")) { [self] in
+            userDefaultStorage.karaoke.toggle()
+        }
+        KeyboardShortcuts.onKeyUp(for: .init("lyrics")) { [self] in
+            showLyrics.toggle()
+        }
+        KeyboardShortcuts.onKeyUp(for: .init("translate")) { [self] in
+            userDefaultStorage.translate.toggle()
+        }
+        KeyboardShortcuts.onKeyUp(for: .init("romanize")) { [self] in
+            userDefaultStorage.romanize.toggle()
+        }
+        KeyboardShortcuts.onKeyUp(for: .init("fullscreen")) { [self] in
+            displayFullscreen.toggle()
+        }
         guard userDefaultStorage.hasOnboarded else {
             return
         }
