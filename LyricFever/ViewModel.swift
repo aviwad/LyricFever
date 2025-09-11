@@ -140,6 +140,7 @@ import Translation
     var currentlyPlayingLyricsIndex: Int?
     var isPlaying: Bool = false
     var romanizedLyrics: [String] = []
+    var chineseConversionLyrics: [String] = []
     var translatedLyric: [String] = []
     var showLyrics = true
     #if os(macOS)
@@ -166,8 +167,24 @@ import Translation
     private var currentAppleMusicFetchTask: Task<Void,Error>?
     
     // Songs are translated to user locale
-    let userLocaleLanguage: Locale
-    let userLocaleLanguageString: String
+    let systemLocale: Locale
+    let systemLocaleString: String
+    var translationSourceLanguage: Locale.Language?
+//    var translationTargetLanguage: Locale.Language?
+    var userLocaleLanguage: Locale.Language {
+        if let translationTargetLanguage = userDefaultStorage.translationTargetLanguage {
+            return translationTargetLanguage
+        } else {
+            return systemLocale.language
+        }
+    }
+    var userLocaleLanguageString: String {
+        if let translationTargetLanguage = userDefaultStorage.translationTargetLanguage, let translationTargetLanguageString = Locale.current.localizedString(forIdentifier: translationTargetLanguage.minimalIdentifier) {
+            return translationTargetLanguageString
+        } else {
+            return systemLocaleString
+        }
+    }
 
     // Override menubar with an update message
     var mustUpdateUrgent: Bool = false
@@ -241,8 +258,8 @@ import Translation
     
     init() {
         // Set our user locale for translation language
-        userLocaleLanguage = Locale.preferredLocale()
-        userLocaleLanguageString = Locale.preferredLocaleString() ?? ""
+        systemLocale = Locale.preferredLocale()
+        systemLocaleString = Locale.preferredLocaleString() ?? ""
         
         #if os(macOS)
         // Generate user-saved font and load it
@@ -308,6 +325,7 @@ import Translation
                 print("FetchAllNetworkLyrics: fetching from \(networkLyricProvider.providerName)")
                 let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: currentlyPlaying, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
                 if !lyrics.lyrics.isEmpty {
+                    amplitude.track(eventType: "\(networkLyricProvider.providerName) Fetch")
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
                     //TODO: save lyrics here
                     SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
@@ -446,7 +464,7 @@ import Translation
             case .needsConfigUpdate(let language):
                 // TODO: why do i sleep?
 //                try? await Task.sleep(for: .seconds(1))
-                translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage.language)
+                translationSessionConfig = TranslationSession.Configuration(source: language, target: userLocaleLanguage)
             case .failure:
                 print("Translation Service: isFetchingTranslation set to false due to failure")
                 isFetchingTranslation = false
@@ -456,12 +474,46 @@ import Translation
     
     func romanizeDidChange() {
         if userDefaultStorage.romanize {
-            print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying)")
-            romanizedLyrics = currentlyPlayingLyrics.compactMap({
-                RomanizerService.generateRomanizedLyric($0)
-            })
+            if !chineseConversionLyrics.isEmpty {
+                print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying) with chinese conversion")
+                romanizedLyrics = chineseConversionLyrics.compactMap({
+                    RomanizerService.generateRomanizedLyric(LyricLine(startTime: 0, words: $0))
+                })
+            } else {
+                print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying)")
+                romanizedLyrics = currentlyPlayingLyrics.compactMap({
+                    RomanizerService.generateRomanizedLyric($0)
+                })
+            }
         } else {
             romanizedLyrics = []
+        }
+    }
+    
+    func chinesePreferenceDidChange() {
+        if let chinesePreference = ChineseConversion(rawValue: userDefaultStorage.chinesePreference), chinesePreference != .none {
+            print("Generating Chinese conversion for song \(currentlyPlaying) to chinese style \(chinesePreference.description)")
+            //TODO: check if Task was cancelled
+            let chineseConversionLyrics: [String] = currentlyPlayingLyrics.compactMap({
+                switch chinesePreference {
+                    case .none:
+                        return nil
+                    case .simplified:
+                        return RomanizerService.generateMainlandTransliteration($0)
+                    case .traditionalNeutral:
+                        return RomanizerService.generateTraditionalNeutralTransliteration($0)
+                    case .traditionalTaiwan:
+                        return RomanizerService.generateTaiwanTransliteration($0)
+                    case .traditionalHK:
+                        return RomanizerService.generateHongKongTransliteration($0)
+                }
+            })
+            //TODO: check if Task was cancelled
+            if !Task.isCancelled {
+                self.chineseConversionLyrics = chineseConversionLyrics
+            }
+        } else {
+            chineseConversionLyrics = []
         }
     }
     
@@ -540,6 +592,7 @@ import Translation
         currentlyPlayingLyrics = []
         translatedLyric = []
         romanizedLyrics = []
+        chineseConversionLyrics = []
         
         if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName) {
             setNewLyricsColorTranslationRomanizationAndStartUpdater(with: lyrics)
@@ -822,6 +875,7 @@ import Translation
             currentlyPlayingLyrics = []
             translatedLyric = []
             romanizedLyrics = []
+            chineseConversionLyrics = []
             lyricsIsEmptyPostLoad = true
         } catch {
             print("Error deleting data: \(error)")
@@ -852,10 +906,10 @@ import Translation
     #if os(macOS)
     func reloadTranslationConfigIfTranslating() -> Bool {
         if userDefaultStorage.translate {
-            if translationSessionConfig == TranslationSession.Configuration(target: userLocaleLanguage.language) {
+            if translationSessionConfig == TranslationSession.Configuration(source: translationSourceLanguage, target: userLocaleLanguage) {
                 translationSessionConfig?.invalidate()
             } else {
-                translationSessionConfig = TranslationSession.Configuration(target: userLocaleLanguage.language)
+                translationSessionConfig = TranslationSession.Configuration(source: translationSourceLanguage, target: userLocaleLanguage)
             }
             return true
         } else {
@@ -864,11 +918,35 @@ import Translation
     }
     #endif
     
+    func fetchTranslationSourceLanguage() {
+        guard let currentlyPlaying else {
+            print("Translation: ignoring translationSourceLang fetch due to nil currentlyPlaying")
+            return
+        }
+        let fetchRequest: NSFetchRequest<SongToLocale> = SongToLocale.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", currentlyPlaying) // Replace trackID with the desired value
+
+        do {
+            let results = try coreDataContainer.viewContext.fetch(fetchRequest)
+            if let songToLocale = results.first?.locale {
+                self.translationSourceLanguage = Locale.Language(identifier: songToLocale)
+            } else {
+                self.translationSourceLanguage = nil
+            }
+        } catch {
+            print("Error fetching translationSourceLanguage:", error)
+        }
+    }
+    
     #if os(macOS)
     func setNewLyricsColorTranslationRomanizationAndStartUpdater(with newLyrics: [LyricLine]) {
         currentlyPlayingLyrics = newLyrics
         setBackgroundColor()
+        fetchTranslationSourceLanguage()
         reloadTranslationConfigIfTranslating()
+//        romanizeDidChange()
+        chinesePreferenceDidChange()
+        // we romanize afterwards, in-case the chinese conversion array was populated
         romanizeDidChange()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {

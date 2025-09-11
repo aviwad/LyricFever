@@ -27,6 +27,8 @@ struct MenubarLabelView: View {
                     // Attempt to display Romanization
                     if !viewmodel.romanizedLyrics.isEmpty {
                         return viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex]
+                    } else if !viewmodel.chineseConversionLyrics.isEmpty {
+                        return viewmodel.chineseConversionLyrics[currentlyPlayingLyricsIndex]
                     } else {
                         return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words
                     }

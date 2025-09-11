@@ -236,6 +236,9 @@ struct FullscreenView: View {
             if !viewmodel.romanizedLyrics.isEmpty {
                 Text(verbatim: viewmodel.romanizedLyrics[index])
                     .foregroundStyle(.white)
+            } else if !viewmodel.chineseConversionLyrics.isEmpty {
+                Text(verbatim: viewmodel.chineseConversionLyrics[index])
+                    .foregroundStyle(.white)
             } else {
                 Text(verbatim: element.words)
                     .foregroundStyle(.white)

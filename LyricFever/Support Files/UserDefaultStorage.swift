@@ -9,15 +9,22 @@ import Combine
 import SwiftUI
 import ObservableDefaults
 
+extension Locale.Language: @retroactive UserDefaultsPropertyListValue {}
+extension Locale.Language: @retroactive CodableUserDefaultsPropertyListValue {
+    
+}
+
 @ObservableDefaults
 class UserDefaultStorage {
     var translate: Bool = false
+    var translationTargetLanguage: Locale.Language? = nil
     #if os(macOS)
     var showSongDetailsInMenubar: Bool = true
     #endif
     var blurFullscreen: Bool = true
     var animateOnStartupFullscreen: Bool = true
     var romanize: Bool = false
+    var chinesePreference: Int = 0
     #if os(macOS)
     var spotifyConnectDelayCount: Int = 400
     var hasMigrated: Bool = false

@@ -31,9 +31,21 @@ struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
     
+    func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
+        if !viewmodel.romanizedLyrics.isEmpty {
+            return viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex]
+        } else if !viewmodel.chineseConversionLyrics.isEmpty {
+            return viewmodel.chineseConversionLyrics[currentlyPlayingLyricsIndex]
+        } else {
+            return viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words
+        }
+    }
+    
     func multilingualView(_ currentlyPlayingLyricsIndex: Int) -> some View {
         VStack(spacing: 6) {
-            Text(verbatim: viewmodel.romanizedLyrics.isEmpty ? viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words : viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
+            Text(verbatim: currentWords(for: currentlyPlayingLyricsIndex))
+                
+//            Text(verbatim: viewmodel.romanizedLyrics.isEmpty ? viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words : viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
             Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9*(viewmodel.karaokeFont.pointSize)))
                 .opacity(0.85)
@@ -58,6 +70,8 @@ struct KaraokeView: View {
             } else {
                 if !viewmodel.romanizedLyrics.isEmpty {
                     Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
+                } else if !viewmodel.chineseConversionLyrics.isEmpty {
+                    Text(verbatim: viewmodel.chineseConversionLyrics[currentlyPlayingLyricsIndex])
                 } else {
                     Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
                 }

@@ -16,6 +16,7 @@
 import NaturalLanguage
 import Mecab_Swift
 import IPADic
+import OpenCC
 
 class RomanizerService {
     private static func generateJapaneseRomanizedLyric(_ lyric: LyricLine) -> String? {
@@ -29,10 +30,51 @@ class RomanizerService {
         return romanized
     }
     static func generateRomanizedLyric(_ lyric: LyricLine) -> String? {
+        print("Generating Romanized String for lyric \(lyric.words)")
         if let language = NLLanguageRecognizer.dominantLanguage(for: lyric.words), language == .japanese {
             return generateJapaneseRomanizedLyric(lyric)
         } else {
             return lyric.words.applyingTransform(.toLatin, reverse: false)
+        }
+    }
+
+    static func generateMainlandTransliteration(_ lyric: LyricLine) -> String? {
+        do {
+            let converter = try ChineseConverter(options: [.simplify])
+            return converter.convert(lyric.words)
+        } catch {
+            print("RomanizerService: MainlandTransliteration error: \(error)")
+            return nil
+        }
+    }
+    
+    static func generateTraditionalNeutralTransliteration(_ lyric: LyricLine) -> String? {
+        do {
+            let converter = try ChineseConverter(options: [.traditionalize])
+            return converter.convert(lyric.words)
+        } catch {
+            print("RomanizerService: MainlandTransliteration error: \(error)")
+            return nil
+        }
+    }
+    
+    static func generateHongKongTransliteration(_ lyric: LyricLine) -> String? {
+        do {
+            let converter = try ChineseConverter(options: [.traditionalize, .hkStandard])
+            return converter.convert(lyric.words)
+        } catch {
+            print("RomanizerService: HongKongTransliteration error: \(error)")
+            return nil
+        }
+    }
+    
+    static func generateTaiwanTransliteration(_ lyric: LyricLine) -> String? {
+        do {
+            let converter = try ChineseConverter(options: [.traditionalize, .twStandard, .twIdiom])
+            return converter.convert(lyric.words)
+        } catch {
+            print("RomanizerService: TaiwanTransliteration error: \(error)")
+            return nil
         }
     }
 }

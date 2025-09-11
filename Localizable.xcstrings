@@ -101,6 +101,9 @@
     "Artist Name:" : {
 
     },
+    "Auto" : {
+
+    },
     "Back" : {
       "localizations" : {
         "zh-Hans" : {
@@ -126,6 +129,9 @@
           }
         }
       }
+    },
+    "Chinese Conversion" : {
+
     },
     "Click to Use" : {
 
@@ -781,6 +787,9 @@
     "Song Name:" : {
 
     },
+    "Source Language" : {
+
+    },
     "Spotify" : {
       "localizations" : {
         "zh-Hans" : {
@@ -813,6 +822,12 @@
           }
         }
       }
+    },
+    "System (%@)" : {
+
+    },
+    "Target Language" : {
+
     },
     "This depends on how much free space you have in your menu bar!" : {
       "localizations" : {
@@ -879,7 +894,19 @@
     "Translation options" : {
 
     },
+    "Translation Options" : {
+
+    },
+    "Translation Settings for All Songs" : {
+
+    },
+    "Translation Settings for This Song" : {
+
+    },
     "Translation Unavailable" : {
+
+    },
+    "Transliteration Options" : {
 
     },
     "Truncation Length" : {

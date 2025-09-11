@@ -7,6 +7,7 @@
 
 import SwiftUI
 import LaunchAtLogin
+import Translation
 
 struct MenubarWindowView: View {
     @Environment(\.openURL) var openURL
@@ -15,6 +16,7 @@ struct MenubarWindowView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @State var currentHoveredItem = MenubarButtonHighlight.none
+    @State var supportedLanguages: [Locale.Language] = []
     
     @ViewBuilder
     var profilePicViewHeaderView: some View {
@@ -210,74 +212,87 @@ struct MenubarWindowView: View {
                     currentHoveredItem = .none
                 }
             }
-//            if viewmodel.currentlyPlayingLyrics.isEmpty {
-//                sampleButton(buttonText: "lol", imageText: "arrow.up.document") {
-//                    
-//                }
-//            } else {
-//            }
         }
-//        if let currentlyPlaying = viewmodel.currentlyPlaying, let currentlyPlayingName = viewmodel.currentlyPlayingName {
-//            Text(!viewmodel.currentlyPlayingLyrics.isEmpty ? "Lyrics Found 😃" : "No Lyrics Found ☹️")
-//            Button(viewmodel.currentlyPlayingLyrics.isEmpty ? "Check for Lyrics Again" : "Refresh Lyrics") {
-//                
-//                Task {
-//                    do {
-//                        try await viewmodel.refreshLyrics()
-//                    } catch {
-//                        print("Couldn't refresh lyrics: error \(error)")
-//                    }
-//                }
-//            }
-//            .keyboardShortcut("r")
-//            if viewmodel.currentlyPlayingLyrics.isEmpty {
-//                Button("Upload Local LRC File") {
-//                    Task {
-//                        do {
-//                            try await viewmodel.uploadLocalLRCFile()
-//                        } catch {
-//                            print("Couldn't upload local lrc file: error \(error)")
-//                        }
-//                    }
-//                }
-//            } else {
-//                Button("Delete Lyrics (wrong lyrics)") {
-//                    viewmodel.deleteLyric(trackID: currentlyPlaying)
-//                }
-//            }
-//        // Special case where Apple Music -> Spotify ID matching fails (perhaps Apple Music music was not the media in foreground, network failure, genuine no match)
-//        // Apple Music Persistent ID exists but Spotify ID (currently playing) is nil
-//        } else if viewmodel.currentlyPlayingAppleMusicPersistentID != nil, viewmodel.currentlyPlaying == nil {
-//            Text("No Lyrics (Couldn't find Spotify ID) ☹️")
-//            Button("Check for Lyrics Again") {
-//                Task {
-//                    // Fetch updates the currentlyPlaying ID which will call Lyric Updater
-//                    try await viewmodel.appleMusicFetch()
-//                }
-//            }
-//            .keyboardShortcut("r")
-//        }
-//        Toggle("Show Lyrics", isOn: $viewmodel.showLyrics)
-//        .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
-//        .keyboardShortcut("h")
     }
 
     @ViewBuilder
     var translationAndRomanizationView: some View {
         @Bindable var viewmodel = viewmodel
-        if viewmodel.userDefaultStorage.translate {
-            Text(!viewmodel.translatedLyric.isEmpty ? "Translated Lyrics 😃" : "No Translation ☹️")
-            if viewmodel.translatedLyric.isEmpty {
-                Button("Translation Help") {
-                    openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
+        Section("Translation Options") {
+            if viewmodel.userDefaultStorage.translate {
+                Text(!viewmodel.translatedLyric.isEmpty ? "Translated Lyrics 😃" : "No Translation ☹️")
+                if viewmodel.translatedLyric.isEmpty {
+                    Button("Translation Help") {
+                        openURL(URL(string: "https://aviwadhwa.com/TranslationHelp")!)
+                    }
+                }
+            }
+            
+            Toggle("Translate To \(viewmodel.userLocaleLanguageString)", isOn: $viewmodel.userDefaultStorage.translate)
+            .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
+            Divider()
+        }
+        let translationSourceLanguagePickerBinding = Binding<String?> (
+           get: {
+               return viewmodel.translationSourceLanguage?.maximalIdentifier
+           },
+           set: {
+               if let localeIdentifier = $0 {
+                   viewmodel.translationSourceLanguage = Locale.Language(identifier: localeIdentifier)
+               } else {
+                   viewmodel.translationSourceLanguage = nil
+               }
+               guard let trackID = viewmodel.currentlyPlaying else {
+                   print("Translationg: ignoring source language change: nil currentlyPlaying")
+                   return
+               }
+               guard let translationSourceLanguage = viewmodel.translationSourceLanguage else {
+                   print("Translation: ingoring source language change: nil source language")
+                   return
+               }
+               let localeIdentifier = translationSourceLanguage.maximalIdentifier
+//               guard let localeIdentifier = translationSourceLanguage.maximalIdentifier else {
+//                   print("Translation: ignoring source language change: nil locale identifier")
+//                   return
+//               }
+               print("Translation: Source language changed. Saving new pair (\(trackID),\(localeIdentifier))  to coredata")
+               let newSongToLocaleMapping = SongToLocale(context: viewmodel.coreDataContainer.viewContext)
+               newSongToLocaleMapping.id = trackID
+               newSongToLocaleMapping.locale = localeIdentifier
+               do {
+                   try viewmodel.coreDataContainer.viewContext.save()
+                   print("Translation: Successfully saved locale \(newSongToLocaleMapping.locale) for trackID \(trackID)")
+               } catch {
+                   print("Translation: Couldn't save locale mapping to CoreData: \(error)")
+               }
+           }
+       )
+        Section("Translation Settings for This Song") {
+            Picker("Source Language", selection: translationSourceLanguagePickerBinding) {
+                Text("Auto").tag(nil as String?)
+                ForEach(supportedLanguages, id: \.maximalIdentifier) { language in
+                    Text(Locale.current.localizedString(forIdentifier: language.minimalIdentifier) ?? language.maximalIdentifier).tag(language.maximalIdentifier)
                 }
             }
         }
-        
-        Toggle("Translate To \(viewmodel.userLocaleLanguageString)", isOn: $viewmodel.userDefaultStorage.translate)
-        .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
-        Divider()
-        Toggle("Romanize", isOn: $viewmodel.userDefaultStorage.romanize)
+//        .onChange(of: viewmodel.translationSourceLanguage) {
+//        }
+        Section("Translation Settings for All Songs") {
+            Picker("Target Language", selection: $viewmodel.userDefaultStorage.translationTargetLanguage) {
+                Text("System (\(viewmodel.systemLocaleString))").tag(nil as Locale.Language?)
+                ForEach(supportedLanguages, id: \.maximalIdentifier) { language in
+                    Text(Locale.current.localizedString(forIdentifier: language.minimalIdentifier) ?? language.maximalIdentifier).tag(language)
+                }
+            }
+        }
+        Section("Transliteration Options") {
+            Toggle("Romanize", isOn: $viewmodel.userDefaultStorage.romanize)
+            Picker("Chinese Conversion", selection: $viewmodel.userDefaultStorage.chinesePreference) {
+                ForEach(ChineseConversion.allCases) { conversionCase in
+                    Text(conversionCase.description).tag(conversionCase.rawValue)
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -332,10 +347,10 @@ struct MenubarWindowView: View {
             return .disabled
         }
         if viewmodel.userDefaultStorage.translate {
-            if viewmodel.translationExists {
-                return .enabled
-            } else if viewmodel.isFetchingTranslation {
+            if viewmodel.isFetchingTranslation {
                 return .loading
+            } else if viewmodel.translationExists {
+                return .enabled
             } else {
                 return .missing
             }
@@ -684,6 +699,9 @@ struct MenubarWindowView: View {
         )
         .onAppear {
             viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+        }
+        .task { @MainActor in
+            supportedLanguages = await LanguageAvailability().supportedLanguages
         }
     }
 }
