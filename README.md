@@ -65,6 +65,7 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 
 ## Other Contributors
 - [InTheManXG](https://github.com/InTheManXG) for Simplified Chinese translations
+- ARui-tw for traditional chinese translations
 - [lcandy2](https://github.com/lcandy2) For their [pull request](https://github.com/aviwad/LyricFever/pull/68)
 
 ## Acknowledgements / Special Thanks
@@ -79,10 +80,12 @@ Please open a GitHub issue request to translate to more languages. Thank you ver
 - NetEase for their Lyrics, used when LRCLIB and Spotify fail.
 - fatbobman for ObservableDefaults
 - https://neteasecloudmusicapi-ten-wine.vercel.app for their NetEase API
+- LyricsX/ddddxxx for their ChineseConversion class (SwiftlyOpenCC)
+- sindresorhus for KeyboardShortcuts
 - [f728743](https://github.com/f728743) for the mesh gradient view.
 - [jayasme](https://github.com/jayasme/) for the [LRC Lyric Parser](https://github.com/jayasme/SpotlightLyrics) I used as a base
 - MusicBrainz & the CoverArtArchive projects for their MBID and Cover Art APIs (used for non-spotify / local files)
-- LyricsX for their Spotify TOTP fix and NetEase lyric provider
+- LyricsX/MxIris for their Spotify TOTP fix and NetEase lyric provider
 - [Mecab-Swift](https://github.com/shinjukunian/Mecab-Swift) by [shinjukunian](https://github.com/shinjukunian) for the excellent Japanese Romanization 
 - Christian Selig for his efficient image color averaging technique
 - Various StackOverflow snippets
