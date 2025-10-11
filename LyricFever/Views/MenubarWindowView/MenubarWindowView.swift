@@ -131,13 +131,13 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(value: displayLyrics == .clickable ? 0 : viewmodel.currentTime.currentTime, total: Double(viewmodel.duration))
+                ProgressView(value: displayLyrics == .enabled ? viewmodel.currentTime.currentTime : 0, total: Double(viewmodel.duration))
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
                 
                 HStack {
-                    Text(displayLyrics == .clickable ? "--:--" : viewmodel.formattedCurrentTime)
+                    Text(displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
                         .font(.caption2)
                     Spacer()
                     Text(viewmodel.formattedDuration)
