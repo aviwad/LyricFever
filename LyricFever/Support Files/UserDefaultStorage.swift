@@ -24,6 +24,7 @@ class UserDefaultStorage {
     var blurFullscreen: Bool = true
     var animateOnStartupFullscreen: Bool = true
     var romanize: Bool = false
+    var romanizeMetadata: Bool = true
     var chinesePreference: Int = 0
     #if os(macOS)
     var spotifyConnectDelayCount: Int = 400

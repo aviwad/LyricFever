@@ -287,6 +287,8 @@ struct MenubarWindowView: View {
         }
         Section("Transliteration Options") {
             Toggle("Romanize", isOn: $viewmodel.userDefaultStorage.romanize)
+//            Toggle("Romanize Song Details", isOn: $viewmodel.userDefaultStorage.romanizeMetadata)
+//                .disabled(!viewmodel.userDefaultStorage.romanize)
             Picker("Chinese Conversion", selection: $viewmodel.userDefaultStorage.chinesePreference) {
                 ForEach(ChineseConversion.allCases) { conversionCase in
                     Text(conversionCase.description).tag(conversionCase.rawValue)

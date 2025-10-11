@@ -490,20 +490,47 @@ import KeyboardShortcuts
     
     func romanizeDidChange() {
         if userDefaultStorage.romanize {
+            // Generate romanized lyrics from chinese conversion
             if !chineseConversionLyrics.isEmpty {
                 print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying) with chinese conversion")
                 romanizedLyrics = chineseConversionLyrics.compactMap({
                     RomanizerService.generateRomanizedLyric(LyricLine(startTime: 0, words: $0))
                 })
+            // Generate romanized lyrics from original lyrics
             } else {
                 print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying)")
                 romanizedLyrics = currentlyPlayingLyrics.compactMap({
                     RomanizerService.generateRomanizedLyric($0)
                 })
             }
+            
+//            romanizeMetadata()
         } else {
             romanizedLyrics = []
         }
+    }
+    
+    // Only called when Romanize is true
+//    func romanizeMetadata() {
+//        // Generate romanized metadata from name & artist
+//        if userDefaultStorage.romanizeMetadata, let currentlyPlayingName, let romanizedName = RomanizerService.generateRomanizedString(currentlyPlayingName), let currentlyPlayingArtist, let romanizedArtist = RomanizerService.generateRomanizedString(currentlyPlayingArtist) {
+//            self.currentlyPlayingName = romanizedName
+//            self.currentlyPlayingArtist = romanizedArtist
+//        }
+//    }
+    
+    func romanizeName(_ currentlyPlayingName: String) -> String? {
+        if let romanizedName = RomanizerService.generateRomanizedString(currentlyPlayingName) {
+            return romanizedName
+        }
+        return nil
+    }
+    
+    func romanizeArtist(_ currentlyPlayingArtist: String) -> String? {
+        if let romanizedArtist = RomanizerService.generateRomanizedString(currentlyPlayingArtist) {
+            return romanizedArtist
+        }
+        return nil
     }
     
     func chinesePreferenceDidChange() {

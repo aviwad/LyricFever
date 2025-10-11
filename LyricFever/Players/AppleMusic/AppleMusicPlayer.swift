@@ -7,9 +7,23 @@
 
 import ScriptingBridge
 import MusicKit
+import MediaRemoteAdapter
 import AppKit
 
 class AppleMusicPlayer: Player {
+    
+    init() {
+        musicController.onTrackInfoReceived = { data in
+            print("Track info received")
+            Task { @MainActor in
+                self.artworkImage = data.payload.artwork
+            }
+            // This will only be called for Apple Music events
+        }
+        musicController.startListening()
+    }
+    
+    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     var persistentID: String? {
         appleMusicScript?.currentTrack?.persistentID
@@ -94,13 +108,15 @@ class AppleMusicPlayer: Player {
         appleMusicScript?.nextTrack?()
     }
     
-    var artworkImage: NSImage? {
-        guard let artworkImage = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data else {
-            print("AppleMusicPlayer artworkImage: nil data")
-            return nil
-        }
-        return artworkImage
-    }
+    var artworkImage: NSImage?
+    
+//    var artworkImage: NSImage? {
+//        guard let artworkImage = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data else {
+//            print("AppleMusicPlayer artworkImage: nil data")
+//            return nil
+//        }
+//        return artworkImage
+//    }
     
     func activate() {
         appleMusicScript?.activate()

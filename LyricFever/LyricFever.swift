@@ -45,23 +45,26 @@ struct LyricFever: App {
                     return
                 }
                 do {
-                    print("Fetching new artwork image for currentlyPlaying change")
+                    print("Artwork Fetch Service:Fetching new artwork image for currentlyPlaying change")
                     if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
+                        print("Artwork Fetch Service: Fetched from player")
                         viewmodel.artworkImage = artworkImage
                     } else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
                         if let mbid = await MusicBrainzArtworkService.findMbid(albumName: currentAlbumName, artistName: artistName) {
                             viewmodel.artworkImage = await MusicBrainzArtworkService.artworkImage(for: mbid)
                         }
+                    } else {
+                        print("Artwork Fetch Service: couldn't grab mbid image nor player image")
                     }
                 } catch {
                     print("Error fetching artwork image for currentlyPlaying: \(error)")
                 }
             }
             .task(id: viewmodel.userDefaultStorage.latestUpdateWindowShown) {
-                if viewmodel.userDefaultStorage.latestUpdateWindowShown < 23 {
+                if viewmodel.userDefaultStorage.latestUpdateWindowShown < 24 {
                     NSApplication.shared.activate(ignoringOtherApps: true)
                     openWindow(id: "update")
-                    viewmodel.userDefaultStorage.latestUpdateWindowShown = 23
+                    viewmodel.userDefaultStorage.latestUpdateWindowShown = 24
                 }
             }
             .task(id: viewmodel.userDefaultStorage.hasOnboarded) {
@@ -119,6 +122,11 @@ struct LyricFever: App {
             .onChange(of: viewmodel.userDefaultStorage.romanize) {
                 viewmodel.romanizeDidChange()
             }
+//            .onChange(of: viewmodel.userDefaultStorage.romanizeMetadata) {
+//                if viewmodel.userDefaultStorage.romanizeMetadata {
+//                    viewmodel.romanizeMetadata()
+//                }
+//            }
             .onChange(of: viewmodel.userDefaultStorage.translate) {
                 if !viewmodel.reloadTranslationConfigIfTranslating() {
                     viewmodel.translatedLyric = []

@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F0D66DC2E99CC5D00976881 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */; };
 		8F1198722E72B9840011A962 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1198712E72B9840011A962 /* KeyboardShortcuts */; };
 		8F1198742E72B9C60011A962 /* GlobalKeyboardShortcutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1198732E72B9C50011A962 /* GlobalKeyboardShortcutsView.swift */; };
-		8F1198762E72C0900011A962 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F1198752E72C0900011A962 /* Localizable.xcstrings */; };
 		8F1979952DA72D49008C113D /* IPADic in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979942DA72D49008C113D /* IPADic */; };
 		8F1979972DA72D49008C113D /* Mecab-Swift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1979962DA72D49008C113D /* Mecab-Swift */; };
 		8F28BFD42D578456002E2CE6 /* KaraokeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */; };
 		8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8F28FDC12AA25D2700439D8D /* Sparkle */; };
+		8F2922C02E94DE0700B286FC /* MediaRemoteAdapter in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */; };
+		8F2922C12E94DEFF00B286FC /* MediaRemoteAdapter in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8F37323D2E6EC9C90075CDA7 /* OpenCC in Frameworks */ = {isa = PBXBuildFile; productRef = 8F37323C2E6EC9C90075CDA7 /* OpenCC */; };
 		8F4F49522A7EC32D00097888 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
@@ -34,9 +36,23 @@
 		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8F2922C22E94DEFF00B286FC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8F2922C12E94DEFF00B286FC /* MediaRemoteAdapter in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8F1198732E72B9C50011A962 /* GlobalKeyboardShortcutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalKeyboardShortcutsView.swift; sourceTree = "<group>"; };
-		8F1198752E72C0900011A962 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
 		8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
@@ -86,6 +102,7 @@
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
+				8F2922C02E94DE0700B286FC /* MediaRemoteAdapter in Frameworks */,
 				8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,8 +120,8 @@
 		8FC8E93C2A704EEB00F69915 = {
 			isa = PBXGroup;
 			children = (
-				8F1198752E72C0900011A962 /* Localizable.xcstrings */,
 				8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */,
+				8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */,
 				8FFA9F362AA1B63500BAEC5C /* crossfade.gif */,
 				8FA436AD2BC49D480072016C /* newPermissionMac.gif */,
 				8FC8E9472A704EEB00F69915 /* LyricFever */,
@@ -151,6 +168,7 @@
 				8FC8E9412A704EEB00F69915 /* Sources */,
 				8FC8E9422A704EEB00F69915 /* Frameworks */,
 				8FC8E9432A704EEB00F69915 /* Resources */,
+				8F2922C22E94DEFF00B286FC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -181,6 +199,7 @@
 				8FFB32DE2E694991007D9981 /* CompactSlider */,
 				8F37323C2E6EC9C90075CDA7 /* OpenCC */,
 				8F1198712E72B9840011A962 /* KeyboardShortcuts */,
+				8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -226,6 +245,7 @@
 				8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */,
 				8F1198702E72B9840011A962 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -242,9 +262,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */,
-				8F1198762E72C0900011A962 /* Localizable.xcstrings in Resources */,
 				8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */,
 				8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */,
+				8F0D66DC2E99CC5D00976881 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,7 +421,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.0;
+				CURRENT_PROJECT_VERSION = 3.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -422,7 +442,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -440,7 +460,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.0;
+				CURRENT_PROJECT_VERSION = 3.2;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -461,7 +481,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -516,6 +536,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.2;
+			};
+		};
+		8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ejbills/mediaremote-adapter";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 		8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */ = {
@@ -620,6 +648,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F28FDC02AA25D2700439D8D /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */;
+			productName = MediaRemoteAdapter;
 		};
 		8F37323C2E6EC9C90075CDA7 /* OpenCC */ = {
 			isa = XCSwiftPackageProductDependency;

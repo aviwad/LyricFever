@@ -40,11 +40,10 @@ enum AccessTokenError: Error {
     case badSecret
     case badURL
 }
-struct SecretVersion: Codable {
-    let version: Int
-    let secret: [Int]
+struct SecretVersion: Decodable {
+    let latestSecretVersion: Int
+    let message: [Int]
 }
-
 
 class SpotifyLyricProvider: LyricProvider {
     var providerName = "Spotify Lyric Provider"
@@ -70,16 +69,16 @@ class SpotifyLyricProvider: LyricProvider {
     @MainActor
     var secretData: [Int] {
         get async throws {
-            guard let url = URL(string: "https://github.com/Thereallo1026/spotify-secrets/blob/main/secrets/secretBytes.json?raw=true") else {
+            guard let url = URL(string: "https://iloveyoulyricfever.github.io/myloveisasecret/mylove.json") else {
                 throw URLError(.badURL)
             }
             let (data, _) = try await URLSession.shared.data(from: url)
-            let secretVersions = try JSONDecoder().decode([SecretVersion].self, from: data)
-            guard let firstSecret = secretVersions.first?.secret else {
-                throw NSError(domain: "SpotifyLyricProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "No secret found"])
-            }
+            let firstSecret = try JSONDecoder().decode(SecretVersion.self, from: data)
+//            guard let firstSecret = secretVersions else {
+//                throw NSError(domain: "SpotifyLyricProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "No secret found"])
+//            }
             print("Secret is \(firstSecret)")
-            return firstSecret
+            return firstSecret.message
         }
     }
     

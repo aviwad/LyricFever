@@ -19,10 +19,10 @@ import IPADic
 import OpenCC
 
 class RomanizerService {
-    private static func generateJapaneseRomanizedLyric(_ lyric: LyricLine) -> String? {
+    private static func generateJapaneseRomanizedString(_ string: String) -> String? {
         let ipadic=IPADic()
         let ipadicTokenizer = try? Tokenizer(dictionary: ipadic)
-        guard let romajiTokens = ipadicTokenizer?.tokenize(text: lyric.words, transliteration: .romaji) else {
+        guard let romajiTokens = ipadicTokenizer?.tokenize(text: string, transliteration: .romaji) else {
             return nil
         }
         let romanized = romajiTokens.map{$0.reading}.joined()
@@ -32,11 +32,21 @@ class RomanizerService {
     static func generateRomanizedLyric(_ lyric: LyricLine) -> String? {
         print("Generating Romanized String for lyric \(lyric.words)")
         if let language = NLLanguageRecognizer.dominantLanguage(for: lyric.words), language == .japanese {
-            return generateJapaneseRomanizedLyric(lyric)
+            return generateJapaneseRomanizedString(lyric.words)
         } else {
             return lyric.words.applyingTransform(.toLatin, reverse: false)
         }
     }
+    
+    static func generateRomanizedString(_ string: String) -> String? {
+        print("Generating Romanized String for string \(string)")
+        if let language = NLLanguageRecognizer.dominantLanguage(for: string), language == .japanese {
+            return generateJapaneseRomanizedString(string)
+        } else {
+            return string.applyingTransform(.toLatin, reverse: false)
+        }
+    }
+
 
     static func generateMainlandTransliteration(_ lyric: LyricLine) -> String? {
         do {
