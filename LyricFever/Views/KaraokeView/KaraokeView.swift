@@ -11,19 +11,27 @@ import ColorKit
 import Combine
 
 struct VisualEffectView: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-
-        view.blendingMode = .behindWindow
-        view.state = .active
-        view.material = .hudWindow
-        return view
+    func makeNSView(context: Context) -> NSView {
+        if #available(macOS 26.0, *) {
+            let glassEffectView = NSGlassEffectView()
+            glassEffectView.style = NSGlassEffectView.Style.regular
+            return glassEffectView
+        } else {
+            let visualEffectView = NSVisualEffectView()
+            visualEffectView.blendingMode = .behindWindow
+            visualEffectView.state = .active
+            visualEffectView.material = .hudWindow
+            return visualEffectView
+        }
     }
 
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        //
-        nsView.material = .hudWindow
-        nsView.blendingMode = .behindWindow
+    func updateNSView(_ nsView: NSView, context: Context) {
+        if #available(macOS 26.0, *), let glassEffectView = nsView as? NSGlassEffectView {
+            glassEffectView.style = NSGlassEffectView.Style.regular
+        } else if let visualEffectView = nsView as? NSVisualEffectView {
+            visualEffectView.material = .hudWindow
+            visualEffectView.blendingMode = .behindWindow
+        }
     }
 }
 
