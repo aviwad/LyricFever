@@ -93,7 +93,7 @@ struct KaraokeView: View {
     var finalKaraokeView: some View {
         lyricsView()
             .lineLimit(2)
-            .foregroundStyle(.white)
+            .foregroundStyle(.primary)
             .minimumScaleFactor(0.9)
             .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
             .padding(10)
