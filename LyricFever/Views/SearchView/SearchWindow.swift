@@ -27,7 +27,7 @@ struct SearchWindow: View {
             TextField("Song Name:", text: $trackName)
                 .padding(.trailing, 30)
             Text("Artist Name:")
-            TextField("Arist Name", text: $artistName)
+            TextField("Artist Name", text: $artistName)
                 .padding(.trailing, 30)
             Button {
                 searchResults = []
