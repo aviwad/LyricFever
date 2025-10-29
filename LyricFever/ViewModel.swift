@@ -16,11 +16,17 @@ import MediaPlayer
 import WebKit
 import Translation
 import KeyboardShortcuts
+import MediaRemoteAdapter
 #endif
 
 @MainActor
 @Observable class ViewModel {
     static let shared = ViewModel()
+    
+    // Apple Music Tahoe broken AppleScript workaround
+    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+//    var appleMusicUniqueIdentifier: String?
+
     var currentlyPlaying: String?
     
     var currentVolume: Int = 0
@@ -38,6 +44,29 @@ import KeyboardShortcuts
         formatter.allowedUnits = [.minute, .second]
         formatter.zeroFormattingBehavior = [.pad]
         return formatter.string(from: TimeInterval(totalSeconds)) ?? "0:00"
+    }
+    private func initAppleMusicWorkaround() {
+        musicController.onTrackInfoReceived = { data in
+            print("Track info received")
+            Task { @MainActor in
+//                if self.appleMusicUniqueIdentifier == data.payload.uniqueIdentifier {
+//                    print("Apple Music Artwork Workaround: Ignoring artwork for existing song")
+//                    return
+//                } else {
+//                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
+//                }
+                guard let artwork = data.payload.artwork else {
+                    if self.currentlyPlaying == nil {
+                        self.artworkImage = nil
+                    }
+                    print("Apple Music Artwork Workaround: Ignoring No Artwork")
+                    return
+                }
+                self.artworkImage = artwork
+            }
+            // This will only be called for Apple Music events
+        }
+        musicController.startListening()
     }
     
     func formattedCurrentTime(for date: Date) -> String {
@@ -272,8 +301,13 @@ import KeyboardShortcuts
             karaokeFont = NSFont.boldSystemFont(ofSize: 30)
         }
         #endif
+        
+        
         // Load our CoreData container for Lyrics
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
+        
+        initAppleMusicWorkaround()
+        
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Error: \(error.localizedDescription)")

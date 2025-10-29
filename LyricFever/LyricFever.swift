@@ -40,24 +40,25 @@ struct LyricFever: App {
             MenubarLabelView()
                 .environment(viewmodel)
             .task(id: viewmodel.currentlyPlaying) {
+                if viewmodel.currentPlayer == .appleMusic {
+                    print("Ignoring currentlyPlaying task because Apple Music album art workaround is active. Apple please fix AppleScript support on Apple Music pleaasee.")
+                    return
+                }
                 if viewmodel.currentlyPlaying == nil {
                     print("Incorrect task fired. Ignored on nil currentlyPlaying value")
                     return
                 }
-                do {
-                    print("Artwork Fetch Service:Fetching new artwork image for currentlyPlaying change")
-                    if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
-                        print("Artwork Fetch Service: Fetched from player")
-                        viewmodel.artworkImage = artworkImage
-                    } else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
-                        if let mbid = await MusicBrainzArtworkService.findMbid(albumName: currentAlbumName, artistName: artistName) {
-                            viewmodel.artworkImage = await MusicBrainzArtworkService.artworkImage(for: mbid)
-                        }
-                    } else {
-                        print("Artwork Fetch Service: couldn't grab mbid image nor player image")
+                print("Artwork Fetch Service:Fetching new artwork image for currentlyPlaying change")
+                if let artworkImage = await viewmodel.currentPlayerInstance.artworkImage {
+                    print("Artwork Fetch Service: Fetched from player")
+                    viewmodel.artworkImage = artworkImage
+                } else if let artistName = viewmodel.currentlyPlayingArtist, let currentAlbumName = viewmodel.currentAlbumName {
+                    if let mbid = await MusicBrainzArtworkService.findMbid(albumName: currentAlbumName, artistName: artistName) {
+                        print("Artwork Fetch Service: MusicBrainz Success")
+                        viewmodel.artworkImage = await MusicBrainzArtworkService.artworkImage(for: mbid)
                     }
-                } catch {
-                    print("Error fetching artwork image for currentlyPlaying: \(error)")
+                } else {
+                    print("Artwork Fetch Service: couldn't grab mbid image nor player image")
                 }
             }
             .task(id: viewmodel.userDefaultStorage.latestUpdateWindowShown) {
