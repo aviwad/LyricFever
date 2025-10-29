@@ -91,7 +91,7 @@ class FloatingPanel<Content: View>: NSPanel {
         standardWindowButton(.miniaturizeButton)?.isHidden = true
         standardWindowButton(.zoomButton)?.isHidden = true
         contentView = NSHostingView(rootView: view()
-        .preferredColorScheme(.dark)
+//        .preferredColorScheme(.dark)
         .environment(\.floatingPanel, self))
         hasShadow = false
     }
