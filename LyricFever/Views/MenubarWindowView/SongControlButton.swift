@@ -22,6 +22,7 @@ struct SongControlButton: View {
             Image(systemName: systemImage)
 //                .frame(width: 25, height: 18)
         }
+        .environment(\.colorScheme, .dark)
 //        .background {
 //            RoundedRectangle(cornerRadius: 10)
 //                .fill(.gray.opacity(isHovering ? 0.5 : 0.0))

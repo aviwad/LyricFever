@@ -46,6 +46,7 @@ public struct MenubarButton: View {
                     .shadow(radius: disabled ? 0 : 7)
             )
         }
+        .environment(\.colorScheme, .dark)
         .disabled(disabled)
         .buttonStyle(.borderless)
     }
