@@ -16,11 +16,19 @@ extension NSImage {
         }
         for color in dominantColors {
             if color.brightnessComponent > 0.1 {
-                let red = Int(color.redComponent * 255)
-                let green = Int(color.greenComponent * 255)
-                let blue = Int(color.blueComponent * 255)
-                
+                var hue: CGFloat = 0
+                var saturation: CGFloat = 0
+                var brightness: CGFloat = 0
+                var alpha: CGFloat = 0
+                color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+                let clampedBrightness: CGFloat = max(brightness, 0.6)
+                let clampedColor = NSColor(hue: hue, saturation: saturation, brightness: clampedBrightness, alpha: alpha)
+                let red = Int(clampedColor.redComponent * 255)
+                let green = Int(clampedColor.greenComponent * 255)
+                let blue = Int(clampedColor.blueComponent * 255)
+
                 let combinedValue = (max(0,red) << 16) | (max(0,green) << 8) | max(0,blue)
+                print("Color Generation: using color \(clampedColor.hexString) generated from color \(color.hexString)")
                 return Int32(bitPattern: UInt32(combinedValue))
             }
         }
