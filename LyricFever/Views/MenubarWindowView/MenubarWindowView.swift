@@ -26,7 +26,15 @@ struct MenubarWindowView: View {
                     .resizable()
                     .frame(width: 112, height: 112)
                     .clipShape(.rect(cornerRadius: 9))
-                    .animation(.smooth(duration: 0.3), value: artworkImage)
+//                    .animation(.smooth(duration: 0.3), value: viewmodel.newAlbum)
+                    .apply {
+                        if let shareURL = viewmodel.currentPlayerInstance.shareURL(for: viewmodel.currentlyPlaying) {
+                            $0
+                                .draggable(shareURL)
+                        } else {
+                            $0
+                        }
+                    }
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
             } else {

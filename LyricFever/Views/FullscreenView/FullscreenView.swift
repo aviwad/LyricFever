@@ -143,8 +143,8 @@ struct FullscreenView: View {
             }
             #endif
             #if os(macOS)
-            if let currentlyPlaying = viewmodel.currentlyPlaying, currentlyPlaying.count == 22 {
-                ShareLink(item: URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")!) {
+            if let shareURL = viewmodel.currentPlayerInstance.shareURL(for: viewmodel.currentlyPlaying) {
+                ShareLink(item: shareURL) {
                     HoverableIcon(systemName: "square.and.arrow.up.circle.fill", sideLength: 30)
                 }
                 .imageScale(.large)

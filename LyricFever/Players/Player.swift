@@ -63,4 +63,11 @@ extension Player {
             return nil
         }
     }
+    
+    func shareURL(for currentlyPlaying: String?) -> URL? {
+        guard let currentlyPlaying, currentlyPlaying.count == 22 else {
+            return nil
+        }
+        return URL(string: "http://open.spotify.com/track/\(currentlyPlaying)")
+    }
 }
