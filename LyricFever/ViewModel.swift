@@ -939,6 +939,18 @@ import MediaRemoteAdapter
             return networkLyrics.lyrics
         }
     }
+    
+    func deleteSongLocalePairing(trackID: String) {
+        do {
+            let fetchRequest: NSFetchRequest<SongToLocale> = SongToLocale.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", trackID)
+            guard let object = try coreDataContainer.viewContext.fetch(fetchRequest).first else { return print("Translation: No songToLocale object could be deleted, doesn't exist for trackID \(trackID)") }
+            coreDataContainer.viewContext.delete(object)
+            try coreDataContainer.viewContext.save()
+        } catch {
+            print("Error deleting data: \(error)")
+        }
+    }
 
     func deleteLyric(trackID: String) {
         do {

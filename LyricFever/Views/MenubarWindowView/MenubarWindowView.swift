@@ -248,7 +248,8 @@ struct MenubarWindowView: View {
                    return
                }
                guard let translationSourceLanguage = viewmodel.translationSourceLanguage else {
-                   print("Translation: ingoring source language change: nil source language")
+                   print("Translation: source language change: nil source language, deleting existing pair")
+                   viewmodel.deleteSongLocalePairing(trackID: trackID)
                    return
                }
                let localeIdentifier = translationSourceLanguage.maximalIdentifier
