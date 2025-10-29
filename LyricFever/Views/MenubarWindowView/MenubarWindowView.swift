@@ -135,6 +135,7 @@ struct MenubarWindowView: View {
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
+                    .environment(\.colorScheme, .dark)
                 
                 HStack {
                     Text(displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
@@ -541,6 +542,7 @@ struct MenubarWindowView: View {
 
                         Text("...")
                 }
+                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
             } else {
                 Menu {
@@ -551,6 +553,7 @@ struct MenubarWindowView: View {
                         Text("...")
                 }
                 .frame(width: 30)
+                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
             }
             if viewmodel.airplayDelay {
@@ -683,10 +686,13 @@ struct MenubarWindowView: View {
             viewSelector
             Divider()
             menubarSizeSlider
+                .environment(\.colorScheme, .dark)
             volumeSlider
+                .environment(\.colorScheme, .dark)
             if viewmodel.spotifyConnectDelay {
                 Divider()
                 spotifyDelaySlider
+                    .environment(\.colorScheme, .dark)
             }
             Divider()
             systemControlView
@@ -695,7 +701,7 @@ struct MenubarWindowView: View {
         .padding(14)
         .background(
             viewmodel.currentBackground
-                .brightness(-0.4)
+                .brightness(colorScheme == .dark ? -0.4 : -0.8)
                 .opacity(0.6)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )

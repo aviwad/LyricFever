@@ -32,7 +32,6 @@ struct LyricFever: App {
     var body: some Scene {
         MenuBarExtra {
             MenubarWindowView()
-                .environment(\.colorScheme, .dark)
                 .preferredColorScheme(.dark)
                 .environment(viewmodel)
         } label: {
