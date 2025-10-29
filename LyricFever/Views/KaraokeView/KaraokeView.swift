@@ -62,7 +62,8 @@ struct KaraokeView: View {
             if viewmodel.translationExists {
                 if viewmodel.userDefaultStorage.karaokeShowMultilingual, originalAndTranslationAreDifferent(for: currentlyPlayingLyricsIndex) {
                     multilingualView(currentlyPlayingLyricsIndex)
-                        .compositingGroup()
+//                        .id(currentlyPlayingLyricsIndex)
+//                        .compositingGroup()
                 }
                 else {
                     Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
@@ -84,6 +85,7 @@ struct KaraokeView: View {
     @ViewBuilder
     var finalKaraokeView: some View {
         lyricsView()
+            .id(viewmodel.currentlyPlayingLyricsIndex)
             .lineLimit(2)
             .foregroundStyle(.white)
             .minimumScaleFactor(0.9)
@@ -95,7 +97,7 @@ struct KaraokeView: View {
                .transition(.opacity)
                .opacity(karaokeTransparency/100)
            }
-           .drawingGroup()
+//           .drawingGroup()
            .background(
                VisualEffectView().ignoresSafeArea()
            )
