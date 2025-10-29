@@ -14,7 +14,7 @@ import SwiftUI
 import MediaPlayer
 #if os(macOS)
 import WebKit
-import Translation
+@preconcurrency import Translation
 import KeyboardShortcuts
 import MediaRemoteAdapter
 #endif
