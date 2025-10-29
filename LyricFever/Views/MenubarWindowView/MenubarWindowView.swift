@@ -426,14 +426,7 @@ struct MenubarWindowView: View {
             Menu {
                 translationAndRomanizationView
             } label: {
-                HStack(spacing: 6) {
-                    Text("...")
-                    if viewmodel.airplayDelay {
-                        Image(systemName: "airplayaudio")
-                            .imageScale(.medium)
-                    }
-                }
-                .accessibilityLabel(viewmodel.airplayDelay ? Text("More options, AirPlay delay enabled") : Text("More options"))
+               
             }
             .disabled(translationState == .disabled)
             .buttonStyle(SmallMenubarButtonStyle(imageText: "translate", buttonState: translationState))
@@ -537,7 +530,7 @@ struct MenubarWindowView: View {
             if #available(macOS 26.0, *) {
                 Menu {
                     otherOptions
-                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
+//                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
                 } label: {
 
                         Text("...")
