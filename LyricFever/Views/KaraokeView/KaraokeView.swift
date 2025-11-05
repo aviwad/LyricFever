@@ -93,5 +93,35 @@ struct KaraokeView: View {
                 .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
         } else {
             // fall back
+            lyricsView()
+                .lineLimit(2)
+                .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
+                .minimumScaleFactor(0.9)
+                .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
+                .padding(10)
+                .padding(.horizontal, 10)
+                .background {
+                    // Material + optional album overlay
+                    Rectangle()
+                        .fill(Material.regular)
+                        .overlay(
+                            Group {
+                                if viewmodel.userDefaultStorage.karaokeUseAlbumColor, karaokeTransparency > 0 {
+                                    viewmodel.currentAlbumArt
+                                        .opacity(karaokeTransparency / 100)
+                                }
+                            }
+                        )
+                        .cornerRadius(16)
+                        .ignoresSafeArea()
+                }
+                .onHover { hover in
+                    if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
+                        viewmodel.karaokeModeHovering = hover
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
+        }
     }
 }
