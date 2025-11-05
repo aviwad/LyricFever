@@ -10,6 +10,18 @@ import SDWebImage
 import ColorKit
 import Combine
 
+extension Color {
+    var perceivedBrightness: Double {
+        // Convert to sRGB components
+        let components = self.cgColor?.components
+        let r = Double(components?[0] ?? 0)
+        let g = Double(components?[1] ?? 0)
+        let b = Double(components?[2] ?? 0)
+        
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    }
+}
+
 struct VisualEffectView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         if #available(macOS 26.0, *) {
@@ -38,6 +50,21 @@ struct VisualEffectView: NSViewRepresentable {
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    
+    private var effectiveTextColor: Color {
+        let transparency = karaokeTransparency / 100.0
+
+        // If fully transparent, rely on system appearance
+        if transparency <= 0.01 {
+            return .primary
+        }
+
+        let bgColor = viewmodel.currentAlbumArt
+        let brightness = bgColor.perceivedBrightness
+
+        let threshold: Double = 0.5
+        return brightness > threshold ? .black : .white
+    }
     
     func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
         if !viewmodel.romanizedLyrics.isEmpty {
