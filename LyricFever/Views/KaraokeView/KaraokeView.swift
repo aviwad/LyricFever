@@ -16,7 +16,7 @@ struct KaraokeView: View {
 
     // Adjust threshold here
     private var useForcedWhiteText: Bool {
-        karaokeTransparency / 100 > 0.40
+        karaokeTransparency / 100 >= 0.35
     }
 
     func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
