@@ -19,7 +19,7 @@ class UserDefaultStorage {
     var translate: Bool = false
     var translationTargetLanguage: Locale.Language? = nil
     #if os(macOS)
-    var showSongDetailsInMenubar: Bool = true
+    var showSongDetailsInMenubar: Bool = false
     #endif
     var blurFullscreen: Bool = true
     var animateOnStartupFullscreen: Bool = true
@@ -31,7 +31,7 @@ class UserDefaultStorage {
     var hasMigrated: Bool = false
     
     // User setting: use album art color or user-set currentBackground
-    var karaoke: Bool = false
+    var karaoke: Bool = true
     var karaokeUseAlbumColor: Bool = true
     var karaokeShowMultilingual: Bool = true
     var karaokeTransparency: Double = 50

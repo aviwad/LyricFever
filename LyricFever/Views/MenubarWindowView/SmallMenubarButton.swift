@@ -55,6 +55,7 @@ public struct SmallMenubarButtonStyle: ButtonStyle {
                 .shadow(radius: disabled ? 0 : 7)
         )
         .opacity(configuration.isPressed ? 0.7 : 1)
+        .environment(\.colorScheme, .dark)
     }
 }
 
