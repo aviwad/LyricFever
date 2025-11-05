@@ -27,7 +27,7 @@ struct SearchWindow: View {
             TextField("Song Name:", text: $trackName)
                 .padding(.trailing, 30)
             Text("Artist Name:")
-            TextField("Arist Name", text: $artistName)
+            TextField("Artist Name", text: $artistName)
                 .padding(.trailing, 30)
             Button {
                 searchResults = []
@@ -140,6 +140,7 @@ struct SearchWindow: View {
     }
     
     func searchLyrics() async throws {
+        selectedLyric = nil
         isFetching = true
         defer { isFetching = false }
         searchResults = []
@@ -154,6 +155,9 @@ struct SearchWindow: View {
     
     var body: some View {
         searchWindow
+            .onExitCommand {
+                selectedLyric = nil
+            }
             .overlay(
                 VStack {
                     selectedLyricView.ignoresSafeArea()

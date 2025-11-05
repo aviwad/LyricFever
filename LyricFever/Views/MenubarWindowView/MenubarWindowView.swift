@@ -26,7 +26,15 @@ struct MenubarWindowView: View {
                     .resizable()
                     .frame(width: 112, height: 112)
                     .clipShape(.rect(cornerRadius: 9))
-                    .animation(.smooth(duration: 0.3), value: artworkImage)
+//                    .animation(.smooth(duration: 0.3), value: viewmodel.newAlbum)
+                    .apply {
+                        if let shareURL = viewmodel.currentPlayerInstance.shareURL(for: viewmodel.currentlyPlaying) {
+                            $0
+                                .draggable(shareURL)
+                        } else {
+                            $0
+                        }
+                    }
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
             } else {
@@ -135,6 +143,7 @@ struct MenubarWindowView: View {
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
+                    .environment(\.colorScheme, .dark)
                 
                 HStack {
                     Text(displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
@@ -247,7 +256,8 @@ struct MenubarWindowView: View {
                    return
                }
                guard let translationSourceLanguage = viewmodel.translationSourceLanguage else {
-                   print("Translation: ingoring source language change: nil source language")
+                   print("Translation: source language change: nil source language, deleting existing pair")
+                   viewmodel.deleteSongLocalePairing(trackID: trackID)
                    return
                }
                let localeIdentifier = translationSourceLanguage.maximalIdentifier
@@ -425,14 +435,7 @@ struct MenubarWindowView: View {
             Menu {
                 translationAndRomanizationView
             } label: {
-                HStack(spacing: 6) {
-                    Text("...")
-                    if viewmodel.airplayDelay {
-                        Image(systemName: "airplayaudio")
-                            .imageScale(.medium)
-                    }
-                }
-                .accessibilityLabel(viewmodel.airplayDelay ? Text("More options, AirPlay delay enabled") : Text("More options"))
+               
             }
             .disabled(translationState == .disabled)
             .buttonStyle(SmallMenubarButtonStyle(imageText: "translate", buttonState: translationState))
@@ -536,11 +539,12 @@ struct MenubarWindowView: View {
             if #available(macOS 26.0, *) {
                 Menu {
                     otherOptions
-                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
+//                        .foregroundStyle(viewmodel.currentBackground ?? .primary)
                 } label: {
 
                         Text("...")
                 }
+                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
             } else {
                 Menu {
@@ -551,6 +555,7 @@ struct MenubarWindowView: View {
                         Text("...")
                 }
                 .frame(width: 30)
+                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
             }
             if viewmodel.airplayDelay {
@@ -683,10 +688,13 @@ struct MenubarWindowView: View {
             viewSelector
             Divider()
             menubarSizeSlider
+                .environment(\.colorScheme, .dark)
             volumeSlider
+                .environment(\.colorScheme, .dark)
             if viewmodel.spotifyConnectDelay {
                 Divider()
                 spotifyDelaySlider
+                    .environment(\.colorScheme, .dark)
             }
             Divider()
             systemControlView
@@ -695,7 +703,7 @@ struct MenubarWindowView: View {
         .padding(14)
         .background(
             viewmodel.currentBackground
-                .brightness(-0.4)
+                .brightness(colorScheme == .dark ? -0.4 : -0.8)
                 .opacity(0.6)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )

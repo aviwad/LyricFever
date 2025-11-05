@@ -7,23 +7,9 @@
 
 import ScriptingBridge
 import MusicKit
-import MediaRemoteAdapter
 import AppKit
 
 class AppleMusicPlayer: Player {
-    
-    init() {
-        musicController.onTrackInfoReceived = { data in
-            print("Track info received")
-            Task { @MainActor in
-                self.artworkImage = data.payload.artwork
-            }
-            // This will only be called for Apple Music events
-        }
-        musicController.startListening()
-    }
-    
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
     var appleMusicScript: MusicApplication? = SBApplication(bundleIdentifier: "com.apple.Music")
     var persistentID: String? {
         appleMusicScript?.currentTrack?.persistentID
