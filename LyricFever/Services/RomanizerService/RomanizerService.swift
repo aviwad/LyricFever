@@ -18,6 +18,8 @@ import Mecab_Swift
 import IPADic
 import OpenCC
 
+typealias FuriganaAnnotation = Annotation
+
 class RomanizerService {
     private static func generateJapaneseRomanizedString(_ string: String) -> String? {
         let ipadic=IPADic()
@@ -38,6 +40,22 @@ class RomanizerService {
         }
     }
     
+    private static func generateJapaneseFuriganaAnnotations(_ string: String) -> [FuriganaAnnotation]? {
+        let ipadic = IPADic()
+        let ipadicTokenizer = try? Tokenizer(dictionary: ipadic)
+        guard let furigana = ipadicTokenizer?.tokenize(text: string, transliteration: .hiragana) else {
+            return nil
+        }
+        return furigana.filter({$0.base != $0.reading})
+    }
+    static func generateFuriganaLyric(_ lyric: LyricLine) -> [FuriganaAnnotation]? {
+        print("Generating Furigana String for lyric \(lyric.words)")
+        guard let language = NLLanguageRecognizer.dominantLanguage(for: lyric.words), language == .japanese else {
+            return []
+        }
+        return generateJapaneseFuriganaAnnotations(lyric.words)
+    }
+
     static func generateRomanizedString(_ string: String) -> String? {
         print("Generating Romanized String for string \(string)")
         if let language = NLLanguageRecognizer.dominantLanguage(for: string), language == .japanese {

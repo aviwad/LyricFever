@@ -336,6 +336,7 @@
       }
     },
     "Arist Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1442,6 +1443,7 @@
       }
     },
     "More options" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1464,6 +1466,7 @@
       }
     },
     "More options, AirPlay delay enabled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2333,6 +2336,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分享 Spotify 連結"
+          }
+        }
+      }
+    },
+    "Show furigana in Karaoke window" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 K 歌歌词窗口显示日语假名注音"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當翻譯開啟時，在卡拉 OK 視窗顯示日語注音"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 視窗翻譯時顯示日語注音"
           }
         }
       }

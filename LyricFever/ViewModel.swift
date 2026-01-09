@@ -55,7 +55,7 @@ import MediaRemoteAdapter
 //                } else {
 //                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
-                guard let artwork = data.payload.artwork else {
+                guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
@@ -170,6 +170,7 @@ import MediaRemoteAdapter
     var currentlyPlayingLyricsIndex: Int?
     var isPlaying: Bool = false
     var romanizedLyrics: [String] = []
+    var furiganaAnnotaions: [[FuriganaAnnotation]] = []
     var chineseConversionLyrics: [String] = []
     var translatedLyric: [String] = []
     var showLyrics = true
@@ -541,6 +542,26 @@ import MediaRemoteAdapter
 //            romanizeMetadata()
         } else {
             romanizedLyrics = []
+        }
+    }
+    
+    func furiganaDidChange() {
+        if userDefaultStorage.karaokeShowFurigana {
+            // Generate romanized lyrics from chinese conversion
+            if !chineseConversionLyrics.isEmpty {
+                print("Furigana Annotated Lyrics generated from romanize value change for song \(currentlyPlaying) with chinese conversion")
+                furiganaAnnotaions = chineseConversionLyrics.compactMap({
+                    RomanizerService.generateFuriganaLyric(LyricLine(startTime: 0, words: $0))
+                })
+                // Generate romanized lyrics from original lyrics
+            } else {
+                print("Furigana Annotated Lyrics generated from romanize value change for song \(currentlyPlaying)")
+                furiganaAnnotaions = currentlyPlayingLyrics.compactMap({
+                    RomanizerService.generateFuriganaLyric($0)
+                })
+            }
+        } else {
+            furiganaAnnotaions = []
         }
     }
     
@@ -1037,6 +1058,7 @@ import MediaRemoteAdapter
         chinesePreferenceDidChange()
         // we romanize afterwards, in-case the chinese conversion array was populated
         romanizeDidChange()
+        furiganaDidChange()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()

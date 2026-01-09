@@ -34,6 +34,7 @@
 		8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FFA9F362AA1B63500BAEC5C /* crossfade.gif */; };
 		8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFB32DE2E694991007D9981 /* CompactSlider */; };
 		8FFED07B2D8A26E700EA1510 /* SwiftOTP in Frameworks */ = {isa = PBXBuildFile; productRef = 8FFED07A2D8A26E700EA1510 /* SwiftOTP */; };
+		DAABCADB2F11782900B369BE /* SwiftCF in Frameworks */ = {isa = PBXBuildFile; productRef = DAABCADA2F11782900B369BE /* SwiftCF */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -102,6 +103,7 @@
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
 				8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */,
+				DAABCADB2F11782900B369BE /* SwiftCF in Frameworks */,
 				8F2922C02E94DE0700B286FC /* MediaRemoteAdapter in Frameworks */,
 				8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */,
 			);
@@ -200,6 +202,7 @@
 				8F37323C2E6EC9C90075CDA7 /* OpenCC */,
 				8F1198712E72B9840011A962 /* KeyboardShortcuts */,
 				8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */,
+				DAABCADA2F11782900B369BE /* SwiftCF */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -246,6 +249,7 @@
 				8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */,
 				8F1198702E72B9840011A962 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */,
+				DAABCAD92F11782900B369BE /* XCRemoteSwiftPackageReference "SwiftCF" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -421,7 +425,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.2;
+				CURRENT_PROJECT_VERSION = 3.3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -442,7 +446,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -460,7 +464,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3.2;
+				CURRENT_PROJECT_VERSION = 3.3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 38TP6LZLJ5;
@@ -481,7 +485,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aviwadhwa.SpotifyLyricsInMenubar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -626,6 +630,14 @@
 				minimumVersion = 3.0.2;
 			};
 		};
+		DAABCAD92F11782900B369BE /* XCRemoteSwiftPackageReference "SwiftCF" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ddddxxx/SwiftCF";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -703,6 +715,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */;
 			productName = SwiftOTP;
+		};
+		DAABCADA2F11782900B369BE /* SwiftCF */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DAABCAD92F11782900B369BE /* XCRemoteSwiftPackageReference "SwiftCF" */;
+			productName = SwiftCF;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

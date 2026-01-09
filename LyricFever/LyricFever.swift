@@ -122,6 +122,9 @@ struct LyricFever: App {
             .onChange(of: viewmodel.userDefaultStorage.romanize) {
                 viewmodel.romanizeDidChange()
             }
+            .onChange(of: viewmodel.userDefaultStorage.karaokeShowFurigana) {
+                viewmodel.furiganaDidChange()
+            }
 //            .onChange(of: viewmodel.userDefaultStorage.romanizeMetadata) {
 //                if viewmodel.userDefaultStorage.romanizeMetadata {
 //                    viewmodel.romanizeMetadata()

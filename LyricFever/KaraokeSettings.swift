@@ -14,6 +14,7 @@ struct KaraokeSettingsView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
+    @AppStorage("karaokeShowFurigana") var karaokeShowFurigana: Bool = false
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
 
     var body: some View {
@@ -27,6 +28,10 @@ struct KaraokeSettingsView: View {
             .toggleStyle(.checkbox)
             Toggle(isOn: $karaokeShowMultilingual) {
                 Text("Show multilingual lyrics when translating in Karaoke window")
+            }
+            .toggleStyle(.checkbox)
+            Toggle(isOn: $karaokeShowFurigana) {
+                Text("Show furigana in Karaoke window")
             }
             .toggleStyle(.checkbox)
             .padding(.bottom, 20)

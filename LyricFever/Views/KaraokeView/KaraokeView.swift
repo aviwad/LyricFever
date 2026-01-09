@@ -9,6 +9,7 @@ import SwiftUI
 import SDWebImage
 import ColorKit
 import Combine
+import CoreTextExt
 
 struct VisualEffectView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSVisualEffectView {
@@ -52,6 +53,37 @@ struct KaraokeView: View {
         }
     }
     
+    func furiganaView(_ currentlyPlayingLyricsIndex: Int) -> some View {
+        let origWords = viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words
+        let attrString = NSMutableAttributedString(attributedString: NSAttributedString(string: origWords))
+        
+        // Add paragraph style to increase line height for Furigana and ensure centering
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.2
+        paragraphStyle.alignment = .center
+        attrString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attrString.length))
+        
+        for furigana in viewmodel.furiganaAnnotaions[currentlyPlayingLyricsIndex] {
+            let attr: [CFAttributedString.Key: Any] = [.ctRubySizeFactor: 0.5]
+            let annotation = CTRubyAnnotation.create(furigana.reading as NSString as CFString, attributes: attr)
+            attrString.addAttribute(.cf(.ctRubyAnnotation), value: annotation, range: NSRange(furigana.range, in: origWords))
+        }
+        
+        // Construct the NSFont from the viewmodel to match .font(.custom(...))
+        // Scale down slightly (0.85x) to accommodate Furigana vertical height within the fixed 100pt frame
+        let fontSize = viewmodel.karaokeFont.pointSize * 0.85
+        let nsFont = NSFont(name: viewmodel.karaokeFont.fontName, size: fontSize) 
+            ?? NSFont.systemFont(ofSize: fontSize)
+        
+        return RubyTextLabel(
+            attributedText: attrString,
+            font: nsFont,
+            textColor: .white,        // Matches .foregroundStyle(.white)
+            textAlignment: .center,   // Matches .multilineTextAlignment(.center)
+            lineLimit: 2              // Matches .lineLimit(2)
+        )
+    }
+    
     func originalAndTranslationAreDifferent(for currentlyPlayingLyricsIndex: Int) -> Bool {
         viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words != viewmodel.translatedLyric[currentlyPlayingLyricsIndex]
     }
@@ -71,6 +103,8 @@ struct KaraokeView: View {
             } else {
                 if !viewmodel.romanizedLyrics.isEmpty {
                     Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
+                } else if !viewmodel.furiganaAnnotaions.isEmpty && !viewmodel.furiganaAnnotaions[currentlyPlayingLyricsIndex].isEmpty {
+                    furiganaView(currentlyPlayingLyricsIndex)
                 } else if !viewmodel.chineseConversionLyrics.isEmpty {
                     Text(verbatim: viewmodel.chineseConversionLyrics[currentlyPlayingLyricsIndex])
                 } else {

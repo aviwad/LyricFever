@@ -34,6 +34,7 @@ class UserDefaultStorage {
     var karaoke: Bool = true
     var karaokeUseAlbumColor: Bool = true
     var karaokeShowMultilingual: Bool = true
+    var karaokeShowFurigana: Bool = false
     var karaokeTransparency: Double = 50
     var fixedKaraokeColorHex: String = "#2D3CCC"
     
