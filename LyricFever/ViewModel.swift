@@ -49,13 +49,16 @@ import MediaRemoteAdapter
         musicController.onTrackInfoReceived = { data in
             print("Track info received")
             Task { @MainActor in
-//                if self.appleMusicUniqueIdentifier == data.payload.uniqueIdentifier {
+                guard let trackInfo = data else {
+                    return
+                }
+//                if self.appleMusicUniqueIdentifier == trackInfo.payload.uniqueIdentifier {
 //                    print("Apple Music Artwork Workaround: Ignoring artwork for existing song")
 //                    return
 //                } else {
-//                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
+//                    self.appleMusicUniqueIdentifier = trackInfo.payload.uniqueIdentifier
 //                }
-                guard let artwork = data.payload.artwork else {
+                guard let artwork = trackInfo.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
@@ -226,7 +229,10 @@ import MediaRemoteAdapter
     #if os(macOS)
     // UI element used to hide if karaokeModeHoveringSetting is true
     var karaokeModeHovering: Bool = false
-    
+
+    // Toggle trigger to re-center the karaoke floating window
+    var reCenterKaraokeToggle = false
+
     var colorBinding: Binding<Color> {
         Binding<Color> {
             Color(NSColor(hexString: self.userDefaultStorage.fixedKaraokeColorHex)!)

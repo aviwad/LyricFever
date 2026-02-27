@@ -518,6 +518,10 @@ struct MenubarWindowView: View {
         Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
         Divider()
         streamingDelayView
+        Button("Re-center Karaoke Window") {
+            viewmodel.reCenterKaraokeToggle.toggle()
+        }
+        .disabled(!viewmodel.userDefaultStorage.karaoke)
         Button("Settings (New Karaoke Settings!)") {
             openWindow(id: "onboarding")
             NSApplication.shared.activate(ignoringOtherApps: true)

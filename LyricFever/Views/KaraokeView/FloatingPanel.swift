@@ -27,7 +27,7 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
         content
             .onAppear {
                 panel = FloatingPanel(view: view, contentRect: contentRect, isPresented: $isPresented)
-                panel?.center()
+                panel?.center(animated: false)  // Don't animate on initial appearance
                 if isPresented {
                     present()
                 }
@@ -47,6 +47,9 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
                     panel?.close()
                 }
             }
+            .onChange(of: ViewModel.shared.reCenterKaraokeToggle) {
+                panel?.center(animated: true)  // Animate when user manually re-centers
+            }
     }
  
     func present() {
@@ -65,6 +68,23 @@ extension EnvironmentValues {
         set { self[FloatingPanelKey.self] = newValue }
     }
 }
+
+// Extension to allow calling center(animated:) on any NSPanel
+extension NSPanel {
+    @objc func centerAnimated(_ animated: Bool) {
+        // Default implementation - subclasses can override
+        if animated {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.3
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                self.animator().center()
+            }
+        } else {
+            self.center()
+        }
+    }
+}
+
 class FloatingPanel<Content: View>: NSPanel {
     @Binding var isPresented: Bool
     init(view: () -> Content,
@@ -125,8 +145,33 @@ class FloatingPanel<Content: View>: NSPanel {
     override var canBecomeMain: Bool {
         return true
     }
+    
+    override func centerAnimated(_ animated: Bool) {
+        center(animated: animated)
+    }
+    
+    func center(animated: Bool = true) {
+        guard let rect = self.screen?.frame else { return }
+        let targetOrigin = NSPoint(x: (rect.width - self.frame.width)/2, y: (rect.height - self.frame.height)/5)
+        
+        if animated {
+            // Create new frame with target origin
+            let newFrame = NSRect(origin: targetOrigin, size: self.frame.size)
+            
+            // Use setFrame with animate parameter - this is the proper way to animate window movement
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.3
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            }
+            // setFrame's animate parameter handles the animation outside the context
+            self.setFrame(newFrame, display: true, animate: true)
+        } else {
+            // Immediately position without animation
+            self.setFrameOrigin(targetOrigin)
+        }
+    }
+    
     override func center() {
-        let rect = self.screen?.frame
-        self.setFrameOrigin(NSPoint(x: (rect!.width - self.frame.width)/2, y: (rect!.height - self.frame.height)/5))
+        center(animated: false)
     }
 }

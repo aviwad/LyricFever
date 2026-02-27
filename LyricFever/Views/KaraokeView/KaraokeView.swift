@@ -29,6 +29,7 @@ struct VisualEffectView: NSViewRepresentable {
 
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
+    @Environment(\.floatingPanel) var panel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
     
     func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
@@ -113,5 +114,10 @@ struct KaraokeView: View {
     
     var body: some View {
         finalKaraokeView
+            .contextMenu {
+                Button("Re-center Window") {
+                    panel?.centerAnimated(true)
+                }
+            }
     }
 }
