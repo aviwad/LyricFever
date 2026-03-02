@@ -30,6 +30,8 @@ struct VisualEffectView: NSViewRepresentable {
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
+    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     
     func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
         if !viewmodel.romanizedLyrics.isEmpty {
@@ -93,7 +95,7 @@ struct KaraokeView: View {
             .padding(10)
             .padding(.horizontal, 10)
             .background {
-               viewmodel.currentAlbumArt
+               currentAlbumArt
                .transition(.opacity)
                .opacity(karaokeTransparency/100)
            }
@@ -109,6 +111,14 @@ struct KaraokeView: View {
             }
             .multilineTextAlignment(.center)
             .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
+    }
+    
+    var currentAlbumArt: Color {
+        // ensure user wants to use album-derived color, and album-derived color exists
+        guard karaokeUseAlbumColor, let currentBackground = viewmodel.currentBackground else {
+            return Color(NSColor(hexString: fixedKaraokeColorHex)!)
+        }
+        return currentBackground
     }
     
     var body: some View {

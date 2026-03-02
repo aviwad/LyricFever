@@ -227,13 +227,6 @@ import MediaRemoteAdapter
     // UI element used to hide if karaokeModeHoveringSetting is true
     var karaokeModeHovering: Bool = false
     
-    var colorBinding: Binding<Color> {
-        Binding<Color> {
-            Color(NSColor(hexString: self.userDefaultStorage.fixedKaraokeColorHex)!)
-        } set: { newValue in
-            self.userDefaultStorage.fixedKaraokeColorHex = NSColor(newValue).hexString!
-        }
-    }
     #endif
     
     #if os(macOS)
@@ -264,14 +257,6 @@ import MediaRemoteAdapter
     var isPlayerRunning: Bool {
         currentPlayerInstance.isRunning
     }
-    #if os(macOS)
-    var currentAlbumArt: Color {
-        guard userDefaultStorage.karaokeUseAlbumColor, let currentBackground else {
-            return colorBinding.wrappedValue
-        }
-        return currentBackground
-    }
-    #endif
     
     var spotifyLyricProvider = SpotifyLyricProvider()
     var lRCLyricProvider = LRCLIBLyricProvider()
@@ -1082,16 +1067,6 @@ import MediaRemoteAdapter
         setCurrentProperties()
         startLyricUpdater()
     }
-    #if os(macOS)
-    func resetKaraokePrefs() {
-        userDefaultStorage.karaokeModeHoveringSetting = false
-        userDefaultStorage.karaokeUseAlbumColor = true
-        userDefaultStorage.karaokeShowMultilingual = true
-        userDefaultStorage.karaokeTransparency = 50
-        karaokeFont = NSFont.boldSystemFont(ofSize: 30)
-        colorBinding.wrappedValue = Color(.sRGB, red: 0.98, green: 0.0, blue: 0.98)
-    }
-    #endif
 }
 
 #if os(macOS)

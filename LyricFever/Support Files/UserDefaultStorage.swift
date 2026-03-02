@@ -32,10 +32,10 @@ class UserDefaultStorage {
     
     // User setting: use album art color or user-set currentBackground
     var karaoke: Bool = true
-    var karaokeUseAlbumColor: Bool = true
+//    var karaokeUseAlbumColor: Bool = true
     var karaokeShowMultilingual: Bool = true
     var karaokeTransparency: Double = 50
-    var fixedKaraokeColorHex: String = "#2D3CCC"
+//    var fixedKaraokeColorHex: String = "#2D3CCC"
     
     // User setting: hide karaoke on hover
     var karaokeModeHoveringSetting: Bool = false

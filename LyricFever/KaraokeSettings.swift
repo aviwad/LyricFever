@@ -12,9 +12,19 @@ import FontPicker
 
 struct KaraokeSettingsView: View {
     @Environment(ViewModel.self) var viewmodel
+    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
+    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    
+    var colorBinding: Binding<Color> {
+        Binding<Color> {
+            Color(NSColor(hexString: fixedKaraokeColorHex)!)
+        } set: { newValue in
+            fixedKaraokeColorHex = NSColor(newValue).hexString!
+        }
+    }
 
     var body: some View {
         VStack(spacing: 12) {
@@ -34,12 +44,12 @@ struct KaraokeSettingsView: View {
             Text("Karaoke Background Appearance")
                     .font(.system(size: 15, weight: .bold))
             
-            Toggle(isOn: $viewmodel.userDefaultStorage.karaokeUseAlbumColor) {
+            Toggle(isOn: $karaokeUseAlbumColor) {
                 Text("Use album color for Karaoke window")
             }
             .toggleStyle(.checkbox)
-            if !viewmodel.userDefaultStorage.karaokeUseAlbumColor {
-                ColorPicker("Set a background color", selection: viewmodel.colorBinding, supportsOpacity: false)
+            if !karaokeUseAlbumColor {
+                ColorPicker("Set a background color", selection: colorBinding, supportsOpacity: false)
             }
             Text("Opacity Level: \(Int(karaokeTransparency))%")
             CompactSlider(value: $karaokeTransparency, in: 1...100, step: 5) {
@@ -54,23 +64,28 @@ struct KaraokeSettingsView: View {
 //                .bold()
                 .font(.system(size: 15, weight: .bold))
             FontPicker("Select a Font:", selection: $viewmodel.karaokeFont)
-                .frame(height: 50)
+                .frame(height: 30)
+                .buttonStyle(.bordered)
             Text("Font Selected: \(viewmodel.karaokeFont.displayName ?? ""), Size: \(Int(viewmodel.karaokeFont.pointSize))")
                 .font(.custom(viewmodel.karaokeFont.fontName, size: 13))
             
             .frame(width: 300, height: 24)
             Button("Reset to default") {
                 viewmodel.userDefaultStorage.karaokeModeHoveringSetting = false
-                viewmodel.userDefaultStorage.karaokeUseAlbumColor = true
+                karaokeUseAlbumColor = true
                 viewmodel.userDefaultStorage.karaokeShowMultilingual = true
                 viewmodel.userDefaultStorage.karaokeTransparency = 50
                 viewmodel.karaokeFont = NSFont.boldSystemFont(ofSize: 30)
 //                viewmodel.karaokeFontSize = 30
-                viewmodel.colorBinding.wrappedValue = Color(.sRGB, red: 0.98, green: 0.0, blue: 0.98)
+                colorBinding.wrappedValue = Color(.sRGB, red: 0.98, green: 0.0, blue: 0.98)
                 
             }
+            Spacer()
         }
-        .animation(.bouncy, value: viewmodel.userDefaultStorage.karaokeUseAlbumColor)
+//        .padding(.vertical, 100)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .animation(.bouncy, value: karaokeUseAlbumColor)
         .padding(.horizontal)
+        .padding(.top, 100)
     }
 }
