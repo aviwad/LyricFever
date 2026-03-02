@@ -90,8 +90,21 @@
         }
       }
     },
-    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.2" : {
-
+    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.3" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
+          }
+        }
+      }
     },
     "%@s" : {
       "localizations" : {
@@ -336,6 +349,7 @@
       }
     },
     "Arist Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -466,6 +480,9 @@
           }
         }
       }
+    },
+    "Buy Me A Beer (Thank You)!" : {
+
     },
     "Change fullscreen settings here!" : {
       "localizations" : {
@@ -1442,6 +1459,7 @@
       }
     },
     "More options" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1463,7 +1481,11 @@
         }
       }
     },
+    "More Options" : {
+
+    },
     "More options, AirPlay delay enabled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3040,6 +3062,9 @@
           }
         }
       }
+    },
+    "Undo Spotify Info Matched For This Song (Check  \"...\" menu)" : {
+
     },
     "Unheart" : {
       "localizations" : {
