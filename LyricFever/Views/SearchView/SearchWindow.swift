@@ -24,10 +24,10 @@ struct SearchWindow: View {
     var searchControlsView: some View {
         HStack {
             Text("Song Name")
-            TextField("Song Name:", text: $trackName)
+            TextField("", text: $trackName)
                 .padding(.trailing, 30)
             Text("Artist Name:")
-            TextField("Artist Name", text: $artistName)
+            TextField("", text: $artistName)
                 .padding(.trailing, 30)
             Button {
                 searchResults = []
