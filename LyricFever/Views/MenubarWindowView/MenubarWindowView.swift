@@ -546,6 +546,13 @@ struct MenubarWindowView: View {
                 }
                 .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
+                .onHover { isHovering in
+                    if isHovering {
+                        currentHoveredItem = .moreOptions
+                    } else {
+                        currentHoveredItem = .none
+                    }
+                }
             } else {
                 Menu {
                     otherOptions
@@ -557,6 +564,13 @@ struct MenubarWindowView: View {
                 .frame(width: 30)
                 .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
+                .onHover { isHovering in
+                    if isHovering {
+                        currentHoveredItem = .moreOptions
+                    } else {
+                        currentHoveredItem = .none
+                    }
+                }
             }
             if viewmodel.airplayDelay {
                 Image(systemName: "airplayaudio")
