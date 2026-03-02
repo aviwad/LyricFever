@@ -22,7 +22,7 @@ struct SpotifyLyrics: Decodable {
         self.downloadDate = Date.now
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.language = (try? container.decode(String.self, forKey: .language)) ?? ""
-        if let syncType = try? container.decode(String.self, forKey: .syncType), syncType == "LINE_SYNCED", var lyrics = try? container.decode([LyricLine].self, forKey: .lines) {
+        if let syncType = try? container.decode(String.self, forKey: .syncType), syncType == "LINE_SYNCED", let lyrics = try? container.decode([LyricLine].self, forKey: .lines) {
             self.lyrics = lyrics
         } else {
             self.lyrics = []
