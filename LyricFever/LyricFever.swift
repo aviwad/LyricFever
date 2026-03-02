@@ -114,7 +114,7 @@ struct LyricFever: App {
                 }
             }
             .onChange(of: viewmodel.userLocaleLanguage) {
-                viewmodel.reloadTranslationConfigIfTranslating()
+                let _ = viewmodel.reloadTranslationConfigIfTranslating()
             }
             .onChange(of: viewmodel.userDefaultStorage.chinesePreference) {
                 viewmodel.chinesePreferenceDidChange()
