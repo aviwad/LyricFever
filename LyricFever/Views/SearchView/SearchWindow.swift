@@ -79,11 +79,18 @@ struct SearchWindow: View {
                 Spacer()
                 Button {
                     let cleanLyrics = NetworkFetchReturn(lyrics: selectedLyricLyric.lyrics, colorData: nil).processed(withSongName: trackName, duration: viewmodel.duration).lyrics
+                    
+                    if let currentIndex = viewmodel.currentlyPlayingLyricsIndex, currentIndex >= cleanLyrics.count {
+                        // set currentindex to nil to prevent out of bounds index access with existing UI
+                        viewmodel.currentlyPlayingLyricsIndex = nil
+                    }
+                    
                     viewmodel.setNewLyricsColorTranslationRomanizationAndStartUpdater(with: cleanLyrics)
                     guard let spotifyID = viewmodel.currentlyPlaying else {
                         return
                     }
-                    SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
+                    // thats how i save to coredata
+                    let _ = SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
                     viewmodel.saveCoreData()
                     lyricsAreApplied = true
                 } label: {
@@ -96,6 +103,7 @@ struct SearchWindow: View {
                 .tint(lyricsAreApplied ? .gray : .green)
             }
             .padding()
+//            .id(selectedLyric)
             .transition(.move(edge: .bottom))
             .frame(maxWidth: .infinity)
             .frame(height: overlayHeight)
