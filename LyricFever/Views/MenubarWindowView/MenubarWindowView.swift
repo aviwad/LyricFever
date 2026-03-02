@@ -722,10 +722,17 @@ struct MenubarWindowView: View {
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
         .onAppear {
-            viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+            if !viewmodel.isStopped {
+                viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+            }
         }
-        .task { @MainActor in
-            supportedLanguages = await LanguageAvailability().supportedLanguages
+        .task {
+            let languages = await Task.detached {
+                await LanguageAvailability().supportedLanguages
+            }.value
+            await MainActor.run {
+                supportedLanguages = languages
+            }
         }
     }
 }
