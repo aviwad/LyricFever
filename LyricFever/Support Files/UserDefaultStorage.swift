@@ -9,10 +9,10 @@ import Combine
 import SwiftUI
 import ObservableDefaults
 
-extension Locale.Language: @retroactive UserDefaultsPropertyListValue {}
-extension Locale.Language: @retroactive CodableUserDefaultsPropertyListValue {
-    
-}
+//extension Locale.Language: @retroactive UserDefaultsPropertyListValue {}
+//extension Locale.Language: @retroactive CodableUserDefaultsPropertyListValue {
+//    
+//}
 
 @ObservableDefaults
 class UserDefaultStorage {
