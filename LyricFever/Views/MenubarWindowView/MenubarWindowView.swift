@@ -530,7 +530,11 @@ struct MenubarWindowView: View {
         Button("Check for Updates…") {
             viewmodel.updaterService.updaterController.checkForUpdates(nil)
         }
+        Divider()
             .keyboardShortcut("u")
+        Button("Buy Me A Beer (Thank You)!") {
+            openURL(URL(string: "https://buymeacoffee.com/aviwadhwalyricfever")!)
+        }
     }
     
     @ViewBuilder
