@@ -2448,6 +2448,7 @@
       }
     },
     "Song Name:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
