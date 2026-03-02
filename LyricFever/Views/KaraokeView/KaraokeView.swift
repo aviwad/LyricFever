@@ -30,6 +30,7 @@ struct VisualEffectView: NSViewRepresentable {
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
     @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     
@@ -62,10 +63,8 @@ struct KaraokeView: View {
     func lyricsView() -> some View {
         if let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
             if viewmodel.translationExists {
-                if viewmodel.userDefaultStorage.karaokeShowMultilingual, originalAndTranslationAreDifferent(for: currentlyPlayingLyricsIndex) {
+                if karaokeShowMultilingual, originalAndTranslationAreDifferent(for: currentlyPlayingLyricsIndex) {
                     multilingualView(currentlyPlayingLyricsIndex)
-//                        .id(currentlyPlayingLyricsIndex)
-//                        .compositingGroup()
                 }
                 else {
                     Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
