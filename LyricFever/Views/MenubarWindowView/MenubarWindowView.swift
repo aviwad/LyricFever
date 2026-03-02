@@ -54,6 +54,7 @@ struct MenubarWindowView: View {
                         .clipShape(.rect(cornerRadius: 9))
                     
                     ProgressView()
+                        .environment(\.colorScheme, .dark)
                 }
             }
             .animation(.smooth(duration: 2), value: viewmodel.isFetching)
