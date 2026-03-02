@@ -522,13 +522,13 @@ import MediaRemoteAdapter
         if userDefaultStorage.romanize {
             // Generate romanized lyrics from chinese conversion
             if !chineseConversionLyrics.isEmpty {
-                print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying) with chinese conversion")
+                print("Romanized Lyrics generated from romanize value change for song \(String(describing: currentlyPlaying)) with chinese conversion")
                 romanizedLyrics = chineseConversionLyrics.compactMap({
                     RomanizerService.generateRomanizedLyric(LyricLine(startTime: 0, words: $0))
                 })
             // Generate romanized lyrics from original lyrics
             } else {
-                print("Romanized Lyrics generated from romanize value change for song \(currentlyPlaying)")
+                print("Romanized Lyrics generated from romanize value change for song \(String(describing: currentlyPlaying))")
                 romanizedLyrics = currentlyPlayingLyrics.compactMap({
                     RomanizerService.generateRomanizedLyric($0)
                 })
@@ -565,7 +565,7 @@ import MediaRemoteAdapter
     
     func chinesePreferenceDidChange() {
         if let chinesePreference = ChineseConversion(rawValue: userDefaultStorage.chinesePreference), chinesePreference != .none {
-            print("Generating Chinese conversion for song \(currentlyPlaying) to chinese style \(chinesePreference.description)")
+            print("Generating Chinese conversion for song \(String(describing: currentlyPlaying)) to chinese style \(chinesePreference.description)")
             //TODO: check if Task was cancelled
             let chineseConversionLyrics: [String] = currentlyPlayingLyrics.compactMap({
                 switch chinesePreference {

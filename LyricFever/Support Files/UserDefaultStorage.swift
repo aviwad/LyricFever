@@ -7,49 +7,68 @@
 
 import Combine
 import SwiftUI
-import ObservableDefaults
+//import ObservableDefaults
+import ObservableUserDefault
 
-//extension Locale.Language: @retroactive UserDefaultsPropertyListValue {}
-//extension Locale.Language: @retroactive CodableUserDefaultsPropertyListValue {
-//    
-//}
 
-@ObservableDefaults
+//@ObservableDefaults
+@Observable
 class UserDefaultStorage {
-    var translate: Bool = false
-    var translationTargetLanguage: Locale.Language? = nil
+    @ObservableUserDefault(.init(key: "translate", defaultValue: false, store: .standard))
+    @ObservationIgnored var translate: Bool
+    @ObservableUserDefault(.init(key: "translationTargetLanguage", store: .standard))
+    @ObservationIgnored var translationTargetLanguage: Locale.Language?
+//    var furigana = false
     #if os(macOS)
-    var showSongDetailsInMenubar: Bool = false
+    @ObservableUserDefault(.init(key: "showSongDetailsInMenubar", defaultValue: false, store: .standard))
+    @ObservationIgnored var showSongDetailsInMenubar: Bool
     #endif
-    var blurFullscreen: Bool = true
-    var animateOnStartupFullscreen: Bool = true
-    var romanize: Bool = false
-    var romanizeMetadata: Bool = true
-    var chinesePreference: Int = 0
+    @ObservableUserDefault(.init(key: "blurFullscreen", defaultValue: true, store: .standard))
+    @ObservationIgnored var blurFullscreen: Bool
+    @ObservableUserDefault(.init(key: "animateOnStartupFullscreen", defaultValue: true, store: .standard))
+    @ObservationIgnored var animateOnStartupFullscreen: Bool
+    @ObservableUserDefault(.init(key: "romanize", defaultValue: false, store: .standard))
+    @ObservationIgnored var romanize: Bool
+    @ObservableUserDefault(.init(key: "romanizeMetadata", defaultValue: true, store: .standard))
+    @ObservationIgnored var romanizeMetadata: Bool
+    @ObservableUserDefault(.init(key: "chinesePreference", defaultValue: 0, store: .standard))
+    @ObservationIgnored var chinesePreference: Int
     #if os(macOS)
-    var spotifyConnectDelayCount: Int = 400
-    var hasMigrated: Bool = false
+    @ObservableUserDefault(.init(key: "spotifyConnectDelayCount", defaultValue: 400, store: .standard))
+    @ObservationIgnored var spotifyConnectDelayCount: Int
+    @ObservableUserDefault(.init(key: "hasMigrated", defaultValue: false, store: .standard))
+    @ObservationIgnored var hasMigrated: Bool
     
     // User setting: use album art color or user-set currentBackground
-    var karaoke: Bool = true
+    @ObservableUserDefault(.init(key: "karaoke", defaultValue: true, store: .standard))
+    @ObservationIgnored var karaoke: Bool
 //    var karaokeUseAlbumColor: Bool = true
-    var karaokeShowMultilingual: Bool = true
-    var karaokeTransparency: Double = 50
+    @ObservableUserDefault(.init(key: "karaokeShowMultilingual", defaultValue: true, store: .standard))
+    @ObservationIgnored var karaokeShowMultilingual: Bool
+    @ObservableUserDefault(.init(key: "karaokeTransparency", defaultValue: 50, store: .standard))
+    @ObservationIgnored var karaokeTransparency: Double
 //    var fixedKaraokeColorHex: String = "#2D3CCC"
     
     // User setting: hide karaoke on hover
-    var karaokeModeHoveringSetting: Bool = false
+    @ObservableUserDefault(.init(key: "karaokeModeHoveringSetting", defaultValue: false, store: .standard))
+    @ObservationIgnored var karaokeModeHoveringSetting: Bool
     #endif
 
-    @DefaultsKey(userDefaultsKey: "spDcCookie")
-    var cookie: String = ""
+//    @DefaultsKey(userDefaultsKey: "spDcCookie")
+    @ObservableUserDefault(.init(key: "spDcCookie", defaultValue: "", store: .standard))
+    @ObservationIgnored var cookie: String
     
     #if os(macOS)
     // False: Spotify, True: Apple Music
-    var spotifyOrAppleMusic: Bool = false
-    var latestUpdateWindowShown: Int = 0
+    @ObservableUserDefault(.init(key: "spotifyOrAppleMusic", defaultValue: false, store: .standard))
+    @ObservationIgnored var spotifyOrAppleMusic: Bool
+    @ObservableUserDefault(.init(key: "latestUpdateWindowShown", defaultValue: 0, store: .standard))
+    @ObservationIgnored var latestUpdateWindowShown: Int
     #endif
-    var hasOnboarded: Bool = false
-    var hasTranslated: Bool = false
-    var truncationLength: Int = 40
+    @ObservableUserDefault(.init(key: "hasOnboarded", defaultValue: false, store: .standard))
+    @ObservationIgnored var hasOnboarded: Bool
+    @ObservableUserDefault(.init(key: "hasTranslated", defaultValue: false, store: .standard))
+    @ObservationIgnored var hasTranslated: Bool
+    @ObservableUserDefault(.init(key: "truncationLength", defaultValue: 40, store: .standard))
+    @ObservationIgnored var truncationLength: Int
 }

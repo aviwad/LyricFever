@@ -22,10 +22,10 @@
 		8F6BD2952A8A61C9008BBF88 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */; };
 		8F6BD2972A8A6278008BBF88 /* amplitudeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */; };
 		8F6BD2992A8A6B7D008BBF88 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */; };
-		8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 8F7C7EE72E34338900CA9041 /* ObservableDefaults */; };
 		8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8196862D93CCDC00F03741 /* StringMetric */; };
 		8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 8F832CAC2D6BEC52008C1C2B /* FontPicker */; };
 		8F89E1112C90DA4900F511EB /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8F89E1102C90DA4900F511EB /* LaunchAtLogin */; };
+		8F9B71A22F55F19400214019 /* ObservableUserDefault in Frameworks */ = {isa = PBXBuildFile; productRef = 8F9B71A12F55F19400214019 /* ObservableUserDefault */; };
 		8FA436AE2BC49D480072016C /* newPermissionMac.gif in Resources */ = {isa = PBXBuildFile; fileRef = 8FA436AD2BC49D480072016C /* newPermissionMac.gif */; };
 		8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FA4E9772CE73DB900CEEF35 /* ColorKit */; };
 		8FC8E9492A704EEB00F69915 /* LyricFever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8E9482A704EEB00F69915 /* LyricFever.swift */; };
@@ -90,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F9B71A22F55F19400214019 /* ObservableUserDefault in Frameworks */,
 				8F37323D2E6EC9C90075CDA7 /* OpenCC in Frameworks */,
 				8F1198722E72B9840011A962 /* KeyboardShortcuts in Frameworks */,
 				8F0E98952EE24713008A50A4 /* MenuBarExtraAccess in Frameworks */,
@@ -99,7 +100,6 @@
 				8FA4E9782CE73DB900CEEF35 /* ColorKit in Frameworks */,
 				8F28FDC22AA25D2700439D8D /* Sparkle in Frameworks */,
 				8F832CAD2D6BEC52008C1C2B /* FontPicker in Frameworks */,
-				8F7C7EE82E34338900CA9041 /* ObservableDefaults in Frameworks */,
 				8FFB32DF2E694991007D9981 /* CompactSlider in Frameworks */,
 				8F8196872D93CCDC00F03741 /* StringMetric in Frameworks */,
 				8FFA9F342AA1B3CB00BAEC5C /* SDWebImageSwiftUI in Frameworks */,
@@ -197,12 +197,12 @@
 				8F8196862D93CCDC00F03741 /* StringMetric */,
 				8F1979942DA72D49008C113D /* IPADic */,
 				8F1979962DA72D49008C113D /* Mecab-Swift */,
-				8F7C7EE72E34338900CA9041 /* ObservableDefaults */,
 				8FFB32DE2E694991007D9981 /* CompactSlider */,
 				8F37323C2E6EC9C90075CDA7 /* OpenCC */,
 				8F1198712E72B9840011A962 /* KeyboardShortcuts */,
 				8F2922BF2E94DE0700B286FC /* MediaRemoteAdapter */,
 				8F0E98942EE24713008A50A4 /* MenuBarExtraAccess */,
+				8F9B71A12F55F19400214019 /* ObservableUserDefault */,
 			);
 			productName = SpotifyLyricsInMenubar;
 			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
@@ -244,12 +244,12 @@
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
-				8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */,
 				8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */,
 				8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */,
 				8F1198702E72B9840011A962 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */,
 				8F0E98932EE24713008A50A4 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
+				8F9B71A02F55F19400214019 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */,
 			);
 			productRefGroup = 8FC8E9462A704EEB00F69915 /* Products */;
 			projectDirPath = "";
@@ -574,14 +574,6 @@
 				kind = branch;
 			};
 		};
-		8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/fatbobman/ObservableDefaults";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.8.5;
-			};
-		};
 		8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/autozimu/StringMetric.swift";
@@ -604,6 +596,14 @@
 			requirement = {
 				branch = main;
 				kind = branch;
+			};
+		};
+		8F9B71A02F55F19400214019 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davidsteppenbeck/ObservableUserDefault.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.1;
 			};
 		};
 		8FA4E9762CE73DB900CEEF35 /* XCRemoteSwiftPackageReference "ColorKit-macOS" */ = {
@@ -681,11 +681,6 @@
 			package = 8F6BD2932A8A61C8008BBF88 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
 			productName = AmplitudeSwift;
 		};
-		8F7C7EE72E34338900CA9041 /* ObservableDefaults */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8F7C7EE62E34338900CA9041 /* XCRemoteSwiftPackageReference "ObservableDefaults" */;
-			productName = ObservableDefaults;
-		};
 		8F8196862D93CCDC00F03741 /* StringMetric */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */;
@@ -700,6 +695,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F89E10F2C90DA4900F511EB /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
 			productName = LaunchAtLogin;
+		};
+		8F9B71A12F55F19400214019 /* ObservableUserDefault */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F9B71A02F55F19400214019 /* XCRemoteSwiftPackageReference "ObservableUserDefault" */;
+			productName = ObservableUserDefault;
 		};
 		8FA4E9772CE73DB900CEEF35 /* ColorKit */ = {
 			isa = XCSwiftPackageProductDependency;

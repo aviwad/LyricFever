@@ -65,8 +65,10 @@ extension EnvironmentValues {
         set { self[FloatingPanelKey.self] = newValue }
     }
 }
+
 class FloatingPanel<Content: View>: NSPanel {
     @Binding var isPresented: Bool
+
     init(view: () -> Content,
              contentRect: NSRect,
              backing: NSWindow.BackingStoreType = .buffered,
@@ -90,9 +92,16 @@ class FloatingPanel<Content: View>: NSPanel {
         backgroundColor = NSColor.clear
         standardWindowButton(.miniaturizeButton)?.isHidden = true
         standardWindowButton(.zoomButton)?.isHidden = true
-        contentView = NSHostingView(rootView: view()
-        .preferredColorScheme(.dark)
-        .environment(\.floatingPanel, self))
+//        let glassview = NSGlassEffectView()
+//        appearance = NSAppearance(named: .darkAqua)
+        let hostingview = NSHostingView(rootView: view()
+            .preferredColorScheme(.dark)
+            .environment(\.floatingPanel, self))
+//        glassview.translatesAutoresizingMaskIntoConstraints = false
+//        hostingview.translatesAutoresizingMaskIntoConstraints = false
+//        glassview.contentView = hostingview
+//        contentView = glassview
+        contentView = hostingview
         hasShadow = false
     }
     
