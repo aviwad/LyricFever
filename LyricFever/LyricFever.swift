@@ -61,10 +61,10 @@ struct LyricFever: App {
                 }
             }
             .task(id: viewmodel.userDefaultStorage.latestUpdateWindowShown) {
-                if viewmodel.userDefaultStorage.latestUpdateWindowShown < 24 {
+                if viewmodel.userDefaultStorage.latestUpdateWindowShown < 33 {
                     NSApplication.shared.activate(ignoringOtherApps: true)
                     openWindow(id: "update")
-                    viewmodel.userDefaultStorage.latestUpdateWindowShown = 24
+                    viewmodel.userDefaultStorage.latestUpdateWindowShown = 33
                 }
             }
             .task(id: viewmodel.userDefaultStorage.hasOnboarded) {
@@ -237,7 +237,7 @@ struct LyricFever: App {
         }
         .windowResizability(.contentSize)
         Window("Lyric Fever: Update 2.3", id: "update") { // << here !!
-            UpdateWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
+            UpdateWindow().frame(minWidth: 700, maxWidth: 700, alignment: .center)
                 .environment(viewmodel)
                 .preferredColorScheme(.dark)
                 .onAppear {
