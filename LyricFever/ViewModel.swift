@@ -8,13 +8,13 @@
 import Foundation
 #if os(macOS)
 #endif
-@preconcurrency import CoreData
+import CoreData
 import AmplitudeSwift
 import SwiftUI
 import MediaPlayer
 #if os(macOS)
 import WebKit
-@preconcurrency import Translation
+import Translation
 import KeyboardShortcuts
 import MediaRemoteAdapter
 #endif
@@ -55,7 +55,7 @@ import MediaRemoteAdapter
 //                } else {
 //                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
-                guard let artwork = data.payload.artwork else {
+                guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
@@ -362,10 +362,13 @@ import MediaRemoteAdapter
                 if !lyrics.lyrics.isEmpty {
                     amplitude.track(eventType: "\(networkLyricProvider.providerName) Fetch")
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
-                    //TODO: save lyrics here
-                    SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    // thats how i save to coredata
+                    let _ = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
                     saveCoreData()
                     return lyrics
+                } else if networkLyricProvider is SpotifyLyricProvider {
+                    print("FetchAllNetworkLyrics: no lyrics from \(networkLyricProvider.providerName)")
+                    handleSpotifyNoLyricsFallback()
                 } else {
                     print("FetchAllNetworkLyrics: no lyrics from \(networkLyricProvider.providerName)")
                 }
@@ -409,9 +412,16 @@ import MediaRemoteAdapter
     }
     
     func callColorDataServiceOnLyricColorOrArtwork(colorData: Int32?) {
-        if let currentlyPlaying, let backgroundColor = colorData ?? artworkImage?.findWhiteTextLegibleMostSaturatedDominantColor() {
-            ColorDataService.saveColorToCoreData(trackID: currentlyPlaying, songColor: backgroundColor)
-            print("ViewModel Refresh Lyrics: New color \(backgroundColor) saved for track \(currentlyPlaying)")
+        if currentPlayer == .appleMusic {
+            if let currentlyPlaying, let backgroundColor = artworkImage?.findWhiteTextLegibleMostSaturatedDominantColor() {
+                ColorDataService.saveColorToCoreData(trackID: currentlyPlaying, songColor: backgroundColor)
+                print("ViewModel Refresh Lyrics: New color \(backgroundColor) saved for track \(currentlyPlaying)")
+            }
+        } else {
+            if let currentlyPlaying, let backgroundColor = colorData {
+                ColorDataService.saveColorToCoreData(trackID: currentlyPlaying, songColor: backgroundColor)
+                print("ViewModel Refresh Lyrics: New color \(backgroundColor) saved for track \(currentlyPlaying)")
+            }
         }
     }
     
@@ -625,6 +635,13 @@ import MediaRemoteAdapter
         guard currentPlayer == .spotify else {
             return
         }
+        if notification.userInfo?["Player State"] as? String == "Stopped" {
+            currentLyricsDriftFix?.cancel()
+            isPlaying = false
+            isStopped = true
+            return
+        }
+        isStopped = false
         if notification.userInfo?["Player State"] as? String == "Playing" {
             print("is playing")
             isPlaying = true
@@ -880,6 +897,18 @@ import MediaRemoteAdapter
             print("Error fetching SongObject:", error)
         }
     }
+    
+    func handleSpotifyNoLyricsFallback() {
+        // We know Spotify won’t give us a color for this track
+        guard let currentlyPlaying else { return }
+        
+        guard let colorInt = artworkImage?.findWhiteTextLegibleMostSaturatedDominantColor() else {
+            return
+        }
+        
+        ColorDataService.saveColorToCoreData(trackID: currentlyPlaying, songColor: colorInt)
+        currentBackground = intToRGB(colorInt)
+    }
     #endif
     
     func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
@@ -1017,7 +1046,7 @@ import MediaRemoteAdapter
         currentlyPlayingLyrics = newLyrics
         setBackgroundColor()
         fetchTranslationSourceLanguage()
-        reloadTranslationConfigIfTranslating()
+        let _ = reloadTranslationConfigIfTranslating()
 //        romanizeDidChange()
         chinesePreferenceDidChange()
         // we romanize afterwards, in-case the chinese conversion array was populated
@@ -1040,7 +1069,8 @@ import MediaRemoteAdapter
             setNewLyricsColorTranslationRomanizationAndStartUpdater(with: cleanLyrics)
         }
         
-        SongObject(from: cleanLyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+        // thats how i save to coredata
+        let _ = SongObject(from: cleanLyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
         saveCoreData()
     }
     #endif
