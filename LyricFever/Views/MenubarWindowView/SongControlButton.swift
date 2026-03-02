@@ -20,6 +20,7 @@ struct SongControlButton: View {
             action()
         } label: {
             Image(systemName: systemImage)
+                .frame(width: 20)
 //                .frame(width: 25, height: 18)
         }
         .environment(\.colorScheme, .dark)
