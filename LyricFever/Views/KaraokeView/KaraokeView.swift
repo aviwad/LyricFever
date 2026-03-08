@@ -71,7 +71,7 @@ struct KaraokeView: View {
         if #available(macOS 26.0, *) {
             // osscilate the lyrics view so the Liquid Glass rendering is always lively
             TimelineView(.animation) { timeline in
-                let offset = 0.1 * sin(timeline.date.timeIntervalSinceReferenceDate * .pi)
+                let offset = 0.1 * sin(timeline.date.timeIntervalSinceReferenceDate * 20 * .pi) // adjust the 20 to change the frequency of the oscillation
                 lyricsView()
                     .lineLimit(2)
                     .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
@@ -97,7 +97,6 @@ struct KaraokeView: View {
                     .offset(y: offset)
             }
         } else {
-            // fall back
             lyricsView()
                 .lineLimit(2)
                 .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
