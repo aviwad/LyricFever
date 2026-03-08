@@ -140,11 +140,16 @@ import MediaRemoteAdapter
 
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil) && currentLyricIsNotBlank
         }
         set {
             
         }
+    }
+
+    private var currentLyricIsNotBlank: Bool {
+        guard let index = currentlyPlayingLyricsIndex, index < currentlyPlayingLyrics.count else { return false }
+        return !currentlyPlayingLyrics[index].words.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     var displayFullscreen: Bool {
         get {
