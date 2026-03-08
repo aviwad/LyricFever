@@ -55,7 +55,7 @@ import MediaRemoteAdapter
 //                } else {
 //                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
-                guard let artwork = data.payload.artwork else {
+                guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
