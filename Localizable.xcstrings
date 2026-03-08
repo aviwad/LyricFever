@@ -21,7 +21,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     " " : {
       "localizations" : {
@@ -43,7 +44,8 @@
             "value" : " "
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "..." : {
       "localizations" : {
@@ -91,7 +93,7 @@
       }
     },
     "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.2" : {
-
+      "shouldTranslate" : false
     },
     "%@s" : {
       "localizations" : {
@@ -1217,7 +1219,7 @@
       }
     },
     "LRCLIB" : {
-
+      "shouldTranslate" : false
     },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
@@ -1492,7 +1494,26 @@
       }
     },
     "NetEase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网易"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網易"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網易"
+          }
+        }
+      }
     },
     "Next" : {
       "localizations" : {
@@ -2055,7 +2076,26 @@
       }
     },
     "Primary Lyric Source" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优先歌词源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "優先歌詞源"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "優先歌詞源"
+          }
+        }
+      }
     },
     "Quit" : {
       "localizations" : {
