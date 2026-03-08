@@ -807,7 +807,7 @@ import MediaRemoteAdapter
     
     func startLyricUpdater() {
         currentLyricsUpdaterTask?.cancel()
-        if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
+        if !isPlaying || currentlyPlayingLyrics.isEmpty {
             return
         }
         // If an index exists, we're unpausing: meaning we must instantly find the current lyric
