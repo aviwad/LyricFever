@@ -53,7 +53,7 @@ import MediaRemoteAdapter
 //                    print("Apple Music Artwork Workaround: Ignoring artwork for existing song")
 //                    return
 //                } else {
-//                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
+//                    self.appleMuszxicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
                 guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
