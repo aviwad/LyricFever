@@ -26,6 +26,7 @@ class UserDefaultStorage {
     var romanize: Bool = false
     var romanizeMetadata: Bool = true
     var chinesePreference: Int = 0
+    var lyricSourcePreference: String = "LRCLIB"
     #if os(macOS)
     var spotifyConnectDelayCount: Int = 400
     var hasMigrated: Bool = false

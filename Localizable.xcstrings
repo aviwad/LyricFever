@@ -1216,6 +1216,9 @@
         }
       }
     },
+    "LRCLIB" : {
+
+    },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1487,6 +1490,9 @@
           }
         }
       }
+    },
+    "NetEase" : {
+
     },
     "Next" : {
       "localizations" : {
@@ -2047,6 +2053,9 @@
           }
         }
       }
+    },
+    "Primary Lyric Source" : {
+
     },
     "Quit" : {
       "localizations" : {

@@ -279,10 +279,32 @@ import MediaRemoteAdapter
     #if os(macOS)
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
-    @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+    @ObservationIgnored var allNetworkLyricProviders: [LyricProvider] {
+        switch userDefaultStorage.lyricSourcePreference {
+        case "Spotify":
+            return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        case "NetEase":
+            return [netEaseLyricProvider, lRCLyricProvider, spotifyLyricProvider]
+        case "LRCLIB":
+            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        default:
+            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        }
+    }
     
     // custom order because LRCLIB is tweaking for the time being
-    @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+    @ObservationIgnored var allNetworkLyricProvidersForSearch: [LyricProvider] {
+        switch userDefaultStorage.lyricSourcePreference {
+        case "Spotify":
+            return [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+        case "NetEase":
+            return [netEaseLyricProvider, spotifyLyricProvider, lRCLyricProvider]
+        case "LRCLIB":
+            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        default:
+            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        }
+    }
     
     var isFirstFetch = true
     
@@ -1141,14 +1163,24 @@ extension ViewModel {
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         
         // search for equivalent spotify song
-        if let spotifyResult = try await musicToSpotifyHelper() {
-            self.currentlyPlayingName = spotifyResult.SpotifyName
-            self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
-            self.currentAlbumName = spotifyResult.SpotifyAlbum
-            self.currentlyPlaying = spotifyResult.SpotifyID
-        } else {
+        do {
+            if let spotifyResult = try await musicToSpotifyHelper() {
+                self.currentlyPlayingName = spotifyResult.SpotifyName
+                self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
+                self.currentAlbumName = spotifyResult.SpotifyAlbum
+                self.currentlyPlaying = spotifyResult.SpotifyID
+            } else {
+                if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
+                    try Task.checkCancellation()
+                    self.currentlyPlaying = alternativeID
+                } else {
+                    lyricsIsEmptyPostLoad = true
+                }
+            }
+        } catch {
+            print("Spotify lookup failed with error \(error). Falling back to Apple Music ID.")
             if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
-                try Task.checkCancellation()
+                try? Task.checkCancellation()
                 self.currentlyPlaying = alternativeID
             } else {
                 lyricsIsEmptyPostLoad = true
