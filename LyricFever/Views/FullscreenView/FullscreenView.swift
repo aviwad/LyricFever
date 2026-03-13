@@ -231,91 +231,33 @@ struct FullscreenView: View {
         }
     }
     
-    @ViewBuilder func lyricLineView(for element: LyricLine, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            if !viewmodel.romanizedLyrics.isEmpty {
-                Text(verbatim: viewmodel.romanizedLyrics[index])
-                    .foregroundStyle(.white)
-            } else if !viewmodel.chineseConversionLyrics.isEmpty {
-                Text(verbatim: viewmodel.chineseConversionLyrics[index])
-                    .foregroundStyle(.white)
-            } else {
-                Text(verbatim: element.words)
-                    .foregroundStyle(.white)
-            }
-            if viewmodel.translationExists, element.words != viewmodel.translatedLyric[index] {
-                Text(verbatim: viewmodel.translatedLyric[index])
-                    .font(.system(size: 33, weight: .semibold, design: .default))
-                    .opacity(0.85)
-            }
-        }
-        .opacity(index == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : (index == viewmodel.currentlyPlayingLyricsIndex ? 1 : 0.8))
-        .font(.system(size: 40, weight: .bold, design: .default))
-        .padding(20)
-        #if os(macOS)
-        .listRowSeparator(.hidden)
-        #endif
-        .blur(radius: viewmodel.userDefaultStorage.blurFullscreen ? (index == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
-    }
-    
     @ViewBuilder func lyrics(padding: CGFloat) -> some View {
         ZStack {
             if viewmodel.currentlyPlayingLyrics.isEmpty {
                 ProgressView()
             }
-            VStack(alignment: .leading){
+            VStack(alignment: .leading) {
                 Spacer()
-                ScrollViewReader { proxy in
-                    List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { index, element in
-                        lyricLineView(for: element, index: index)
-                    }
-                    .onAppear {
-                        Task {
-                            try? await Task.sleep(nanoseconds: 1_000_000_000)
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            }
-                        }
-                    }
-                    .padding(.trailing, 100)
-                    .safeAreaInset(edge: .top) {
-                        Spacer()
-                            .id("first")
-                            .frame(height: padding)
-                        }
-                    .safeAreaInset(edge: .bottom) {
-                        Spacer()
-                            .id("last")
-                            .frame(height: padding)
-                        }
-                    .onChange(of: viewmodel.translatedLyric) {
-                        withAnimation() {
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            } else {
-                                proxy.scrollTo("first", anchor: .top)
-                            }
-                            
-                        }
-                    }
-                    .onChange(of: viewmodel.currentlyPlayingLyricsIndex) {
-                        withAnimation() {
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            } else {
-                                proxy.scrollTo("first", anchor: .top)
-                            }
-                            
-                        }
-                    }
-                }
                 #if os(macOS)
-                .scrollContentBackground(.hidden)
+                LyricsNSScrollView(
+                    lyrics:                  viewmodel.currentlyPlayingLyrics,
+                    currentIndex:            viewmodel.currentlyPlayingLyricsIndex,
+                    romanizedLyrics:         viewmodel.romanizedLyrics,
+                    chineseConversionLyrics: viewmodel.chineseConversionLyrics,
+                    translatedLyric:         viewmodel.translatedLyric,
+                    translationExists:       viewmodel.translationExists,
+                    blurFullscreen:          viewmodel.userDefaultStorage.blurFullscreen,
+                    padding:                 padding
+                )
+                .mask(
+                    LinearGradient(
+                        gradient: Gradient(colors: [.clear, .black, .clear]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
                 #endif
-                .scrollDisabled(true)
-                .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
                 Spacer()
-                
             }
         }
     }
