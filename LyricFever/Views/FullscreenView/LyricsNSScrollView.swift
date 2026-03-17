@@ -2,9 +2,20 @@
 //  LyricsNSScrollView.swift
 //  Lyric Fever
 //
-//  Custom AppKit lyrics list for the fullscreen view.
-//  Uses entirely frame-based layout for NSTextFields to avoid the
-//  NSTextField.updateConstraints → constraintsDidChangeInEngine → SwiftUI loop.
+//  Custom AppKit lyrics view for the fullscreen view.
+//
+//  Architecture:
+//  • No NSScrollView. LyricsContainerView positions every cell absolutely,
+//    clipping cells that fall outside its bounds.
+//  • When the current index changes, each cell springs from its previous
+//    visual position (read from the presentation layer) to its new computed
+//    position.  Cells *below* the active line are delayed by
+//    (distance × 45 ms), reproducing the Apple-Music cascade feel.
+//  • Blur transitions are driven by CABasicAnimation on the CIGaussianBlur
+//    filter's inputRadius, so the active line smoothly unblurs.
+//  • All NSTextField labels use frame-based layout
+//    (translatesAutoresizingMaskIntoConstraints stays true) to avoid the
+//    NSTextField.updateConstraints → SwiftUI hosting-view loop.
 //
 
 #if os(macOS)
@@ -15,11 +26,11 @@ import SwiftUI
 
 private let primaryFont     = NSFont.boldSystemFont(ofSize: 40)
 private let translationFont = NSFont.systemFont(ofSize: 33, weight: .semibold)
-private let cellPad:     CGFloat = 20
-private let labelGap:    CGFloat = 3
-private let trailInset:  CGFloat = 100
+private let cellPad:    CGFloat = 20
+private let labelGap:   CGFloat = 3
+private let trailInset: CGFloat = 100
 
-/// Height of a single wrapped text block at a given width.
+/// Height of a single wrapped text block at the given max width.
 private func textHeight(_ text: String, font: NSFont, width: CGFloat) -> CGFloat {
     guard width > 0 else { return ceil(font.pointSize * 1.4) }
     let attrs: [NSAttributedString.Key: Any] = [.font: font]
@@ -41,14 +52,17 @@ private func rowHeight(primary: String, translation: String?, cellWidth: CGFloat
     return max(h, 50)
 }
 
-// MARK: - Lyric cell view (fully frame-based — NO Auto Layout on labels)
+// MARK: - Lyric cell view
 
 class LyricCellView: NSView {
-    // translatesAutoresizingMaskIntoConstraints stays TRUE (the default).
-    // This prevents NSTextField from creating internal "content size" constraints
-    // whose constant changes would propagate to SwiftUI's hosting view and loop.
+
+    // Frame-based labels — translatesAutoresizingMaskIntoConstraints stays TRUE.
     let primaryLabel     = NSTextField(labelWithString: "")
     let translationLabel = NSTextField(labelWithString: "")
+
+    // Persistent CIFilter so we can animate its inputRadius via CABasicAnimation.
+    private var blurFilter: CIFilter?
+    private var currentBlurRadius: CGFloat = -1   // −1 = not yet set
 
     override var isFlipped: Bool { true }
 
@@ -56,16 +70,25 @@ class LyricCellView: NSView {
         super.init(frame: frame)
         wantsLayer = true
         layer?.masksToBounds = false
+
+        // Install the blur filter once.  Give it a stable KVC name so the
+        // Core Animation key path "filters.lyricBlur.inputRadius" works.
+        if let f = CIFilter(name: "CIGaussianBlur") {
+            f.setValue("lyricBlur", forKey: "name")
+            f.setValue(0.0, forKey: kCIInputRadiusKey)
+            layer?.filters = [f]
+            blurFilter = f
+        }
+
         for label in [primaryLabel, translationLabel] {
-            label.isBezeled      = false
+            label.isBezeled       = false
             label.drawsBackground = false
-            label.isEditable     = false
-            label.isSelectable   = false
-            label.textColor      = .white
+            label.isEditable      = false
+            label.isSelectable    = false
+            label.textColor       = .white
             label.maximumNumberOfLines = 0
-            label.lineBreakMode  = .byWordWrapping
+            label.lineBreakMode   = .byWordWrapping
             label.usesSingleLineMode = false
-            // Do NOT set translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
         }
         primaryLabel.font     = primaryFont
@@ -74,9 +97,9 @@ class LyricCellView: NSView {
     }
     required init?(coder: NSCoder) { fatalError() }
 
-    override func resizeSubviews(withOldSize _: NSSize) {
-        layoutLabels()
-    }
+    // MARK: Frame-based label layout
+
+    override func resizeSubviews(withOldSize _: NSSize) { layoutLabels() }
 
     func layoutLabels() {
         let textW = bounds.width - 2 * cellPad
@@ -92,8 +115,33 @@ class LyricCellView: NSView {
         }
     }
 
+    // MARK: Blur animation
+
+    /// Animate (or snap) the Gaussian blur radius.
+    /// - `animated` is ignored on first call (no "from" value yet).
+    func setBlur(_ target: CGFloat, animated: Bool) {
+        let current = currentBlurRadius
+        guard abs(target - max(0, current)) > 0.01 else { return }
+        let from = current < 0 ? target : current
+        currentBlurRadius = target
+        blurFilter?.setValue(target, forKey: kCIInputRadiusKey)
+        guard animated, from >= 0, window != nil else { return }
+
+        let anim = CABasicAnimation(keyPath: "filters.lyricBlur.inputRadius")
+        anim.fromValue = from
+        anim.toValue   = target
+        // Becoming active → slow ease-out unblur.  Becoming inactive → quick ease-in.
+        anim.duration  = target == 0 ? 0.45 : 0.15
+        anim.timingFunction = CAMediaTimingFunction(name: target == 0 ? .easeOut : .easeIn)
+        anim.isRemovedOnCompletion = true
+        layer?.add(anim, forKey: "blurTransition")
+    }
+
+    // MARK: Configure
+
     func configure(primaryText: String, translationText: String?,
-                   isCurrentLine: Bool, isLastLine: Bool, blurRadius: CGFloat) {
+                   isCurrentLine: Bool, isLastLine: Bool,
+                   blurRadius: CGFloat, animateBlur: Bool) {
         primaryLabel.stringValue = primaryText
         if let t = translationText, !t.isEmpty {
             translationLabel.stringValue = t
@@ -102,59 +150,167 @@ class LyricCellView: NSView {
             translationLabel.isHidden = true
         }
         alphaValue = isLastLine ? 0 : (isCurrentLine ? 1.0 : 0.8)
-        if blurRadius > 0, let f = CIFilter(name: "CIGaussianBlur") {
-            f.setValue(blurRadius, forKey: kCIInputRadiusKey)
-            layer?.filters = [f]
-        } else {
-            layer?.filters = []
-        }
+        setBlur(blurRadius, animated: animateBlur)
         layoutLabels()
     }
 }
 
-// MARK: - Document view (positions cells manually, no Auto Layout)
+// MARK: - Container view  (no scroll — cells are positioned absolutely)
 
-class LyricsDocumentView: NSView {
+class LyricsContainerView: NSView {
+
     override var isFlipped: Bool { true }
 
     var lyricViews:   [LyricCellView] = []
-    var topPadding:    CGFloat = 0
-    var bottomPadding: CGFloat = 0
+    var cellHeights:  [CGFloat]       = []
+    var cumulativeYs: [CGFloat]       = []   // cumulativeYs[i] = Σ heights[0..<i]
+    var currentIndex: Int             = 0
 
-    /// Position every cell vertically within the current bounds width.
-    override func layout() {
-        super.layout()
-        let w = bounds.width     // already accounts for the trailing inset set on frame
-        guard w > 0 else { return }
-        var y = topPadding
+    // Generation token — incremented at the start of every positionAllCells call.
+    // Delayed spring closures compare against this to self-cancel when superseded.
+    private var cascadeGeneration = 0
+    private var lastLayoutWidth: CGFloat = 0
+
+    // MARK: Metrics
+
+    func computeCellMetrics(width: CGFloat) {
+        let cellWidth = width - trailInset
+        cumulativeYs = [0]
+        cellHeights  = []
         for cell in lyricViews {
             let h = rowHeight(
                 primary:     cell.primaryLabel.stringValue,
                 translation: cell.translationLabel.isHidden ? nil : cell.translationLabel.stringValue,
-                cellWidth:   w)
-            cell.frame = NSRect(x: 0, y: y, width: w, height: h)
-            y += h
+                cellWidth:   cellWidth)
+            cellHeights.append(h)
+            cumulativeYs.append(cumulativeYs.last! + h)
         }
     }
 
-    /// Total document height for the given clip-view width.
-    func computeTotalHeight(clipWidth: CGFloat) -> CGFloat {
-        let w = max(0, clipWidth - trailInset)
-        var h = topPadding + bottomPadding
-        for cell in lyricViews {
-            h += rowHeight(
-                primary:     cell.primaryLabel.stringValue,
-                translation: cell.translationLabel.isHidden ? nil : cell.translationLabel.stringValue,
-                cellWidth:   w)
-        }
-        return h
+    /// Y origin (in container coords, flipped) for cell i given currentIndex.
+    private func targetY(forCell i: Int) -> CGFloat {
+        guard i < cumulativeYs.count,
+              currentIndex < cumulativeYs.count,
+              currentIndex < cellHeights.count else { return 0 }
+        let currentMidY = cumulativeYs[currentIndex] + cellHeights[currentIndex] / 2
+        return bounds.height / 2 - currentMidY + cumulativeYs[i]
     }
-}
 
-// MARK: - Non-scrollable scroll view
+    // MARK: Positioning
 
-class NonScrollableScrollView: NSScrollView {
-    override func scrollWheel(with event: NSEvent) { /* user scrolling disabled */ }
+    /// Reposition every cell, optionally with the cascade spring animation.
+    func positionAllCells(animated: Bool) {
+        // Bump generation so any previously-scheduled delayed springs abort.
+        cascadeGeneration += 1
+        let myGen = cascadeGeneration
+
+        let w = bounds.width
+        guard w > 0, !lyricViews.isEmpty, !cellHeights.isEmpty else { return }
+        let cellWidth = w - trailInset
+
+        for (i, cell) in lyricViews.enumerated() {
+            guard i < cellHeights.count else { break }
+
+            let ty        = targetY(forCell: i)
+            let newFrame  = NSRect(x: 0, y: ty, width: cellWidth, height: cellHeights[i])
+
+            // ── No animation path ────────────────────────────────────────────
+            guard animated else {
+                cell.layer?.removeAnimation(forKey: "cascadePosition")
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
+                cell.frame = newFrame
+                cell.layer?.transform = CATransform3DIdentity
+                CATransaction.commit()
+                continue
+            }
+
+            // ── Animated path ────────────────────────────────────────────────
+            // Capture the cell's current *visual* Y (presentation layer when
+            // mid-animation, otherwise the model frame).
+            let fromY: CGFloat = cell.layer?.presentation()?.frame.origin.y
+                                    ?? cell.frame.origin.y
+            let deltaY = newFrame.origin.y - fromY
+
+            // Set model to final frame immediately (presentation layer will
+            // show the spring overshoot/settle on top of this).
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            cell.frame = newFrame
+            if abs(deltaY) > 0.5 {
+                // Offset the cell so it visually starts at the old position.
+                // In a flipped NSView, positive translation.y moves the cell
+                // downward, so we negate deltaY to reproduce the old position.
+                cell.layer?.transform = CATransform3DMakeTranslation(0, -deltaY, 0)
+            } else {
+                cell.layer?.transform = CATransform3DIdentity
+            }
+            CATransaction.commit()
+
+            guard abs(deltaY) > 0.5 else { continue }
+
+            // Cells more than ~20 rows away are off-screen; snap them.
+            let distance = abs(i - currentIndex)
+            guard distance <= 20 else {
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
+                cell.layer?.transform = CATransform3DIdentity
+                CATransaction.commit()
+                continue
+            }
+
+            // Cascade delay: cells BELOW the active line arrive later.
+            let delay: Double = i > currentIndex
+                ? min(Double(i - currentIndex) * 0.045, 0.35)
+                : 0
+
+            // Spring parameters: the active line and lines above it use a
+            // tighter spring; lines below use a looser one for the wave feel.
+            let damping:  CGFloat = i <= currentIndex ? 24 : 20
+            let stiffness: CGFloat = i <= currentIndex ? 380 : 280
+
+            let springAction: () -> Void = { [weak self, weak cell] in
+                guard let self, let cell,
+                      self.cascadeGeneration == myGen else { return }
+
+                let spring = CASpringAnimation(keyPath: "transform.translation.y")
+                spring.fromValue       = -deltaY
+                spring.toValue         = 0
+                spring.damping         = damping
+                spring.stiffness       = stiffness
+                spring.mass            = 1.0
+                spring.initialVelocity = 0
+                spring.duration        = spring.settlingDuration
+                spring.isRemovedOnCompletion = true
+                cell.layer?.add(spring, forKey: "cascadePosition")
+
+                // Set model transform to identity; presentation layer runs the spring.
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
+                cell.layer?.transform = CATransform3DIdentity
+                CATransaction.commit()
+            }
+
+            if delay > 0 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: springAction)
+            } else {
+                springAction()
+            }
+        }
+    }
+
+    // MARK: NSView layout (window resize / first layout)
+
+    override func layout() {
+        super.layout()
+        let w = bounds.width
+        guard w > 0 else { return }
+        if abs(w - lastLayoutWidth) > 0.5 {
+            lastLayoutWidth = w
+            computeCellMetrics(width: w)
+        }
+        positionAllCells(animated: false)
+    }
 }
 
 // MARK: - NSViewRepresentable
@@ -168,15 +324,12 @@ struct LyricsNSScrollView: NSViewRepresentable {
     let translatedLyric:         [String]
     let translationExists:       Bool
     let blurFullscreen:          Bool
-    let padding:                 CGFloat
 
     // MARK: Coordinator
 
     class Coordinator: NSObject {
-        var scrollView:   NonScrollableScrollView!
-        var documentView: LyricsDocumentView!
+        var containerView: LyricsContainerView!
 
-        // Shadow copies for change detection
         var prevLyrics:            [LyricLine] = []
         var prevIndex:             Int?         = nil
         var prevRomanized:         [String]     = []
@@ -184,76 +337,24 @@ struct LyricsNSScrollView: NSViewRepresentable {
         var prevTranslated:        [String]     = []
         var prevTranslationExists: Bool         = false
         var prevBlur:              Bool         = false
-        var prevPadding:           CGFloat      = 0
-
-        /// Sync the document view's frame to match the clip view's current width
-        /// and the computed content height.  Call this any time lyrics or clip
-        /// width may have changed.
-        func syncDocumentFrame() {
-            guard let sv = scrollView, let dv = documentView else { return }
-            let clipW = sv.contentView.bounds.width
-            guard clipW > 0 else { return }
-            let h = dv.computeTotalHeight(clipWidth: clipW)
-            let newFrame = NSRect(x: 0, y: 0, width: clipW - trailInset, height: h)
-            if dv.frame != newFrame {
-                dv.frame = newFrame
-                dv.needsLayout = true
-                sv.reflectScrolledClipView(sv.contentView)
-            }
-        }
-
-        @objc func clipViewResized(_ note: Notification) {
-            syncDocumentFrame()
-        }
-
-        deinit {
-            NotificationCenter.default.removeObserver(self)
-        }
     }
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     // MARK: makeNSView
 
-    func makeNSView(context: Context) -> NonScrollableScrollView {
-        let scrollView = NonScrollableScrollView()
-        scrollView.hasVerticalScroller   = false
-        scrollView.hasHorizontalScroller = false
-        scrollView.drawsBackground       = false
-        scrollView.verticalScrollElasticity   = .none
-        scrollView.horizontalScrollElasticity = .none
-
-        let documentView = LyricsDocumentView()
-        documentView.topPadding    = padding
-        documentView.bottomPadding = padding
-        // translatesAutoresizingMaskIntoConstraints = true (default) — fully frame-based,
-        // no constraints that could propagate to SwiftUI's hosting view.
-        scrollView.documentView = documentView
-
-        let c = context.coordinator
-        c.scrollView   = scrollView
-        c.documentView = documentView
-
-        // Watch clip-view frame changes (window resize) to keep document width in sync.
-        scrollView.contentView.postsFrameChangedNotifications = true
-        NotificationCenter.default.addObserver(
-            c, selector: #selector(Coordinator.clipViewResized(_:)),
-            name: NSView.frameDidChangeNotification,
-            object: scrollView.contentView)
-
-        return scrollView
+    func makeNSView(context: Context) -> LyricsContainerView {
+        let container = LyricsContainerView()
+        container.wantsLayer = true
+        container.layer?.masksToBounds = true
+        context.coordinator.containerView = container
+        return container
     }
 
     // MARK: updateNSView
 
-    func updateNSView(_ nsView: NonScrollableScrollView, context: Context) {
+    func updateNSView(_ nsView: LyricsContainerView, context: Context) {
         let c = context.coordinator
-
-        if padding != c.prevPadding {
-            c.prevPadding = padding
-            c.documentView.topPadding    = padding
-            c.documentView.bottomPadding = padding
-        }
 
         let lyricsChanged = lyrics != c.prevLyrics
         if lyricsChanged {
@@ -261,13 +362,14 @@ struct LyricsNSScrollView: NSViewRepresentable {
             rebuildCells(coordinator: c)
         }
 
-        let needsRefresh = lyricsChanged
-            || currentIndex         != c.prevIndex
-            || romanizedLyrics      != c.prevRomanized
+        let indexChanged  = currentIndex != c.prevIndex
+        let needsRefresh  = lyricsChanged
+            || indexChanged
+            || romanizedLyrics         != c.prevRomanized
             || chineseConversionLyrics != c.prevChinese
-            || translatedLyric      != c.prevTranslated
-            || translationExists    != c.prevTranslationExists
-            || blurFullscreen       != c.prevBlur
+            || translatedLyric         != c.prevTranslated
+            || translationExists       != c.prevTranslationExists
+            || blurFullscreen          != c.prevBlur
 
         if needsRefresh {
             c.prevIndex             = currentIndex
@@ -276,37 +378,41 @@ struct LyricsNSScrollView: NSViewRepresentable {
             c.prevTranslated        = translatedLyric
             c.prevTranslationExists = translationExists
             c.prevBlur              = blurFullscreen
-            refreshCells(coordinator: c)
+            // Only animate blur when the index changes (not on a full rebuild).
+            refreshCells(coordinator: c, animateBlur: !lyricsChanged && indexChanged)
         }
 
-        // Sync document frame (content height may have changed).
-        c.syncDocumentFrame()
-
-        // Scroll after layout has settled.
-        let targetIndex = currentIndex
+        // Defer the repositioning until after SwiftUI has applied the view's
+        // frame so bounds.height is non-zero.
+        let targetIdx      = currentIndex
+        let shouldAnimate  = !lyricsChanged && needsRefresh
         DispatchQueue.main.async { [c] in
-            c.syncDocumentFrame()   // re-check now that real dimensions are known
-            if let idx = targetIndex {
-                self.scrollToCenter(coordinator: c, index: idx, animated: true)
-            } else {
-                self.scrollToTop(coordinator: c, animated: true)
+            let cv = c.containerView!
+            guard cv.bounds.width > 0 else { return }
+            cv.currentIndex = targetIdx ?? 0
+            if cv.cellHeights.isEmpty {
+                cv.computeCellMetrics(width: cv.bounds.width)
             }
+            cv.positionAllCells(animated: shouldAnimate && targetIdx != nil)
         }
     }
 
     // MARK: Cell management
 
     private func rebuildCells(coordinator: Coordinator) {
-        let dv = coordinator.documentView!
-        for v in dv.lyricViews { v.removeFromSuperview() }
-        dv.lyricViews = lyrics.map { _ in LyricCellView() }
-        for v in dv.lyricViews { dv.addSubview(v) }
-        refreshCells(coordinator: coordinator)
+        let cv = coordinator.containerView!
+        for v in cv.lyricViews { v.removeFromSuperview() }
+        cv.lyricViews   = lyrics.map { _ in LyricCellView() }
+        cv.cellHeights  = []
+        cv.cumulativeYs = []
+        for v in cv.lyricViews { cv.addSubview(v) }
+        refreshCells(coordinator: coordinator, animateBlur: false)
     }
 
-    private func refreshCells(coordinator: Coordinator) {
+    private func refreshCells(coordinator: Coordinator, animateBlur: Bool) {
+        let cv    = coordinator.containerView!
         let count = lyrics.count
-        for (i, view) in coordinator.documentView.lyricViews.enumerated() {
+        for (i, view) in cv.lyricViews.enumerated() {
             guard i < count else { break }
             let element = lyrics[i]
 
@@ -332,50 +438,8 @@ struct LyricsNSScrollView: NSViewRepresentable {
                 translationText: translation,
                 isCurrentLine:   (i == currentIndex),
                 isLastLine:      (i == count - 1),
-                blurRadius:      blurFullscreen && (i != currentIndex) ? 5.0 : 0.0)
-        }
-    }
-
-    // MARK: Scrolling
-
-    private func scrollToCenter(coordinator: Coordinator, index: Int, animated: Bool) {
-        let dv = coordinator.documentView!
-        let sv = coordinator.scrollView!
-        guard index < dv.lyricViews.count else { return }
-
-        dv.layoutSubtreeIfNeeded()
-
-        let cell  = dv.lyricViews[index]
-        let cellY = cell.frame.midY          // document-view coordinates (flipped, top-down)
-        let visH  = sv.contentView.bounds.height
-        let docH  = dv.frame.height
-        let rawY  = cellY - visH / 2
-        let target = NSPoint(x: 0, y: max(0, min(rawY, max(0, docH - visH))))
-
-        if animated {
-            NSAnimationContext.runAnimationGroup { ctx in
-                ctx.duration = 0.35
-                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-                sv.contentView.animator().setBoundsOrigin(target)
-            }
-            sv.reflectScrolledClipView(sv.contentView)
-        } else {
-            sv.contentView.scroll(to: target)
-            sv.reflectScrolledClipView(sv.contentView)
-        }
-    }
-
-    private func scrollToTop(coordinator: Coordinator, animated: Bool) {
-        let sv = coordinator.scrollView!
-        if animated {
-            NSAnimationContext.runAnimationGroup { ctx in
-                ctx.duration = 0.35
-                sv.contentView.animator().setBoundsOrigin(.zero)
-            }
-            sv.reflectScrolledClipView(sv.contentView)
-        } else {
-            sv.contentView.scroll(to: .zero)
-            sv.reflectScrolledClipView(sv.contentView)
+                blurRadius:      blurFullscreen && (i != currentIndex) ? 5.0 : 0.0,
+                animateBlur:     animateBlur)
         }
     }
 }

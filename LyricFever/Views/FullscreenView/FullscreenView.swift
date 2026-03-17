@@ -231,34 +231,29 @@ struct FullscreenView: View {
         }
     }
     
-    @ViewBuilder func lyrics(padding: CGFloat) -> some View {
+    @ViewBuilder func lyrics() -> some View {
         ZStack {
             if viewmodel.currentlyPlayingLyrics.isEmpty {
                 ProgressView()
             }
-            VStack(alignment: .leading) {
-                Spacer()
-                #if os(macOS)
-                LyricsNSScrollView(
-                    lyrics:                  viewmodel.currentlyPlayingLyrics,
-                    currentIndex:            viewmodel.currentlyPlayingLyricsIndex,
-                    romanizedLyrics:         viewmodel.romanizedLyrics,
-                    chineseConversionLyrics: viewmodel.chineseConversionLyrics,
-                    translatedLyric:         viewmodel.translatedLyric,
-                    translationExists:       viewmodel.translationExists,
-                    blurFullscreen:          viewmodel.userDefaultStorage.blurFullscreen,
-                    padding:                 padding
+            #if os(macOS)
+            LyricsNSScrollView(
+                lyrics:                  viewmodel.currentlyPlayingLyrics,
+                currentIndex:            viewmodel.currentlyPlayingLyricsIndex,
+                romanizedLyrics:         viewmodel.romanizedLyrics,
+                chineseConversionLyrics: viewmodel.chineseConversionLyrics,
+                translatedLyric:         viewmodel.translatedLyric,
+                translationExists:       viewmodel.translationExists,
+                blurFullscreen:          viewmodel.userDefaultStorage.blurFullscreen
+            )
+            .mask(
+                LinearGradient(
+                    gradient: Gradient(colors: [.clear, .black, .black, .clear]),
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
-                .mask(
-                    LinearGradient(
-                        gradient: Gradient(colors: [.clear, .black, .clear]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-                #endif
-                Spacer()
-            }
+            )
+            #endif
         }
     }
     
@@ -268,7 +263,7 @@ struct FullscreenView: View {
                 albumArt
                     .frame( minWidth: 0.50*(geo.size.width), maxWidth: viewmodel.canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
                 if viewmodel.canDisplayLyrics {
-                    lyrics(padding: 0.5*(geo.size.height))
+                    lyrics()
                         .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
                 }
             }
