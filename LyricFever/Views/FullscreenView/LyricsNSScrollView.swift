@@ -50,6 +50,9 @@ class LyricCellView: NSView {
     let primaryLabel     = NSTextField(labelWithString: "")
     let translationLabel = NSTextField(labelWithString: "")
 
+    private var lastIsCurrentLine: Bool = false
+    private var lastBlurRadius:    CGFloat = 0.0
+
     override var isFlipped: Bool { true }
 
     override init(frame: NSRect) {
@@ -101,14 +104,68 @@ class LyricCellView: NSView {
         } else {
             translationLabel.isHidden = true
         }
-        alphaValue = isLastLine ? 0 : (isCurrentLine ? 1.0 : 0.8)
-        if blurRadius > 0, let f = CIFilter(name: "CIGaussianBlur") {
-            f.setValue(blurRadius, forKey: kCIInputRadiusKey)
+
+        let targetAlpha: CGFloat = isLastLine ? 0 : (isCurrentLine ? 1.0 : 0.8)
+        let focusChanged = isCurrentLine != lastIsCurrentLine
+        lastIsCurrentLine = isCurrentLine
+
+        let fromRadius = lastBlurRadius
+        lastBlurRadius = blurRadius
+
+        if focusChanged {
+            let animDuration = 0.4
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = animDuration
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                animator().alphaValue = targetAlpha
+            }
+            // Only animate blur if there's an actual blur change (respects blurFullscreen pref).
+            if fromRadius != blurRadius {
+                animateBlur(from: fromRadius, to: blurRadius, duration: animDuration)
+            } else {
+                applyBlur(radius: blurRadius)
+            }
+        } else {
+            alphaValue = targetAlpha
+            applyBlur(radius: blurRadius)
+        }
+
+        layoutLabels()
+    }
+
+    private func applyBlur(radius: CGFloat) {
+        if radius > 0, let f = CIFilter(name: "CIGaussianBlur") {
+            f.setValue(radius, forKey: kCIInputRadiusKey)
             layer?.filters = [f]
         } else {
             layer?.filters = []
         }
-        layoutLabels()
+    }
+
+    private func animateBlur(from fromRadius: CGFloat, to toRadius: CGFloat, duration: CFTimeInterval) {
+        guard let layer = layer else {
+            applyBlur(radius: toRadius)
+            return
+        }
+        // Install the destination (or a zero-radius placeholder) so CA has a filter to animate.
+        let f = CIFilter(name: "CIGaussianBlur")!
+        f.setValue(max(toRadius, 0.0), forKey: kCIInputRadiusKey)
+        layer.filters = [f]
+
+        let anim = CABasicAnimation(keyPath: "filters.CIGaussianBlur.inputRadius")
+        anim.fromValue = fromRadius
+        anim.toValue   = toRadius
+        anim.duration  = duration
+        anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        anim.fillMode  = .forwards
+        anim.isRemovedOnCompletion = false
+        layer.add(anim, forKey: "blurAnim")
+
+        // Once animation completes, clean up and apply final state.
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+            self?.layer?.removeAnimation(forKey: "blurAnim")
+            self?.applyBlur(radius: toRadius)
+        }
     }
 }
 
