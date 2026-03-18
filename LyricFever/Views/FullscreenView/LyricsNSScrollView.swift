@@ -242,7 +242,6 @@ struct LyricsNSScrollView: NSViewRepresentable {
     let romanizedLyrics:         [String]
     let chineseConversionLyrics: [String]
     let translatedLyric:         [String]
-    let translationExists:       Bool
     let blurFullscreen:          Bool
     let padding:                 CGFloat
 
@@ -259,7 +258,6 @@ struct LyricsNSScrollView: NSViewRepresentable {
         var prevRomanized:         [String]     = []
         var prevChinese:           [String]     = []
         var prevTranslated:        [String]     = []
-        var prevTranslationExists: Bool         = false
         var prevBlur:              Bool         = false
         var prevPadding:           CGFloat      = 0
         /// Set when lyrics change so only the first async fires the pre-position logic.
@@ -349,7 +347,6 @@ struct LyricsNSScrollView: NSViewRepresentable {
             || romanizedLyrics      != c.prevRomanized
             || chineseConversionLyrics != c.prevChinese
             || translatedLyric      != c.prevTranslated
-            || translationExists    != c.prevTranslationExists
             || blurFullscreen       != c.prevBlur
         
         // Capture before prevIndex is updated so we know if the index itself moved.
@@ -361,7 +358,6 @@ struct LyricsNSScrollView: NSViewRepresentable {
             c.prevRomanized         = romanizedLyrics
             c.prevChinese           = chineseConversionLyrics
             c.prevTranslated        = translatedLyric
-            c.prevTranslationExists = translationExists
             c.prevBlur              = blurFullscreen
             refreshCells(coordinator: c, animated: !suppressAnimations)
         }
@@ -405,8 +401,8 @@ struct LyricsNSScrollView: NSViewRepresentable {
                 if !self.romanizedLyrics.isEmpty              { primaryText = self.romanizedLyrics[0] }
                 else if !self.chineseConversionLyrics.isEmpty { primaryText = self.chineseConversionLyrics[0] }
                 else                                          { primaryText = first.words }
-                let translation: String? = (self.translationExists
-                    && !self.translatedLyric.isEmpty
+                let translation: String? = (
+                    !self.translatedLyric.isEmpty
                     && first.words != self.translatedLyric[0]) ? self.translatedLyric[0] : nil
 
                 let firstH   = rowHeight(primary: primaryText, translation: translation, cellWidth: docW)
@@ -447,7 +443,7 @@ struct LyricsNSScrollView: NSViewRepresentable {
             }
 
             let translation: String?
-            if translationExists, !translatedLyric.isEmpty, i < translatedLyric.count,
+            if !translatedLyric.isEmpty, i < translatedLyric.count,
                element.words != translatedLyric[i] {
                 translation = translatedLyric[i]
             } else {

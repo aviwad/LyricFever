@@ -243,7 +243,6 @@ struct FullscreenView: View {
                 romanizedLyrics:         viewmodel.romanizedLyrics,
                 chineseConversionLyrics: viewmodel.chineseConversionLyrics,
                 translatedLyric:         viewmodel.translatedLyric,
-                translationExists:       viewmodel.translationExists,
                 blurFullscreen:          viewmodel.userDefaultStorage.blurFullscreen,
                 padding:                 padding
             )
