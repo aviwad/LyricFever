@@ -516,9 +516,14 @@ struct LyricsNSScrollView: NSViewRepresentable {
                 // Cancel any in-flight stagger.
                 layer.removeAnimation(forKey: "staggerTranslation")
 
-                let distance = abs(i - index)
-                let delay = min(Double(distance) * staggerDelay, 0.3)
 
+                // Stagger outward from the *outgoing* lyric, not the incoming one.
+                // When scrolling down, Lyric 1 (index-1) should lead so it visually
+                // departs first; Lyric 2 (new current) follows.  Using the new current
+                // as the epicenter caused Lyric 2 to fire first and appear to "push"
+                // Lyric 1 upward.
+                let epicenter = scrollDelta > 0 ? max(lo, index - 1) : min(hi, index + 1)
+                let delay = min(Double(abs(i - epicenter)) * staggerDelay, 0.3)
                 // Model is already at identity (final state).
                 layer.transform = CATransform3DIdentity
 
