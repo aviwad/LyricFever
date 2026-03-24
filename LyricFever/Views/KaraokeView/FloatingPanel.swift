@@ -68,6 +68,10 @@ extension EnvironmentValues {
 
 class FloatingPanel<Content: View>: NSPanel {
     @Binding var isPresented: Bool
+    private var isSnappedToCenter: Bool = false
+    private let snapThreshold: CGFloat = 25.0
+    private var dragStartMouseLocation: NSPoint?
+    private var dragStartWindowOrigin: NSPoint?
 
     init(view: () -> Content,
              contentRect: NSRect,
@@ -87,7 +91,7 @@ class FloatingPanel<Content: View>: NSPanel {
         collectionBehavior.insert(.canJoinAllSpaces)
         titleVisibility = .hidden
         titlebarAppearsTransparent = true
-        isMovableByWindowBackground = true
+        isMovableByWindowBackground = false
         hidesOnDeactivate = false
         backgroundColor = NSColor.clear
         standardWindowButton(.miniaturizeButton)?.isHidden = true
@@ -137,5 +141,49 @@ class FloatingPanel<Content: View>: NSPanel {
     override func center() {
         let rect = self.screen?.frame
         self.setFrameOrigin(NSPoint(x: (rect!.width - self.frame.width)/2, y: (rect!.height - self.frame.height)/5))
+    }
+
+    override func sendEvent(_ event: NSEvent) {
+        switch event.type {
+        case .leftMouseDown:
+            dragStartMouseLocation = NSEvent.mouseLocation
+            dragStartWindowOrigin = self.frame.origin
+            super.sendEvent(event)
+        case .leftMouseDragged:
+            guard let startMouse = dragStartMouseLocation,
+                  let startOrigin = dragStartWindowOrigin else {
+                super.sendEvent(event)
+                return
+            }
+            let currentMouse = NSEvent.mouseLocation
+            let deltaX = currentMouse.x - startMouse.x
+            let deltaY = currentMouse.y - startMouse.y
+            var newOrigin = NSPoint(x: startOrigin.x + deltaX, y: startOrigin.y + deltaY)
+
+            if let screenFrame = (self.screen ?? NSScreen.main)?.frame {
+                let windowCenterX = newOrigin.x + self.frame.width / 2
+                let distanceFromCenter = abs(windowCenterX - screenFrame.midX)
+                if distanceFromCenter <= snapThreshold {
+                    let snappedOriginX = screenFrame.minX + (screenFrame.width - self.frame.width) / 2
+                    if !isSnappedToCenter {
+                        NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+                        isSnappedToCenter = true
+                    }
+                    newOrigin.x = snappedOriginX
+                } else {
+                    isSnappedToCenter = false
+                }
+            }
+
+            self.setFrameOrigin(newOrigin)
+            // Don't call super — AppKit would otherwise also try to move the window
+        case .leftMouseUp:
+            dragStartMouseLocation = nil
+            dragStartWindowOrigin = nil
+            isSnappedToCenter = false
+            super.sendEvent(event)
+        default:
+            super.sendEvent(event)
+        }
     }
 }
