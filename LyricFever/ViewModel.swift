@@ -56,11 +56,17 @@ import MediaRemoteAdapter
 //                } else {
 //                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
+                guard self.currentPlayer == .appleMusic else {
+                    return
+                }
                 guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
                     print("Apple Music Artwork Workaround: Ignoring No Artwork")
+                    return
+                }
+                guard data?.payload.applicationName == "Music" else {
                     return
                 }
                 self.artworkImage = artwork
