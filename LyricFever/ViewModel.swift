@@ -147,7 +147,7 @@ import MediaRemoteAdapter
 
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && userDefaultStorage.karaoke && !fullscreen && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
         }
         set {
             
