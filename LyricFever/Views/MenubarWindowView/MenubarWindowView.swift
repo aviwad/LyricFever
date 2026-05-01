@@ -594,6 +594,7 @@ struct MenubarWindowView: View {
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
             }
+            .environment(\.colorScheme, .dark)
             .onHover { isHovering in
                 if isHovering {
                     currentHoveredItem = .quit
