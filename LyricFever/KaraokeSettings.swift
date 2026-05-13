@@ -17,6 +17,8 @@ struct KaraokeSettingsView: View {
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    @AppStorage("karaokeShowOverFullscreen") var karaokeShowOverFullscreen: Bool = false
+    @AppStorage("karaokeNoBackground") var karaokeNoBackground: Bool = false
     
     var colorBinding: Binding<Color> {
         Binding<Color> {
@@ -39,18 +41,30 @@ struct KaraokeSettingsView: View {
                 Text("Show multilingual lyrics when translating in Karaoke window")
             }
             .toggleStyle(.checkbox)
+            Toggle(isOn: $karaokeShowOverFullscreen) {
+                Text("Show Karaoke window over exclusive fullscreen apps (e.g. certain games)")
+            }
+            .toggleStyle(.checkbox)
             .padding(.bottom, 20)
             
             Text("Karaoke Background Appearance")
                     .font(.system(size: 15, weight: .bold))
             
-            Toggle(isOn: $karaokeUseAlbumColor) {
-                Text("Use album color for Karaoke window")
+            Toggle(isOn: $karaokeNoBackground) {
+                Text("No background at all")
             }
             .toggleStyle(.checkbox)
-            if !karaokeUseAlbumColor {
-                ColorPicker("Set a background color", selection: colorBinding, supportsOpacity: false)
+            
+            Group {
+                Toggle(isOn: $karaokeUseAlbumColor) {
+                    Text("Use album color for Karaoke window")
+                }
+                .toggleStyle(.checkbox)
+                if !karaokeUseAlbumColor {
+                    ColorPicker("Set a background color", selection: colorBinding, supportsOpacity: false)
+                }
             }
+            .disabled(karaokeNoBackground)
             Text("Opacity Level: \(Int(karaokeTransparency))%")
             CompactSlider(value: $karaokeTransparency, in: 1...100, step: 5) {
                 Text("Opacity Level:")
@@ -75,6 +89,8 @@ struct KaraokeSettingsView: View {
                 karaokeUseAlbumColor = true
                 viewmodel.userDefaultStorage.karaokeShowMultilingual = true
                 viewmodel.userDefaultStorage.karaokeTransparency = 50
+                viewmodel.userDefaultStorage.karaokeNoBackground = false
+                viewmodel.userDefaultStorage.karaokeShowOverFullscreen = false
                 viewmodel.karaokeFont = NSFont.boldSystemFont(ofSize: 30)
 //                viewmodel.karaokeFontSize = 30
                 colorBinding.wrappedValue = Color(.sRGB, red: 0.98, green: 0.0, blue: 0.98)
