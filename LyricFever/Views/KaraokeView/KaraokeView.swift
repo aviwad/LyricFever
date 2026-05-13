@@ -33,6 +33,7 @@ struct KaraokeView: View {
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
     @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
+    @AppStorage("karaokeNoBackground") var karaokeNoBackground: Bool = false
     
     func currentWords(for currentlyPlayingLyricsIndex: Int) -> String {
         if !viewmodel.romanizedLyrics.isEmpty {
@@ -94,13 +95,19 @@ struct KaraokeView: View {
             .padding(10)
             .padding(.horizontal, 10)
             .background {
-               currentAlbumArt
-               .transition(.opacity)
-               .opacity(karaokeTransparency/100)
+                if !karaokeNoBackground {
+                    currentAlbumArt
+                    .transition(.opacity)
+                    .opacity(karaokeTransparency/100)
+                }
            }
 //           .drawingGroup()
            .background(
-               VisualEffectView().ignoresSafeArea()
+               Group {
+                   if !karaokeNoBackground {
+                       VisualEffectView().ignoresSafeArea()
+                   }
+               }
            )
            .cornerRadius(16)
             .onHover { hover in

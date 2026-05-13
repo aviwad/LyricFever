@@ -42,6 +42,15 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
                     panel?.fadeOut()
                 }
             }
+            .onChange(of: ViewModel.shared.userDefaultStorage.karaokeShowOverFullscreen) {
+                if ViewModel.shared.userDefaultStorage.karaokeShowOverFullscreen {
+                    panel?.level = .screenSaver
+                    panel?.collectionBehavior.insert(.fullScreenAuxiliary)
+                } else {
+                    panel?.level = .mainMenu
+                    panel?.collectionBehavior.remove(.fullScreenAuxiliary)
+                }
+            }
             .onChange(of: ViewModel.shared.userDefaultStorage.karaoke) {
                 if !ViewModel.shared.userDefaultStorage.karaoke {
                     panel?.close()
@@ -86,9 +95,12 @@ class FloatingPanel<Content: View>: NSPanel {
                    defer: true)
      
         isFloatingPanel = true
-        level = .mainMenu
+        level = ViewModel.shared.userDefaultStorage.karaokeShowOverFullscreen ? .screenSaver : .mainMenu
      
         collectionBehavior.insert(.canJoinAllSpaces)
+        if ViewModel.shared.userDefaultStorage.karaokeShowOverFullscreen {
+            collectionBehavior.insert(.fullScreenAuxiliary)
+        }
         titleVisibility = .hidden
         titlebarAppearsTransparent = true
         isMovableByWindowBackground = false

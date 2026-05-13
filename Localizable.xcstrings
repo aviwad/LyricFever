@@ -261,6 +261,7 @@
       }
     },
     "Album Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -372,6 +373,7 @@
       }
     },
     "Artist Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1327,6 +1329,7 @@
       }
     },
     "Lyric Provider" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1528,6 +1531,9 @@
           }
         }
       }
+    },
+    "No background at all" : {
+
     },
     "No Translation ☹️" : {
       "localizations" : {
@@ -2358,6 +2364,9 @@
           }
         }
       }
+    },
+    "Show Karaoke window over exclusive fullscreen apps (e.g. certain games)" : {
+
     },
     "Show lyrics (⌘ + H)" : {
       "localizations" : {
