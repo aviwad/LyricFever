@@ -9,6 +9,31 @@ import SwiftUI
 import LaunchAtLogin
 import Translation
 
+// Isolated struct so currentTime updates don't re-render the full MenubarWindowView (which would dismiss open sub-menus).
+private struct SongProgressView: View {
+    @Environment(ViewModel.self) var viewmodel
+    let lyricsEnabled: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ProgressView(value: lyricsEnabled ? viewmodel.currentTime.currentTime : 0, total: Double(viewmodel.duration))
+                .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
+                .frame(height: 4)
+                .padding(.horizontal, 4)
+                .environment(\.colorScheme, .dark)
+
+            HStack {
+                Text(lyricsEnabled ? viewmodel.formattedCurrentTime : "--:--")
+                    .font(.caption2)
+                Spacer()
+                Text(viewmodel.formattedDuration)
+                    .font(.caption2)
+            }
+            .padding(.horizontal, 4)
+        }
+    }
+}
+
 struct MenubarWindowView: View {
     @Environment(\.openURL) var openURL
     @Environment(\.openWindow) var openWindow
@@ -140,20 +165,8 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(value: displayLyrics == .enabled ? viewmodel.currentTime.currentTime : 0, total: Double(viewmodel.duration))
-                    .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
-                    .frame(height: 4)
-                    .padding(.horizontal, 4)
-                    .environment(\.colorScheme, .dark)
-                
-                HStack {
-                    Text(displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
-                        .font(.caption2)
-                    Spacer()
-                    Text(viewmodel.formattedDuration)
-                        .font(.caption2)
-                }
-                .padding(.horizontal, 4)
+                SongProgressView(lyricsEnabled: displayLyrics == .enabled)
+                    .environment(viewmodel)
             }
         }
         // even out vertical padding with divider as compared to Menubar button
