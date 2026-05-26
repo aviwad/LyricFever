@@ -181,7 +181,7 @@ struct LyricFever: App {
         .menuBarExtraStyle(.window)
         Window("Lyric Fever: Fullscreen", id: "fullscreen") {
             FullscreenView()
-                .windowFullScreenBehavior(.enabled)
+                .windowFullScreenBehavior(viewmodel.userDefaultStorage.useWindowedFullscreen ? .disabled : .enabled)
                 .preferredColorScheme(.dark)
                 .environment(viewmodel)
                 .onAppear {
@@ -193,10 +193,31 @@ struct LyricFever: App {
                             return aEvent
                         }
                     Task { @MainActor in
-                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-                        window?.collectionBehavior = .fullScreenPrimary
-                        if window?.styleMask.rawValue != 49167 {
-                            window?.toggleFullScreen(true)
+                        guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "fullscreen" }) else { return }
+                        if viewmodel.userDefaultStorage.useWindowedFullscreen {
+                            // Windowed-fullscreen: a movable/resizable borderless-style window on the
+                            // current Space. If macOS restored prior native-fullscreen state, exit first
+                            // so the styleMask change can take effect.
+                            guard let screen = NSScreen.main else { return }
+                            if window.styleMask.contains(.fullScreen) {
+                                window.toggleFullScreen(nil)
+                            }
+                            window.isRestorable = false
+                            window.collectionBehavior = [.managed]
+                            window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
+                            window.titlebarAppearsTransparent = true
+                            window.titleVisibility = .hidden
+                            window.isMovable = true
+                            window.isMovableByWindowBackground = true
+                            window.level = .normal
+                            window.setFrame(screen.visibleFrame, display: true)
+                            window.makeKeyAndOrderFront(nil)
+                        } else {
+                            // Native fullscreen (default, existing behavior).
+                            window.collectionBehavior = .fullScreenPrimary
+                            if window.styleMask.rawValue != 49167 {
+                                window.toggleFullScreen(true)
+                            }
                         }
                     }
                 }

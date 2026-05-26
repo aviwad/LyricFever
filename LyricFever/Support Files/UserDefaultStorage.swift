@@ -27,6 +27,13 @@ class UserDefaultStorage {
     @ObservationIgnored var blurFullscreen: Bool
     @ObservableUserDefault(.init(key: "animateOnStartupFullscreen", defaultValue: true, store: .standard))
     @ObservationIgnored var animateOnStartupFullscreen: Bool
+    #if os(macOS)
+    // When true, the fullscreen window is a movable/resizable borderless window
+    // on the current Space instead of macOS native fullscreen (which swipes to a
+    // new Space and hides the menubar/Dock).
+    @ObservableUserDefault(.init(key: "useWindowedFullscreen", defaultValue: false, store: .standard))
+    @ObservationIgnored var useWindowedFullscreen: Bool
+    #endif
     @ObservableUserDefault(.init(key: "romanize", defaultValue: false, store: .standard))
     @ObservationIgnored var romanize: Bool
     @ObservableUserDefault(.init(key: "romanizeMetadata", defaultValue: true, store: .standard))
