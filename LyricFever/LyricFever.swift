@@ -185,18 +185,53 @@ struct LyricFever: App {
                 .preferredColorScheme(.dark)
                 .environment(viewmodel)
                 .onAppear {
-                    // Block "Esc" button
+                    // Block "Esc" only when NOT in native fullscreen (otherwise Esc is the
+                    // user's standard escape hatch out of native fullscreen).
+                    // Bind Cmd+Ctrl+F to toggle native fullscreen — as an agent app there's no
+                    // standard View menu, so the OS shortcut has nothing to fire unless wired here.
+                    // This shortcut is what lets a user in Windowed-fullscreen mode opt into
+                    // (and back out of) native fullscreen.
                     NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (aEvent) -> NSEvent? in
-                            if aEvent.keyCode == 53 { // if esc pressed
+                            let fullscreenWindow = NSApp.windows.first(where: { $0.identifier?.rawValue == "fullscreen" })
+                            let inNativeFullscreen = fullscreenWindow?.styleMask.contains(.fullScreen) ?? false
+                            if aEvent.keyCode == 53 && !inNativeFullscreen { // esc, only in windowed mode
+                                return nil
+                            }
+                            if aEvent.keyCode == 3 // F
+                                && aEvent.modifierFlags.contains(.command)
+                                && aEvent.modifierFlags.contains(.control) {
+                                fullscreenWindow?.toggleFullScreen(nil)
                                 return nil
                             }
                             return aEvent
                         }
                     Task { @MainActor in
-                        let window = NSApp.windows.first {$0.identifier?.rawValue == "fullscreen"}
-                        window?.collectionBehavior = .fullScreenPrimary
-                        if window?.styleMask.rawValue != 49167 {
-                            window?.toggleFullScreen(true)
+                        guard let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "fullscreen" }) else { return }
+                        if viewmodel.userDefaultStorage.useWindowedFullscreen {
+                            // Windowed-fullscreen: a movable/resizable borderless-style window on the
+                            // current Space. If macOS restored prior native-fullscreen state, exit first
+                            // so the styleMask change can take effect. .fullScreenPrimary keeps the
+                            // native-fullscreen capability available via Cmd+Ctrl+F as an opt-in.
+                            guard let screen = NSScreen.main else { return }
+                            if window.styleMask.contains(.fullScreen) {
+                                window.toggleFullScreen(nil)
+                            }
+                            window.isRestorable = false
+                            window.collectionBehavior = .fullScreenPrimary
+                            window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
+                            window.titlebarAppearsTransparent = true
+                            window.titleVisibility = .hidden
+                            window.isMovable = true
+                            window.isMovableByWindowBackground = true
+                            window.level = .normal
+                            window.setFrame(screen.visibleFrame, display: true)
+                            window.makeKeyAndOrderFront(nil)
+                        } else {
+                            // Native fullscreen (default, existing behavior).
+                            window.collectionBehavior = .fullScreenPrimary
+                            if window.styleMask.rawValue != 49167 {
+                                window.toggleFullScreen(true)
+                            }
                         }
                     }
                 }

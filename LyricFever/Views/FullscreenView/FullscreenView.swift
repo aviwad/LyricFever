@@ -135,6 +135,7 @@ struct FullscreenView: View {
                 VStack(spacing: 7) {
                     Toggle("Blur surrounding lyrics", isOn: $viewmodel.userDefaultStorage.blurFullscreen)
                     Toggle("Animate on startup", isOn: $viewmodel.userDefaultStorage.animateOnStartupFullscreen)
+                    Toggle("Windowed fullscreen (stays on current Space)", isOn: $viewmodel.userDefaultStorage.useWindowedFullscreen)
                     Button("Reset to default") {
 
                     }
@@ -158,7 +159,13 @@ struct FullscreenView: View {
         .font(.system(size: 12))
     }
 
-    @ViewBuilder var albumArt: some View {
+    @ViewBuilder func albumArt(containerSize: CGSize) -> some View {
+        // Derive the art's side length from the available container so it scales with the
+        // window — important when "Windowed fullscreen" is on and the user resizes the window.
+        // The column is half-width when lyrics are visible, full-width otherwise. Cap by height
+        // so the text/controls stack below the art still fits.
+        let columnWidth = viewmodel.canDisplayLyrics ? containerSize.width * 0.5 : containerSize.width
+        let artSide = max(120, min(columnWidth * 0.85, containerSize.height * 0.55))
         VStack {
             Spacer()
             if let artworkImage = viewmodel.artworkImage {
@@ -167,13 +174,13 @@ struct FullscreenView: View {
                     .resizable()
                     .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                     .shadow(radius: 5)
-                    .frame(width: viewmodel.canDisplayLyrics ? 550 : 700, height: viewmodel.canDisplayLyrics ? 550 : 700)
+                    .frame(width: artSide, height: artSide)
                 #else
                 Image(uiImage: artworkImage)
                     .resizable()
                     .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                     .shadow(radius: 5)
-                    .frame(width: canDisplayLyrics ? 550 : 700, height: canDisplayLyrics ? 550 : 700)
+                    .frame(width: artSide, height: artSide)
                 #endif
             }
             else {
@@ -184,7 +191,7 @@ struct FullscreenView: View {
                     .background(.gray)
                     .clipShape(.rect(cornerRadii: .init(topLeading: 10, bottomLeading: 10, bottomTrailing: 10, topTrailing: 10)))
                     .shadow(radius: 5)
-                    .frame(width: viewmodel.canDisplayLyrics ? 550 : 650, height: viewmodel.canDisplayLyrics ? 550 : 650)
+                    .frame(width: artSide, height: artSide)
             }
             Group {
                 Text(verbatim: viewmodel.currentlyPlayingName ?? "")
@@ -267,7 +274,7 @@ struct FullscreenView: View {
     var body: some View {
         GeometryReader { geo in
             HStack {
-                albumArt
+                albumArt(containerSize: geo.size)
                     .frame(minWidth: 0.50*(geo.size.width), maxWidth: viewmodel.canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
                 if viewmodel.canDisplayLyrics {
                     lyrics(padding: 0.5*(geo.size.height))
