@@ -302,10 +302,23 @@ import MediaRemoteAdapter
     var lRCLyricProvider = LRCLIBLyricProvider()
     var netEaseLyricProvider = NetEaseLyricProvider()
     #if os(macOS)
+    @ObservationIgnored lazy var appleMusicLyricProvider = AppleMusicLyricProvider()
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
-    @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
-    
+    var allNetworkLyricProviders: [LyricProvider] {
+        #if os(macOS)
+        if currentPlayer == .appleMusic,
+           let amID = appleMusicPlayer.lastObservedCatalogID, !amID.isEmpty,
+           AppleMusicAuthManager.shared.isAuthorized {
+            return [appleMusicLyricProvider, spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        }
+        return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        #else
+        return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        #endif
+    }
+
+
     // custom order because LRCLIB is tweaking for the time being
     @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
     
@@ -398,12 +411,19 @@ import MediaRemoteAdapter
         for networkLyricProvider in allNetworkLyricProviders {
             do {
                 print("FetchAllNetworkLyrics: fetching from \(networkLyricProvider.providerName)")
-                let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: currentlyPlaying, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
+                let providerTrackID: String = {
+                    if networkLyricProvider.providerName == "apple_music" {
+                        return appleMusicPlayer.lastObservedCatalogID ?? ""
+                    }
+                    return currentlyPlaying
+                }()
+                let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: providerTrackID, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
                 if !lyrics.lyrics.isEmpty {
                     amplitude.track(eventType: "\(networkLyricProvider.providerName) Fetch")
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
                     // thats how i save to coredata
-                    let _ = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    let song = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    song.appleMusicID = appleMusicPlayer.lastObservedCatalogID
                     saveCoreData()
                     return lyrics
                 } else if networkLyricProvider is SpotifyLyricProvider {
@@ -416,6 +436,7 @@ import MediaRemoteAdapter
                 print("Caught exception on \(networkLyricProvider.providerName): \(error)")
             }
         }
+        saveCoreData()
         return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
     
@@ -954,7 +975,27 @@ import MediaRemoteAdapter
     func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
         let initiatingTrackID = trackID
         
-        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID) {
+        // AppleMusic catalog-ID CoreData lookup: when the player is Apple Music
+        // and we have a catalog ID, check by appleMusicID first — this covers the
+        // case where the same track was previously fetched under a different
+        // Spotify/Plexamp trackID but is now playing via Apple Music.
+        if checkCoreDataFirst,
+           let amID = appleMusicPlayer.lastObservedCatalogID, !amID.isEmpty {
+            let request = SongObject.fetchRequest()
+            request.predicate = NSPredicate(format: "appleMusicID == %@", amID)
+            if let existing = try? coreDataContainer.viewContext.fetch(request).first,
+               !existing.lyricsWords.isEmpty {
+                let lyrics = zip(existing.lyricsTimestamps, existing.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+                try Task.checkCancellation()
+                amplitude.track(eventType: "CoreData Fetch (appleMusicID)")
+                if initiatingTrackID != self.currentlyPlaying {
+                    throw FetchError.staleTrack
+                }
+                return lyrics
+            }
+        }
+
+        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID), !lyrics.isEmpty {
             print("ViewModel FetchLyrics: got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
