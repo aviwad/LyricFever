@@ -4,6 +4,8 @@
 <dict>
 	<key></key>
 	<string></string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>LyricFever uses your Apple Music access to fetch synchronized lyrics for songs in Apple's catalog.</string>
 	<key>SUAllowsAutomaticUpdates</key>
 	<true/>
 	<key>SUAutomaticallyUpdate</key>
