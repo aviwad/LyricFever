@@ -24,7 +24,8 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    // bundleIdentifier param removed from MediaController.init in adapter b8ce5d1
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -1028,7 +1029,7 @@ import MediaRemoteAdapter
         // Reset in-memory state; the next player-change tick will re-fetch.
         currentlyPlayingLyrics = []
         currentFetchTask?.cancel()
-        setCurrentPropertiesPublic()
+        setCurrentProperties()
     }
 
     func fetchFromCoreData(for trackID: String) -> [LyricLine]? {

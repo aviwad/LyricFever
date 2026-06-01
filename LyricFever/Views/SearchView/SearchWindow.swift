@@ -77,9 +77,6 @@ struct SearchWindow: View {
                     let song = SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
                     song.userPicked = true
                     song.sourceProvider = "user_picked"
-                    // Preserve catalog ID if known (Apple Music)
-                    song.appleMusicID = viewmodel.appleMusicPlayer.lastObservedCatalogID
-                    song.albumID = viewmodel.appleMusicPlayer.lastObservedAlbumCatalogID
                     viewmodel.saveCoreData()
                     lyricsAreApplied = true
                 } label: {
