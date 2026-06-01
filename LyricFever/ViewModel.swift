@@ -1013,6 +1013,24 @@ import MediaRemoteAdapter
         }
     }
     
+    /// Deletes the CoreData entry for the current track (including userPicked and
+    /// none_found entries) and resets in-memory state so the next tick re-runs
+    /// the full lyric-fetch chain from scratch.
+    func resetLyricsForCurrentTrack() {
+        guard let trackID = currentlyPlaying else { return }
+        let ctx = coreDataContainer.viewContext
+        let request: NSFetchRequest<SongObject> = SongObject.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackID)
+        if let existing = try? ctx.fetch(request).first {
+            ctx.delete(existing)
+            saveCoreData()
+        }
+        // Reset in-memory state; the next player-change tick will re-fetch.
+        currentlyPlayingLyrics = []
+        currentFetchTask?.cancel()
+        setCurrentPropertiesPublic()
+    }
+
     func fetchFromCoreData(for trackID: String) -> [LyricLine]? {
         let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", trackID) // Replace trackID with the desired value
