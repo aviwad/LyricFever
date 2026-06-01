@@ -110,6 +110,16 @@ import MediaRemoteAdapter
                         AppleMusicAuthManager.shared.markDeniedToastShown()
                         self.showAppleMusicDeniedToast = true
                     }
+                    // ── Album-wide background lyric prefetch ─────────────────
+                    if let albumID = self.appleMusicPlayer.lastObservedAlbumCatalogID,
+                       !albumID.isEmpty,
+                       self.currentPlayer == .appleMusic,
+                       AppleMusicAuthManager.shared.isAuthorized {
+                        Task.detached { [weak self] in
+                            guard let self else { return }
+                            await self.appleMusicPrefetcher.warmAlbum(albumID: albumID)
+                        }
+                    }
                 }
                 // ── Artwork ─────────────────────────────────────────────
                 if let artwork = payload.artwork {
@@ -320,6 +330,10 @@ import MediaRemoteAdapter
     var netEaseLyricProvider = NetEaseLyricProvider()
     #if os(macOS)
     @ObservationIgnored lazy var appleMusicLyricProvider = AppleMusicLyricProvider()
+    @ObservationIgnored lazy var appleMusicPrefetcher = AppleMusicPrefetcher(
+        container: coreDataContainer,
+        provider: appleMusicLyricProvider
+    )
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
     var allNetworkLyricProviders: [LyricProvider] {
