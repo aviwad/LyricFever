@@ -92,6 +92,19 @@ struct LyricFever: App {
                     .animation(.easeIn(duration: 0.2))
                     .environment(viewmodel)
             }
+            .sheet(isPresented: $viewmodel.showAppleMusicAuthSheet) {
+                AppleMusicAuthView(authManager: AppleMusicAuthManager.shared)
+            }
+            .alert("Apple Music access disabled", isPresented: $viewmodel.showAppleMusicDeniedToast) {
+                Button("Open System Settings") {
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                Button("Dismiss", role: .cancel) { }
+            } message: {
+                Text("LyricFever can't fetch Apple Music's synced lyrics until you grant access in System Settings → Privacy & Security → Media & Apple Music.")
+            }
             .onAppear {
                 viewmodel.onAppear(openWindow)
             }

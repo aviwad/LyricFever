@@ -96,6 +96,20 @@ import MediaRemoteAdapter
                     Task {
                         await self.appleMusicStarter()
                     }
+                    // ── Auth prompts (once per install) ─────────────────────
+                    // Only fire for Apple Music player — catalog ID is already
+                    // captured above so we know this is a real streaming track.
+                    if !self.hasOfferedAppleMusicAuth,
+                       AppleMusicAuthManager.shared.status == .notDetermined {
+                        self.hasOfferedAppleMusicAuth = true
+                        self.showAppleMusicAuthSheet = true
+                    }
+                    if !AppleMusicAuthManager.shared.hasShownDeniedToast,
+                       (AppleMusicAuthManager.shared.status == .denied ||
+                        AppleMusicAuthManager.shared.status == .restricted) {
+                        AppleMusicAuthManager.shared.markDeniedToastShown()
+                        self.showAppleMusicDeniedToast = true
+                    }
                 }
                 // ── Artwork ─────────────────────────────────────────────
                 if let artwork = payload.artwork {
@@ -213,6 +227,9 @@ import MediaRemoteAdapter
     var chineseConversionLyrics: [String] = []
     var translatedLyric: [String] = []
     var showLyrics = true
+    var showAppleMusicAuthSheet: Bool = false
+    var hasOfferedAppleMusicAuth: Bool = false
+    var showAppleMusicDeniedToast: Bool = false
     #if os(macOS)
     var fullscreen = false
     var spotifyConnectDelay: Bool = false
