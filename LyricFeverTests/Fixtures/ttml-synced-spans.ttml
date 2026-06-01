@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tt xmlns="http://www.w3.org/ns/ttml"
+    xmlns:ttm="http://www.w3.org/ns/ttml#metadata"
+    xml:lang="en">
+  <body>
+    <div>
+      <p begin="00:00:20.000" end="00:00:23.500" ttm:agent="v1">
+        <span begin="00:00:20.000" end="00:00:20.500">Hello</span>
+        <span begin="00:00:20.600" end="00:00:21.200">world</span>
+        <span begin="00:00:21.300" end="00:00:23.500">again</span>
+      </p>
+    </div>
+  </body>
+</tt>

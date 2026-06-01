@@ -24,7 +24,8 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    // bundleIdentifier param removed from MediaController.init in adapter b8ce5d1
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -59,17 +60,76 @@ import MediaRemoteAdapter
                 guard self.currentPlayer == .appleMusic else {
                     return
                 }
-                guard let artwork = data?.payload.artwork else {
-                    if self.currentlyPlaying == nil {
-                        self.artworkImage = nil
+                guard let payload = data?.payload else { return }
+                guard payload.applicationName == "Music" else {
+                    return
+                }
+                // ── Source-of-truth track-change detection ──────────────
+                // MediaRemoteAdapter delivers the freshest "what's actually
+                // playing" snapshot — way more reliable than Music.app's
+                // com.apple.Music.playerInfo notification, which can lag or
+                // drop entirely on track transitions. If the title in the
+                // payload doesn't match our cached currentlyPlayingName, kick
+                // a re-detect through appleMusicNetworkFetch (which re-reads
+                // Music.app via AppleScript and re-maps to Spotify ID).
+                if let payloadTitle = payload.title,
+                   !payloadTitle.isEmpty,
+                   payloadTitle != self.currentlyPlayingName {
+                    print("MediaRemote: track change detected (\(self.currentlyPlayingName ?? "nil") → \(payloadTitle)) — forcing chain refresh")
+                    self.currentlyPlayingName = payloadTitle
+                    self.currentlyPlayingArtist = payload.artist
+                    self.currentAlbumName = payload.album
+                    if let durationMicros = payload.durationMicros {
+                        self.duration = Int(durationMicros / 1000)
                     }
-                    print("Apple Music Artwork Workaround: Ignoring No Artwork")
-                    return
+                    // Refresh persistent ID directly off AppleScript — it
+                    // catches up by the time MediaRemote fires (slightly
+                    // after the playerInfo notification path).
+                    let freshPID = self.appleMusicPlayer.persistentID
+                    if let freshPID, freshPID != self.currentlyPlayingAppleMusicPersistentID {
+                        self.currentlyPlayingAppleMusicPersistentID = freshPID
+                    }
+                    // Capture Apple Music catalog (Adam) IDs from MediaRemote payload.
+                    // Nil for local files, audiobooks, or non-catalog tracks.
+                    self.appleMusicPlayer.lastObservedCatalogID = payload.contentItemIdentifier
+                    self.appleMusicPlayer.lastObservedAlbumCatalogID = payload.albumiTunesStoreAdamIdentifier
+                    Task {
+                        await self.appleMusicStarter()
+                    }
+                    // ── Auth prompts (once per install) ─────────────────────
+                    // Only fire for Apple Music player — catalog ID is already
+                    // captured above so we know this is a real streaming track.
+                    if !self.hasOfferedAppleMusicAuth,
+                       AppleMusicAuthManager.shared.status == .notDetermined {
+                        self.hasOfferedAppleMusicAuth = true
+                        self.showAppleMusicAuthSheet = true
+                    }
+                    if !AppleMusicAuthManager.shared.hasShownDeniedToast,
+                       (AppleMusicAuthManager.shared.status == .denied ||
+                        AppleMusicAuthManager.shared.status == .restricted) {
+                        AppleMusicAuthManager.shared.markDeniedToastShown()
+                        self.showAppleMusicDeniedToast = true
+                    }
+                    // ── Album-wide background lyric prefetch ─────────────────
+                    // Only fires when the user has enabled "Prefetch album lyrics
+                    // in background" in Settings (off by default).
+                    if self.userDefaultStorage.prefetchAlbumLyrics,
+                       let albumID = self.appleMusicPlayer.lastObservedAlbumCatalogID,
+                       !albumID.isEmpty,
+                       self.currentPlayer == .appleMusic,
+                       AppleMusicAuthManager.shared.isAuthorized {
+                        Task.detached { [weak self] in
+                            guard let self else { return }
+                            await self.appleMusicPrefetcher.warmAlbum(albumID: albumID)
+                        }
+                    }
                 }
-                guard data?.payload.applicationName == "Music" else {
-                    return
+                // ── Artwork ─────────────────────────────────────────────
+                if let artwork = payload.artwork {
+                    self.artworkImage = artwork
+                } else if self.currentlyPlaying == nil {
+                    self.artworkImage = nil
                 }
-                self.artworkImage = artwork
             }
             // This will only be called for Apple Music events
         }
@@ -180,6 +240,9 @@ import MediaRemoteAdapter
     var chineseConversionLyrics: [String] = []
     var translatedLyric: [String] = []
     var showLyrics = true
+    var showAppleMusicAuthSheet: Bool = false
+    var hasOfferedAppleMusicAuth: Bool = false
+    var showAppleMusicDeniedToast: Bool = false
     #if os(macOS)
     var fullscreen = false
     var spotifyConnectDelay: Bool = false
@@ -269,10 +332,27 @@ import MediaRemoteAdapter
     var lRCLyricProvider = LRCLIBLyricProvider()
     var netEaseLyricProvider = NetEaseLyricProvider()
     #if os(macOS)
+    @ObservationIgnored lazy var appleMusicLyricProvider = AppleMusicLyricProvider()
+    @ObservationIgnored lazy var appleMusicPrefetcher = AppleMusicPrefetcher(
+        container: coreDataContainer,
+        provider: appleMusicLyricProvider
+    )
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
-    @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
-    
+    var allNetworkLyricProviders: [LyricProvider] {
+        #if os(macOS)
+        if currentPlayer == .appleMusic,
+           let amID = appleMusicPlayer.lastObservedCatalogID, !amID.isEmpty,
+           AppleMusicAuthManager.shared.isAuthorized {
+            return [appleMusicLyricProvider, spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        }
+        return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        #else
+        return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        #endif
+    }
+
+
     // custom order because LRCLIB is tweaking for the time being
     @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
     
@@ -365,12 +445,20 @@ import MediaRemoteAdapter
         for networkLyricProvider in allNetworkLyricProviders {
             do {
                 print("FetchAllNetworkLyrics: fetching from \(networkLyricProvider.providerName)")
-                let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: currentlyPlaying, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
+                let providerTrackID: String = {
+                    if networkLyricProvider.providerName == "apple_music" {
+                        return appleMusicPlayer.lastObservedCatalogID ?? ""
+                    }
+                    return currentlyPlaying
+                }()
+                let lyrics = try await networkLyricProvider.fetchNetworkLyrics(trackName: currentlyPlayingName, trackID: providerTrackID, currentlyPlayingArtist: currentlyPlayingArtist, currentAlbumName: currentAlbumName)
                 if !lyrics.lyrics.isEmpty {
                     amplitude.track(eventType: "\(networkLyricProvider.providerName) Fetch")
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
                     // thats how i save to coredata
-                    let _ = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    let song = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    song.appleMusicID = appleMusicPlayer.lastObservedCatalogID
+                    song.albumID = appleMusicPlayer.lastObservedAlbumCatalogID
                     saveCoreData()
                     return lyrics
                 } else if networkLyricProvider is SpotifyLyricProvider {
@@ -383,6 +471,7 @@ import MediaRemoteAdapter
                 print("Caught exception on \(networkLyricProvider.providerName): \(error)")
             }
         }
+        saveCoreData()
         return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
     
@@ -921,7 +1010,27 @@ import MediaRemoteAdapter
     func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
         let initiatingTrackID = trackID
         
-        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID) {
+        // AppleMusic catalog-ID CoreData lookup: when the player is Apple Music
+        // and we have a catalog ID, check by appleMusicID first — this covers the
+        // case where the same track was previously fetched under a different
+        // Spotify/Plexamp trackID but is now playing via Apple Music.
+        if checkCoreDataFirst,
+           let amID = appleMusicPlayer.lastObservedCatalogID, !amID.isEmpty {
+            let request = SongObject.fetchRequest()
+            request.predicate = NSPredicate(format: "appleMusicID == %@", amID)
+            if let existing = try? coreDataContainer.viewContext.fetch(request).first,
+               !existing.lyricsWords.isEmpty {
+                let lyrics = zip(existing.lyricsTimestamps, existing.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+                try Task.checkCancellation()
+                amplitude.track(eventType: "CoreData Fetch (appleMusicID)")
+                if initiatingTrackID != self.currentlyPlaying {
+                    throw FetchError.staleTrack
+                }
+                return lyrics
+            }
+        }
+
+        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID), !lyrics.isEmpty {
             print("ViewModel FetchLyrics: got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
