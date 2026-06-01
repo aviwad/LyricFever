@@ -94,8 +94,17 @@ class AppleMusicPlayer: Player {
         appleMusicScript?.nextTrack?()
     }
     
+    /// Most recently observed Apple Music catalog ID (Adam ID), sourced from
+    /// MediaRemote's now-playing payload. Nil for tracks not in the catalog
+    /// (imported MP3s, audiobooks, etc).
+    var lastObservedCatalogID: String?
+
+    /// Most recently observed album catalog ID. Nil if the payload didn't
+    /// surface one or the album isn't in the catalog.
+    var lastObservedAlbumCatalogID: String?
+
     var artworkImage: NSImage?
-    
+
 //    var artworkImage: NSImage? {
 //        guard let artworkImage = (appleMusicScript?.currentTrack?.artworks?().firstObject as? MusicArtwork)?.data else {
 //            print("AppleMusicPlayer artworkImage: nil data")
