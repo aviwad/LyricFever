@@ -130,8 +130,6 @@ actor AppleMusicPrefetcher {
         let song = SongObject(from: lines, with: ctx, trackID: albumTrack.id, trackName: albumTrack.name)
         song.appleMusicID = albumTrack.id
         song.albumID = albumID
-        song.sourceProvider = lines.isEmpty ? "none_found" : "apple_music"
-        song.userPicked = false
         try? ctx.save()
     }
 }

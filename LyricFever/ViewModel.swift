@@ -111,7 +111,10 @@ import MediaRemoteAdapter
                         self.showAppleMusicDeniedToast = true
                     }
                     // ── Album-wide background lyric prefetch ─────────────────
-                    if let albumID = self.appleMusicPlayer.lastObservedAlbumCatalogID,
+                    // Only fires when the user has enabled "Prefetch album lyrics
+                    // in background" in Settings (off by default).
+                    if self.userDefaultStorage.prefetchAlbumLyrics,
+                       let albumID = self.appleMusicPlayer.lastObservedAlbumCatalogID,
                        !albumID.isEmpty,
                        self.currentPlayer == .appleMusic,
                        AppleMusicAuthManager.shared.isAuthorized {
@@ -455,6 +458,7 @@ import MediaRemoteAdapter
                     // thats how i save to coredata
                     let song = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
                     song.appleMusicID = appleMusicPlayer.lastObservedCatalogID
+                    song.albumID = appleMusicPlayer.lastObservedAlbumCatalogID
                     saveCoreData()
                     return lyrics
                 } else if networkLyricProvider is SpotifyLyricProvider {

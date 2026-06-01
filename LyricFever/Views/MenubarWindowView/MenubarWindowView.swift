@@ -517,6 +517,10 @@ struct MenubarWindowView: View {
     var otherOptions: some View {
         @Bindable var viewmodel = viewmodel
         Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
+        if viewmodel.currentPlayer == .appleMusic {
+            Toggle("Prefetch album lyrics in background", isOn: $viewmodel.userDefaultStorage.prefetchAlbumLyrics)
+                .help("When enabled, LyricFever pre-fetches lyrics for every track on the currently-playing album so skips and auto-advance load instantly. Off by default.")
+        }
         Divider()
         streamingDelayView
         Button("Settings (New Karaoke Settings!)") {

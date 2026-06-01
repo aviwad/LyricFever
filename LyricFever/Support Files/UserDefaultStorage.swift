@@ -71,4 +71,12 @@ class UserDefaultStorage {
     @ObservationIgnored var hasTranslated: Bool
     @ObservableUserDefault(.init(key: "truncationLength", defaultValue: 40, store: .standard))
     @ObservationIgnored var truncationLength: Int
+
+    #if os(macOS)
+    /// When enabled, LyricFever pre-fetches lyrics for every track on the
+    /// currently-playing album in the background (Apple Music only).
+    /// Off by default — background network activity is opt-in.
+    @ObservableUserDefault(.init(key: "prefetchAlbumLyrics", defaultValue: false, store: .standard))
+    @ObservationIgnored var prefetchAlbumLyrics: Bool
+    #endif
 }
