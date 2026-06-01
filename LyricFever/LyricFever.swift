@@ -92,19 +92,7 @@ struct LyricFever: App {
                     .animation(.easeIn(duration: 0.2))
                     .environment(viewmodel)
             }
-            .sheet(isPresented: $viewmodel.showAppleMusicAuthSheet) {
-                AppleMusicAuthView(authManager: AppleMusicAuthManager.shared)
-            }
-            .alert("Apple Music access disabled", isPresented: $viewmodel.showAppleMusicDeniedToast) {
-                Button("Open System Settings") {
-                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media") {
-                        NSWorkspace.shared.open(url)
-                    }
-                }
-                Button("Dismiss", role: .cancel) { }
-            } message: {
-                Text("LyricFever can't fetch Apple Music's synced lyrics until you grant access in System Settings → Privacy & Security → Media & Apple Music.")
-            }
+            .modifier(AppleMusicAuthModifier(viewmodel: viewmodel, openWindow: openWindow))
             .onAppear {
                 viewmodel.onAppear(openWindow)
             }
@@ -249,7 +237,30 @@ struct LyricFever: App {
                 }
         }
         .windowResizability(.contentSize)
-        Window("Lyric Fever: Update 2.3", id: "update") { // << here !!
+        auxiliaryScenes
+    }
+
+    // Extracted to keep `body` under SwiftUI's @SceneBuilder type-check budget.
+    // The body was already at the limit; adding a 6th inline scene tipped it
+    // into "unable to type-check this expression in reasonable time." Bundling
+    // the auth + update windows together drops the body's scene count back to 5.
+    @SceneBuilder
+    private var auxiliaryScenes: some Scene {
+        Window("Connect Apple Music", id: "applemusic-auth") {
+            AppleMusicAuthView(authManager: AppleMusicAuthManager.shared)
+                .environment(viewmodel)
+                .preferredColorScheme(.dark)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                }
+                .onDisappear {
+                    if !viewmodel.fullscreen {
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+                }
+        }
+        .windowResizability(.contentSize)
+        Window("Lyric Fever: Update 2.3", id: "update") {
             UpdateWindow().frame(minWidth: 700, maxWidth: 700, alignment: .center)
                 .environment(viewmodel)
                 .preferredColorScheme(.dark)
@@ -262,9 +273,42 @@ struct LyricFever: App {
                     }
                 }
         }
-            .windowResizability(.contentSize)
-            .windowStyle(.hiddenTitleBar)
-            .windowLevel(.floating)
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+        .windowLevel(.floating)
+    }
+}
+
+/// Pulled off the MenuBarExtra label's modifier chain so the @SceneBuilder body
+/// can type-check in reasonable time. Bundles the auth-sheet trigger (routes to
+/// the `applemusic-auth` Window scene) and the denied-state alert. Sheet-style
+/// presentation doesn't work in a MenuBarExtra context — there's no NSWindow
+/// host for it to attach to — so we openWindow instead.
+private struct AppleMusicAuthModifier: ViewModifier {
+    @Bindable var viewmodel: ViewModel
+    let openWindow: OpenWindowAction
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: viewmodel.showAppleMusicAuthSheet) { _, newValue in
+                if newValue {
+                    NSApp.setActivationPolicy(.regular)
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                    openWindow(id: "applemusic-auth")
+                    // Reset so the trigger can re-arm if the user dismisses without authorizing.
+                    viewmodel.showAppleMusicAuthSheet = false
+                }
+            }
+            .alert("Apple Music access disabled", isPresented: $viewmodel.showAppleMusicDeniedToast) {
+                Button("Open System Settings") {
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Media") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                Button("Dismiss", role: .cancel) { }
+            } message: {
+                Text("LyricFever can't fetch Apple Music's synced lyrics until you grant access in System Settings → Privacy & Security → Media & Apple Music.")
+            }
     }
 }
 
