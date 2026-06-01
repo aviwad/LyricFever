@@ -22,6 +22,8 @@ extension SongObject {
     @NSManaged public var language: String
     @NSManaged public var lyricsWords: [String]
     @NSManaged public var lyricsTimestamps: [TimeInterval]
+    @NSManaged public var sourceProvider: String?
+    @NSManaged public var userPicked: Bool
 
 }
 
