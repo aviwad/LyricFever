@@ -74,7 +74,9 @@ struct SearchWindow: View {
                         return
                     }
                     // thats how i save to coredata
-                    let _ = SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
+                    let song = SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
+                    song.userPicked = true
+                    song.sourceProvider = "user_picked"
                     viewmodel.saveCoreData()
                     lyricsAreApplied = true
                 } label: {

@@ -380,7 +380,14 @@ struct MenubarWindowView: View {
         }
         return .clickable
     }
-    
+
+    var resetState: ButtonState {
+        guard viewmodel.userDefaultStorage.hasOnboarded else {
+            return .disabled
+        }
+        return .clickable
+    }
+
     var deleteOrUploadState: ButtonState {
         guard viewmodel.userDefaultStorage.hasOnboarded else {
             return .disabled
@@ -433,6 +440,11 @@ struct MenubarWindowView: View {
                     currentHoveredItem = .none
                 }
             }
+            SmallMenubarButton(buttonText: "", imageText: "arrow.counterclockwise", buttonState: resetState) {
+                viewmodel.resetLyricsForCurrentTrack()
+            }
+            .help("Reset lyrics for this track (clears cache, re-runs chain)")
+            .disabled(resetState == .disabled)
             Menu {
                 translationAndRomanizationView
             } label: {

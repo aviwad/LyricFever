@@ -24,7 +24,8 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    // bundleIdentifier param removed from MediaController.init in adapter b8ce5d1
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -272,7 +273,8 @@ import MediaRemoteAdapter
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
     @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
-    
+
+
     // custom order because LRCLIB is tweaking for the time being
     @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
     
@@ -370,7 +372,9 @@ import MediaRemoteAdapter
                     amplitude.track(eventType: "\(networkLyricProvider.providerName) Fetch")
                     print("FetchAllNetworkLyrics: returning lyrics from \(networkLyricProvider.providerName)")
                     // thats how i save to coredata
-                    let _ = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    let song = SongObject(from: lyrics.lyrics, with: coreDataContainer.viewContext, trackID: currentlyPlaying, trackName: currentlyPlayingName)
+                    song.sourceProvider = networkLyricProvider.providerName
+                    song.userPicked = false
                     saveCoreData()
                     return lyrics
                 } else if networkLyricProvider is SpotifyLyricProvider {
@@ -383,6 +387,7 @@ import MediaRemoteAdapter
                 print("Caught exception on \(networkLyricProvider.providerName): \(error)")
             }
         }
+        saveCoreData()
         return NetworkFetchReturn(lyrics: [], colorData: nil)
     }
     
@@ -921,7 +926,24 @@ import MediaRemoteAdapter
     func fetchLyrics(for trackID: String, _ trackName: String, checkCoreDataFirst: Bool) async throws -> [LyricLine] {
         let initiatingTrackID = trackID
         
-        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID) {
+        // Sticky check: if the user previously picked lyrics manually (via search window),
+        // skip the network chain entirely and return the cached lyrics as-is.
+        if checkCoreDataFirst {
+            let request = SongObject.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", trackID)
+            if let existing = try? coreDataContainer.viewContext.fetch(request).first,
+               existing.userPicked, !existing.lyricsWords.isEmpty {
+                let lyrics = zip(existing.lyricsTimestamps, existing.lyricsWords).map { LyricLine(startTime: $0, words: $1) }
+                try Task.checkCancellation()
+                amplitude.track(eventType: "CoreData Fetch (userPicked sticky)")
+                if initiatingTrackID != self.currentlyPlaying {
+                    throw FetchError.staleTrack
+                }
+                return lyrics
+            }
+        }
+
+        if checkCoreDataFirst, let lyrics = fetchFromCoreData(for: trackID), !lyrics.isEmpty {
             print("ViewModel FetchLyrics: got lyrics from core data :D \(trackID) \(trackName)")
             try Task.checkCancellation()
             amplitude.track(eventType: "CoreData Fetch")
@@ -992,6 +1014,24 @@ import MediaRemoteAdapter
         }
     }
     
+    /// Deletes the CoreData entry for the current track (including userPicked and
+    /// none_found entries) and resets in-memory state so the next tick re-runs
+    /// the full lyric-fetch chain from scratch.
+    func resetLyricsForCurrentTrack() {
+        guard let trackID = currentlyPlaying else { return }
+        let ctx = coreDataContainer.viewContext
+        let request: NSFetchRequest<SongObject> = SongObject.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackID)
+        if let existing = try? ctx.fetch(request).first {
+            ctx.delete(existing)
+            saveCoreData()
+        }
+        // Reset in-memory state; the next player-change tick will re-fetch.
+        currentlyPlayingLyrics = []
+        currentFetchTask?.cancel()
+        setCurrentProperties()
+    }
+
     func fetchFromCoreData(for trackID: String) -> [LyricLine]? {
         let fetchRequest: NSFetchRequest<SongObject> = SongObject.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", trackID) // Replace trackID with the desired value
