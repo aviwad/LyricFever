@@ -16,6 +16,7 @@ struct KaraokeSettingsView: View {
     @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
+    @AppStorage("karaokeLineMode") var karaokeLineMode: KaraokeLineMode = .single
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
     
     var colorBinding: Binding<Color> {
@@ -39,6 +40,12 @@ struct KaraokeSettingsView: View {
                 Text("Show multilingual lyrics when translating in Karaoke window")
             }
             .toggleStyle(.checkbox)
+            Picker("Lines shown in Karaoke window", selection: $karaokeLineMode) {
+                ForEach(KaraokeLineMode.allCases) { mode in
+                    Text(mode.localizedName).tag(mode)
+                }
+            }
+            .pickerStyle(.radioGroup)
             .padding(.bottom, 20)
             
             Text("Karaoke Background Appearance")
@@ -74,6 +81,7 @@ struct KaraokeSettingsView: View {
                 viewmodel.userDefaultStorage.karaokeModeHoveringSetting = false
                 karaokeUseAlbumColor = true
                 viewmodel.userDefaultStorage.karaokeShowMultilingual = true
+                viewmodel.userDefaultStorage.karaokeLineMode = KaraokeLineMode.single.rawValue
                 viewmodel.userDefaultStorage.karaokeTransparency = 50
                 viewmodel.karaokeFont = NSFont.boldSystemFont(ofSize: 30)
 //                viewmodel.karaokeFontSize = 30

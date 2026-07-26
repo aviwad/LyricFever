@@ -147,11 +147,32 @@ import MediaRemoteAdapter
 
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && karaokeHasContent
         }
         set {
-            
+
         }
+    }
+
+    // Single-line mode has nothing to put on screen until playback reaches the first line. The
+    // two-line modes do: they preview the line that's coming, which is most useful during exactly
+    // this stretch — the intro. So they open the panel during an intro, but only a confirmed one:
+    // a nil index on its own also covers "the updater hasn't located us yet", and previewing line 1
+    // then would show the wrong line while the song is actually part-way through.
+    var karaokeHasContent: Bool {
+        if let currentlyPlayingLyricsIndex {
+            // Range-checked rather than just non-nil: an index that outlives the lyrics it pointed
+            // into would otherwise open the panel onto a blank line. Better to keep it shut than to
+            // show an empty one as if that were the lyric.
+            return currentlyPlayingLyrics.indices.contains(currentlyPlayingLyricsIndex)
+        }
+        // Falls back to .single on an unrecognised raw value, matching what KaraokeView's
+        // @AppStorage does with one. Without the fallback the two disagree — this side would open
+        // the panel for an intro while the view still rendered single-line mode's empty text.
+        guard (KaraokeLineMode(rawValue: userDefaultStorage.karaokeLineMode) ?? .single) != .single else {
+            return false
+        }
+        return isBeforeFirstLyric && !currentlyPlayingLyrics.isEmpty
     }
     var displayFullscreen: Bool {
         get {
@@ -175,6 +196,9 @@ import MediaRemoteAdapter
     var currentAlbumName: String?
     var currentlyPlayingLyrics: [LyricLine] = []
     var currentlyPlayingLyricsIndex: Int?
+    // Set by lyricUpdater once it has actually placed us before the first line. A nil index alone
+    // can't say that: it also covers "we haven't worked out the position yet". See karaokeHasContent.
+    var isBeforeFirstLyric = false
     var isPlaying: Bool = false
     var romanizedLyrics: [String] = []
     var chineseConversionLyrics: [String] = []
@@ -675,6 +699,8 @@ import MediaRemoteAdapter
     
     func onCurrentlyPlayingIDChange() async {
         currentlyPlayingLyricsIndex = nil
+        // Unknown again until the updater places us in the new song
+        isBeforeFirstLyric = false
         currentlyPlayingLyrics = []
         translatedLyric = []
         romanizedLyrics = []
@@ -769,9 +795,28 @@ import MediaRemoteAdapter
             }
             // If there is no current index (perhaps lyric updater started late and we're mid-way of the first lyric, or the user scrubbed and our index is expired)
             // Then we set the current index to the one before our anticipated index
+            // lastIndex == 0 means the next line due is the very first one, so playback is back in
+            // the intro — the song looped or was scrubbed to the start — and any index we're holding
+            // is left over from the previous pass. upcomingIndex's linear search does find the right
+            // upcoming line after a rewind, but it never revises the index we're currently showing,
+            // so without this an intro keeps showing whichever line was up last time instead of
+            // starting over.
+            //
+            // Deliberately keyed on lastIndex rather than comparing currentTime against the current
+            // line's start: each pass sleeps until the next line is due and then reads the player's
+            // clock, and both the sleep and that clock are only accurate to a few milliseconds. A
+            // direct comparison treats a reading that lands a hair early as a rewind, and normal
+            // playback would jump back a line. A rewind that lands mid-song still isn't caught here;
+            // that's long-standing behaviour, not something this change introduces.
+            if lastIndex == 0 {
+                currentlyPlayingLyricsIndex = nil
+            }
             if currentlyPlayingLyricsIndex == nil && lastIndex > 0 {
                 currentlyPlayingLyricsIndex = lastIndex-1
             }
+            // After that correction, a still-nil index can only mean lastIndex == 0: the first line
+            // is yet to come, so we genuinely are in the intro rather than merely unlocated.
+            isBeforeFirstLyric = currentlyPlayingLyricsIndex == nil
             let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
             let diff = nextTimestamp - currentTime
             print("current time: \(currentTime)")
@@ -807,7 +852,14 @@ import MediaRemoteAdapter
             // Then we set the current index to the one before our anticipated index
             if lastIndex > 0 {
                 currentlyPlayingLyricsIndex = lastIndex-1
+            } else {
+                // lastIndex == 0: the next line due is the very first one, so playback sits in the
+                // intro and the index we're holding is left over from before the pause. The same
+                // correction lyricUpdater makes, applied here too — otherwise unpausing after
+                // scrubbing back into an intro shows the stale line until the updater's first pass.
+                currentlyPlayingLyricsIndex = nil
             }
+            isBeforeFirstLyric = currentlyPlayingLyricsIndex == nil
         } else {
             #if os(macOS)
             if currentPlayer == .spotify {

@@ -1210,6 +1210,28 @@
         }
       }
     },
+    "Lines shown in Karaoke window" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "K 歌窗口显示行数"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 視窗顯示行數"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卡拉 OK 視窗顯示行數"
+          }
+        }
+      }
+    },
     "Log Out" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2425,6 +2447,28 @@
         }
       }
     },
+    "Single line" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单行"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單行"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "單行"
+          }
+        }
+      }
+    },
     "Song Name" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3060,6 +3104,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示長度限制"
+          }
+        }
+      }
+    },
+    "Two lines: KTV style, alternating" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双行：KTV 交替样式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雙行：KTV 交替樣式"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雙行：卡拉 OK 交替樣式"
+          }
+        }
+      }
+    },
+    "Two lines: preview the next line" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双行：预览下一句"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雙行：預覽下一句"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雙行：預覽下一句"
           }
         }
       }

@@ -45,6 +45,10 @@ class UserDefaultStorage {
 //    var karaokeUseAlbumColor: Bool = true
     @ObservableUserDefault(.init(key: "karaokeShowMultilingual", defaultValue: true, store: .standard))
     @ObservationIgnored var karaokeShowMultilingual: Bool
+    // Raw value of KaraokeLineMode: how many lyric lines the karaoke panel shows and how they move.
+    // Defaults to .single (0), the original one-line behaviour.
+    @ObservableUserDefault(.init(key: "karaokeLineMode", defaultValue: 0, store: .standard))
+    @ObservationIgnored var karaokeLineMode: Int
     @ObservableUserDefault(.init(key: "karaokeTransparency", defaultValue: 50, store: .standard))
     @ObservationIgnored var karaokeTransparency: Double
 //    var fixedKaraokeColorHex: String = "#2D3CCC"
