@@ -34,6 +34,8 @@ import MediaRemoteAdapter
     @ObservationIgnored var autoSwitchLastKnownPlaying: [PlayerType: Bool] = [:]
     // Set right before an automatic player change so the app doesn't send the user back through onboarding
     @ObservationIgnored var autoSwitchedTo: PlayerType?
+    // Lyrics waiting to be written into Music tracks once they stop playing (see MusicLibraryLyricsWriter.swift)
+    @ObservationIgnored var pendingMusicLyricsWrites: [String: AppleMusicPlayer.PendingLyricsWrite] = [:]
     #endif
 
     var currentlyPlaying: String?
@@ -624,6 +626,8 @@ import MediaRemoteAdapter
     }
     
     func appleMusicPlaybackDidChange(_ notification: Notification) {
+        // Music moved on (new song, pause or stop): write any queued lyrics for songs that aren't playing anymore
+        flushPendingMusicLyricsWrites()
         if autoSwitchPlayerIfNeeded(notifiedBy: .appleMusic, playerState: notification.userInfo?["Player State"] as? String) {
             // Switched players: the new player's song has already been loaded
             return
@@ -1091,6 +1095,8 @@ import MediaRemoteAdapter
         if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()
         }
+        // Apple Music only: store these lyrics in the track's metadata if it has none (see MusicLibraryLyricsWriter.swift)
+        saveLyricsToMusicLibraryIfNeeded(newLyrics)
     }
     
     @MainActor

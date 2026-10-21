@@ -527,6 +527,8 @@ struct MenubarWindowView: View {
             }
         ))
             .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
+        Toggle("Save Lyrics to Apple Music Library", isOn: $viewmodel.userDefaultStorage.saveLyricsToMusicLibrary)
+            .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
         Divider()
         streamingDelayView
         Button("Settings (New Karaoke Settings!)") {

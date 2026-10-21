@@ -106,6 +106,7 @@ struct LyricFever: App {
             }
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
                 viewmodel.saveKaraokeFontOnTermination()
+                viewmodel.flushPendingMusicLyricsWrites(includePausedCurrentTrack: true)
             }
             .onChange(of: viewmodel.translationSourceLanguage) {
                 // don't call reloadTranslationConfigIfTranslating(), that invalidates when config is the same
