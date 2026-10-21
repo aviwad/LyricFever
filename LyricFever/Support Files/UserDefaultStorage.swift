@@ -64,6 +64,12 @@ class UserDefaultStorage {
     @ObservationIgnored var spotifyOrAppleMusic: Bool
     @ObservableUserDefault(.init(key: "latestUpdateWindowShown", defaultValue: 0, store: .standard))
     @ObservationIgnored var latestUpdateWindowShown: Int
+    // Automatically follow whichever app (Spotify / Apple Music) starts playing
+    @ObservableUserDefault(.init(key: "autoSwitchPlayer", defaultValue: true, store: .standard))
+    @ObservationIgnored var autoSwitchPlayer: Bool
+    // Write fetched lyrics into the Music track's own Lyrics field (only when it has none)
+    @ObservableUserDefault(.init(key: "saveLyricsToMusicLibrary", defaultValue: true, store: .standard))
+    @ObservationIgnored var saveLyricsToMusicLibrary: Bool
     #endif
     @ObservableUserDefault(.init(key: "hasOnboarded", defaultValue: false, store: .standard))
     @ObservationIgnored var hasOnboarded: Bool

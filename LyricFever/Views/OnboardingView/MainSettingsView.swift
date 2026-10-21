@@ -37,11 +37,47 @@ enum MainSettingsError: Error, Identifiable, CaseIterable {
     }
 }
 
+/// What the player picker shows: a fixed app, or Auto (follow whichever app is playing)
+enum PlayerChoice: Hashable {
+    case spotify
+    case appleMusic
+    case auto
+}
+
 struct MainSettingsView: View {
     @Environment(ViewModel.self) var viewModel
     @State var permissionDenied: Bool = false
     @State var error: MainSettingsError = .openSpotify
+    // True once a "Give ... Permissions" button was pressed, so its result replaces the Auto hint
+    @State var hasCheckedPermissions: Bool = false
     @AppStorage("spotifyOrAppleMusic") var spotifyOrAppleMusic: Bool = false
+    
+    /// Auto turns on auto-switch (the same setting as the menu toggle) and keeps the last-used app as the starting one.
+    /// Picking Spotify or Apple Music turns auto-switch off and locks to that app.
+    func playerChoiceBinding(isAuto: Bool) -> Binding<PlayerChoice> {
+        Binding(
+            get: {
+                if isAuto {
+                    return .auto
+                }
+                return spotifyOrAppleMusic ? .appleMusic : .spotify
+            },
+            set: { choice in
+                switch choice {
+                    case .auto:
+                        viewModel.userDefaultStorage.autoSwitchPlayer = true
+                        // If the other app is the one playing right now, jump to it
+                        viewModel.autoSwitchToPlayingPlayerIfIdle()
+                    case .spotify:
+                        viewModel.userDefaultStorage.autoSwitchPlayer = false
+                        spotifyOrAppleMusic = false
+                    case .appleMusic:
+                        viewModel.userDefaultStorage.autoSwitchPlayer = false
+                        spotifyOrAppleMusic = true
+                }
+            }
+        )
+    }
     
     @ViewBuilder
     var permissionDeniedView: some View {
@@ -79,6 +115,7 @@ struct MainSettingsView: View {
         } else {
             HStack {
                 Button("Give Spotify Permissions") {
+                    hasCheckedPermissions = true
                     if !viewModel.spotifyPlayer.isRunning {
                         print("Spotify not running")
                         error = .openSpotify
@@ -90,9 +127,11 @@ struct MainSettingsView: View {
                         error = .authorized
                     }
                 }
-                .disabled(viewModel.currentPlayer == .appleMusic)
+                // In Auto both apps can be set up
+                .disabled(!viewModel.userDefaultStorage.autoSwitchPlayer && viewModel.currentPlayer == .appleMusic)
                 
                 Button("Give Apple Music Permissions") {
+                    hasCheckedPermissions = true
                     if !viewModel.appleMusicPlayer.isRunning {
                         error = .openAppleMusic
                     } else if !viewModel.appleMusicPlayer.isAuthorized {
@@ -103,13 +142,14 @@ struct MainSettingsView: View {
                         error = .authorized
                     }
                 }
-                .disabled(viewModel.currentPlayer == .spotify)
+                .disabled(!viewModel.userDefaultStorage.autoSwitchPlayer && viewModel.currentPlayer == .spotify)
             }
         }
     }
     
     var body: some View {
         @Bindable var viewmodel = viewModel
+        let isAuto = viewModel.userDefaultStorage.autoSwitchPlayer
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
                 Group {
@@ -121,26 +161,49 @@ struct MainSettingsView: View {
                 }
                 .transition(.fade)
                 
-                Picker("", selection: $spotifyOrAppleMusic) {
+                Picker("", selection: playerChoiceBinding(isAuto: isAuto)) {
                     VStack {
                         Image("spotify")
                             .resizable()
                             .frame(width: 70.0, height: 70.0)
                         Text("Spotify")
-                    }.tag(false)
+                    }.tag(PlayerChoice.spotify)
                     VStack {
                         Image("music")
                             .resizable()
                             .frame(width: 70.0, height: 70.0)
                         Text("Apple Music")
-                    }.tag(true)
+                    }.tag(PlayerChoice.appleMusic)
+                    VStack {
+                        // Both app icons overlapping: "whichever is playing"
+                        ZStack {
+                            Image("spotify")
+                                .resizable()
+                                .frame(width: 46.0, height: 46.0)
+                                .offset(x: -12, y: -12)
+                            Image("music")
+                                .resizable()
+                                .frame(width: 46.0, height: 46.0)
+                                .offset(x: 12, y: 12)
+                        }
+                        .frame(width: 70.0, height: 70.0)
+                        Text("Auto")
+                    }
+                    .help("Show lyrics for whichever app is playing")
+                    .tag(PlayerChoice.auto)
                 }
                 .font(.title2)
                 .frame(width: 500)
                 .pickerStyle(.radioGroup)
                 .horizontalRadioGroupLayout()
                             
-                Text(error.description)
+                Group {
+                    if isAuto && !hasCheckedPermissions {
+                        Text("Auto shows lyrics for whichever app is playing. Give permissions for the apps you use.")
+                    } else {
+                        Text(error.description)
+                    }
+                }
                     .transition(.opacity)
                             
                 permissionsOrNextButton
@@ -159,6 +222,10 @@ struct MainSettingsView: View {
             .animation(.bouncy, value: permissionDenied)
             .animation(.bouncy, value: error)
             .onChange(of: viewModel.currentPlayer) {
+                // In Auto the app changes by itself; keep whatever the permission buttons last reported
+                guard !viewModel.userDefaultStorage.autoSwitchPlayer else {
+                    return
+                }
                 print("Updating permission booleans based on media player change")
                 switch viewModel.currentPlayer {
                 case .appleMusic:

@@ -106,6 +106,7 @@ struct LyricFever: App {
             }
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
                 viewmodel.saveKaraokeFontOnTermination()
+                viewmodel.flushPendingMusicLyricsWrites(includePausedCurrentTrack: true)
             }
             .onChange(of: viewmodel.translationSourceLanguage) {
                 // don't call reloadTranslationConfigIfTranslating(), that invalidates when config is the same
@@ -133,6 +134,11 @@ struct LyricFever: App {
                 }
             }
             .onChange(of: viewmodel.currentPlayer) {
+                // Auto-switch already loaded the new player's state; only a manual change goes back through onboarding
+                if viewmodel.consumeAutoSwitch(to: viewmodel.currentPlayer) {
+                    print("Player auto-switched to \(viewmodel.currentPlayer), keeping onboarding state")
+                    return
+                }
                 print("Setting hasOnboarded to false due to player change")
                 viewmodel.userDefaultStorage.hasOnboarded = false
             }

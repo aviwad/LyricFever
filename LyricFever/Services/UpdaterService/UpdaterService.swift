@@ -18,6 +18,18 @@ class UpdaterService {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     }
     
+    /// Whether Sparkle checks for, downloads and installs updates on its own.
+    /// Sparkle saves this in user defaults; the Info.plist values (SUEnableAutomaticChecks / SUAutomaticallyUpdate) are only the default.
+    var automaticUpdatesEnabled: Bool {
+        get {
+            updaterController.updater.automaticallyChecksForUpdates
+        }
+        set {
+            updaterController.updater.automaticallyChecksForUpdates = newValue
+            updaterController.updater.automaticallyDownloadsUpdates = newValue
+        }
+    }
+    
     @MainActor
     var urgentUpdateExists: Bool {
         get async {
