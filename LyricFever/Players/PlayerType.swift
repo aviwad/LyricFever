@@ -25,6 +25,25 @@ enum PlayerType: CustomStringConvertible, CaseIterable, Identifiable {
                 return "music"
         }
     }
+
+    var bundleIdentifier: String {
+        switch self {
+            case .spotify:
+                return "com.spotify.client"
+            case .appleMusic:
+                return "com.apple.Music"
+        }
+    }
+
+    /// The player that isn't this one (used by auto-switch)
+    var other: PlayerType {
+        switch self {
+            case .spotify:
+                return .appleMusic
+            case .appleMusic:
+                return .spotify
+        }
+    }
     case spotify
     case appleMusic
 }

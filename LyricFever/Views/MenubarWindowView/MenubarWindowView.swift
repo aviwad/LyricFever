@@ -518,6 +518,16 @@ struct MenubarWindowView: View {
         @Bindable var viewmodel = viewmodel
         Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
         Divider()
+        Toggle("Auto-Switch Between Spotify and Apple Music", isOn: Binding(
+            get: { viewmodel.userDefaultStorage.autoSwitchPlayer },
+            set: { isOn in
+                viewmodel.userDefaultStorage.autoSwitchPlayer = isOn
+                // Turning it on jumps to the other app right away if that's the one playing
+                viewmodel.autoSwitchToPlayingPlayerIfIdle()
+            }
+        ))
+            .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
+        Divider()
         streamingDelayView
         Button("Settings (New Karaoke Settings!)") {
             openWindow(id: "onboarding")

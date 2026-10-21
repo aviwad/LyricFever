@@ -28,6 +28,14 @@ import MediaRemoteAdapter
     let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
+    #if os(macOS)
+    // Auto-switch state (see PlayerAutoSwitch.swift)
+    // Last "Player State" seen from each app's playback notification, so we can tell "started playing" from "changed track"
+    @ObservationIgnored var autoSwitchLastKnownPlaying: [PlayerType: Bool] = [:]
+    // Set right before an automatic player change so the app doesn't send the user back through onboarding
+    @ObservationIgnored var autoSwitchedTo: PlayerType?
+    #endif
+
     var currentlyPlaying: String?
     
     var currentVolume: Int = 0
@@ -332,6 +340,10 @@ import MediaRemoteAdapter
         guard userDefaultStorage.hasOnboarded else {
             return
         }
+        #if os(macOS)
+        // If the saved player is idle but the other app is playing, start on the one that's playing
+        selectPlayingPlayerOnLaunch()
+        #endif
         guard isPlayerRunning else {
             return
         }
@@ -402,6 +414,11 @@ import MediaRemoteAdapter
         print("Calling refresh lyrics")
         guard let finalLyrics = await self.fetch(for: currentlyPlaying, currentlyPlayingName, checkCoreDataFirst: false) else {
             print("Refresh Lyrics: Failed to run network fetch")
+            return
+        }
+        // The song may have changed while we were fetching
+        guard self.currentlyPlaying == currentlyPlaying else {
+            print("Refresh Lyrics: song changed during fetch, discarding")
             return
         }
         if finalLyrics.isEmpty {
@@ -607,6 +624,10 @@ import MediaRemoteAdapter
     }
     
     func appleMusicPlaybackDidChange(_ notification: Notification) {
+        if autoSwitchPlayerIfNeeded(notifiedBy: .appleMusic, playerState: notification.userInfo?["Player State"] as? String) {
+            // Switched players: the new player's song has already been loaded
+            return
+        }
         guard currentPlayer == .appleMusic else {
             return
         }
@@ -642,6 +663,10 @@ import MediaRemoteAdapter
     }
     
     func spotifyPlaybackDidChange(_ notification: Notification) {
+        if autoSwitchPlayerIfNeeded(notifiedBy: .spotify, playerState: notification.userInfo?["Player State"] as? String) {
+            // Switched players: the new player's song has already been loaded
+            return
+        }
         guard currentPlayer == .spotify else {
             return
         }
@@ -683,7 +708,8 @@ import MediaRemoteAdapter
         romanizedLyrics = []
         chineseConversionLyrics = []
         
-        if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName) {
+        // The final check discards results if the song changed while we were fetching
+        if userDefaultStorage.hasOnboarded, let currentlyPlaying = currentlyPlaying, let currentlyPlayingName = currentlyPlayingName, let lyrics = await fetch(for: currentlyPlaying, currentlyPlayingName), self.currentlyPlaying == currentlyPlaying {
             setNewLyricsColorTranslationRomanizationAndStartUpdater(with: lyrics)
 //            currentlyPlayingLyrics = lyrics
 //            setBackgroundColor()
@@ -1106,7 +1132,19 @@ import MediaRemoteAdapter
         }
         setCurrentProperties()
         startLyricUpdater()
+        #if os(macOS)
+        seedAutoSwitchPlayingState()
+        #endif
     }
+
+    #if os(macOS)
+    /// Used by auto-switch: stop any lyric / Apple Music lookups that belong to the player we're leaving
+    func cancelInFlightFetchesForPlayerSwitch() {
+        currentAppleMusicFetchTask?.cancel()
+        currentFetchTask?.cancel()
+        currentLyricsDriftFix?.cancel()
+    }
+    #endif
 }
 
 #if os(macOS)
@@ -1155,8 +1193,18 @@ extension ViewModel {
         
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         
+        // Remember which Music track this lookup is for: if the song changes (or we switch to Spotify) while the
+        // search is in flight, its result must not be applied to, or saved as the mapping for, the new song
+        let initiatingPersistentID = currentlyPlayingAppleMusicPersistentID
+
         // search for equivalent spotify song
-        if let spotifyResult = try await musicToSpotifyHelper() {
+        let spotifyResult = try await musicToSpotifyHelper()
+        try Task.checkCancellation()
+        guard currentPlayer == .appleMusic, initiatingPersistentID == currentlyPlayingAppleMusicPersistentID else {
+            print("Apple Music Network Fetch: song or player changed during Spotify search, discarding result")
+            throw CancellationError()
+        }
+        if let spotifyResult {
             self.currentlyPlayingName = spotifyResult.SpotifyName
             self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
             self.currentAlbumName = spotifyResult.SpotifyAlbum

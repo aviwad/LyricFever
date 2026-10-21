@@ -133,6 +133,11 @@ struct LyricFever: App {
                 }
             }
             .onChange(of: viewmodel.currentPlayer) {
+                // Auto-switch already loaded the new player's state; only a manual change goes back through onboarding
+                if viewmodel.consumeAutoSwitch(to: viewmodel.currentPlayer) {
+                    print("Player auto-switched to \(viewmodel.currentPlayer), keeping onboarding state")
+                    return
+                }
                 print("Setting hasOnboarded to false due to player change")
                 viewmodel.userDefaultStorage.hasOnboarded = false
             }
