@@ -621,7 +621,7 @@ struct MenubarWindowView: View {
         Binding (
             get: { Double(viewmodel.userDefaultStorage.truncationLength) },
             set: { newValue in
-                let steps = [30, 40, 50, 60]
+                let steps = Array(stride(from: 30, through: 100, by: 10))
                 let closest = steps.min(by: { abs(Double($0) - newValue) < abs(Double($1) - newValue) }) ?? 40
                 viewmodel.userDefaultStorage.truncationLength = closest
             }
@@ -644,13 +644,13 @@ struct MenubarWindowView: View {
         HStack {
             Image(systemName: "textformat.size")
                 .frame(width: 30)
-            Slider(value: menubarSizeSliderBinding, in: 30...60, step: 10, label: {
+            Slider(value: menubarSizeSliderBinding, in: 30...100, step: 10, label: {
                 Text("Menubar Size")
             })
             .labelsHidden()
             .frame(width: 160)
             Text("\(viewmodel.userDefaultStorage.truncationLength)")
-                .frame(width: 23)
+                .frame(width: 30) // room for "100"
         }
         .tint(.secondary)
     }
