@@ -24,7 +24,8 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    // mediaremote-adapter (master) removed init(bundleIdentifier:), so we filter to Music ourselves in onTrackInfoReceived below
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -59,14 +60,16 @@ import MediaRemoteAdapter
                 guard self.currentPlayer == .appleMusic else {
                     return
                 }
+                // MediaController() reports every app's now-playing info, so ignore anything that isn't Music
+                // (bundle ID first: applicationName is localized, e.g. "Musique" in French)
+                guard data?.payload.bundleIdentifier == "com.apple.Music" || data?.payload.applicationName == "Music" else {
+                    return
+                }
                 guard let artwork = data?.payload.artwork else {
                     if self.currentlyPlaying == nil {
                         self.artworkImage = nil
                     }
                     print("Apple Music Artwork Workaround: Ignoring No Artwork")
-                    return
-                }
-                guard data?.payload.applicationName == "Music" else {
                     return
                 }
                 self.artworkImage = artwork

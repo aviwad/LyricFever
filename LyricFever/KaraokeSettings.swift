@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AppKit
-import CompactSlider
 import FontPicker
 
 struct KaraokeSettingsView: View {
@@ -52,10 +51,13 @@ struct KaraokeSettingsView: View {
                 ColorPicker("Set a background color", selection: colorBinding, supportsOpacity: false)
             }
             Text("Opacity Level: \(Int(karaokeTransparency))%")
-            CompactSlider(value: $karaokeTransparency, in: 1...100, step: 5) {
+            // Native slider: CompactSlider 1.2.1 no longer compiles with the macOS 27 SDK ("ambiguous use of 'opacity'")
+            Slider(value: $karaokeTransparency, in: 1...100, step: 5) {
                 Text("Opacity Level:")
-                Spacer()
-                Text("\(Int(karaokeTransparency))%")
+            } minimumValueLabel: {
+                Text("1%")
+            } maximumValueLabel: {
+                Text("100%")
             }
             .frame(width: 300, height: 24)
             .padding(.bottom, 20)
