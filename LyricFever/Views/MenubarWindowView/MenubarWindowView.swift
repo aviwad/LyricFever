@@ -543,6 +543,13 @@ struct MenubarWindowView: View {
         Button("Check for Updates…") {
             viewmodel.updaterService.updaterController.checkForUpdates(nil)
         }
+        Toggle("Automatically Check for Updates", isOn: Binding(
+            get: { viewmodel.automaticUpdatesEnabled },
+            set: { isOn in
+                viewmodel.automaticUpdatesEnabled = isOn
+                viewmodel.updaterService.automaticUpdatesEnabled = isOn
+            }
+        ))
         Divider()
             .keyboardShortcut("u")
         Button("Buy Me A Beer (Thank You)!") {

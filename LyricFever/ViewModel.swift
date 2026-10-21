@@ -111,6 +111,8 @@ import MediaRemoteAdapter
     
     #if os(macOS)
     var updaterService = UpdaterService()
+    // Mirrors updaterService.automaticUpdatesEnabled so the menu toggle redraws when it changes
+    var automaticUpdatesEnabled = true
     var appleMusicPlayer = AppleMusicPlayer()
     var spotifyPlayer = SpotifyPlayer()
     #else
@@ -322,6 +324,8 @@ import MediaRemoteAdapter
         #if os(macOS)
         migrateTimestampsIfNeeded(context: coreDataContainer.viewContext)
         
+        
+        automaticUpdatesEnabled = updaterService.automaticUpdatesEnabled
         
         // Check if user must urgently update (overrides menubar)
         Task {
