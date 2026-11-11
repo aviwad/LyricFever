@@ -726,6 +726,7 @@ struct MenubarWindowView: View {
                 .opacity(0.6)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
+        .background(Color(white: 0.1))
         .onAppear {
             if !viewmodel.isStopped {
                 viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
