@@ -75,6 +75,15 @@ import MediaRemoteAdapter
         }
         musicController.startListening()
     }
+
+    private var appleMusicMetadataTrackID: String? {
+        guard let trackName = currentlyPlayingName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !trackName.isEmpty else {
+            return nil
+        }
+        let artistName = currentlyPlayingArtist?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return "apple-music:\(artistName):\(trackName)"
+    }
     
     func formattedCurrentTime(for date: Date) -> String {
         let baseTime = currentTime.currentTime
@@ -660,7 +669,16 @@ import MediaRemoteAdapter
                 self.duration = duration
             }
             print("REOPEN: currentlyPlayingName is \(currentlyPlayingName)")
-            currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
+            let persistentID = appleMusicPlayer.persistentID?.trimmingCharacters(in: .whitespacesAndNewlines)
+            if let persistentID, !persistentID.isEmpty {
+                currentlyPlayingAppleMusicPersistentID = persistentID
+            } else {
+                currentlyPlayingAppleMusicPersistentID = nil
+                if let appleMusicMetadataTrackID {
+                    print("Apple Music: no persistent track ID; fetching lyrics by track metadata")
+                    self.currentlyPlaying = appleMusicMetadataTrackID
+                }
+            }
         }
     }
     
@@ -970,11 +988,11 @@ import MediaRemoteAdapter
                 throw FetchError.staleTrack
             }
             
-            guard let duration = currentPlayerInstance.duration else {
-                print("FetchLyrics: Couldn't access current player duration. Giving up on netwokr fetch")
-                return []
+            if let duration = currentPlayerInstance.duration {
+                networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
+            } else {
+                print("FetchLyrics: Player duration unavailable; keeping fetched lyrics without the Now Playing marker")
             }
-            networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
             
             // verify non-stale trackID
             if initiatingTrackID == self.currentlyPlaying {
@@ -1186,7 +1204,7 @@ extension ViewModel {
                 self.currentAlbumName = spotifyResult.SpotifyAlbum
                 self.currentlyPlaying = spotifyResult.SpotifyID
             } else {
-                if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
+                if let alternativeID = appleMusicMetadataTrackID ?? appleMusicPlayer.alternativeID, alternativeID != "" {
                     try Task.checkCancellation()
                     self.currentlyPlaying = alternativeID
                 } else {
@@ -1195,7 +1213,7 @@ extension ViewModel {
             }
         } catch {
             print("Spotify lookup failed with error \(error). Falling back to Apple Music ID.")
-            if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
+            if let alternativeID = appleMusicMetadataTrackID ?? appleMusicPlayer.alternativeID, alternativeID != "" {
                 try? Task.checkCancellation()
                 self.currentlyPlaying = alternativeID
             } else {
