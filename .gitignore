@@ -92,3 +92,8 @@ fastlane/test_output
 
 iOSInjectionProject/
 Lyric Fever.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
+AGENTS.md
+CLAUDE.md
+.codex/
+.claude/
