@@ -24,7 +24,7 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?

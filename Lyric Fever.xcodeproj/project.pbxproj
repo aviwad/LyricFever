@@ -627,7 +627,7 @@
 			repositoryURL = "https://github.com/buh/CompactSlider.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.2.1;
+				version = 2.1.0;
 			};
 		};
 		8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */ = {
