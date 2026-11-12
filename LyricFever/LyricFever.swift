@@ -223,22 +223,6 @@ struct LyricChillApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowLevel(.floating)
 
-        Window("LyricChill Settings", id: "settings") {
-            LyricChillSettingsView()
-                .environment(viewmodel)
-                .onAppear {
-                    NSApp.setActivationPolicy(.regular)
-                }
-                .onDisappear {
-                    if !viewmodel.fullscreen {
-                        NSApp.setActivationPolicy(.accessory)
-                    }
-                }
-        }
-        .defaultSize(width: 750, height: 550)
-        .windowResizability(.contentSize)
-        .windowStyle(.hiddenTitleBar)
-
         Window("LyricChill: Searching for \(viewmodel.currentlyPlayingName ?? "-") by \(viewmodel.currentlyPlayingArtist ?? "-")", id: "search") {
             SearchWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
                 .environment(viewmodel)
