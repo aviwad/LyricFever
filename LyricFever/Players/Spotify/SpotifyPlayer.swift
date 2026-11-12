@@ -50,7 +50,7 @@ class SpotifyPlayer: @MainActor Player {
         guard isRunning else {
             return false
         }
-        print("Raw value player state \(spotifyScript?.playerState?.rawValue)")
+//        print("Raw value player state \(String(describing: spotifyScript?.playerState?.rawValue))")
         if spotifyScript?.playerState?.rawValue == 0 {
             return false
         }

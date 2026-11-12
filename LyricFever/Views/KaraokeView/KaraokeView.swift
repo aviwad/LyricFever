@@ -13,8 +13,9 @@ import Combine
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
+    @AppStorage("karaokeUseAlbumColor") var karaokeUseAlbumColor: Bool = true
+    @AppStorage("fixedKaraokeColorHex") var fixedKaraokeColorHex: String = "#2D3CCC"
 
-    // Adjust threshold here
     private var useForcedWhiteText: Bool {
         karaokeTransparency / 100 > 0.35
     }
@@ -33,7 +34,7 @@ struct KaraokeView: View {
         VStack(spacing: 6) {
             Text(verbatim: currentWords(for: currentlyPlayingLyricsIndex))
             Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
-                .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9 * (viewmodel.karaokeFont.pointSize)))
+                .font(.custom(viewmodel.karaokeFont.fontName, size: 0.9 * viewmodel.karaokeFont.pointSize))
                 .opacity(0.85)
         }
     }
@@ -54,25 +55,27 @@ struct KaraokeView: View {
                     Text(verbatim: viewmodel.translatedLyric[currentlyPlayingLyricsIndex])
                 }
             } else {
-                if !viewmodel.romanizedLyrics.isEmpty {
-                    Text(verbatim: viewmodel.romanizedLyrics[currentlyPlayingLyricsIndex])
-                } else if !viewmodel.chineseConversionLyrics.isEmpty {
-                    Text(verbatim: viewmodel.chineseConversionLyrics[currentlyPlayingLyricsIndex])
-                } else {
-                    Text(verbatim: viewmodel.currentlyPlayingLyrics[currentlyPlayingLyricsIndex].words)
-                }
+                Text(verbatim: currentWords(for: currentlyPlayingLyricsIndex))
             }
         } else {
             Text("")
         }
     }
 
+    private var currentBackgroundColor: Color {
+        guard karaokeUseAlbumColor, let albumColor = viewmodel.currentBackground else {
+            return Color(NSColor(hexString: fixedKaraokeColorHex)!)
+        }
+        return albumColor
+    }
+
     var body: some View {
         if #available(macOS 26.0, *) {
-            // osscilate the lyrics view so the Liquid Glass rendering is always lively
+            // Keep Liquid Glass rendering lively while the karaoke panel is visible.
             TimelineView(.animation) { timeline in
-                let offset = 0.1 * sin(timeline.date.timeIntervalSinceReferenceDate * 20 * .pi) // adjust the 20 to change the frequency of the oscillation
+                let offset = 0.1 * sin(timeline.date.timeIntervalSinceReferenceDate * 20 * .pi)
                 lyricsView()
+                    .id(viewmodel.currentlyPlayingLyricsIndex)
                     .lineLimit(2)
                     .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
                     .minimumScaleFactor(0.9)
@@ -80,9 +83,8 @@ struct KaraokeView: View {
                     .padding(10)
                     .padding(.horizontal, 10)
                     .background {
-                        if viewmodel.userDefaultStorage.karaokeUseAlbumColor, karaokeTransparency > 0 {
-                            viewmodel.currentAlbumArt
-                                .opacity(karaokeTransparency / 100)
+                        if karaokeTransparency > 0 {
+                            currentBackgroundColor.opacity(karaokeTransparency / 100)
                         }
                     }
                     .glassEffect(in: .rect(cornerRadius: 16))
@@ -98,6 +100,7 @@ struct KaraokeView: View {
             }
         } else {
             lyricsView()
+                .id(viewmodel.currentlyPlayingLyricsIndex)
                 .lineLimit(2)
                 .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
                 .minimumScaleFactor(0.9)
@@ -105,17 +108,13 @@ struct KaraokeView: View {
                 .padding(10)
                 .padding(.horizontal, 10)
                 .background {
-                    // Material + optional album overlay
                     Rectangle()
                         .fill(Material.regular)
-                        .overlay(
-                            Group {
-                                if viewmodel.userDefaultStorage.karaokeUseAlbumColor, karaokeTransparency > 0 {
-                                    viewmodel.currentAlbumArt
-                                        .opacity(karaokeTransparency / 100)
-                                }
+                        .overlay {
+                            if karaokeTransparency > 0 {
+                                currentBackgroundColor.opacity(karaokeTransparency / 100)
                             }
-                        )
+                        }
                         .cornerRadius(16)
                         .ignoresSafeArea()
                 }

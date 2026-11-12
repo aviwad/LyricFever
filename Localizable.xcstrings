@@ -92,8 +92,21 @@
         }
       }
     },
-    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.2" : {
-      "shouldTranslate" : false
+    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.3" : {
+      "localizations" : {
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
+          }
+        }
+    }
     },
     "%@s" : {
       "localizations" : {
@@ -469,6 +482,9 @@
           }
         }
       }
+    },
+    "Buy Me A Beer (Thank You)!" : {
+
     },
     "Change fullscreen settings here!" : {
       "localizations" : {
@@ -1469,6 +1485,9 @@
           }
         }
       }
+    },
+    "More Options" : {
+
     },
     "More options, AirPlay delay enabled" : {
       "extractionState" : "stale",
@@ -2478,6 +2497,7 @@
       }
     },
     "Song Name:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

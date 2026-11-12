@@ -11,7 +11,7 @@ import Foundation
 struct LRCLIBLyrics: Codable {
     let id: Int
     let name, trackName, artistName, albumName: String
-    let duration: Int
+    let duration: Double
     let instrumental: Bool
     let plainLyrics, syncedLyrics: String
     let lyrics: [LyricLine]
@@ -58,7 +58,7 @@ struct LRCLIBLyrics: Codable {
         self.trackName = try container.decode(String.self, forKey: .trackName)
         self.artistName = try container.decode(String.self, forKey: .artistName)
         self.albumName = try container.decode(String.self, forKey: .albumName)
-        self.duration = try container.decode(Int.self, forKey: .duration)
+        self.duration = try container.decode(Double.self, forKey: .duration)
         self.instrumental = try container.decode(Bool.self, forKey: .instrumental)
         if instrumental {
             self.plainLyrics = ""

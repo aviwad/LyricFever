@@ -24,10 +24,10 @@ struct SearchWindow: View {
     var searchControlsView: some View {
         HStack {
             Text("Song Name")
-            TextField("Song Name:", text: $trackName)
+            TextField("", text: $trackName)
                 .padding(.trailing, 30)
             Text("Artist Name:")
-            TextField("Artist Name", text: $artistName)
+            TextField("", text: $artistName)
                 .padding(.trailing, 30)
             Button {
                 searchResults = []
@@ -51,39 +51,30 @@ struct SearchWindow: View {
     
     @ViewBuilder
     var searchResultsView: some View {
-        Table(searchResults, selection: $selectedLyric) {
-            TableColumn("Lyric Provider", value: \.lyricType)
-            TableColumn("Song Name", value: \.songName)
-            TableColumn("Album Name", value: \.albumName)
-            TableColumn("Artist Name", value: \.artistName)
-        }
+        SearchResultsNSTableView(results: searchResults, selectedID: $selectedLyric)
     }
     
     @ViewBuilder
     var selectedLyricView: some View {
         if let selectedLyric, let selectedLyricLyric = searchResults.first(where: { $0.id == selectedLyric}) {
             HStack {
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(selectedLyricLyric.lyrics, id: \.id) { lyric in
-                            HStack {
-                                Text(formattedTimestamp(ms: lyric.startTimeMS))
-                                Text(lyric.words)
-                            }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .background(.black)
-                .frame(width: 400)
+                LyricPreviewNSTableView(lyrics: selectedLyricLyric.lyrics)
+                              .frame(width: 400)
                 Spacer()
                 Button {
                     let cleanLyrics = NetworkFetchReturn(lyrics: selectedLyricLyric.lyrics, colorData: nil).processed(withSongName: trackName, duration: viewmodel.duration).lyrics
+
+                    if let currentIndex = viewmodel.currentlyPlayingLyricsIndex, currentIndex >= cleanLyrics.count {
+                        // set currentindex to nil to prevent out of bounds index access with existing UI
+                        viewmodel.currentlyPlayingLyricsIndex = nil
+                    }
+
                     viewmodel.setNewLyricsColorTranslationRomanizationAndStartUpdater(with: cleanLyrics)
                     guard let spotifyID = viewmodel.currentlyPlaying else {
                         return
                     }
-                    SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
+                    // thats how i save to coredata
+                    let _ = SongObject(from: cleanLyrics, with: viewmodel.coreDataContainer.viewContext, trackID: spotifyID, trackName: trackName)
                     viewmodel.saveCoreData()
                     lyricsAreApplied = true
                 } label: {
@@ -96,6 +87,7 @@ struct SearchWindow: View {
                 .tint(lyricsAreApplied ? .gray : .green)
             }
             .padding()
+//            .id(selectedLyric)
             .transition(.move(edge: .bottom))
             .frame(maxWidth: .infinity)
             .frame(height: overlayHeight)

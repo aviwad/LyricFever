@@ -13,13 +13,13 @@ import TipKit
 
 struct FullscreenView: View {
     @Environment(ViewModel.self) var viewmodel
-    
+
     // View
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
-    
+
     // Fullscreen options
     @State var animate = true
-    
+
     // Button State
     @State var currentHover = HoverOptions.none
     @State var timer = Timer
@@ -27,7 +27,7 @@ struct FullscreenView: View {
             .autoconnect()
     @State var points: ColorSpots = .init()
     @State var showSettingsPopover = false
-    
+
     enum HoverOptions {
         case playpause
         case showlyrics
@@ -39,7 +39,7 @@ struct FullscreenView: View {
         case settings
         case sharing
     }
-    
+
     @ViewBuilder
     func fullscreenButton(systemName: String, hoverType: HoverOptions, keyEquivalent: KeyEquivalent, action: @escaping () -> Void) -> some View {
         Button {
@@ -53,7 +53,7 @@ struct FullscreenView: View {
         .keyboardShortcut(keyEquivalent, modifiers: [])
         #endif
     }
-    
+
     @ViewBuilder func FullscreenButtons() -> some View {
         #if os(macOS)
         let highlightTip = NewSettings()
@@ -78,7 +78,7 @@ struct FullscreenView: View {
                 viewmodel.showLyrics.toggle()
             } label: {
                 HoverableIcon(systemName: "music.note.list", sideLength: 28, disabled: !viewmodel.showLyrics)
-                    
+
             }
             .buttonStyle(FullscreenButtonIconStyle())
             #if os(macOS)
@@ -88,7 +88,7 @@ struct FullscreenView: View {
             .keyboardShortcut("h")
             #endif
             .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
-            
+
             Button {
                 viewmodel.userDefaultStorage.translate.toggle()
             } label: {
@@ -102,9 +102,9 @@ struct FullscreenView: View {
             .keyboardShortcut("t")
             #endif
             .disabled(viewmodel.currentlyPlayingLyrics.isEmpty)
-                            
-            
-            
+
+
+
             Button {
                 animate.toggle()
             } label: {
@@ -117,7 +117,7 @@ struct FullscreenView: View {
             }
             .keyboardShortcut("a")
             #endif
-            
+
             #if os(macOS)
             Button {
                 highlightTip.invalidate(reason: .actionPerformed)
@@ -136,7 +136,7 @@ struct FullscreenView: View {
                     Toggle("Blur surrounding lyrics", isOn: $viewmodel.userDefaultStorage.blurFullscreen)
                     Toggle("Animate on startup", isOn: $viewmodel.userDefaultStorage.animateOnStartupFullscreen)
                     Button("Reset to default") {
-                        
+
                     }
                 }
                 .padding(10)
@@ -157,7 +157,7 @@ struct FullscreenView: View {
         }
         .font(.system(size: 12))
     }
-    
+
     @ViewBuilder var albumArt: some View {
         VStack {
             Spacer()
@@ -207,7 +207,7 @@ struct FullscreenView: View {
             Spacer()
         }
     }
-    
+
     func displayHoverTooltip() -> LocalizedStringKey {
         switch currentHover {
             case .playpause:
@@ -230,106 +230,52 @@ struct FullscreenView: View {
                 "Share Spotify link"
         }
     }
-    
-    @ViewBuilder func lyricLineView(for element: LyricLine, index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            if !viewmodel.romanizedLyrics.isEmpty {
-                Text(verbatim: viewmodel.romanizedLyrics[index])
-                    .foregroundStyle(.white)
-            } else if !viewmodel.chineseConversionLyrics.isEmpty {
-                Text(verbatim: viewmodel.chineseConversionLyrics[index])
-                    .foregroundStyle(.white)
-            } else {
-                Text(verbatim: element.words)
-                    .foregroundStyle(.white)
-            }
-            if viewmodel.translationExists, element.words != viewmodel.translatedLyric[index] {
-                Text(verbatim: viewmodel.translatedLyric[index])
-                    .font(.system(size: 33, weight: .semibold, design: .default))
-                    .opacity(0.85)
-            }
-        }
-        .opacity(index == viewmodel.currentlyPlayingLyrics.count - 1 ? 0 : (index == viewmodel.currentlyPlayingLyricsIndex ? 1 : 0.8))
-        .font(.system(size: 40, weight: .bold, design: .default))
-        .padding(20)
-        #if os(macOS)
-        .listRowSeparator(.hidden)
-        #endif
-        .blur(radius: viewmodel.userDefaultStorage.blurFullscreen ? (index == viewmodel.currentlyPlayingLyricsIndex ? 0 : 5) : 0)
-    }
-    
+
     @ViewBuilder func lyrics(padding: CGFloat) -> some View {
+        let lyricsEmpty = viewmodel.currentlyPlayingLyrics.isEmpty
         ZStack {
-            if viewmodel.currentlyPlayingLyrics.isEmpty {
+            // Scroll view is always fully opaque so it can pre-position silently
+            // while the ProgressView is covering it.
+            #if os(macOS)
+            LyricsNSScrollView(
+                lyrics:                  viewmodel.currentlyPlayingLyrics,
+                currentIndex:            viewmodel.currentlyPlayingLyricsIndex,
+                romanizedLyrics:         viewmodel.romanizedLyrics,
+                chineseConversionLyrics: viewmodel.chineseConversionLyrics,
+                translatedLyric:         viewmodel.translatedLyric,
+                blurFullscreen:          viewmodel.userDefaultStorage.blurFullscreen,
+                padding:                 padding
+            )
+            .mask(
+                LinearGradient(
+                    gradient: Gradient(colors: [.clear, .black, .clear]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            #endif
+            // ProgressView sits on top and fades out once lyrics are ready,
+            // revealing the already-positioned scroll view underneath.
+            if lyricsEmpty {
                 ProgressView()
-            }
-            VStack(alignment: .leading){
-                Spacer()
-                ScrollViewReader { proxy in
-                    List (Array(viewmodel.currentlyPlayingLyrics.enumerated()), id: \.element) { index, element in
-                        lyricLineView(for: element, index: index)
-                    }
-                    .onAppear {
-                        Task {
-                            try? await Task.sleep(nanoseconds: 1_000_000_000)
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            }
-                        }
-                    }
-                    .padding(.trailing, 100)
-                    .safeAreaInset(edge: .top) {
-                        Spacer()
-                            .id("first")
-                            .frame(height: padding)
-                        }
-                    .safeAreaInset(edge: .bottom) {
-                        Spacer()
-                            .id("last")
-                            .frame(height: padding)
-                        }
-                    .onChange(of: viewmodel.translatedLyric) {
-                        withAnimation() {
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            } else {
-                                proxy.scrollTo("first", anchor: .top)
-                            }
-                            
-                        }
-                    }
-                    .onChange(of: viewmodel.currentlyPlayingLyricsIndex) {
-                        withAnimation() {
-                            if let currentIndex = viewmodel.currentlyPlayingLyricsIndex {
-                                proxy.scrollTo(viewmodel.currentlyPlayingLyrics[currentIndex], anchor: .center)
-                            } else {
-                                proxy.scrollTo("first", anchor: .top)
-                            }
-                            
-                        }
-                    }
-                }
-                #if os(macOS)
-                .scrollContentBackground(.hidden)
-                #endif
-                .scrollDisabled(true)
-                .mask(LinearGradient(gradient: Gradient(colors: [.clear, .black, .clear]), startPoint: .top, endPoint: .bottom))
-                Spacer()
-                
+                    .transition(.opacity)
             }
         }
+        .animation(.easeOut(duration: 0.6), value: lyricsEmpty)
     }
-    
+
     var body: some View {
         GeometryReader { geo in
             HStack {
                 albumArt
-                    .frame( minWidth: 0.50*(geo.size.width), maxWidth: viewmodel.canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
+                    .frame(minWidth: 0.50*(geo.size.width), maxWidth: viewmodel.canDisplayLyrics ? 0.50*(geo.size.width) : .infinity)
                 if viewmodel.canDisplayLyrics {
                     lyrics(padding: 0.5*(geo.size.height))
-                        .frame( minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                        .frame(minWidth: 0.50*(geo.size.width), maxWidth: 0.50*(geo.size.width))
+                        .transition(.opacity)
                 }
             }
+            .animation(.easeInOut(duration: 0.25), value: viewmodel.canDisplayLyrics)
         }
         .background {
             BackgroundView(colors: $gradient, timer: $timer, points: $points)
@@ -352,7 +298,7 @@ struct FullscreenView: View {
             }
         }
     }
-    
+
     #if os(macOS)
     typealias PlatformColor = NSColor
     #else

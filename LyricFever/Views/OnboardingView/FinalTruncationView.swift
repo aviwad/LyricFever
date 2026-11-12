@@ -58,8 +58,8 @@ struct FinalTruncationView: View {
             .padding(.vertical, 15)
             
         }
-        .onChange(of: truncationLength) { newLength in
-            UserDefaults.standard.set(newLength, forKey: "truncationLength")
+        .onChange(of: truncationLength) {
+            UserDefaults.standard.set(truncationLength, forKey: "truncationLength")
         }
         .padding(.horizontal, 20)
         .navigationBarBackButtonHidden(true)

@@ -28,7 +28,7 @@ extension NSImage {
                 let blue = Int(clampedColor.blueComponent * 255)
 
                 let combinedValue = (max(0,red) << 16) | (max(0,green) << 8) | max(0,blue)
-                print("Color Generation: using color \(clampedColor.hexString) generated from color \(color.hexString)")
+                print("Color Generation: using color \(String(describing: clampedColor.hexString)) generated from color \(String(describing: color.hexString))")
                 return Int32(bitPattern: UInt32(combinedValue))
             }
         }

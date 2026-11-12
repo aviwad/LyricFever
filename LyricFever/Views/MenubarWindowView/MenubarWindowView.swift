@@ -54,6 +54,7 @@ struct MenubarWindowView: View {
                         .clipShape(.rect(cornerRadius: 9))
                     
                     ProgressView()
+                        .environment(\.colorScheme, .dark)
                 }
             }
             .animation(.smooth(duration: 2), value: viewmodel.isFetching)
@@ -271,7 +272,7 @@ struct MenubarWindowView: View {
                newSongToLocaleMapping.locale = localeIdentifier
                do {
                    try viewmodel.coreDataContainer.viewContext.save()
-                   print("Translation: Successfully saved locale \(newSongToLocaleMapping.locale) for trackID \(trackID)")
+                   print("Translation: Successfully saved locale \(String(describing: newSongToLocaleMapping.locale)) for trackID \(trackID)")
                } catch {
                    print("Translation: Couldn't save locale mapping to CoreData: \(error)")
                }
@@ -530,7 +531,11 @@ struct MenubarWindowView: View {
         Button("Check for Updates…") {
             viewmodel.updaterService.updaterController.checkForUpdates(nil)
         }
+        Divider()
             .keyboardShortcut("u")
+        Button("Buy Me A Beer (Thank You)!") {
+            openURL(URL(string: "https://buymeacoffee.com/aviwadhwalyricfever")!)
+        }
     }
     
     @ViewBuilder
@@ -546,6 +551,13 @@ struct MenubarWindowView: View {
                 }
                 .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
+                .onHover { isHovering in
+                    if isHovering {
+                        currentHoveredItem = .moreOptions
+                    } else {
+                        currentHoveredItem = .none
+                    }
+                }
             } else {
                 Menu {
                     otherOptions
@@ -557,6 +569,13 @@ struct MenubarWindowView: View {
                 .frame(width: 30)
                 .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
+                .onHover { isHovering in
+                    if isHovering {
+                        currentHoveredItem = .moreOptions
+                    } else {
+                        currentHoveredItem = .none
+                    }
+                }
             }
             if viewmodel.airplayDelay {
                 Image(systemName: "airplayaudio")
@@ -708,10 +727,17 @@ struct MenubarWindowView: View {
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
         .onAppear {
-            viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+            if !viewmodel.isStopped {
+                viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
+            }
         }
-        .task { @MainActor in
-            supportedLanguages = await LanguageAvailability().supportedLanguages
+        .task {
+            let languages = await Task.detached {
+                await LanguageAvailability().supportedLanguages
+            }.value
+            await MainActor.run {
+                supportedLanguages = languages
+            }
         }
     }
 }
