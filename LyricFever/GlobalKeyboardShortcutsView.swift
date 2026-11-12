@@ -11,11 +11,15 @@ struct GlobalKeyboardShortcutsView: View {
                         .frame(width: 230)
                 }
 
+                Divider()
+
                 ModularSettingsRow("Toggle menu bar lyrics", keywords: ["show", "hide"]) {
                     KeyboardShortcuts.Recorder("", name: .init("lyrics"))
                         .labelsHidden()
                         .frame(width: 230)
                 }
+
+                Divider()
 
                 ModularSettingsRow("Toggle translations") {
                     KeyboardShortcuts.Recorder("", name: .init("translate"))
@@ -23,11 +27,15 @@ struct GlobalKeyboardShortcutsView: View {
                         .frame(width: 230)
                 }
 
+                Divider()
+
                 ModularSettingsRow("Toggle romanization") {
                     KeyboardShortcuts.Recorder("", name: .init("romanize"))
                         .labelsHidden()
                         .frame(width: 230)
                 }
+
+                Divider()
 
                 ModularSettingsRow("Open fullscreen lyrics", keywords: ["fullscreen", "karaoke"]) {
                     KeyboardShortcuts.Recorder("", name: .init("fullscreen"))

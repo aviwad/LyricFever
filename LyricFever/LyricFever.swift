@@ -235,7 +235,9 @@ struct LyricChillApp: App {
                     }
                 }
         }
-        .defaultSize(width: 880, height: 640)
+        .defaultSize(width: 750, height: 550)
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
 
         Window("LyricChill: Searching for \(viewmodel.currentlyPlayingName ?? "-") by \(viewmodel.currentlyPlayingArtist ?? "-")", id: "search") {
             SearchWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
