@@ -145,6 +145,14 @@ struct MainSettingsView: View {
                             
                 permissionsOrNextButton
                     .frame(height: 40)
+                    
+                Picker("Primary Lyric Source", selection: $viewmodel.userDefaultStorage.lyricSourcePreference) {
+                    Text("LRCLIB").tag("LRCLIB")
+                    Text("Spotify").tag("Spotify")
+                    Text("NetEase").tag("NetEase")
+                }
+                .pickerStyle(.menu)
+                .frame(width: 300)
                 
                 VStack {
                     Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support")

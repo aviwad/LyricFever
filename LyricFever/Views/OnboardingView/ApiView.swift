@@ -19,7 +19,7 @@ struct ApiView: View {
     @State var loggedIn = false
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StepView(title: "Please log into Spotify", description: "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)")
+            StepView(title: "Connect Spotify (Optional)", description: "Spotify lyrics require a login. LRCLIB and NetEase are available without one.")
             
             Picker("", selection: $loginMethod) {
                 Text("Spotify Login").tag(true)
@@ -80,6 +80,9 @@ struct ApiView: View {
                 Button("Back") {
                     dismiss()
                 }
+                Button("Continue Without Spotify") {
+                    continueWithoutSpotify()
+                }
                 if !loginMethod {
                     Button("Open Spotify on the Web") {
                         let url = URL(string: "https://open.spotify.com")!
@@ -130,5 +133,10 @@ struct ApiView: View {
                 errorMessage = String(describing: error)
             }
         }
+    }
+
+    func continueWithoutSpotify() {
+        isShowingDetailView = true
+        ViewModel.shared.userDefaultStorage.hasOnboarded = true
     }
 }

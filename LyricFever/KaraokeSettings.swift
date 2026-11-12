@@ -17,7 +17,7 @@ struct KaraokeSettingsView: View {
     @AppStorage("karaokeModeHoveringSetting") var karaokeModeHoveringSetting: Bool = false
     @AppStorage("karaokeShowMultilingual") var karaokeShowMultilingual: Bool = true
     @AppStorage("karaokeTransparency") var karaokeTransparency: Double = 50
-    
+
     var colorBinding: Binding<Color> {
         Binding<Color> {
             Color(NSColor(hexString: fixedKaraokeColorHex)!)
@@ -52,11 +52,7 @@ struct KaraokeSettingsView: View {
                 ColorPicker("Set a background color", selection: colorBinding, supportsOpacity: false)
             }
             Text("Opacity Level: \(Int(karaokeTransparency))%")
-            CompactSlider(value: $karaokeTransparency, in: 1...100, step: 5) {
-                Text("Opacity Level:")
-                Spacer()
-                Text("\(Int(karaokeTransparency))%")
-            }
+            CompactSlider(value: $karaokeTransparency, in: 1...100, step: 5)
             .frame(width: 300, height: 24)
             .padding(.bottom, 20)
             

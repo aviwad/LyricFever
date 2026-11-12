@@ -84,7 +84,7 @@ extension SearchResultsNSTableView.Coordinator: NSTableViewDelegate {
             text = result.albumName
         case "artist":
             text = result.artistName
-        default:         
+        default:
             text = ""
         }
         let cell = NSTextField(labelWithString: text)

@@ -21,7 +21,8 @@
             "value" : ""
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     " " : {
       "localizations" : {
@@ -43,7 +44,8 @@
             "value" : " "
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "..." : {
       "localizations" : {
@@ -104,7 +106,7 @@
             "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
           }
         }
-      }
+    }
     },
     "%@s" : {
       "localizations" : {
@@ -1232,6 +1234,9 @@
         }
       }
     },
+    "LRCLIB" : {
+      "shouldTranslate" : false
+    },
     "Lyric Fever: Fullscreen" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1503,6 +1508,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更多選項，已啟用 AirPlay 延遲"
+          }
+        }
+      }
+    },
+    "NetEase" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网易"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網易"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "網易"
           }
         }
       }
@@ -2063,6 +2090,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請選擇 Spotify 或 Apple Music"
+          }
+        }
+      }
+    },
+    "Primary Lyric Source" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "优先歌词源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "優先歌詞源"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "優先歌詞源"
           }
         }
       }

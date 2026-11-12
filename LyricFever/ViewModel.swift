@@ -24,7 +24,7 @@ import MediaRemoteAdapter
     static let shared = ViewModel()
     
     // Apple Music Tahoe broken AppleScript workaround
-    let musicController = MediaController(bundleIdentifier: "com.apple.Music")
+    let musicController = MediaController()
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -54,9 +54,12 @@ import MediaRemoteAdapter
 //                    print("Apple Music Artwork Workaround: Ignoring artwork for existing song")
 //                    return
 //                } else {
-//                    self.appleMusicUniqueIdentifier = data.payload.uniqueIdentifier
+//                    self.appleMuszxicUniqueIdentifier = data.payload.uniqueIdentifier
 //                }
                 guard self.currentPlayer == .appleMusic else {
+                    return
+                }
+                guard data?.payload.applicationName == "Music" else {
                     return
                 }
                 guard let artwork = data?.payload.artwork else {
@@ -66,14 +69,20 @@ import MediaRemoteAdapter
                     print("Apple Music Artwork Workaround: Ignoring No Artwork")
                     return
                 }
-                guard data?.payload.applicationName == "Music" else {
-                    return
-                }
                 self.artworkImage = artwork
             }
             // This will only be called for Apple Music events
         }
         musicController.startListening()
+    }
+
+    private var appleMusicMetadataTrackID: String? {
+        guard let trackName = currentlyPlayingName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !trackName.isEmpty else {
+            return nil
+        }
+        let artistName = currentlyPlayingArtist?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return "apple-music:\(artistName):\(trackName)"
     }
     
     func formattedCurrentTime(for date: Date) -> String {
@@ -147,11 +156,16 @@ import MediaRemoteAdapter
 
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil)
+            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil) && currentLyricIsNotBlank
         }
         set {
             
         }
+    }
+
+    private var currentLyricIsNotBlank: Bool {
+        guard let index = currentlyPlayingLyricsIndex, index < currentlyPlayingLyrics.count else { return false }
+        return !currentlyPlayingLyrics[index].words.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     var displayFullscreen: Bool {
         get {
@@ -271,10 +285,36 @@ import MediaRemoteAdapter
     #if os(macOS)
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
-    @ObservationIgnored lazy var allNetworkLyricProviders: [LyricProvider] = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+    @ObservationIgnored var allNetworkLyricProviders: [LyricProvider] {
+        let providers: [LyricProvider]
+        switch userDefaultStorage.lyricSourcePreference {
+        case "Spotify":
+            providers = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+        case "NetEase":
+            providers = [netEaseLyricProvider, lRCLyricProvider, spotifyLyricProvider]
+        case "LRCLIB":
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        default:
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        }
+        return providers.filter { !($0 is SpotifyLyricProvider) || !userDefaultStorage.cookie.isEmpty }
+    }
     
     // custom order because LRCLIB is tweaking for the time being
-    @ObservationIgnored lazy var allNetworkLyricProvidersForSearch: [LyricProvider] = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+    @ObservationIgnored var allNetworkLyricProvidersForSearch: [LyricProvider] {
+        let providers: [LyricProvider]
+        switch userDefaultStorage.lyricSourcePreference {
+        case "Spotify":
+            providers = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+        case "NetEase":
+            providers = [netEaseLyricProvider, spotifyLyricProvider, lRCLyricProvider]
+        case "LRCLIB":
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        default:
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+        }
+        return providers.filter { !($0 is SpotifyLyricProvider) || !userDefaultStorage.cookie.isEmpty }
+    }
     
     var isFirstFetch = true
     
@@ -321,11 +361,6 @@ import MediaRemoteAdapter
             return
         }
         #endif
-        if userDefaultStorage.cookie.count == 0 {
-            print("Setting hasOnboarded to false due to empty cookie")
-            userDefaultStorage.hasOnboarded = false
-            return
-        }
         guard userDefaultStorage.hasOnboarded else {
             return
         }
@@ -634,7 +669,16 @@ import MediaRemoteAdapter
                 self.duration = duration
             }
             print("REOPEN: currentlyPlayingName is \(currentlyPlayingName)")
-            currentlyPlayingAppleMusicPersistentID = appleMusicPlayer.persistentID
+            let persistentID = appleMusicPlayer.persistentID?.trimmingCharacters(in: .whitespacesAndNewlines)
+            if let persistentID, !persistentID.isEmpty {
+                currentlyPlayingAppleMusicPersistentID = persistentID
+            } else {
+                currentlyPlayingAppleMusicPersistentID = nil
+                if let appleMusicMetadataTrackID {
+                    print("Apple Music: no persistent track ID; fetching lyrics by track metadata")
+                    self.currentlyPlaying = appleMusicMetadataTrackID
+                }
+            }
         }
     }
     
@@ -794,7 +838,7 @@ import MediaRemoteAdapter
     
     func startLyricUpdater() {
         currentLyricsUpdaterTask?.cancel()
-        if !isPlaying || currentlyPlayingLyrics.isEmpty || mustUpdateUrgent {
+        if !isPlaying || currentlyPlayingLyrics.isEmpty {
             return
         }
         // If an index exists, we're unpausing: meaning we must instantly find the current lyric
@@ -904,15 +948,15 @@ import MediaRemoteAdapter
             print("Error fetching SongObject:", error)
         }
     }
-    
+
     func handleSpotifyNoLyricsFallback() {
         // We know Spotify won’t give us a color for this track
         guard let currentlyPlaying else { return }
-        
+
         guard let colorInt = artworkImage?.findWhiteTextLegibleMostSaturatedDominantColor() else {
             return
         }
-        
+
         ColorDataService.saveColorToCoreData(trackID: currentlyPlaying, songColor: colorInt)
         currentBackground = intToRGB(colorInt)
     }
@@ -944,11 +988,11 @@ import MediaRemoteAdapter
                 throw FetchError.staleTrack
             }
             
-            guard let duration = currentPlayerInstance.duration else {
-                print("FetchLyrics: Couldn't access current player duration. Giving up on netwokr fetch")
-                return []
+            if let duration = currentPlayerInstance.duration {
+                networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
+            } else {
+                print("FetchLyrics: Player duration unavailable; keeping fetched lyrics without the Now Playing marker")
             }
-            networkLyrics = networkLyrics.processed(withSongName: trackName, duration: duration)
             
             // verify non-stale trackID
             if initiatingTrackID == self.currentlyPlaying {
@@ -1153,14 +1197,24 @@ extension ViewModel {
         // Task cancelled means we're working with old song data, so dont update Spotify ID with old song's ID
         
         // search for equivalent spotify song
-        if let spotifyResult = try await musicToSpotifyHelper() {
-            self.currentlyPlayingName = spotifyResult.SpotifyName
-            self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
-            self.currentAlbumName = spotifyResult.SpotifyAlbum
-            self.currentlyPlaying = spotifyResult.SpotifyID
-        } else {
-            if let alternativeID = appleMusicPlayer.alternativeID, alternativeID != "" {
-                try Task.checkCancellation()
+        do {
+            if let spotifyResult = try await musicToSpotifyHelper() {
+                self.currentlyPlayingName = spotifyResult.SpotifyName
+                self.currentlyPlayingArtist = spotifyResult.SpotifyArtist
+                self.currentAlbumName = spotifyResult.SpotifyAlbum
+                self.currentlyPlaying = spotifyResult.SpotifyID
+            } else {
+                if let alternativeID = appleMusicMetadataTrackID ?? appleMusicPlayer.alternativeID, alternativeID != "" {
+                    try Task.checkCancellation()
+                    self.currentlyPlaying = alternativeID
+                } else {
+                    lyricsIsEmptyPostLoad = true
+                }
+            }
+        } catch {
+            print("Spotify lookup failed with error \(error). Falling back to Apple Music ID.")
+            if let alternativeID = appleMusicMetadataTrackID ?? appleMusicPlayer.alternativeID, alternativeID != "" {
+                try? Task.checkCancellation()
                 self.currentlyPlaying = alternativeID
             } else {
                 lyricsIsEmptyPostLoad = true
@@ -1204,6 +1258,9 @@ extension ViewModel {
     
     private func musicToSpotifyHelper() async throws -> AppleMusicHelper? {
         // Manually search song name, artist name
+        guard !userDefaultStorage.cookie.isEmpty else {
+            return nil
+        }
         guard let currentlyPlayingArtist, let currentlyPlayingName else {
             print("\(#function) currentlyPlayingName or currentlyPlayingArtist missing")
             return nil

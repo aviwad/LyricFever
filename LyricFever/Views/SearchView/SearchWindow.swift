@@ -63,12 +63,12 @@ struct SearchWindow: View {
                 Spacer()
                 Button {
                     let cleanLyrics = NetworkFetchReturn(lyrics: selectedLyricLyric.lyrics, colorData: nil).processed(withSongName: trackName, duration: viewmodel.duration).lyrics
-                    
+
                     if let currentIndex = viewmodel.currentlyPlayingLyricsIndex, currentIndex >= cleanLyrics.count {
                         // set currentindex to nil to prevent out of bounds index access with existing UI
                         viewmodel.currentlyPlayingLyricsIndex = nil
                     }
-                    
+
                     viewmodel.setNewLyricsColorTranslationRomanizationAndStartUpdater(with: cleanLyrics)
                     guard let spotifyID = viewmodel.currentlyPlaying else {
                         return

@@ -16,4 +16,3 @@ let updateNotes33: [String] = ["Fix karaoke mode's glitchey animations! After a 
                                 "Fix album art flickering when skipping through songs in the same album",
                                 "It's now possible to hit ESC to hide the selected lyrics in the search window, searching hides the stale selected lyrics view",
                                "Fixed Spotify login for some users",]
-                               

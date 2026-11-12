@@ -348,7 +348,7 @@ struct LyricsNSScrollView: NSViewRepresentable {
             || chineseConversionLyrics != c.prevChinese
             || translatedLyric      != c.prevTranslated
             || blurFullscreen       != c.prevBlur
-        
+
         // Capture before prevIndex is updated so we know if the index itself moved.
         let indexJustChanged = currentIndex != c.prevIndex && currentIndex != nil
 
@@ -364,7 +364,7 @@ struct LyricsNSScrollView: NSViewRepresentable {
 
         // Sync document frame (content height may have changed).
         c.syncDocumentFrame()
-        
+
         // For layout-only changes (romanization / translation toggle) correct the scroll
         // position synchronously — before AppKit renders — so the user never sees a jump.
         let layoutOnlyChange = needsRefresh && !indexJustChanged && !lyricsChanged
