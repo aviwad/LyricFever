@@ -58,14 +58,14 @@ struct MainSettingsView: View {
     
     @ViewBuilder
     var onboardView: some View {
-        Image("hi")
+        Image("LyricChillLogo")
             .resizable()
             .frame(width: 150, height: 150, alignment: .center)
                     
-        Text("Welcome to Lyric Fever! 🎉")
+        Text("Welcome to LyricChill! 🎉")
             .font(.largeTitle)
                     
-        Text("Please pick between Spotify and Apple Music")
+        Text("Choose Spotify or Apple Music as your playback app")
             .font(.title)
     }
     
@@ -155,9 +155,8 @@ struct MainSettingsView: View {
                 .frame(width: 300)
                 
                 VStack {
-                    Text("Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support")
-                    Text(verbatim: "⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nTranslations by InTheManXG and ARui-tw")
-                    Text("[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.3")
+                    Text(verbatim: "Lyrics are provided by third-party services and remain the property of their respective rights holders.")
+                    Text("[LyricChill GitHub](https://github.com/gitmichaelqiu/LyricChill)")
                 }
                     .multilineTextAlignment(.center)
                     .font(.callout)

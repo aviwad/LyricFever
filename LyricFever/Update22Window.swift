@@ -12,11 +12,11 @@ struct Update22Window: View {
     var body: some View {
         VStack(spacing: 25) {
             HStack {
-                Image("hi")
+                Image("LyricChillLogo")
                     .resizable()
                     .frame(width: 70, height: 70, alignment: .center)
                 
-                Text(verbatim:"Thanks for updating to Lyric Fever 2.2! 🎉")
+                    Text(verbatim:"Thanks for updating LyricChill! 🎉")
                     .font(.title)
             }
             
