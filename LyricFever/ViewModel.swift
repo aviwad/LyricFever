@@ -277,30 +277,34 @@ import MediaRemoteAdapter
     var localFileUploadProvider = LocalFileUploadProvider()
     #endif
     @ObservationIgnored var allNetworkLyricProviders: [LyricProvider] {
+        let providers: [LyricProvider]
         switch userDefaultStorage.lyricSourcePreference {
         case "Spotify":
-            return [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
+            providers = [spotifyLyricProvider, lRCLyricProvider, netEaseLyricProvider]
         case "NetEase":
-            return [netEaseLyricProvider, lRCLyricProvider, spotifyLyricProvider]
+            providers = [netEaseLyricProvider, lRCLyricProvider, spotifyLyricProvider]
         case "LRCLIB":
-            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
         default:
-            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
         }
+        return providers.filter { !($0 is SpotifyLyricProvider) || !userDefaultStorage.cookie.isEmpty }
     }
     
     // custom order because LRCLIB is tweaking for the time being
     @ObservationIgnored var allNetworkLyricProvidersForSearch: [LyricProvider] {
+        let providers: [LyricProvider]
         switch userDefaultStorage.lyricSourcePreference {
         case "Spotify":
-            return [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
+            providers = [spotifyLyricProvider, netEaseLyricProvider, lRCLyricProvider]
         case "NetEase":
-            return [netEaseLyricProvider, spotifyLyricProvider, lRCLyricProvider]
+            providers = [netEaseLyricProvider, spotifyLyricProvider, lRCLyricProvider]
         case "LRCLIB":
-            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
         default:
-            return [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
+            providers = [lRCLyricProvider, spotifyLyricProvider, netEaseLyricProvider]
         }
+        return providers.filter { !($0 is SpotifyLyricProvider) || !userDefaultStorage.cookie.isEmpty }
     }
     
     var isFirstFetch = true
@@ -348,11 +352,6 @@ import MediaRemoteAdapter
             return
         }
         #endif
-        if userDefaultStorage.cookie.count == 0 {
-            print("Setting hasOnboarded to false due to empty cookie")
-            userDefaultStorage.hasOnboarded = false
-            return
-        }
         guard userDefaultStorage.hasOnboarded else {
             return
         }
@@ -1241,6 +1240,9 @@ extension ViewModel {
     
     private func musicToSpotifyHelper() async throws -> AppleMusicHelper? {
         // Manually search song name, artist name
+        guard !userDefaultStorage.cookie.isEmpty else {
+            return nil
+        }
         guard let currentlyPlayingArtist, let currentlyPlayingName else {
             print("\(#function) currentlyPlayingName or currentlyPlayingArtist missing")
             return nil
