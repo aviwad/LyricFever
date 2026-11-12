@@ -27,7 +27,9 @@ struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
         content
             .onAppear {
                 panel = FloatingPanel(view: view, contentRect: contentRect, isPresented: $isPresented)
-                panel?.center()
+                if panel?.restorePosition() != true {
+                    panel?.center()
+                }
                 if isPresented {
                     present()
                 }
@@ -67,6 +69,7 @@ extension EnvironmentValues {
 }
 
 class FloatingPanel<Content: View>: NSPanel {
+    private static var savedOriginDefaultsKey: String { "karaokeWindowOrigin" }
     @Binding var isPresented: Bool
     private var isSnappedToCenter: Bool = false
     private let snapThreshold: CGFloat = 25.0
@@ -119,6 +122,7 @@ class FloatingPanel<Content: View>: NSPanel {
     
      
     override func close() {
+        savePosition()
         NSAnimationContext.runAnimationGroup { animation in
             animation.completionHandler = {
                 super.close()
@@ -131,8 +135,46 @@ class FloatingPanel<Content: View>: NSPanel {
         return true
     }
     override func center() {
-        let rect = self.screen?.frame
-        self.setFrameOrigin(NSPoint(x: (rect!.width - self.frame.width)/2, y: (rect!.height - self.frame.height)/5))
+        guard let rect = (self.screen ?? NSScreen.main)?.visibleFrame else { return }
+        self.setFrameOrigin(NSPoint(
+            x: rect.minX + (rect.width - self.frame.width) / 2,
+            y: rect.minY + (rect.height - self.frame.height) / 5
+        ))
+    }
+
+    @discardableResult
+    func restorePosition() -> Bool {
+        guard let savedOrigin = UserDefaults.standard.array(forKey: Self.savedOriginDefaultsKey) as? [Double],
+              savedOrigin.count == 2 else {
+            return false
+        }
+
+        var restoredFrame = frame
+        restoredFrame.origin = NSPoint(x: savedOrigin[0], y: savedOrigin[1])
+
+        let screenAndOverlap = NSScreen.screens.map { screen in
+            let intersection = screen.visibleFrame.intersection(restoredFrame)
+            let overlapArea = max(0, intersection.width) * max(0, intersection.height)
+            return (screen, overlapArea)
+        }
+        guard let (screen, overlapArea) = screenAndOverlap.max(by: { $0.1 < $1.1 }), overlapArea > 0 else {
+            return false
+        }
+
+        let visibleFrame = screen.visibleFrame
+        let maxX = max(visibleFrame.minX, visibleFrame.maxX - frame.width)
+        let maxY = max(visibleFrame.minY, visibleFrame.maxY - frame.height)
+        let x = min(max(restoredFrame.minX, visibleFrame.minX), maxX)
+        let y = min(max(restoredFrame.minY, visibleFrame.minY), maxY)
+        setFrameOrigin(NSPoint(x: x, y: y))
+        return true
+    }
+
+    private func savePosition() {
+        UserDefaults.standard.set(
+            [Double(frame.origin.x), Double(frame.origin.y)],
+            forKey: Self.savedOriginDefaultsKey
+        )
     }
 
     override func sendEvent(_ event: NSEvent) {
@@ -173,6 +215,7 @@ class FloatingPanel<Content: View>: NSPanel {
             dragStartMouseLocation = nil
             dragStartWindowOrigin = nil
             isSnappedToCenter = false
+            savePosition()
             super.sendEvent(event)
         default:
             super.sendEvent(event)
