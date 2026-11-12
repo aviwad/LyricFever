@@ -519,11 +519,9 @@ struct MenubarWindowView: View {
         Toggle("Show Song Details in Menubar", isOn: $viewmodel.userDefaultStorage.showSongDetailsInMenubar)
         Divider()
         streamingDelayView
-        Button("Settings (New Karaoke Settings!)") {
-            openWindow(id: "onboarding")
+        Button("Settings…") {
+            openWindow(id: "settings")
             NSApplication.shared.activate(ignoringOtherApps: true)
-            // send notification to check auth
-            NotificationCenter.default.post(name: Notification.Name("didClickSettings"), object: nil)
         }.keyboardShortcut("s")
         LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
         .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
@@ -533,8 +531,8 @@ struct MenubarWindowView: View {
         }
         Divider()
             .keyboardShortcut("u")
-        Button("Buy Me A Beer (Thank You)!") {
-            openURL(URL(string: "https://buymeacoffee.com/aviwadhwalyricfever")!)
+        Button("LyricChill on GitHub") {
+            openURL(URL(string: "https://github.com/gitmichaelqiu/LyricChill")!)
         }
     }
     

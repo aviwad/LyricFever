@@ -1,21 +1,40 @@
-//
-//  GlobalKeyboardShortcutsView.swift
-//  Lyric Fever
-//
-//  Created by Avi Wadhwa on 2025-09-11.
-//
-
 import SwiftUI
 import KeyboardShortcuts
 
 struct GlobalKeyboardShortcutsView: View {
     var body: some View {
-        Form {
-            KeyboardShortcuts.Recorder("Toggle karaoke mode:", name: .init("karaoke"))
-            KeyboardShortcuts.Recorder("Toggle displaying lyrics:", name: .init("lyrics"))
-            KeyboardShortcuts.Recorder("Toggle translations:", name: .init("translate"))
-            KeyboardShortcuts.Recorder("Toggle romanizations:", name: .init("romanize"))
-            KeyboardShortcuts.Recorder("Display fullscreen:", name: .init("fullscreen"))
+        VStack(alignment: .leading, spacing: 20) {
+            ModularSettingsSection("Global keyboard shortcuts") {
+                ModularSettingsRow("Toggle karaoke window", keywords: ["lyrics", "overlay"]) {
+                    KeyboardShortcuts.Recorder("", name: .init("karaoke"))
+                        .labelsHidden()
+                        .frame(width: 230)
+                }
+
+                ModularSettingsRow("Toggle menu bar lyrics", keywords: ["show", "hide"]) {
+                    KeyboardShortcuts.Recorder("", name: .init("lyrics"))
+                        .labelsHidden()
+                        .frame(width: 230)
+                }
+
+                ModularSettingsRow("Toggle translations") {
+                    KeyboardShortcuts.Recorder("", name: .init("translate"))
+                        .labelsHidden()
+                        .frame(width: 230)
+                }
+
+                ModularSettingsRow("Toggle romanization") {
+                    KeyboardShortcuts.Recorder("", name: .init("romanize"))
+                        .labelsHidden()
+                        .frame(width: 230)
+                }
+
+                ModularSettingsRow("Open fullscreen lyrics", keywords: ["fullscreen", "karaoke"]) {
+                    KeyboardShortcuts.Recorder("", name: .init("fullscreen"))
+                        .labelsHidden()
+                        .frame(width: 230)
+                }
+            }
         }
     }
 }

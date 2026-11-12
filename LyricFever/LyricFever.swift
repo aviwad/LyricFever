@@ -24,7 +24,7 @@ enum MusicType {
 }
 
 @main
-struct LyricFever: App {
+struct LyricChillApp: App {
     @State var viewmodel = ViewModel.shared
     @Environment(\.openWindow) var openWindow
     @Environment(\.openURL) var openURL
@@ -179,7 +179,7 @@ struct LyricFever: App {
             }
         }
         .menuBarExtraStyle(.window)
-        Window("Lyric Fever: Fullscreen", id: "fullscreen") {
+        Window("LyricChill: Fullscreen", id: "fullscreen") {
             FullscreenView()
                 .windowFullScreenBehavior(.enabled)
                 .preferredColorScheme(.dark)
@@ -206,7 +206,7 @@ struct LyricFever: App {
                 }
         }
         .defaultSize(width: NSScreen.mainWidth, height: NSScreen.mainHeight)
-        Window("Lyric Fever: Onboarding", id: "onboarding") { // << here !!
+        Window("Set Up LyricChill", id: "onboarding") {
             OnboardingWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 600, maxHeight: 600, alignment: .center)
                 .environment(viewmodel)
                 .preferredColorScheme(.dark)
@@ -222,7 +222,22 @@ struct LyricFever: App {
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .windowLevel(.floating)
-        Window("Lyric Fever: Searching for \(viewmodel.currentlyPlayingName ?? "-") by \(viewmodel.currentlyPlayingArtist ?? "-")", id: "search") {
+
+        Window("LyricChill Settings", id: "settings") {
+            LyricChillSettingsView()
+                .environment(viewmodel)
+                .onAppear {
+                    NSApp.setActivationPolicy(.regular)
+                }
+                .onDisappear {
+                    if !viewmodel.fullscreen {
+                        NSApp.setActivationPolicy(.accessory)
+                    }
+                }
+        }
+        .defaultSize(width: 880, height: 640)
+
+        Window("LyricChill: Searching for \(viewmodel.currentlyPlayingName ?? "-") by \(viewmodel.currentlyPlayingArtist ?? "-")", id: "search") {
             SearchWindow().frame(minWidth: 700, maxWidth: 700, minHeight: 500, maxHeight: 500, alignment: .center)
                 .environment(viewmodel)
                 .preferredColorScheme(.dark)
@@ -236,7 +251,7 @@ struct LyricFever: App {
                 }
         }
         .windowResizability(.contentSize)
-        Window("Lyric Fever: Update 2.3", id: "update") { // << here !!
+        Window("LyricChill: Update 2.3", id: "update") {
             UpdateWindow().frame(minWidth: 700, maxWidth: 700, alignment: .center)
                 .environment(viewmodel)
                 .preferredColorScheme(.dark)

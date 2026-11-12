@@ -10,6 +10,7 @@ import SDWebImageSwiftUI
 
 struct ApiView: View {
     @Environment(\.dismiss) var dismiss
+    var onComplete: (() -> Void)? = nil
     @State private var isShowingDetailView = false
     @AppStorage("spDcCookie") var spDcCookie: String = ""
     @State var isLoading = false
@@ -125,9 +126,13 @@ struct ApiView: View {
         Task {
             do {
                 try await ViewModel.shared.spotifyLyricProvider.generateAccessToken()
-                isShowingDetailView = true
                 errorMessage = nil
                 ViewModel.shared.userDefaultStorage.hasOnboarded = true
+                if let onComplete {
+                    onComplete()
+                } else {
+                    isShowingDetailView = true
+                }
             } catch {
                 print("Failed to generate access token: \(error)")
                 errorMessage = String(describing: error)
@@ -136,7 +141,11 @@ struct ApiView: View {
     }
 
     func continueWithoutSpotify() {
-        isShowingDetailView = true
         ViewModel.shared.userDefaultStorage.hasOnboarded = true
+        if let onComplete {
+            onComplete()
+        } else {
+            isShowingDetailView = true
+        }
     }
 }
