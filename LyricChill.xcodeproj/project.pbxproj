@@ -58,7 +58,7 @@
 		8F6BD2962A8A6278008BBF88 /* amplitudeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = amplitudeKey.swift; sourceTree = "<group>"; };
 		8F6BD2982A8A6B7D008BBF88 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		8FA436AD2BC49D480072016C /* newPermissionMac.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = newPermissionMac.gif; sourceTree = "<group>"; };
-		8FC8E9452A704EEB00F69915 /* Lyric Fever.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lyric Fever.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC8E9452A704EEB00F69915 /* LyricChill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LyricChill.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FC8E9482A704EEB00F69915 /* LyricFever.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricFever.swift; sourceTree = "<group>"; };
 		8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = spotifylogin.gif; sourceTree = "<group>"; };
 		8FEF70F62D8B5CE40069AC01 /* Update22Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Update22Window.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 8FC8E9442A704EEB00F69915 /* Lyric Fever */;
+			target = 8FC8E9442A704EEB00F69915 /* LyricChill */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -135,7 +135,7 @@
 		8FC8E9462A704EEB00F69915 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8FC8E9452A704EEB00F69915 /* Lyric Fever.app */,
+				8FC8E9452A704EEB00F69915 /* LyricChill.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,9 +163,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8FC8E9442A704EEB00F69915 /* Lyric Fever */ = {
+		8FC8E9442A704EEB00F69915 /* LyricChill */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "Lyric Fever" */;
+			buildConfigurationList = 8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "LyricChill" */;
 			buildPhases = (
 				8FC8E9412A704EEB00F69915 /* Sources */,
 				8FC8E9422A704EEB00F69915 /* Frameworks */,
@@ -185,7 +185,7 @@
 				8F4D208B2E0132B4004A12CA /* Support Files */,
 				8FB58B862E29ED5C002B307D /* Past Updates */,
 			);
-			name = "Lyric Fever";
+			name = "LyricChill";
 			packageProductDependencies = (
 				8F6BD2942A8A61C9008BBF88 /* AmplitudeSwift */,
 				8FFA9F332AA1B3CB00BAEC5C /* SDWebImageSwiftUI */,
@@ -204,8 +204,8 @@
 				8F0E98942EE24713008A50A4 /* MenuBarExtraAccess */,
 				8F9B71A12F55F19400214019 /* ObservableUserDefault */,
 			);
-			productName = SpotifyLyricsInMenubar;
-			productReference = 8FC8E9452A704EEB00F69915 /* Lyric Fever.app */;
+			productName = LyricChill;
+			productReference = 8FC8E9452A704EEB00F69915 /* LyricChill.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -223,7 +223,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "Lyric Fever" */;
+			buildConfigurationList = 8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "LyricChill" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -255,7 +255,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8FC8E9442A704EEB00F69915 /* Lyric Fever */,
+				8FC8E9442A704EEB00F69915 /* LyricChill */,
 			);
 		};
 /* End PBXProject section */
@@ -497,7 +497,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "Lyric Fever" */ = {
+		8FC8E9402A704EEB00F69915 /* Build configuration list for PBXProject "LyricChill" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FC8E9522A704EED00F69915 /* Debug */,
@@ -506,7 +506,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "Lyric Fever" */ = {
+		8FC8E9542A704EED00F69915 /* Build configuration list for PBXNativeTarget "LyricChill" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8FC8E9552A704EED00F69915 /* Debug */,

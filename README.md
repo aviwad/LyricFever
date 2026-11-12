@@ -1,21 +1,18 @@
-# Lyric Fever
+# LyricChill
 
 <img src="logo.png" alt="Logo" width="15%">
 
-The Best Lyrics Experience for Spotify & Apple Music on macOS. It Just Works.
+LyricChill is a community-maintained continuation of LyricFever, bringing live lyrics to Spotify and Apple Music on macOS.
 
 ## Installation
 
 ### Manual
-Download the DMG file [here](https://github.com/aviwad/LyricFever/releases/download/v2.1/Lyric.Fever.2.1.dmg).
-
-### Homebrew
-Run `brew install lyric-fever`
+Download the latest build from [LyricChill GitHub Releases](https://github.com/gitmichaelqiu/LyricChill/releases).
 
 ## Screenshots
 [lyricfeverad.webm](https://github.com/user-attachments/assets/8881ae23-69d3-4b81-875b-31f12c577fa0)
 
-<img alt="Screenshot of Lyric Fever's menubar window and floating lyric window" src="https://github.com/user-attachments/assets/a890b685-b4b4-45cc-918c-1184aa10d1bd" width="50%"/>
+<img alt="Screenshot of LyricChill's menu bar and floating lyric windows" src="https://github.com/user-attachments/assets/a890b685-b4b4-45cc-918c-1184aa10d1bd" width="50%"/>
 
 <img src="superShy.gif" alt="First Screenshot" width="50%">
 <img src="https://github.com/user-attachments/assets/e3c2c5f1-3d2b-4f7c-9893-d4613340943e" alt="Screenshot 1" width="50%">
@@ -30,7 +27,7 @@ Run `brew install lyric-fever`
 - Lyric Translation (using Apple’s on device APIs)
 - Offline caching! Lyrics are automatically stored offline efficiently using CoreData
 - Play some music on the Spotify / Apple Music app and watch the lyrics play on the menu bar automatically.
-- Lyrics fetched from Spotify, LRCLIB, and NetEase as a backup lyric provider
+- Lyrics fetched from Spotify, LRCLIB, and NetEase. Spotify login is optional.
 - Simplified Chinese language support in app UI, thanks to @InTheManXG
 
 ## YouTube Promo Vid:
@@ -51,11 +48,11 @@ Run `brew install lyric-fever`
 - I interface with Spotify and Apple Music's AppleScript methods by using Apple's provided ScriptingBridge interface.
 - I additionally use private APIs to get the currently playing Apple Music song's iTunes ID, and use MusicKit to map that to an ISRC code
 - I map Apple Music songs to equivalent Spotify ID using ISRC to display Lyrics fetched from Spotify for either platform
-- Lyrics are fetched from LRCLIB as a backup when Spotify fails
+- Lyrics are fetched from the selected provider, with available sources used as fallbacks
 - I fetch the song “background color” with each lyric, and the color is used for the karaoke mode window background 
 - Songs translated using Apple's Translation API. 
 - The fullscreen view uses a custom mesh gradient and extracts colors from the album art using ColorKit
-- Spiritual successor to LyricsX (95% more efficient, 0.1% CPU usage of Lyric Fever vs 3% of LyricsX)
+- Community continuation of LyricFever
 - Technical write-up coming soon
 
 ## Translation Help
