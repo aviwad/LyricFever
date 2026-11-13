@@ -32,5 +32,6 @@ struct LyricChillAboutSettingsView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }

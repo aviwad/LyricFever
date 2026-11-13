@@ -44,5 +44,6 @@ struct GlobalKeyboardShortcutsView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }

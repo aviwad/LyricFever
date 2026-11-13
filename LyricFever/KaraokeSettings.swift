@@ -31,7 +31,6 @@ struct KaraokeSettingsView: View {
                     Toggle("Hide when the pointer enters the window", isOn: $karaokeModeHoveringSetting)
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .frame(width: 50, alignment: .trailing)
                 }
 
                 Divider()
@@ -44,7 +43,6 @@ struct KaraokeSettingsView: View {
                     Toggle("Show translated lyrics", isOn: $karaokeShowMultilingual)
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .frame(width: 50, alignment: .trailing)
                 }
             }
 
@@ -56,7 +54,6 @@ struct KaraokeSettingsView: View {
                     Toggle("Use album color", isOn: $karaokeUseAlbumColor)
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .frame(width: 50, alignment: .trailing)
                 }
 
                 Divider()
@@ -106,5 +103,6 @@ struct KaraokeSettingsView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }

@@ -19,13 +19,11 @@ struct LyricChillGeneralSettingsView: View {
                     helperText: "Choose the app LyricChill reads playback information from.",
                     keywords: ["Spotify", "Apple Music", "player"]
                 ) {
-                    Picker("Music app", selection: $spotifyOrAppleMusic) {
+                    Picker("", selection: $spotifyOrAppleMusic) {
                         Text("Spotify").tag(false)
                         Text("Apple Music").tag(true)
                     }
                     .labelsHidden()
-                    .pickerStyle(.segmented)
-                    .frame(width: 210)
                 }
 
                 Divider()
@@ -55,14 +53,12 @@ struct LyricChillGeneralSettingsView: View {
                     helperText: "LyricChill tries this source first, then falls back to other available providers.",
                     keywords: ["LRCLIB", "Spotify", "NetEase", "provider"]
                 ) {
-                    Picker("Primary lyric source", selection: $viewModel.userDefaultStorage.lyricSourcePreference) {
+                    Picker("", selection: $viewModel.userDefaultStorage.lyricSourcePreference) {
                         Text("LRCLIB").tag("LRCLIB")
                         Text("Spotify").tag("Spotify")
                         Text("NetEase").tag("NetEase")
                     }
                     .labelsHidden()
-                    .pickerStyle(.menu)
-                    .frame(width: 150)
                 }
 
                 Divider()
@@ -88,14 +84,12 @@ struct LyricChillGeneralSettingsView: View {
                     helperText: "Choose the maximum number of characters shown in the menu bar.",
                     keywords: ["truncation", "characters", "display"]
                 ) {
-                    Picker("Menu bar lyric length", selection: $truncationLength) {
+                    Picker("", selection: $truncationLength) {
                         ForEach([30, 40, 50, 60], id: \.self) { length in
                             Text("\(length) characters").tag(length)
                         }
                     }
                     .labelsHidden()
-                    .pickerStyle(.menu)
-                    .frame(width: 150)
                 }
             }
 
@@ -104,10 +98,11 @@ struct LyricChillGeneralSettingsView: View {
                     LaunchAtLogin.Toggle("")
                         .labelsHidden()
                         .toggleStyle(.switch)
-                        .frame(width: 50, alignment: .trailing)
                 }
             }
+            Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .sheet(isPresented: $showingSpotifyConnection) {
             NavigationStack {
                 ApiView(onComplete: { showingSpotifyConnection = false })

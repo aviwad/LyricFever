@@ -167,16 +167,12 @@ struct LyricChillSettingsView: View {
     private var sidebarHeader: some View {
         VStack(alignment: .leading, spacing: 2) {
             Color.clear.frame(height: 45)
-            HStack(spacing: 10) {
-                Image("LyricChillLogo")
-                    .resizable()
-                    .frame(width: 36, height: 36)
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-
-                Text("LyricChill")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.primary)
-            }
+            Text("Lyric")
+                .font(.custom("Syncopate-Bold", size: 21))
+                .foregroundStyle(.primary)
+            Text("Chill")
+                .font(.custom("Syncopate-Bold", size: 21))
+                .foregroundStyle(.primary)
             .padding(.bottom, 10)
 
             searchField
