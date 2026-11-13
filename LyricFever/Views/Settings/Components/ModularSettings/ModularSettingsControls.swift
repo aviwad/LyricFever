@@ -111,8 +111,8 @@ where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: ModularSettingsMetrics.rowContentSpacing) {
-            VStack(spacing: ModularSettingsMetrics.rowContentSpacing) {
+        VStack(alignment: .leading, spacing: 6) {
+            VStack(spacing: 6) {
                 HStack {
                     HStack(spacing: ModularSettingsMetrics.labelSpacing) {
                         Text(modularSettingsHighlightedText(
@@ -130,12 +130,9 @@ where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
 
                     Spacer()
 
-                    Button {
+                    Button("↺") {
                         resetToDefault()
-                    } label: {
-                        Image(systemName: "arrow.counterclockwise")
                     }
-                    .buttonStyle(.plain)
                     .help("Reset to default")
                     .disabled(abs(value - defaultValue) < 0.001)
                 }
@@ -169,7 +166,7 @@ where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
                     .padding(.bottom, 6)
             }
         }
-        .padding(.vertical, ModularSettingsMetrics.rowVerticalPadding)
+        .padding(.vertical, 8)
         .padding(.horizontal, ModularSettingsMetrics.rowHorizontalPadding)
         .id(title.key)
         .onAppear {
