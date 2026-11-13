@@ -1,0 +1,38 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSAppleEventsUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I need to access Spotify / Apple Music to play the lyrics properly."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "歌詞を正しく表示するために、SpotifyまたはApple Musicを操作する必要があります。"
+          }
+        }
+      }
+    },
+    "NSAppleMusicUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This permission is required to interact with your Apple Music library."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Musicのライブラリにアクセスするために必要です。"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
