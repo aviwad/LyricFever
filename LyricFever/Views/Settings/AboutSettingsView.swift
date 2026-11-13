@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct LyricChillAboutSettingsView: View {
@@ -6,32 +7,84 @@ struct LyricChillAboutSettingsView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            ModularSettingsSection("About LyricChill") {
-                ModularSettingsRow("Version") {
-                    Text(version)
-                        .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 32) {
+            HStack(spacing: 20) {
+                if let appIcon = NSApplication.shared.applicationIconImage
+                    ?? NSImage(named: "LyricChillLogo") {
+                    Image(nsImage: appIcon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 88, height: 88)
+                        .frame(width: 100, height: 100)
+                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                 }
 
-                Divider()
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("LyricChill")
+                        .font(.custom("Syncopate-Bold", size: 24))
 
-                ModularSettingsRow("Community project") {
-                    Link(
-                        "GitHub repository",
-                        destination: URL(string: "https://github.com/gitmichaelqiu/LyricChill")!
-                    )
-                }
-
-                Divider()
-
-                ModularSettingsRow("Lyrics and rights") {
-                    Text("Lyrics are provided by third-party services and remain the property of their respective rights holders.")
+                    Text("v\(version)")
+                        .font(.title3)
                         .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.trailing)
-                        .frame(maxWidth: 360, alignment: .trailing)
+
+                    Text("A community-maintained lyrics companion.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             }
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Links")
+                    .font(.headline)
+
+                LyricChillAboutLinkRow(
+                    title: "LyricChill on GitHub",
+                    url: URL(string: "https://github.com/gitmichaelqiu/LyricChill")!
+                )
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Lyrics and rights")
+                    .font(.headline)
+
+                Text("Lyrics are provided by third-party services and remain the property of their respective rights holders.")
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct LyricChillAboutLinkRow: View {
+    let title: String
+    let url: URL
+
+    @State private var isHovering = false
+
+    var body: some View {
+        Link(destination: url) {
+            HStack(spacing: 4) {
+                Text(title)
+                    .foregroundColor(isHovering ? .accentColor : .secondary)
+                Spacer()
+                Image(systemName: "arrow.up.right")
+                    .font(.caption2)
+                    .foregroundColor(.secondary.opacity(0.5))
+            }
+            .padding(.vertical, 2)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isHovering = hovering
+            }
+            if hovering {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
+        }
     }
 }
