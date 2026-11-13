@@ -263,24 +263,18 @@ public struct ModularSettingsShortcutRow: View {
             requirements: requirements,
             keywords: keywords
         ) {
-            HStack(spacing: 8) {
+            HStack {
                 Text(shortcutText)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                     .padding(.trailing, 8)
 
-                Button(action: onListen) {
-                    Image(systemName: "record.circle")
-                }
-                .buttonStyle(.plain)
-                .disabled(isListening)
-                .help("Record shortcut")
+                Button("◉", action: onListen)
+                    .disabled(isListening)
+                    .help("Record shortcut")
 
-                Button(action: onReset) {
-                    Image(systemName: "arrow.counterclockwise")
-                }
-                .buttonStyle(.plain)
-                .disabled(!canReset)
-                .help("Reset shortcut")
+                Button("↺", action: onReset)
+                    .disabled(!canReset)
+                    .help("Reset shortcut")
             }
         }
     }
