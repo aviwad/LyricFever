@@ -481,9 +481,7 @@
         }
       }
     },
-    "Buy Me A Beer (Thank You)!" : {
-
-    },
+    "Buy Me A Beer (Thank You)!" : {},
     "Change fullscreen settings here!" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1481,9 +1479,7 @@
         }
       }
     },
-    "More Options" : {
-
-    },
+    "More Options" : {},
     "More options, AirPlay delay enabled" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3236,6 +3232,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你已經登入咗 🙂"
+          }
+        }
+      }
+    },
+    "Select an LRC File for %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@のLRCファイルを選択"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为%@选择 LRC 文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為%@選擇 LRC 檔案"
+          }
+        },
+        "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為%@選擇 LRC 檔案"
           }
         }
       }

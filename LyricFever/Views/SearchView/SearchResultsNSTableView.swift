@@ -18,10 +18,10 @@ struct SearchResultsNSTableView: NSViewRepresentable {
         let tableView = NSTableView()
 
         for (id, title) in [
-            ("provider", "Lyric Provider"),
-            ("song", "Song Name"),
-            ("album", "Album Name"),
-            ("artist", "Artist Name")
+            ("provider", String(localized: "Lyric Provider")),
+            ("song", String(localized: "Song Name")),
+            ("album", String(localized: "Album Name")),
+            ("artist", String(localized: "Artist Name"))
         ] {
             let col = NSTableColumn(identifier: .init(id))
             col.title = title

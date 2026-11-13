@@ -29,7 +29,7 @@ class LocalFileUploadProvider {
         let folderChooserRectangle = CGRect(origin: folderChooserPoint, size: folderChooserSize)
         NSApp.setActivationPolicy(.regular)
         let folderPicker =  NSOpenPanel(contentRect: folderChooserRectangle, styleMask: .resizable, backing: .buffered, defer: true)
-        folderPicker.title = "Select an LRC File for \(ViewModel.shared.currentlyPlayingName ?? "")"
+        folderPicker.title = String(localized: "Select an LRC File for \(ViewModel.shared.currentlyPlayingName ?? "")")
         let lrcType = UTType(filenameExtension: "lrc")!
         folderPicker.allowedContentTypes = [lrcType] // Only allow .lrc files
         folderPicker.allowsMultipleSelection = false // Only allow a single selection
