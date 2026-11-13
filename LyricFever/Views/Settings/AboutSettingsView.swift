@@ -9,15 +9,12 @@ struct LyricChillAboutSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
             HStack(spacing: 20) {
-                if let appIcon = NSApplication.shared.applicationIconImage
-                    ?? NSImage(named: "LyricChillLogo") {
-                    Image(nsImage: appIcon)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 88, height: 88)
-                        .frame(width: 100, height: 100)
-                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                }
+                Image("LyricChillLogo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 88, height: 88)
+                    .frame(width: 100, height: 100)
+                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("LyricChill")

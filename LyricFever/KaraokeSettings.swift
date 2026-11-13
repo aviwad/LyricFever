@@ -80,6 +80,7 @@ struct KaraokeSettingsView: View {
 
                 ModularSettingsRow("Font") {
                     FontPicker("Select a font", selection: $viewModel.karaokeFont)
+                        .frame(height: 30)
                 }
 
                 Divider()
