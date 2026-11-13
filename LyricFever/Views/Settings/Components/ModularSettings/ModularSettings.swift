@@ -42,7 +42,6 @@ public enum ModularSettingsMetrics {
     public static let labelSpacing: CGFloat = 4
     public static let rowVerticalPadding: CGFloat = 6
     public static let rowHorizontalPadding: CGFloat = 10
-    public static let listRowHeight: CGFloat = 44
 }
 
 public struct ModularSettingsSearchItem: Identifiable, Hashable {
@@ -218,8 +217,6 @@ public struct ModularSettingsRow<Content: View>: View {
                 content
                     .frame(alignment: .trailing)
             }
-            .frame(minHeight: ModularSettingsMetrics.listRowHeight)
-
             if showDemoVideos,
                let demoVideoName,
                let videoURL = Bundle.main.url(forResource: demoVideoName, withExtension: "mp4") {
