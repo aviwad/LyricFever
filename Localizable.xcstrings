@@ -125,6 +125,12 @@
             "state" : "translated",
             "value" : "%@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@秒"
+          }
         }
       }
     },
@@ -168,6 +174,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 字"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld文字"
           }
         }
       }
@@ -213,6 +225,12 @@
             "state" : "translated",
             "value" : "⚠️ 尚未完成設定，請按「設定」"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 初期設定を完了してください（設定をクリック）"
+          }
         }
       }
     },
@@ -234,6 +252,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "⚠️ 請更新（按「檢查更新」）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ アップデートしてください（アップデートを確認をクリック）"
           }
         }
       }
@@ -257,6 +281,12 @@
             "state" : "translated",
             "value" : "AirPlay 音訊延遲"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirPlayの音声遅延"
+          }
         }
       }
     },
@@ -278,6 +308,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "專輯名稱"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アルバム名"
           }
         }
       }
@@ -301,6 +337,12 @@
             "state" : "translated",
             "value" : "啟動動畫"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "起動時にアニメーションを再生"
+          }
         }
       }
     },
@@ -322,6 +364,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API Key：進階"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "APIキー（上級者向け）"
           }
         }
       }
@@ -368,6 +416,12 @@
             "state" : "translated",
             "value" : "藝人名稱"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アーティスト名"
+          }
         }
       }
     },
@@ -389,6 +443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "藝人名稱"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アーティスト名"
           }
         }
       }
@@ -412,6 +472,12 @@
             "state" : "translated",
             "value" : "藝人名稱："
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アーティスト名："
+          }
         }
       }
     },
@@ -430,6 +496,12 @@
           }
         },
         "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動"
@@ -456,6 +528,12 @@
             "state" : "translated",
             "value" : "返回"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戻る"
+          }
         }
       }
     },
@@ -478,11 +556,24 @@
             "state" : "translated",
             "value" : "模糊周圍歌詞"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "周囲の歌詞をぼかす"
+          }
         }
       }
     },
     "Buy Me A Beer (Thank You)!" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者にビールをおごる（ありがとうございます！）"
+          }
+        }
+      }
     },
     "Change fullscreen settings here!" : {
       "localizations" : {
@@ -502,6 +593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "喺呢度更改全螢幕設定！"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここでフルスクリーンの設定を変更できます！"
           }
         }
       }
@@ -525,6 +622,12 @@
             "state" : "translated",
             "value" : "檢查更新⋯⋯"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートを確認…"
+          }
         }
       }
     },
@@ -546,6 +649,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "簡繁轉換"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中国語の変換"
           }
         }
       }
@@ -569,6 +678,12 @@
             "state" : "translated",
             "value" : "按下以使用"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックして使用"
+          }
         }
       }
     },
@@ -590,6 +705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閉じる"
           }
         }
       }
@@ -613,6 +734,12 @@
             "state" : "translated",
             "value" : "降低 5% 音量（下方向鍵）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量を5下げる（下矢印）"
+          }
         }
       }
     },
@@ -634,6 +761,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除歌詞"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を削除"
           }
         }
       }
@@ -657,6 +790,12 @@
             "state" : "translated",
             "value" : "停用卡拉 OK"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケをオフ"
+          }
         }
       }
     },
@@ -678,6 +817,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停用歌詞"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を非表示"
           }
         }
       }
@@ -701,6 +846,12 @@
             "state" : "translated",
             "value" : "顯示全螢幕選項"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルスクリーンのオプションを表示"
+          }
         }
       }
     },
@@ -722,6 +873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示全螢幕："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルスクリーン表示："
           }
         }
       }
@@ -745,6 +902,12 @@
             "state" : "translated",
             "value" : "完成"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
         }
       }
     },
@@ -766,6 +929,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有任何問題，請電郵我 [aviwad@gmail.com](mailto:aviwad@gmail.com)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポートについては [aviwad@gmail.com](mailto:aviwad@gmail.com) にメールしてください"
           }
         }
       }
@@ -789,6 +958,12 @@
             "state" : "translated",
             "value" : "啟用卡拉 OK"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケをオン"
+          }
         }
       }
     },
@@ -810,6 +985,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "啟用卡拉 OK"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を表示"
           }
         }
       }
@@ -833,6 +1014,12 @@
             "state" : "translated",
             "value" : "喺呢度輸入 SP_DC Cookie"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SP_DC Cookieを入力"
+          }
         }
       }
     },
@@ -854,6 +1041,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字體： %@，字號： %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォント：%@、サイズ：%lld"
           }
         }
       }
@@ -877,6 +1070,12 @@
             "state" : "translated",
             "value" : "下一首"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の曲"
+          }
         }
       }
     },
@@ -898,6 +1097,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授權 Apple Music"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Musicの操作を許可"
           }
         }
       }
@@ -921,6 +1126,12 @@
             "state" : "translated",
             "value" : "授權 Spotify"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyの操作を許可"
+          }
         }
       }
     },
@@ -942,6 +1153,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鍾意"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入りに追加"
           }
         }
       }
@@ -965,6 +1182,12 @@
             "state" : "translated",
             "value" : "滑鼠經過時隱藏卡拉 OK 視窗"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マウスが重なったときにカラオケウィンドウを隠す"
+          }
         }
       }
     },
@@ -986,6 +1209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱藏歌詞（⌘ + H）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を非表示（⌘ + H）"
           }
         }
       }
@@ -1009,6 +1238,12 @@
             "state" : "translated",
             "value" : "隱藏翻譯（⌘ + T）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳を非表示（⌘ + T）"
+          }
         }
       }
     },
@@ -1030,6 +1265,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從 Spotify 下載歌詞（如失效，備用 LRCLIB 及網易雲音樂）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyから歌詞を取得します（取得できない場合はLRCLIBとNetEaseを使用します）"
           }
         }
       }
@@ -1053,6 +1294,12 @@
             "state" : "translated",
             "value" : "降低 5% 音量（上方向鍵）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量を5上げる（上矢印）"
+          }
         }
       }
     },
@@ -1074,6 +1321,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "卡拉 OK 背景樣式"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケの背景"
           }
         }
       }
@@ -1097,6 +1350,12 @@
             "state" : "translated",
             "value" : "卡拉 OK 模式設定"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケの動作"
+          }
         }
       }
     },
@@ -1118,6 +1377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "卡拉 OK 字體樣式"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケのフォント"
           }
         }
       }
@@ -1141,6 +1406,12 @@
             "state" : "translated",
             "value" : "無法顯示卡拉 OK"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケを利用できません"
+          }
         }
       }
     },
@@ -1162,6 +1433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "卡拉 OK 視窗"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケウィンドウ"
           }
         }
       }
@@ -1185,6 +1462,12 @@
             "state" : "translated",
             "value" : "鍵盤快捷鍵"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キーボードショートカット"
+          }
         }
       }
     },
@@ -1206,6 +1489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開機時啟動"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン時に起動"
           }
         }
       }
@@ -1229,6 +1518,12 @@
             "state" : "translated",
             "value" : "登出"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログアウト"
+          }
         }
       }
     },
@@ -1251,6 +1546,12 @@
             "state" : "translated",
             "value" : "Lyric Fever：全螢幕"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：フルスクリーン"
+          }
         }
       }
     },
@@ -1272,6 +1573,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyric Fever：快速上手"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：初期設定"
           }
         }
       }
@@ -1301,6 +1608,12 @@
             "state" : "translated",
             "value" : "Lyric Fever：搵緊 %2$@ 嘅 %1$@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：%@（%@）を検索中"
+          }
         }
       }
     },
@@ -1322,6 +1635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lyric Fever：更新 2.3"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever：アップデート 2.3"
           }
         }
       }
@@ -1345,6 +1664,12 @@
             "state" : "translated",
             "value" : "歌詞來源"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞の提供元"
+          }
         }
       }
     },
@@ -1366,6 +1691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搵唔到歌詞。"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を利用できません。"
           }
         }
       }
@@ -1389,6 +1720,12 @@
             "state" : "translated",
             "value" : "歌詞已套用！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を適用しました！"
+          }
         }
       }
     },
@@ -1410,6 +1747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "主設定"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "基本設定"
           }
         }
       }
@@ -1433,6 +1776,12 @@
             "state" : "translated",
             "value" : "手動搜尋歌詞"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を手動検索"
+          }
         }
       }
     },
@@ -1454,6 +1803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選單列大小"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーの表示幅"
           }
         }
       }
@@ -1478,11 +1833,24 @@
             "state" : "translated",
             "value" : "更多選項"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のオプション"
+          }
         }
       }
     },
     "More Options" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のオプション"
+          }
+        }
+      }
     },
     "More options, AirPlay delay enabled" : {
       "extractionState" : "stale",
@@ -1503,6 +1871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更多選項，已啟用 AirPlay 延遲"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のオプション（AirPlayの遅延補正が有効）"
           }
         }
       }
@@ -1526,6 +1900,12 @@
             "state" : "translated",
             "value" : "下一步"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次へ"
+          }
         }
       }
     },
@@ -1547,6 +1927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "冇翻譯 ☹️"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳なし ☹️"
           }
         }
       }
@@ -1571,6 +1957,12 @@
             "state" : "translated",
             "value" : "暫停：%@ - %@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止中：%@ - %@"
+          }
         }
       }
     },
@@ -1594,6 +1986,12 @@
             "state" : "translated",
             "value" : "播放中：%@ - %@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生中：%@ - %@"
+          }
         }
       }
     },
@@ -1615,6 +2013,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目前延遲：%lld ms"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフセット：%lldミリ秒"
           }
         }
       }
@@ -1638,6 +2042,12 @@
             "state" : "translated",
             "value" : "透明度："
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明度："
+          }
         }
       }
     },
@@ -1659,6 +2069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "透明度：%lld%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明度：%lld%%"
           }
         }
       }
@@ -1682,6 +2098,12 @@
             "state" : "translated",
             "value" : "開啟 Apple Music"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Musicを開く"
+          }
         }
       }
     },
@@ -1703,6 +2125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟自動化面板"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オートメーション設定を開く"
           }
         }
       }
@@ -1726,6 +2154,12 @@
             "state" : "translated",
             "value" : "開啟全螢幕"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルスクリーンを開く"
+          }
         }
       }
     },
@@ -1748,6 +2182,12 @@
             "state" : "translated",
             "value" : "開啟 Spotify"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyを開く"
+          }
         }
       }
     },
@@ -1769,6 +2209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在網頁中開啟 Spotify"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web版Spotifyを開く"
           }
         }
       }
@@ -1793,6 +2239,12 @@
             "state" : "translated",
             "value" : "開啟 Spotify！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyを開いてください！"
+          }
         }
       }
     },
@@ -1814,6 +2266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暫停（空格鍵）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止（スペースキー）"
           }
         }
       }
@@ -1837,6 +2295,12 @@
             "state" : "translated",
             "value" : "暫停動畫（更節電）（⌘ + A）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメーションを停止（省電力）（⌘ + A）"
+          }
         }
       }
     },
@@ -1858,6 +2322,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "播放（空格鍵）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生（スペースキー）"
           }
         }
       }
@@ -1882,6 +2352,12 @@
             "state" : "translated",
             "value" : "請下載 [Spotify 官方桌面版](https://www.spotify.com/in-en/download/mac/)"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[Spotify公式デスクトップアプリ](https://www.spotify.com/in-en/download/mac/)をダウンロードしてください"
+          }
         }
       }
     },
@@ -1904,6 +2380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請授予所需權限！"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "必要な権限を許可してください！"
           }
         }
       }
@@ -1928,6 +2410,12 @@
             "state" : "translated",
             "value" : "請授予 Apple Music 音樂庫權限！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Musicのライブラリへのアクセスを許可してください！"
+          }
         }
       }
     },
@@ -1950,6 +2438,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請授予 Apple Music 權限！"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Musicの操作を許可してください！"
           }
         }
       }
@@ -1974,6 +2468,12 @@
             "state" : "translated",
             "value" : "請授予所需權限！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "必要な権限を許可してください！"
+          }
         }
       }
     },
@@ -1995,6 +2495,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請登入 Spotify"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyにログインしてください"
           }
         }
       }
@@ -2019,6 +2525,12 @@
             "state" : "translated",
             "value" : "請開啟 Apple Music！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Musicを開いてください！"
+          }
         }
       }
     },
@@ -2042,6 +2554,12 @@
             "state" : "translated",
             "value" : "請開啟 Spotify！"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyを開いてください！"
+          }
         }
       }
     },
@@ -2063,6 +2581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "請選擇 Spotify 或 Apple Music"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SpotifyまたはApple Musicを選択してください"
           }
         }
       }
@@ -2086,6 +2610,12 @@
             "state" : "translated",
             "value" : "退出"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了"
+          }
         }
       }
     },
@@ -2107,6 +2637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "退出 Lyric Fever（⌘ + Q）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Feverを終了（⌘ + Q）"
           }
         }
       }
@@ -2130,6 +2666,12 @@
             "state" : "translated",
             "value" : "重新下載歌詞"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を再取得"
+          }
         }
       }
     },
@@ -2151,6 +2693,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新歌詞中⋯⋯"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を再取得中…"
           }
         }
       }
@@ -2174,6 +2722,12 @@
             "state" : "translated",
             "value" : "重設預設值"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初期設定に戻す"
+          }
         }
       }
     },
@@ -2196,6 +2750,12 @@
             "state" : "translated",
             "value" : "倒帶"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前の曲"
+          }
         }
       }
     },
@@ -2217,6 +2777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "羅馬拼音化"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローマ字表記"
           }
         }
       }
@@ -2246,6 +2812,12 @@
             "state" : "translated",
             "value" : "搵緊 %2$@ 嘅 %1$@"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@（%@）を検索中"
+          }
         }
       }
     },
@@ -2267,6 +2839,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "選擇字體："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォントを選択："
           }
         }
       }
@@ -2290,6 +2868,12 @@
             "state" : "translated",
             "value" : "設定背景顏色"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景色を設定"
+          }
         }
       }
     },
@@ -2311,6 +2895,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定歌詞大小"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞のサイズを設定"
           }
         }
       }
@@ -2334,6 +2924,12 @@
             "state" : "translated",
             "value" : "設定（全新卡啦 OK 設定！）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定（新しいカラオケ設定！）"
+          }
         }
       }
     },
@@ -2355,6 +2951,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分享 Spotify 連結"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyのリンクを共有"
           }
         }
       }
@@ -2378,6 +2980,12 @@
             "state" : "translated",
             "value" : "顯示歌詞（⌘ + H）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を表示（⌘ + H）"
+          }
         }
       }
     },
@@ -2399,6 +3007,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "卡拉 OK 視窗翻譯時顯示多語歌詞"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケウィンドウで翻訳と元の歌詞を表示"
           }
         }
       }
@@ -2422,6 +3036,12 @@
             "state" : "translated",
             "value" : "選單列顯示歌曲詳情"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーに曲情報を表示"
+          }
         }
       }
     },
@@ -2443,6 +3063,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "歌曲名稱"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曲名"
           }
         }
       }
@@ -2467,6 +3093,12 @@
             "state" : "translated",
             "value" : "歌曲名稱："
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曲名："
+          }
         }
       }
     },
@@ -2488,6 +3120,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "原文語言"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元の言語"
           }
         }
       }
@@ -2533,6 +3171,12 @@
             "state" : "translated",
             "value" : "Spotify Connect 音訊延遲"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify Connectの音声遅延"
+          }
         }
       }
     },
@@ -2554,6 +3198,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spotify 延遲"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyの遅延"
           }
         }
       }
@@ -2577,6 +3227,12 @@
             "state" : "translated",
             "value" : "Spotify 登入"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotifyログイン"
+          }
         }
       }
     },
@@ -2598,6 +3254,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "系統（%@）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム（%@）"
           }
         }
       }
@@ -2621,6 +3283,12 @@
             "state" : "translated",
             "value" : "目標語言"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳先の言語"
+          }
         }
       }
     },
@@ -2642,6 +3310,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "呢個取決於你選單列剩餘嘅空間！"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーの空きスペースに応じて設定してください！"
           }
         }
       }
@@ -2687,6 +3361,12 @@
             "state" : "translated",
             "value" : "顯示/隱藏歌詞："
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞表示を切り替え："
+          }
         }
       }
     },
@@ -2708,6 +3388,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開啟/關閉卡拉 OK 模式："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケモードを切り替え："
           }
         }
       }
@@ -2731,6 +3417,12 @@
             "state" : "translated",
             "value" : "顯示/隱藏羅馬拼音："
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローマ字表記を切り替え："
+          }
         }
       }
     },
@@ -2752,6 +3444,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示/隱藏翻譯："
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳を切り替え："
           }
         }
       }
@@ -2775,6 +3473,12 @@
             "state" : "translated",
             "value" : "翻譯歌詞（⌘ + T）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞を翻訳（⌘ + T）"
+          }
         }
       }
     },
@@ -2796,6 +3500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯至 %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@に翻訳"
           }
         }
       }
@@ -2819,6 +3529,12 @@
             "state" : "translated",
             "value" : "歌詞已翻譯 😃"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳済みの歌詞 😃"
+          }
         }
       }
     },
@@ -2840,6 +3556,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯中⋯⋯"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳中…"
           }
         }
       }
@@ -2863,6 +3585,12 @@
             "state" : "translated",
             "value" : "翻譯已開啟"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳が有効"
+          }
         }
       }
     },
@@ -2884,6 +3612,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯失敗"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳に失敗しました"
           }
         }
       }
@@ -2907,6 +3641,12 @@
             "state" : "translated",
             "value" : "翻譯指引"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳のヘルプ"
+          }
         }
       }
     },
@@ -2928,6 +3668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯選項"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳のオプション"
           }
         }
       }
@@ -2951,6 +3697,12 @@
             "state" : "translated",
             "value" : "翻譯選項"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳のオプション"
+          }
         }
       }
     },
@@ -2972,6 +3724,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯設定（適用於所有歌曲）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての曲の翻訳設定"
           }
         }
       }
@@ -2995,6 +3753,12 @@
             "state" : "translated",
             "value" : "翻譯設定（僅適用於此歌曲）"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この曲の翻訳設定"
+          }
         }
       }
     },
@@ -3016,6 +3780,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "翻譯不可用"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳を利用できません"
           }
         }
       }
@@ -3039,6 +3809,12 @@
             "state" : "translated",
             "value" : "音譯選項"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字変換のオプション"
+          }
         }
       }
     },
@@ -3060,6 +3836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示長度限制"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示する文字数"
           }
         }
       }
@@ -3083,6 +3865,12 @@
             "state" : "translated",
             "value" : "唔鍾意"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お気に入りから削除"
+          }
         }
       }
     },
@@ -3104,6 +3892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢復動畫（更耗電）（⌘ + A）"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメーションを再開（バッテリーを消費）（⌘ + A）"
           }
         }
       }
@@ -3127,6 +3921,12 @@
             "state" : "translated",
             "value" : "上傳 LRC 檔案"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LRCファイルを読み込む"
+          }
         }
       }
     },
@@ -3149,6 +3949,12 @@
             "state" : "translated",
             "value" : "使用專輯顏色作為卡拉 OK 視窗顏色"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケウィンドウにアルバムの色を使う"
+          }
         }
       }
     },
@@ -3167,6 +3973,12 @@
           }
         },
         "zh-Hant-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音量"
+          }
+        },
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "音量"
@@ -3193,6 +4005,12 @@
             "state" : "translated",
             "value" : "歡迎嚟到 Lyric Fever！🎉"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Feverへようこそ！ 🎉"
+          }
         }
       }
     },
@@ -3215,6 +4033,12 @@
             "state" : "translated",
             "value" : "SP DC Cookie 錯誤，請重試 ⚠️"
           }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SP_DC Cookieが正しくありません。もう一度入力してください ⚠️"
+          }
         }
       }
     },
@@ -3236,6 +4060,202 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你已經登入咗 🙂"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ログイン済みです 🙂"
+          }
+        }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "変換しない"
+          }
+        }
+      }
+    },
+    "Simplified" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "簡体字"
+          }
+        }
+      }
+    },
+    "Traditional (Neutral)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繁体字（共通）"
+          }
+        }
+      }
+    },
+    "Traditional (Taiwan)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繁体字（台湾）"
+          }
+        }
+      }
+    },
+    "Traditional (HK)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繁体字（香港）"
+          }
+        }
+      }
+    },
+    "Thanks for updating to Lyric Fever 3.3! 🎉" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Fever 3.3へのアップデートありがとうございます！ 🎉"
+          }
+        }
+      }
+    },
+    "3.3 Changes" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン3.3の変更点"
+          }
+        }
+      }
+    },
+    "⚠️ Disclaimer: I do not own the rights to Spotify or the lyric content presented.\nMusixmatch and Spotify own all rights to the lyrics.\nTranslations by InTheManXG and ARui-tw" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ 免責事項：Spotifyおよび表示される歌詞の権利は作者にありません。\n歌詞の権利はMusixmatchおよびSpotifyに帰属します。\n翻訳：InTheManXG、ARui-tw"
+          }
+        }
+      }
+    },
+    "Fix karaoke mode's glitchey animations! After a whole year! (This was very noticeable when using the multilingual view)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラオケモードのアニメーションの不具合を修正しました（多言語表示で特に目立っていました）"
+          }
+        }
+      }
+    },
+    "We avoid re-opening Spotify if you quit it while keeping Lyric Fever open" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyric Feverを起動したままSpotifyを終了しても、Spotifyが再び開かないようにしました"
+          }
+        }
+      }
+    },
+    "Fix bug where sometimes Lyric Fever was unpausing a song shortly after pausing it (more visible when using Spotify Connect)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止直後に曲が再開されることがある問題を修正しました（Spotify Connectで特に目立っていました）"
+          }
+        }
+      }
+    },
+    "Improve color generation for non-Spotify lyrics (try refreshing lyrics to improve the color for a cached song)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotify以外の歌詞の背景色の生成を改善しました（保存済みの曲は歌詞を再取得すると色が改善する場合があります）"
+          }
+        }
+      }
+    },
+    "Improve menubar view on light mode (looks much much better!)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライトモードでのメニューバー表示を改善しました"
+          }
+        }
+      }
+    },
+    "Fix a bug that would sometimes cause a crash when applying lyrics from the search window" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索画面から歌詞を適用するとクラッシュすることがある問題を修正しました"
+          }
+        }
+      }
+    },
+    "Change default lyric view to karaoke & default to only showing icon in menubar (saving space)" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌詞の初期表示をカラオケに変更し、メニューバーには初期状態でアイコンのみを表示するようにしました"
+          }
+        }
+      }
+    },
+    "It's now possible to drag album art from the menubar view to share the song link" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メニューバーのアートワークをドラッグして曲のリンクを共有できるようにしました"
+          }
+        }
+      }
+    },
+    "Fix album art flickering when skipping through songs in the same album" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じアルバム内で曲を切り替えた際のアートワークのちらつきを修正しました"
+          }
+        }
+      }
+    },
+    "It's now possible to hit ESC to hide the selected lyrics in the search window, searching hides the stale selected lyrics view" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索画面でEscキーを押すと選択中の歌詞を隠せるようにし、検索時には以前の歌詞を非表示にしました"
+          }
+        }
+      }
+    },
+    "Fixed Spotify login for some users" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部のユーザーでSpotifyにログインできない問題を修正しました"
           }
         }
       }

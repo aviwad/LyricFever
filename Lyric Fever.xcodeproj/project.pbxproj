@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1A111111111111111111112 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A1A111111111111111111111 /* InfoPlist.xcstrings */; };
 		8F0D66DC2E99CC5D00976881 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */; };
 		8F0E98952EE24713008A50A4 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 8F0E98942EE24713008A50A4 /* MenuBarExtraAccess */; };
 		8F1198722E72B9840011A962 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 8F1198712E72B9840011A962 /* KeyboardShortcuts */; };
@@ -52,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A1A111111111111111111111 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8F1198732E72B9C50011A962 /* GlobalKeyboardShortcutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalKeyboardShortcutsView.swift; sourceTree = "<group>"; };
 		8F28BFD32D578456002E2CE6 /* KaraokeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaraokeSettings.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 			children = (
 				8FCFD1C22AE35DEA00B22023 /* spotifylogin.gif */,
 				8F0D66DB2E99CC5D00976881 /* Localizable.xcstrings */,
+				A1A111111111111111111111 /* InfoPlist.xcstrings */,
 				8FFA9F362AA1B63500BAEC5C /* crossfade.gif */,
 				8FA436AD2BC49D480072016C /* newPermissionMac.gif */,
 				8FC8E9472A704EEB00F69915 /* LyricFever */,
@@ -230,6 +233,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 				"zh-Hans",
 				"zh-Hant",
 			);
@@ -269,6 +273,7 @@
 				8FFA9F382AA1B63500BAEC5C /* crossfade.gif in Resources */,
 				8FCFD1C32AE35DEA00B22023 /* spotifylogin.gif in Resources */,
 				8F0D66DC2E99CC5D00976881 /* Localizable.xcstrings in Resources */,
+				A1A111111111111111111112 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
