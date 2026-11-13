@@ -302,7 +302,7 @@ struct MenubarWindowView: View {
 //                .disabled(!viewmodel.userDefaultStorage.romanize)
             Picker("Chinese Conversion", selection: $viewmodel.userDefaultStorage.chinesePreference) {
                 ForEach(ChineseConversion.allCases) { conversionCase in
-                    Text(conversionCase.description).tag(conversionCase.rawValue)
+                    Text(LocalizedStringKey(conversionCase.description)).tag(conversionCase.rawValue)
                 }
             }
         }
