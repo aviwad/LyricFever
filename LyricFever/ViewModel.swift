@@ -154,9 +154,17 @@ import MediaRemoteAdapter
         showLyrics && !lyricsIsEmptyPostLoad
     }
 
+    var shouldUpdateLyrics: Bool {
+#if os(macOS)
+        showLyrics || userDefaultStorage.karaoke || fullscreen
+#else
+        showLyrics
+#endif
+    }
+
     var displayKaraoke: Bool {
         get {
-            showLyrics && isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil) && currentLyricIsNotBlank
+            isPlaying && userDefaultStorage.karaoke && !karaokeModeHovering && (currentlyPlayingLyricsIndex != nil) && currentLyricIsNotBlank
         }
         set {
             
@@ -524,7 +532,7 @@ import MediaRemoteAdapter
     #endif
     
     func toggleLyrics() {
-        if showLyrics {
+        if shouldUpdateLyrics {
             startLyricUpdater()
         } else {
             stopLyricUpdater()
@@ -870,7 +878,7 @@ import MediaRemoteAdapter
     
     func startLyricUpdater() {
         currentLyricsUpdaterTask?.cancel()
-        if !isPlaying || currentlyPlayingLyrics.isEmpty {
+        if !shouldUpdateLyrics || !isPlaying || currentlyPlayingLyrics.isEmpty {
             return
         }
         // If an index exists, we're unpausing: meaning we must instantly find the current lyric
@@ -1135,7 +1143,7 @@ import MediaRemoteAdapter
         // we romanize afterwards, in-case the chinese conversion array was populated
         romanizeDidChange()
         lyricsIsEmptyPostLoad = currentlyPlayingLyrics.isEmpty
-        if isPlaying, !currentlyPlayingLyrics.isEmpty, showLyrics, userDefaultStorage.hasOnboarded {
+        if isPlaying, !currentlyPlayingLyrics.isEmpty, shouldUpdateLyrics, userDefaultStorage.hasOnboarded {
             startLyricUpdater()
         }
     }

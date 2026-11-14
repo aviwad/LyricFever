@@ -351,9 +351,6 @@ struct MenubarWindowView: View {
         guard viewmodel.userDefaultStorage.hasOnboarded else {
             return .disabled
         }
-        guard viewmodel.showLyrics else {
-            return .disabled
-        }
         guard !viewmodel.lyricsIsEmptyPostLoad else {
             return .disabled
         }

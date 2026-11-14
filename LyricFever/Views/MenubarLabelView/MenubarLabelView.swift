@@ -16,8 +16,8 @@ struct MenubarLabelView: View {
             return String(localized: "⚠️ Please Update (Click Check Updates)")
         } else if viewmodel.userDefaultStorage.hasOnboarded {
             // Try to work through lyric logic if onboarded
-            // NEW: Revert to song name if fullscreen / karaoke activated
-            if !viewmodel.fullscreen, !viewmodel.userDefaultStorage.karaoke, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
+            // Revert to song name in fullscreen mode, where lyrics are shown in the window.
+            if !viewmodel.fullscreen, viewmodel.isPlaying, viewmodel.showLyrics, let currentlyPlayingLyricsIndex = viewmodel.currentlyPlayingLyricsIndex {
                 // Attempt to display translations
                 // Implicit assumption: translatedLyric.count == currentlyPlayingLyrics.count
                 if viewmodel.translationExists {

@@ -86,6 +86,13 @@ struct LyricChillApp: App {
             .onChange(of: viewmodel.showLyrics) {
                 viewmodel.toggleLyrics()
             }
+            .onChange(of: viewmodel.userDefaultStorage.karaoke) {
+                if viewmodel.shouldUpdateLyrics, viewmodel.isPlaying, !viewmodel.currentlyPlayingLyrics.isEmpty {
+                    viewmodel.startLyricUpdater()
+                } else {
+                    viewmodel.stopLyricUpdater()
+                }
+            }
             .floatingPanel(isPresented: $viewmodel.displayKaraoke) {
                 KaraokeView()
                     .animation(.easeIn(duration: 0.2))
@@ -155,7 +162,7 @@ struct LyricChillApp: App {
                 viewmodel.spotifyLyricProvider.accessToken = nil
             }
             .onChange(of: viewmodel.isPlaying) {
-                if viewmodel.isPlaying, viewmodel.showLyrics, viewmodel.userDefaultStorage.hasOnboarded {
+                if viewmodel.isPlaying, viewmodel.shouldUpdateLyrics, viewmodel.userDefaultStorage.hasOnboarded {
                     if !viewmodel.currentlyPlayingLyrics.isEmpty  {
                         print("timer started for spotify change, lyrics not nil")
                         viewmodel.startLyricUpdater()
