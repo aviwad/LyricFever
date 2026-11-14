@@ -18,11 +18,6 @@ extension NSScreen {
     }
 }
 
-enum MusicType {
-    case spotify
-    case appleMusic
-}
-
 @main
 struct LyricChillApp: App {
     @State var viewmodel = ViewModel.shared

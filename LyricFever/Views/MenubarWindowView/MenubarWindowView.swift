@@ -142,22 +142,6 @@ struct MenubarWindowView: View {
             VStack {
                 HStack {
                     songDetails
-//                    LikeButton()
-//                        .task(id: viewmodel.currentlyPlaying) {
-//                            guard let currentlyPlaying = viewmodel.currentlyPlaying else {
-//                                print("Ignoring nil currentlyPlaying for heart check")
-//                                return
-//                            }
-//                            print("Task to check if \(viewmodel.currentlyPlaying) is hearted")
-//                            do {
-//                                viewmodel.isHearted = try await viewmodel.spotifyLyricProvider.checkHeartedStatusFor(trackID: currentlyPlaying)
-//                            } catch {
-//                                print(error)
-//                            }
-//                        }
-//                        .onHover { isHovering in
-//                            currentHoveredItem = isHovering ? (viewmodel.isHearted ? .unheart : .heart) : .none
-//                        }
                 }
                 songControls
                 

@@ -26,7 +26,6 @@ import MediaRemoteAdapter
     // Apple Music Tahoe broken AppleScript workaround
     let musicController = MediaController()
     private var isAppleMusicArtworkListenerRunning = false
-//    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
     
@@ -34,7 +33,6 @@ import MediaRemoteAdapter
     var isStopped = false
     
     var artworkImage: NSImage?
-    var currentArtworkURL: URL?
 
     var duration: Int = 0
     var currentTime = CurrentTimeWithStoredDate(currentTime: 0)
@@ -228,8 +226,6 @@ import MediaRemoteAdapter
     
     // Logging / Analytics
     let amplitude = Amplitude(configuration: .init(apiKey: amplitudeKey))
-    
-    var isHearted = false
     
     // Async Tasks (Lyrics fetch, Apple Music -> Spotify ID fetch, Lyrics Updater)
     private var currentFetchTask: Task<[LyricLine], Error>?
@@ -812,7 +808,6 @@ import MediaRemoteAdapter
         isPlaying = false
         isStopped = true
         artworkImage = nil
-        currentArtworkURL = nil
         currentBackground = nil
         currentlyPlayingLyrics = []
         currentlyPlayingLyricsIndex = nil
@@ -1170,10 +1165,6 @@ import MediaRemoteAdapter
         saveCoreData()
     }
     #endif
-    
-    func stepsToTakeAfterSettingsLyrics() async {
-        
-    }
     
     func didOnboard() {
         guard isPlayerRunning else {

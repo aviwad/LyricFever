@@ -14,8 +14,6 @@ enum MenubarButtonHighlight {
     case play
     case pause
     case forward
-    case heart
-    case unheart
     case enableLyrics
     case disableLyrics
     case unavailableLyrics
@@ -53,10 +51,6 @@ enum MenubarButtonHighlight {
                 LocalizedStringKey("Pause (spacebar)")
             case .forward:
                 LocalizedStringKey("Forward")
-            case .heart:
-                LocalizedStringKey("Heart")
-            case .unheart:
-                LocalizedStringKey("Unheart")
             case .enableLyrics:
                 LocalizedStringKey("Enable Lyrics")
             case .disableLyrics:
