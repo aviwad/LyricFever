@@ -25,6 +25,10 @@ struct MenubarWindowView: View {
         }
         return !name.isEmpty
     }
+
+    private var sliderTint: Color {
+        viewmodel.currentBackground == nil ? .accentColor : .white
+    }
     
     @ViewBuilder
     var profilePicViewHeaderView: some View {
@@ -653,10 +657,10 @@ struct MenubarWindowView: View {
             })
             .labelsHidden()
             .frame(width: 160)
-            Text("\(viewmodel.userDefaultStorage.truncationLength)")
+            ModularSettingsAnimatedValue(text: "\(viewmodel.userDefaultStorage.truncationLength)")
                 .frame(width: 23)
         }
-        .tint(.secondary)
+        .tint(sliderTint)
     }
 
     @ViewBuilder
@@ -671,10 +675,10 @@ struct MenubarWindowView: View {
             .labelsHidden()
             .frame(width: 160)
             let seconds = Double(viewmodel.userDefaultStorage.spotifyConnectDelayCount) / 1000.0
-            Text("\(seconds.formatted(.number.precision(.fractionLength(1))))s")
+            ModularSettingsAnimatedValue(text: "\(seconds.formatted(.number.precision(.fractionLength(1))))s")
                 .frame(width: 27)
         }
-        .tint(.secondary)
+        .tint(sliderTint)
     }
     
     var volumeBinding: Binding<Double> {
@@ -709,10 +713,10 @@ struct MenubarWindowView: View {
                 .labelsHidden()
                 .frame(width: 160)
             }
-            Text("\(viewmodel.currentVolume)")
+            ModularSettingsAnimatedValue(text: "\(viewmodel.currentVolume)")
                 .frame(width: 23)
         }
-        .tint(.secondary)
+        .tint(sliderTint)
         .disabled(!viewmodel.isPlayerRunning)
     }
     

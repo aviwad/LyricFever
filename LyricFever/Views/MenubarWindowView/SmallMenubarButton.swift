@@ -43,16 +43,17 @@ public struct SmallMenubarButtonStyle: ButtonStyle {
             .frame(height: 15)
         }
         .transition(.scale)
+        .foregroundStyle(buttonState.foregroundColor)
         .animation(.bouncy, value: buttonState)
         .frame(minWidth: 30, maxWidth: .infinity)
         .padding(.vertical, 16)
         .background(
             Rectangle()
                 .fill(buttonState.fillStyle)
-                .brightness(disabled ? 0.05 : 0.3)
-                .opacity(disabled ? 1 : 0.7)
+                .brightness(buttonState == .enabled ? 0.3 : 0)
+                .opacity(disabled ? 0.4 : 0.55)
                 .clipShape(.rect(cornerRadius: 12))
-                .shadow(radius: disabled ? 0 : 7)
+                .shadow(radius: disabled ? 0 : buttonState == .enabled ? 7 : 3)
         )
         .opacity(configuration.isPressed ? 0.7 : 1)
     }

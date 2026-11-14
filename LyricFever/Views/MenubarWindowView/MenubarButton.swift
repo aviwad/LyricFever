@@ -34,16 +34,17 @@ public struct MenubarButton: View {
                     }
                 }
             }
+            .foregroundStyle(buttonState.foregroundColor)
             .animation(.bouncy, value: buttonState)
             .frame(minWidth: 50, maxWidth: .infinity)
             .padding(.vertical, 16)
             .background(
                 Rectangle()
                     .fill(buttonState.fillStyle)
-                    .brightness(disabled ? 0.05 : 0.3)
-                    .opacity(disabled ? 1 : 0.7)
+                    .brightness(buttonState == .enabled ? 0.3 : 0)
+                    .opacity(disabled ? 0.4 : 0.55)
                     .clipShape(.rect(cornerRadius: 10))
-                    .shadow(radius: disabled ? 0 : 7)
+                    .shadow(radius: disabled ? 0 : buttonState == .enabled ? 7 : 3)
             )
         }
         .disabled(disabled)

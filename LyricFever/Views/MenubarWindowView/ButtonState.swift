@@ -14,6 +14,17 @@ enum ButtonState {
     case loading
     case clickable
     case missing
+
+    var foregroundColor: Color {
+        switch self {
+            case .enabled:
+                return ViewModel.shared.currentBackground == nil ? .primary : .white
+            case .disabled:
+                return .secondary
+            case .loading, .clickable, .missing:
+                return .primary
+        }
+    }
     
     var fillStyle: AnyShapeStyle {
         switch self {
@@ -22,13 +33,12 @@ enum ButtonState {
                     // Use the color with desired opacity
                     return AnyShapeStyle(bg.opacity(0.8))
                 } else {
-                    // Keep the selected state legible when no album color is available.
-                    return AnyShapeStyle(.thickMaterial)
+                    return AnyShapeStyle(.regularMaterial)
                 }
             case .disabled:
-                return AnyShapeStyle(.thickMaterial)
+                return AnyShapeStyle(.ultraThinMaterial)
             case .clickable, .loading, .missing:
-                return AnyShapeStyle(.thickMaterial)
+                return AnyShapeStyle(.ultraThinMaterial)
         }
     }
 }
