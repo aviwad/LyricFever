@@ -28,6 +28,17 @@ struct MenubarWindowView: View {
     private var sliderTint: Color {
         viewmodel.currentBackground == nil ? .accentColor : .white
     }
+
+    private func formattedPlaybackTime(_ milliseconds: TimeInterval?) -> String {
+        guard let milliseconds, milliseconds.isFinite, milliseconds >= 0 else {
+            return "--:--"
+        }
+
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter.string(from: TimeInterval(Int(milliseconds / 1000))) ?? "0:00"
+    }
     
     @ViewBuilder
     var profilePicViewHeaderView: some View {
@@ -145,22 +156,27 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(
-                    value: hasCurrentTrack && displayLyrics == .enabled ? viewmodel.currentTime.currentTime : 0,
-                    total: max(Double(viewmodel.duration), 1)
-                )
-                    .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
-                    .frame(height: 4)
+                TimelineView(.periodic(from: .now, by: 1)) { _ in
+                    let currentTime = hasCurrentTrack ? viewmodel.currentPlayerInstance.currentTime : nil
+                    let duration = max(Double(viewmodel.duration), 1)
+
+                    ProgressView(
+                        value: min(max(currentTime ?? 0, 0), duration),
+                        total: duration
+                    )
+                        .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
+                        .frame(height: 4)
+                        .padding(.horizontal, 4)
+
+                    HStack {
+                        Text(hasCurrentTrack ? formattedPlaybackTime(currentTime) : "--:--")
+                            .font(.caption2)
+                        Spacer()
+                        Text(hasCurrentTrack ? viewmodel.formattedDuration : "--:--")
+                            .font(.caption2)
+                    }
                     .padding(.horizontal, 4)
-                
-                HStack {
-                    Text(hasCurrentTrack && displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
-                        .font(.caption2)
-                    Spacer()
-                    Text(hasCurrentTrack ? viewmodel.formattedDuration : "--:--")
-                        .font(.caption2)
                 }
-                .padding(.horizontal, 4)
             }
         }
         // even out vertical padding with divider as compared to Menubar button
