@@ -39,6 +39,22 @@
         "enabled" : true,
         "value" : 0.25
       }
+    },
+    {
+      "layers" : [
+        {
+          "image-name" : "LyricChill.png",
+          "name" : "LyricChill",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "Exported"
     }
   ],
   "supported-platforms" : {
