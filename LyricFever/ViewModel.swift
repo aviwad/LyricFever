@@ -423,6 +423,10 @@ import MediaRemoteAdapter
     
     #if os(macOS)
     func refreshLyrics() async throws {
+        guard isPlayerRunning else {
+            clearPlaybackState()
+            return
+        }
         // todo: romanize
         if currentPlayer == .appleMusic {
             print("Refresh Lyrics: Calling Apple Music Network fetch")
@@ -739,6 +743,11 @@ import MediaRemoteAdapter
     }
     
     private func setCurrentProperties() {
+        guard isPlayerRunning else {
+            clearPlaybackState()
+            return
+        }
+
         switch currentPlayer {
             case .appleMusic:
                 if let currentTrackName = appleMusicPlayer.trackName, let currentArtistName = appleMusicPlayer.artistName, let duration = appleMusicPlayer.duration, let currentAlbumName = appleMusicPlayer.albumName {
@@ -767,6 +776,29 @@ import MediaRemoteAdapter
                     print(currentTrack)
                 }
         }
+    }
+
+    private func clearPlaybackState() {
+        isFetching = false
+        currentlyPlaying = nil
+        currentlyPlayingName = nil
+        currentlyPlayingArtist = nil
+        currentAlbumName = nil
+        currentlyPlayingAppleMusicPersistentID = nil
+        currentTime = CurrentTimeWithStoredDate(currentTime: 0)
+        duration = 0
+        currentVolume = 0
+        isPlaying = false
+        isStopped = true
+        artworkImage = nil
+        currentArtworkURL = nil
+        currentBackground = nil
+        currentlyPlayingLyrics = []
+        currentlyPlayingLyricsIndex = nil
+        translatedLyric = []
+        romanizedLyrics = []
+        chineseConversionLyrics = []
+        lyricsIsEmptyPostLoad = true
     }
     
     #else
@@ -1132,13 +1164,14 @@ import MediaRemoteAdapter
     
     func didOnboard() {
         guard isPlayerRunning else {
+#if os(macOS)
+            clearPlaybackState()
+#else
             isPlaying = false
             currentlyPlaying = nil
             currentlyPlayingName = nil
             currentlyPlayingArtist = nil
-            #if os(macOS)
-            currentlyPlayingAppleMusicPersistentID = nil
-            #endif
+#endif
             return
         }
         print("Application just started (finished onboarding). lets check whats playing")
@@ -1183,6 +1216,10 @@ extension ViewModel {
     }
     
     func appleMusicNetworkFetch() async throws {
+        guard appleMusicPlayer.isRunning else {
+            clearPlaybackState()
+            return
+        }
         isFetching = true
 //        do {
 //            print("Apple Music Network Fetch: 3 second sleep")

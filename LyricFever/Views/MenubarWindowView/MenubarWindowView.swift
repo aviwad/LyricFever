@@ -104,6 +104,7 @@ struct MenubarWindowView: View {
             }
         }
         .frame(height: 30)
+        .disabled(!viewmodel.isPlayerRunning)
 //        .buttonStyle(.accessoryBar)
     }
     
@@ -662,6 +663,7 @@ struct MenubarWindowView: View {
         Binding(
             get: { Double(viewmodel.currentVolume) },
             set: { newValue in
+                guard viewmodel.isPlayerRunning else { return }
                 viewmodel.currentPlayerInstance.setVolume(to: newValue)
                 viewmodel.currentVolume = Int(newValue)
             }
@@ -693,6 +695,7 @@ struct MenubarWindowView: View {
                 .frame(width: 23)
         }
         .tint(.secondary)
+        .disabled(!viewmodel.isPlayerRunning)
     }
     
     var body: some View {
@@ -724,7 +727,7 @@ struct MenubarWindowView: View {
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
         .onAppear {
-            if !viewmodel.isStopped {
+            if viewmodel.isPlayerRunning, !viewmodel.isStopped {
                 viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
             }
         }
