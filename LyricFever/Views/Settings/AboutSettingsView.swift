@@ -2,8 +2,8 @@ import AppKit
 import SwiftUI
 
 struct LyricChillAboutSettingsView: View {
-    private var appIcon: NSImage? {
-        NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+    private var appIcon: NSImage {
+        NSImage(named: NSImage.applicationIconName) ?? NSApplication.shared.applicationIconImage
     }
 
     private var version: String {
@@ -13,14 +13,12 @@ struct LyricChillAboutSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
             HStack(spacing: 20) {
-                if let appIcon {
-                    Image(nsImage: appIcon)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 88, height: 88)
-                        .frame(width: 100, height: 100)
-                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                }
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 88, height: 88)
+                    .frame(width: 100, height: 100)
+                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("LyricChill")
