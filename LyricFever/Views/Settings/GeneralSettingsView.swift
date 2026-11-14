@@ -51,8 +51,6 @@ struct LyricChillGeneralSettingsView: View {
                         }
                     }
                 }
-
-                Divider()
             }
 
             ModularSettingsSection("Lyrics") {
