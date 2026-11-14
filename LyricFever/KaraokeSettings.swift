@@ -70,11 +70,17 @@ struct KaraokeSettingsView: View {
                     "Background opacity",
                     helperText: "Adjust how strongly the karaoke background shows through.",
                     value: $karaokeTransparency,
-                    range: 1.0...100.0,
+                    range: 0.0...100.0,
                     defaultValue: 50.0,
                     step: 5.0,
                     valueString: { "\(Int($0))%" }
                 )
+                .onAppear {
+                    let snappedValue = min(max((karaokeTransparency / 5).rounded() * 5, 0), 100)
+                    if karaokeTransparency != snappedValue {
+                        karaokeTransparency = snappedValue
+                    }
+                }
 
                 Divider()
 
