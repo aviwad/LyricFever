@@ -69,88 +69,21 @@
         }
       }
     },
-    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0" : {
-      "extractionState" : "stale",
+    "[LyricChill GitHub](https://github.com/gitmichaelqiu/LyricChill)" : {
+
+    },
+    "%@, %lld pt" : {
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.0"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.0"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.0"
+            "state" : "new",
+            "value" : "%1$@, %2$lld pt"
           }
         }
       }
     },
-    "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\nVersion 3.3" : {
-      "localizations" : {
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[Lyric Fever GitHub](https://github.com/aviwad/LyricFever)\n版本 3.3"
-          }
-        }
-    }
-    },
-    "%@s" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@s"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@"
-          }
-        }
-      }
-    },
-    "%lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
+    "%lld characters" : {
+
     },
     "%lld Characters" : {
       "localizations" : {
@@ -174,27 +107,11 @@
         }
       }
     },
-    "%lld%%" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        }
-      }
+    "↺" : {
+
+    },
+    "◉" : {
+
     },
     "⚠️ Complete Setup (Click Settings)" : {
       "localizations" : {
@@ -240,6 +157,15 @@
         }
       }
     },
+    "A community-maintained lyrics companion." : {
+
+    },
+    "About" : {
+
+    },
+    "Adjust how strongly the karaoke background shows through." : {
+
+    },
     "AirPlay Audio Delay" : {
       "localizations" : {
         "zh-Hans" : {
@@ -258,28 +184,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AirPlay 音訊延遲"
-          }
-        }
-      }
-    },
-    "Album Name" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "专辑名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "專輯名稱"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "專輯名稱"
           }
         }
       }
@@ -328,6 +232,9 @@
         }
       }
     },
+    "Appearance" : {
+
+    },
     "Apple Music" : {
       "localizations" : {
         "zh-Hans" : {
@@ -346,51 +253,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Music"
-          }
-        }
-      }
-    },
-    "Arist Name" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌手"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藝人名稱"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藝人名稱"
-          }
-        }
-      }
-    },
-    "Artist Name" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌手"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藝人名稱"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "藝人名稱"
           }
         }
       }
@@ -461,6 +323,12 @@
         }
       }
     },
+    "Background opacity" : {
+
+    },
+    "Behavior" : {
+
+    },
     "Blur surrounding lyrics" : {
       "localizations" : {
         "zh-Hans" : {
@@ -482,9 +350,6 @@
           }
         }
       }
-    },
-    "Buy Me A Beer (Thank You)!" : {
-
     },
     "Change fullscreen settings here!" : {
       "localizations" : {
@@ -530,6 +395,9 @@
         }
       }
     },
+    "Chill" : {
+
+    },
     "Chinese Conversion" : {
       "localizations" : {
         "zh-Hans" : {
@@ -551,6 +419,18 @@
           }
         }
       }
+    },
+    "Choose Spotify or Apple Music as your playback app" : {
+
+    },
+    "Choose the app LyricChill reads playback information from." : {
+
+    },
+    "Choose the maximum number of characters shown in the menu bar." : {
+
+    },
+    "Clear Search" : {
+
     },
     "Click to Use" : {
       "localizations" : {
@@ -596,6 +476,18 @@
         }
       }
     },
+    "Connect Spotify (Optional)" : {
+
+    },
+    "Connected" : {
+
+    },
+    "Continue Without Spotify" : {
+
+    },
+    "Custom background color" : {
+
+    },
     "Decrease volume by 5 (Down Arrow)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -639,6 +531,9 @@
           }
         }
       }
+    },
+    "Delete Tab" : {
+
     },
     "Disable Karaoke" : {
       "localizations" : {
@@ -706,28 +601,6 @@
         }
       }
     },
-    "Display fullscreen:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "全屏显示："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示全螢幕："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示全螢幕："
-          }
-        }
-      }
-    },
     "Done" : {
       "localizations" : {
         "zh-Hans" : {
@@ -746,28 +619,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完成"
-          }
-        }
-      }
-    },
-    "Email me at [aviwad@gmail.com](mailto:aviwad@gmail.com) for any support" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "如需任何支持，请发送电子邮件至[aviwad@gmail.com](mailto:aviwad@gmail.com)以联系我"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "若需任何支援，請寄送電子郵件至：[aviwad@gmail.com](mailto:aviwad@gmail.com)"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有任何問題，請電郵我 [aviwad@gmail.com](mailto:aviwad@gmail.com)"
           }
         }
       }
@@ -838,27 +689,8 @@
         }
       }
     },
-    "Font Selected: %@, Size: %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所选字体: %@, 大小: %lld"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "字體選擇：%@，大小：%lld"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "字體： %@，字號： %lld"
-          }
-        }
-      }
+    "Font" : {
+
     },
     "Forward" : {
       "localizations" : {
@@ -881,6 +713,9 @@
           }
         }
       }
+    },
+    "General" : {
+
     },
     "Give Apple Music Permissions" : {
       "localizations" : {
@@ -926,49 +761,11 @@
         }
       }
     },
-    "Heart" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "喜欢"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "喜歡"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鍾意"
-          }
-        }
-      }
+    "Global keyboard shortcuts" : {
+
     },
-    "Hide Karaoke window when mouse passes by" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鼠标经过时隐藏 K歌 窗口"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在滑鼠經過時隱藏卡拉 OK 視窗"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "滑鼠經過時隱藏卡拉 OK 視窗"
-          }
-        }
-      }
+    "Granted" : {
+
     },
     "Hide lyrics (⌘ + H)" : {
       "localizations" : {
@@ -1014,27 +811,8 @@
         }
       }
     },
-    "I download lyrics from Spotify (and use LRCLIB and NetEase as backups)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "从Spotify下载歌词（备用渠道是LRCLIB和网易云音乐）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我從 Spotify 下載歌詞（然後用 LRCLIB 和 NetEase 作為備案）"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "從 Spotify 下載歌詞（如失效，備用 LRCLIB 及網易雲音樂）"
-          }
-        }
-      }
+    "Hide when the pointer enters the window" : {
+
     },
     "Increase volume by 5 (Up Arrow)" : {
       "localizations" : {
@@ -1058,71 +836,8 @@
         }
       }
     },
-    "Karaoke Background Appearance" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K 歌 歌词背景样式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 背景樣式"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 背景樣式"
-          }
-        }
-      }
-    },
-    "Karaoke Behaviour" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K 歌模式设置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 模式設定"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 模式設定"
-          }
-        }
-      }
-    },
-    "Karaoke Font Appearance" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K歌 歌词字体样式"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 字體樣式"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 字體樣式"
-          }
-        }
-      }
+    "Karaoke" : {
+
     },
     "Karaoke Unavailable" : {
       "localizations" : {
@@ -1146,71 +861,11 @@
         }
       }
     },
-    "Karaoke Window" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "K 歌模式设置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 視窗"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 視窗"
-          }
-        }
-      }
+    "Launch at login" : {
+
     },
-    "Keyboard Shortcuts" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "键盘快捷键"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "快捷鍵"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鍵盤快捷鍵"
-          }
-        }
-      }
-    },
-    "Launch at Login" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开机自动启动"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開機時啟動"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開機時啟動"
-          }
-        }
-      }
+    "Links" : {
+
     },
     "Log Out" : {
       "localizations" : {
@@ -1237,121 +892,42 @@
     "LRCLIB" : {
       "shouldTranslate" : false
     },
-    "Lyric Fever: Fullscreen" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever: 全屏"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：全螢幕"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：全螢幕"
-          }
-        }
-      }
+    "Lyric" : {
+
     },
-    "Lyric Fever: Onboarding" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever: 引导"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：引導"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：快速上手"
-          }
-        }
-      }
+    "LyricChill" : {
+
     },
-    "Lyric Fever: Searching for %@ by %@" : {
+    "LyricChill needs permission to read the selected music app's playback state." : {
+
+    },
+    "LyricChill tries this source first, then falls back to other available providers." : {
+
+    },
+    "LyricChill: Fullscreen" : {
+
+    },
+    "LyricChill: Searching for %@ by %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Lyric Fever: Searching for %1$@ by %2$@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever: 搜索 %2$@ 的 %1$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：搜尋由 %2$@ 演唱的 %1$@"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：搵緊 %2$@ 嘅 %1$@"
+            "value" : "LyricChill: Searching for %1$@ by %2$@"
           }
         }
       }
     },
-    "Lyric Fever: Update 2.3" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever: 更新 2.3"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：2.3 更新紀錄"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lyric Fever：更新 2.3"
-          }
-        }
-      }
+    "LyricChill: Update 2.3" : {
+
     },
-    "Lyric Provider" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌词来源"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌詞提供者"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌詞來源"
-          }
-        }
-      }
+    "Lyrics" : {
+
+    },
+    "Lyrics and rights" : {
+
+    },
+    "Lyrics are provided by third-party services and remain the property of their respective rights holders." : {
+
     },
     "Lyrics unavailable." : {
       "localizations" : {
@@ -1397,27 +973,8 @@
         }
       }
     },
-    "Main Settings" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主设置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主要設定"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "主設定"
-          }
-        }
-      }
+    "Manage" : {
+
     },
     "Manual lyric search" : {
       "localizations" : {
@@ -1441,6 +998,9 @@
         }
       }
     },
+    "Menu bar lyric length" : {
+
+    },
     "Menubar Size" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1463,54 +1023,11 @@
         }
       }
     },
-    "More options" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多选择"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多選項"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多選項"
-          }
-        }
-      }
-    },
     "More Options" : {
 
     },
-    "More options, AirPlay delay enabled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多选项，已启用 AirPlay 延迟"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多選項，已啟用 AirPlay 延遲"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更多選項，已啟用 AirPlay 延遲"
-          }
-        }
-      }
+    "Music app" : {
+
     },
     "NetEase" : {
       "localizations" : {
@@ -1534,6 +1051,9 @@
         }
       }
     },
+    "New Tab" : {
+
+    },
     "Next" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1556,6 +1076,15 @@
         }
       }
     },
+    "No music playing" : {
+
+    },
+    "No results" : {
+
+    },
+    "No Results" : {
+
+    },
     "No Translation ☹️" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1577,6 +1106,12 @@
           }
         }
       }
+    },
+    "Not connected" : {
+
+    },
+    "Not granted" : {
+
     },
     "Now Paused: %@ - %@" : {
       "comment" : "Now Paused: Song - Artist",
@@ -1646,50 +1181,6 @@
         }
       }
     },
-    "Opacity Level:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度等级："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度："
-          }
-        }
-      }
-    },
-    "Opacity Level: %lld%%" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度等级： %lld%%"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度：%lld%%"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "透明度：%lld%%"
-          }
-        }
-      }
-    },
     "Open Apple Music" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1755,6 +1246,15 @@
           }
         }
       }
+    },
+    "Open fullscreen lyrics" : {
+
+    },
+    "Open Setup" : {
+
+    },
+    "Open setup to grant or check access for the selected music app." : {
+
     },
     "Open Spotify" : {
       "localizations" : {
@@ -1889,6 +1389,12 @@
         }
       }
     },
+    "Playback" : {
+
+    },
+    "Player access" : {
+
+    },
     "Please download the [official Spotify desktop client](https://www.spotify.com/in-en/download/mac/)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2004,28 +1510,6 @@
         }
       }
     },
-    "Please log into Spotify" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请登录 Spotify"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請登入 Spotify"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請登入 Spotify"
-          }
-        }
-      }
-    },
     "Please open Apple Music!" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2072,27 +1556,11 @@
         }
       }
     },
-    "Please pick between Spotify and Apple Music" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请选择 Spotify 或 Apple Music"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請選擇 Spotify 或 Apple Music"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請選擇 Spotify 或 Apple Music"
-          }
-        }
-      }
+    "Press new shortcut…" : {
+
+    },
+    "Primary lyric source" : {
+
     },
     "Primary Lyric Source" : {
       "localizations" : {
@@ -2138,27 +1606,14 @@
         }
       }
     },
-    "Quit Lyric Fever (⌘ + Q)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退出 Lyric Fever (⌘ + Q)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退出 Lyric Fever（⌘ + Q）"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "退出 Lyric Fever（⌘ + Q）"
-          }
-        }
-      }
+    "Quit LyricChill (⌘ + Q)" : {
+
+    },
+    "Ready" : {
+
+    },
+    "Record shortcut" : {
+
     },
     "Redownload lyrics" : {
       "localizations" : {
@@ -2204,6 +1659,15 @@
         }
       }
     },
+    "Requires %@." : {
+
+    },
+    "Reset appearance" : {
+
+    },
+    "Reset shortcut" : {
+
+    },
     "Reset to default" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2225,6 +1689,9 @@
           }
         }
       }
+    },
+    "Reset to Defaults" : {
+
     },
     "Rewind" : {
       "localizations" : {
@@ -2270,6 +1737,9 @@
         }
       }
     },
+    "Search" : {
+
+    },
     "Searching for %@ by %@" : {
       "localizations" : {
         "en" : {
@@ -2298,49 +1768,11 @@
         }
       }
     },
-    "Select a Font:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择字体："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇字體："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇字體："
-          }
-        }
-      }
+    "Select a font" : {
+
     },
-    "Set a background color" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置背景颜色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定背景顏色"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定背景顏色"
-          }
-        }
-      }
+    "Selected font" : {
+
     },
     "Set the Lyric Size" : {
       "localizations" : {
@@ -2364,27 +1796,17 @@
         }
       }
     },
-    "Settings (New Karaoke Settings!)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设置（新增 K 歌设置）"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定（新增卡拉 OK 設定！）"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定（全新卡啦 OK 設定！）"
-          }
-        }
-      }
+    "Set Up LyricChill" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Settings…" : {
+
+    },
+    "Setup required" : {
+
     },
     "Share Spotify link" : {
       "localizations" : {
@@ -2408,6 +1830,9 @@
         }
       }
     },
+    "Shortcuts" : {
+
+    },
     "Show lyrics (⌘ + H)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2426,28 +1851,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示歌詞（⌘ + H）"
-          }
-        }
-      }
-    },
-    "Show multilingual lyrics when translating in Karaoke window" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 K 歌歌词窗口翻译时显示多语言"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當翻譯開啟時，在卡拉 OK 視窗顯示多語言"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "卡拉 OK 視窗翻譯時顯示多語歌詞"
           }
         }
       }
@@ -2474,6 +1877,15 @@
         }
       }
     },
+    "Show the translation below the original lyric when a translation is available." : {
+
+    },
+    "Show translated lyrics" : {
+
+    },
+    "Shows this setting" : {
+
+    },
     "Song Name" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2492,29 +1904,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "歌曲名稱"
-          }
-        }
-      }
-    },
-    "Song Name:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌名："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌名："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歌曲名稱："
           }
         }
       }
@@ -2629,6 +2018,21 @@
         }
       }
     },
+    "Spotify login is optional. LRCLIB and NetEase work without a Spotify account." : {
+
+    },
+    "Spotify lyrics" : {
+
+    },
+    "Spotify lyrics require a login. LRCLIB and NetEase are available without one." : {
+
+    },
+    "Start playback in Spotify or Apple Music" : {
+
+    },
+    "System" : {
+
+    },
     "System (%@)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2651,6 +2055,9 @@
         }
       }
     },
+    "Tabs" : {
+
+    },
     "Target Language" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2672,6 +2079,9 @@
           }
         }
       }
+    },
+    "Temporarily hides the karaoke window while the pointer is over it." : {
+
     },
     "This depends on how much free space you have in your menu bar!" : {
       "localizations" : {
@@ -2717,93 +2127,17 @@
         }
       }
     },
-    "Toggle displaying lyrics:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换显示歌词："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換顯示歌詞："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示/隱藏歌詞："
-          }
-        }
-      }
+    "Toggle karaoke window" : {
+
     },
-    "Toggle karaoke mode:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换 K 歌模式："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換卡拉 OK 模式："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟/關閉卡拉 OK 模式："
-          }
-        }
-      }
+    "Toggle menu bar lyrics" : {
+
     },
-    "Toggle romanizations:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换拼音："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換羅馬拼音："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示/隱藏羅馬拼音："
-          }
-        }
-      }
+    "Toggle romanization" : {
+
     },
-    "Toggle translations:" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切换翻译："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切換翻譯："
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顯示/隱藏翻譯："
-          }
-        }
-      }
+    "Toggle translations" : {
+
     },
     "Translate lyrics (⌘ + T)" : {
       "localizations" : {
@@ -3113,27 +2447,8 @@
         }
       }
     },
-    "Unheart" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消喜欢"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不喜歡"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "唔鍾意"
-          }
-        }
-      }
+    "Unassigned" : {
+
     },
     "Unpause animations (uses battery) (⌘ + A)" : {
       "localizations" : {
@@ -3179,27 +2494,14 @@
         }
       }
     },
-    "Use album color for Karaoke window" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用专辑颜色作为 K 歌窗口颜色"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用專輯顏色作為卡拉 OK 視窗顏色"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用專輯顏色作為卡拉 OK 視窗顏色"
-          }
-        }
-      }
+    "Use album color" : {
+
+    },
+    "Use the current album's color as the karaoke window background." : {
+
+    },
+    "v%@" : {
+
     },
     "Volume" : {
       "localizations" : {
@@ -3223,27 +2525,8 @@
         }
       }
     },
-    "Welcome to Lyric Fever! 🎉" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "欢迎使用 Lyric Fever! 🎉"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歡迎使用 Lyric Fever！🎉"
-          }
-        },
-        "zh-Hant-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歡迎嚟到 Lyric Fever！🎉"
-          }
-        }
-      }
+    "Welcome to LyricChill! 🎉" : {
+
     },
     "WRONG SP DC COOKIE TRY AGAIN ⚠️" : {
       "localizations" : {
