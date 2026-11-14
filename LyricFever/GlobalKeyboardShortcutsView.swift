@@ -112,6 +112,7 @@ private struct KeyboardShortcutRecorderBridge: NSViewRepresentable {
                 onShortcutChange()
             }
         }
+        recorder.focusRingType = .none
         return recorder
     }
 
