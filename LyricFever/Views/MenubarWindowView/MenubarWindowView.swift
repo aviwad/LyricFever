@@ -740,6 +740,7 @@ struct MenubarWindowView: View {
                 .opacity(0.6)
                 .animation(.smooth, value: viewmodel.currentBackground)
         )
+        .modifier(MenubarGlassSurfaceModifier())
         .onAppear {
             if viewmodel.isPlayerRunning, !viewmodel.isStopped {
                 viewmodel.currentVolume = viewmodel.currentPlayerInstance.volume
@@ -752,6 +753,18 @@ struct MenubarWindowView: View {
             await MainActor.run {
                 supportedLanguages = languages
             }
+        }
+    }
+}
+
+private struct MenubarGlassSurfaceModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(macOS 26.0, *) {
+            content
+                .containerBackground(.clear, for: .window)
+                .glassEffect(in: .rect(cornerRadius: 16))
+        } else {
+            content
         }
     }
 }
