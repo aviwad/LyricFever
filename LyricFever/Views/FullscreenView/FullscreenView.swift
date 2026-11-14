@@ -8,7 +8,6 @@
 import SwiftUI
 import SDWebImage
 import ColorKit
-import Combine
 import TipKit
 
 struct FullscreenView: View {
@@ -18,13 +17,14 @@ struct FullscreenView: View {
     @State var gradient = [Color(red: 33/255, green: 69/255, blue: 152/255),Color(red: 218/255, green: 62/255, blue: 136/255)]
 
     // Fullscreen options
-    @State var animate = true
+    @State private var animationOverride: Bool?
+
+    private var animationsEnabled: Bool {
+        animationOverride ?? viewmodel.userDefaultStorage.animateOnStartupFullscreen
+    }
 
     // Button State
     @State var currentHover = HoverOptions.none
-    @State var timer = Timer
-            .publish(every: BackgroundView.animationDuration, on: .main, in: .common)
-            .autoconnect()
     @State var points: ColorSpots = .init()
     @State var showSettingsPopover = false
 
@@ -106,9 +106,9 @@ struct FullscreenView: View {
 
 
             Button {
-                animate.toggle()
+                animationOverride = !animationsEnabled
             } label: {
-                HoverableIcon(systemName: "leaf", sideLength: 28, disabled: !animate)
+                HoverableIcon(systemName: "leaf", sideLength: 28, disabled: !animationsEnabled)
             }
             .buttonStyle(FullscreenButtonIconStyle())
             #if os(macOS)
@@ -215,7 +215,7 @@ struct FullscreenView: View {
             case .showlyrics:
                 viewmodel.showLyrics ? "Hide lyrics (⌘ + H)" : "Show lyrics (⌘ + H)"
             case .pauseanimation:
-                animate ? "Pause animations (saves battery) (⌘ + A)" : "Unpause animations (uses battery) (⌘ + A)"
+                animationsEnabled ? "Pause animations (saves battery) (⌘ + A)" : "Unpause animations (uses battery) (⌘ + A)"
             case .volumelow:
                 "Decrease volume by 5 (Down Arrow)"
             case .volumehigh:
@@ -278,12 +278,9 @@ struct FullscreenView: View {
             .animation(.easeInOut(duration: 0.25), value: viewmodel.canDisplayLyrics)
         }
         .background {
-            BackgroundView(colors: $gradient, timer: $timer, points: $points)
+            BackgroundView(colors: $gradient, isAnimating: animationsEnabled, points: $points)
         }
         .onAppear {
-            if !viewmodel.userDefaultStorage.animateOnStartupFullscreen {
-                animate = false
-            }
             do {
                 try Tips.configure()
             }
