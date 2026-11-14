@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import LaunchAtLogin
 import Translation
 
 struct MenubarWindowView: View {
@@ -547,16 +546,9 @@ struct MenubarWindowView: View {
             dismiss()
             LyricChillSettingsWindowController.shared.open(viewModel: viewmodel)
         }.keyboardShortcut("s")
-        LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
-        .disabled(!viewmodel.userDefaultStorage.hasOnboarded)
-        .keyboardShortcut("l")
+        Divider()
         Button("Check for Updates…") {
             viewmodel.updaterService.updaterController.checkForUpdates(nil)
-        }
-        Divider()
-            .keyboardShortcut("u")
-        Button("LyricChill on GitHub") {
-            openURL(URL(string: "https://github.com/gitmichaelqiu/LyricChill")!)
         }
     }
     
