@@ -540,6 +540,7 @@ struct MenubarWindowView: View {
         Divider()
         streamingDelayView
         Button("Settings…") {
+            dismiss()
             LyricChillSettingsWindowController.shared.open(viewModel: viewmodel)
         }.keyboardShortcut("s")
         LaunchAtLogin.Toggle(String(localized: "Launch at Login"))
