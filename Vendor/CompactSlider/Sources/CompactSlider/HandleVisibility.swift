@@ -14,7 +14,7 @@ extension CompactSlider {
         case always(width: CGFloat)
         /// Never shows the handle.
         case hidden
-        
+
         /// Default value.
         public static var standard: HandleVisibility {
             #if os(macOS)
@@ -23,31 +23,31 @@ extension CompactSlider {
             .always(width: 3)
             #endif
         }
-        
+
         var isHovering: Bool {
             if case .hovering = self {
                 return true
             }
-            
+
             return false
         }
-        
+
         var isAlways: Bool {
             if case .always = self {
                 return true
             }
-            
+
             return false
         }
-        
+
         var isHidden: Bool {
             if case .hidden = self {
                 return true
             }
-            
+
             return false
         }
-        
+
         var width: CGFloat {
             switch self {
             case .hovering(width: let width),

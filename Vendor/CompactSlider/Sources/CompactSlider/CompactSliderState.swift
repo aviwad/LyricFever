@@ -19,10 +19,10 @@ public struct CompactSliderState {
     public let upperProgress: Double
     /// Position of the handle while dragging it.
     public let dragLocationX: (lower: CGFloat, upper: CGFloat)
-    
+
     /// A flag for internal usage.
     var isActive = true
-    
+
     /// Initial state for the state.
     public static let zero = CompactSliderState(
         isHovering: false,
@@ -31,7 +31,7 @@ public struct CompactSliderState {
         upperProgress: 0,
         dragLocationX: (0, 0)
     )
-    
+
     /// Inactive state, which will be ignored for updates.
     public static let inactive: CompactSliderState = {
         var state = CompactSliderState(
@@ -41,7 +41,7 @@ public struct CompactSliderState {
             upperProgress: 0,
             dragLocationX: (0, 0)
         )
-        
+
         state.isActive = false
         return state
     }()
@@ -52,7 +52,7 @@ public struct CompactSliderState {
 extension CompactSlider {
     func updateState() {
         guard state.isActive else { return }
-        
+
         state = .init(
             isHovering: isHovering,
             isDragging: isDragging,

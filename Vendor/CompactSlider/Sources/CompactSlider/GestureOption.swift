@@ -29,14 +29,14 @@ extension Set<GestureOption> {
         [.dragGestureMinimumDistance(1), .delayedGesture]
         #endif
     }
-    
+
     var dragGestureMinimumDistanceValue: CGFloat {
         for option in self {
             if case .dragGestureMinimumDistance(let value) = option {
                 return value
             }
         }
-        
+
         return 1
     }
 }
@@ -58,7 +58,7 @@ extension View {
                 options: options
             )
     }
-    
+
     @ViewBuilder
     private func delayedGesture(options: Set<GestureOption>) -> some View {
         if options.contains(.delayedGesture) {
@@ -67,7 +67,7 @@ extension View {
             self
         }
     }
-    
+
     @ViewBuilder
     private func prioritizedGesture<T: Gesture>(_ gesture: T, options: Set<GestureOption>) -> some View {
         if options.contains(.highPriorityGesture) {

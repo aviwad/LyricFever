@@ -11,7 +11,7 @@ import SwiftUI
 public protocol CompactSliderStyle {
     associatedtype Body: View
     typealias Configuration = CompactSliderStyleConfiguration
-    
+
     func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
@@ -19,15 +19,15 @@ public protocol CompactSliderStyle {
 
 /// Configuration for creating a style for the slider.
 public struct CompactSliderStyleConfiguration {
-    
+
     public struct Label: View {
         public let body: AnyView
-        
+
         init<Content: View>(content: Content) {
             body = AnyView(content)
         }
     }
-    
+
     /// A direction in which the slider will indicate the selected value.
     public let direction: CompactSliderDirection
     /// True if the slider uses a range of values.
@@ -61,11 +61,11 @@ extension EnvironmentValues {
 
 struct AnyCompactSliderStyle: CompactSliderStyle {
     private let _makeBody: (Configuration) -> AnyView
-    
+
     init<Style: CompactSliderStyle>(_ style: Style) {
         _makeBody = { AnyView(style.makeBody(configuration: $0)) }
     }
-    
+
     func makeBody(configuration: Configuration) -> some View {
         _makeBody(configuration)
     }

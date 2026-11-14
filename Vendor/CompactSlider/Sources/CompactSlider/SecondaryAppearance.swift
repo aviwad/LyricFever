@@ -6,21 +6,21 @@
 import SwiftUI
 
 struct SecondaryAppearance {
-    
+
     struct ProgressFillStyle {
         let fill: (Rectangle) -> AnyView
-        
+
         init(_ fill: @escaping (Rectangle) -> AnyView) {
             self.fill = fill
         }
     }
-    
+
     var progressFillStyle: ProgressFillStyle
     var focusedProgressFillStyle: ProgressFillStyle
     var handleColor: Color
     var scaleColor: Color
     var secondaryScaleColor: Color
-    
+
     init(
         progressFillStyle: ProgressFillStyle,
         focusedProgressFillStyle: ProgressFillStyle,
@@ -66,7 +66,7 @@ extension EnvironmentValues {
 // MARK: - View Extension
 
 public extension View {
-    
+
     /// Sets the colors for the secondary slider elements based on a given color and different opacity for each element.
     ///
     /// - Note: The exception to this is the `focusedProgressOpacity` parameter, which sets the opacity for the accent color.
@@ -103,7 +103,7 @@ public extension View {
              )
         )
     }
-    
+
     /// Sets the colors for the secondary slider elements.
     /// - Parameters:
     ///   - progressColor: the default progress view color.
@@ -135,7 +135,7 @@ public extension View {
              )
         )
     }
-    
+
     /// Sets the appearance for the secondary slider elements.
     /// - Parameters:
     ///   - progressShapeStyle: the default shape style for the progress view.

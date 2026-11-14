@@ -6,13 +6,13 @@
 import SwiftUI
 
 struct HandleView: View {
-    
+
     @Environment(\.compactSliderSecondaryAppearance) var secondaryAppearance
-    
+
     let width: CGFloat
     let offsetX: CGFloat
     let isFocused: Bool
-    
+
     var body: some View {
         Rectangle()
             .fill(isFocused ? Color.accentColor : secondaryAppearance.handleColor)

@@ -7,7 +7,7 @@ import SwiftUI
 
 /// A slider style that applies prominent artwork based on the slider’s context.
 public struct ProminentCompactSliderStyle: CompactSliderStyle {
-    
+
     /// The color of the lower value within bounds.
     public let lowerColor: Color
     /// The color of the upper value within bounds.
@@ -16,7 +16,7 @@ public struct ProminentCompactSliderStyle: CompactSliderStyle {
     public var useGradientBackground: Bool = false
     /// The threshold to switch from `lowerColor` to `upperColor`.
     public var threshold: CGFloat = 0.5
-    
+
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundColor(

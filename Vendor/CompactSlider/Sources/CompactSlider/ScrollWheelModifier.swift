@@ -11,16 +11,16 @@ import Combine
 struct ScrollWheelModifier: ViewModifier {
     let action: (_ delta: CGPoint) -> Void
     private var cancellable = Set<AnyCancellable>()
-    
+
     init(action: @escaping (_ delta: CGPoint) -> Void) {
         self.action = action
         subscribeForScrollWheelEvents()
     }
-    
+
     func body(content: Content) -> some View {
         content
     }
-    
+
     mutating func subscribeForScrollWheelEvents() {
         NSApp.publisher(for: \.currentEvent)
             .filter { $0?.type == .scrollWheel }
@@ -28,7 +28,7 @@ struct ScrollWheelModifier: ViewModifier {
                 if let event = $0 {
                     return CGPoint(x: event.deltaX, y: event.deltaY)
                 }
-                
+
                 return nil
             }
             .removeDuplicates()

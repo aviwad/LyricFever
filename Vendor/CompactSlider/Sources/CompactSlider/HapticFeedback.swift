@@ -12,7 +12,7 @@ import AppKit
 #endif
 
 enum HapticFeedback {
-    
+
     #if os(iOS)
     private static let feedbackGenerator: UISelectionFeedbackGenerator = {
         let generator = UISelectionFeedbackGenerator()
@@ -23,7 +23,7 @@ enum HapticFeedback {
 
     static func vibrate(_ disabled: Bool) {
         guard !disabled else { return }
-        
+
         #if os(macOS)
         NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
         #elseif os(iOS)
