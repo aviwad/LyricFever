@@ -8,7 +8,6 @@
 import SwiftUI
 import SDWebImage
 import ColorKit
-import Combine
 
 struct KaraokeView: View {
     @Environment(ViewModel.self) var viewmodel
@@ -71,33 +70,28 @@ struct KaraokeView: View {
 
     var body: some View {
         if #available(macOS 26.0, *) {
-            // Keep Liquid Glass rendering lively while the karaoke panel is visible.
-            TimelineView(.animation) { timeline in
-                let offset = 0.1 * sin(timeline.date.timeIntervalSinceReferenceDate * 20 * .pi)
-                lyricsView()
-                    .id(viewmodel.currentlyPlayingLyricsIndex)
-                    .lineLimit(2)
-                    .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
-                    .minimumScaleFactor(0.9)
-                    .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
-                    .padding(10)
-                    .padding(.horizontal, 10)
-                    .background {
-                        if karaokeTransparency > 0 {
-                            currentBackgroundColor.opacity(karaokeTransparency / 100)
-                        }
+            lyricsView()
+                .id(viewmodel.currentlyPlayingLyricsIndex)
+                .lineLimit(2)
+                .foregroundStyle(useForcedWhiteText ? Color.white : Color.primary)
+                .minimumScaleFactor(0.9)
+                .font(.custom(viewmodel.karaokeFont.fontName, size: viewmodel.karaokeFont.pointSize))
+                .padding(10)
+                .padding(.horizontal, 10)
+                .background {
+                    if karaokeTransparency > 0 {
+                        currentBackgroundColor.opacity(karaokeTransparency / 100)
                     }
-                    .glassEffect(in: .rect(cornerRadius: 16))
-                    .cornerRadius(16)
-                    .onHover { hover in
-                        if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
-                            viewmodel.karaokeModeHovering = hover
-                        }
+                }
+                .glassEffect(in: .rect(cornerRadius: 16))
+                .cornerRadius(16)
+                .onHover { hover in
+                    if viewmodel.userDefaultStorage.karaokeModeHoveringSetting {
+                        viewmodel.karaokeModeHovering = hover
                     }
-                    .multilineTextAlignment(.center)
-                    .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
-                    .offset(y: offset)
-            }
+                }
+                .multilineTextAlignment(.center)
+                .frame(minWidth: 800, maxWidth: 800, minHeight: 100, maxHeight: 100, alignment: .center)
         } else {
             lyricsView()
                 .id(viewmodel.currentlyPlayingLyricsIndex)
