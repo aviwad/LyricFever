@@ -26,8 +26,6 @@ extension String {
     }
 }
 
-struct AnyCodable: Codable {}
-
 struct PluralLRCLIBLyrics: Decodable {
     var lyrics: [LRCLIBLyrics]
 
@@ -40,11 +38,8 @@ struct PluralLRCLIBLyrics: Decodable {
             if let lyric = try? container.decode(LRCLIBLyrics.self) {
                 decoded.append(lyric)
             } else {
-                // Consume one element to advance; try decoding as a generic value to skip.
-                _ = try? container.decode(AnyCodable.self)
-                // If that still failed (some malformed token), try moving past it using a superDecoder.
-                // This ensures we don't get stuck in an infinite loop.
-                _ = try? container.superDecoder()
+                // Consume exactly one malformed element before continuing.
+                _ = try container.superDecoder()
                 print("PluralLRCLIBLyrics: Skipped one malformed LRCLIBLyrics element")
             }
         }

@@ -244,7 +244,7 @@
 				8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */,
 				8F8196852D93CCDC00F03741 /* XCRemoteSwiftPackageReference "StringMetric" */,
 				8F1979932DA72D49008C113D /* XCRemoteSwiftPackageReference "Mecab-Swift" */,
-				8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */,
+				8FFB32DD2E694991007D9981 /* XCLocalSwiftPackageReference "CompactSlider" */,
 				8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */,
 				8F1198702E72B9840011A962 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				8F2922BE2E94DE0700B286FC /* XCRemoteSwiftPackageReference "mediaremote-adapter" */,
@@ -517,6 +517,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		8FFB32DD2E694991007D9981 /* XCLocalSwiftPackageReference "CompactSlider" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Vendor/CompactSlider;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		8F0E98932EE24713008A50A4 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -554,8 +561,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ejbills/mediaremote-adapter";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = revision;
+				revision = b4ae765bbfa111f1e8fad240a8ea74f01e91d325;
 			};
 		};
 		8F37323B2E6EC9C90075CDA7 /* XCRemoteSwiftPackageReference "SwiftyOpenCC" */ = {
@@ -620,14 +627,6 @@
 			requirement = {
 				branch = master;
 				kind = branch;
-			};
-		};
-		8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/buh/CompactSlider.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.2.1;
 			};
 		};
 		8FFED0792D8A26E700EA1510 /* XCRemoteSwiftPackageReference "SwiftOTP" */ = {
@@ -713,7 +712,7 @@
 		};
 		8FFB32DE2E694991007D9981 /* CompactSlider */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8FFB32DD2E694991007D9981 /* XCRemoteSwiftPackageReference "CompactSlider" */;
+			package = 8FFB32DD2E694991007D9981 /* XCLocalSwiftPackageReference "CompactSlider" */;
 			productName = CompactSlider;
 		};
 		8FFED07A2D8A26E700EA1510 /* SwiftOTP */ = {

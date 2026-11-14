@@ -65,8 +65,8 @@ struct LRCLIBLyrics: Codable {
             self.syncedLyrics = ""
             self.lyrics = []
         } else {
-            self.plainLyrics = try container.decode(String.self, forKey: .plainLyrics)
-            self.syncedLyrics = try container.decode(String.self, forKey: .syncedLyrics)
+            self.plainLyrics = try container.decodeIfPresent(String.self, forKey: .plainLyrics) ?? ""
+            self.syncedLyrics = try container.decodeIfPresent(String.self, forKey: .syncedLyrics) ?? ""
             self.lyrics = LRCLIBLyrics.decodeLyrics(input: syncedLyrics)
         }
 //        self.lyrics = try container.decode([LyricLine].self, forKey: .lyrics)
