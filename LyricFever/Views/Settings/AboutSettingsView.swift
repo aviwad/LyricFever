@@ -3,7 +3,7 @@ import SwiftUI
 
 struct LyricChillAboutSettingsView: View {
     private var appIcon: NSImage? {
-        NSApplication.shared.applicationIconImage
+        NSImage(named: "LyricChillIcon")
     }
 
     private var version: String {
