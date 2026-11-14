@@ -40,6 +40,7 @@ public enum ModularSettingsMetrics {
     public static let sectionSpacing: CGFloat = 20
     public static let rowContentSpacing: CGFloat = 8
     public static let labelSpacing: CGFloat = 4
+    public static let rowMinimumHeight: CGFloat = 24
     public static let rowVerticalPadding: CGFloat = 6
     public static let rowHorizontalPadding: CGFloat = 10
 }
@@ -217,6 +218,7 @@ public struct ModularSettingsRow<Content: View>: View {
                 content
                     .frame(alignment: .trailing)
             }
+            .frame(minHeight: ModularSettingsMetrics.rowMinimumHeight)
             if showDemoVideos,
                let demoVideoName,
                let videoURL = Bundle.main.url(forResource: demoVideoName, withExtension: "mp4") {
