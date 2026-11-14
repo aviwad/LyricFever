@@ -25,6 +25,7 @@ import MediaRemoteAdapter
     
     // Apple Music Tahoe broken AppleScript workaround
     let musicController = MediaController()
+    private var isAppleMusicArtworkListenerRunning = false
 //    var appleMusicUniqueIdentifier: String?
 
     var currentlyPlaying: String?
@@ -46,7 +47,7 @@ import MediaRemoteAdapter
         formatter.zeroFormattingBehavior = [.pad]
         return formatter.string(from: TimeInterval(totalSeconds)) ?? "0:00"
     }
-    private func initAppleMusicWorkaround() {
+    private func configureAppleMusicWorkaround() {
         musicController.onTrackInfoReceived = { data in
             print("Track info received")
             Task { @MainActor in
@@ -73,7 +74,19 @@ import MediaRemoteAdapter
             }
             // This will only be called for Apple Music events
         }
-        musicController.startListening()
+        syncAppleMusicArtworkListener()
+    }
+
+    func syncAppleMusicArtworkListener() {
+        let shouldListen = currentPlayer == .appleMusic
+        guard shouldListen != isAppleMusicArtworkListenerRunning else { return }
+
+        if shouldListen {
+            musicController.startListening()
+        } else {
+            musicController.stopListening()
+        }
+        isAppleMusicArtworkListenerRunning = shouldListen
     }
 
     private var appleMusicMetadataTrackID: String? {
@@ -346,7 +359,7 @@ import MediaRemoteAdapter
         // Load our CoreData container for Lyrics
         coreDataContainer = NSPersistentContainer(name: "Lyrics")
         
-        initAppleMusicWorkaround()
+        configureAppleMusicWorkaround()
         
         coreDataContainer.loadPersistentStores { description, error in
             if let error = error {

@@ -139,6 +139,7 @@ struct LyricChillApp: App {
                 }
             }
             .onChange(of: viewmodel.currentPlayer) {
+                viewmodel.syncAppleMusicArtworkListener()
                 print("Setting hasOnboarded to false due to player change")
                 viewmodel.userDefaultStorage.hasOnboarded = false
             }
