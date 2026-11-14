@@ -849,7 +849,6 @@ import MediaRemoteAdapter
                 return nil
             }
             else if  currentTime > currentlyPlayingLyrics[currentlyPlayingLyricsIndex].startTimeMS, currentTime < currentlyPlayingLyrics[newIndex].startTimeMS {
-                print("just the next lyric")
                 return newIndex
             }
         }
@@ -871,21 +870,14 @@ import MediaRemoteAdapter
             }
             let nextTimestamp = currentlyPlayingLyrics[lastIndex].startTimeMS
             let diff = nextTimestamp - currentTime
-            print("current time: \(currentTime)")
             self.currentTime = CurrentTimeWithStoredDate(currentTime: currentTime)
-            print("next time: \(nextTimestamp)")
-            print("the difference is \(diff)")
             try await Task.sleep(nanoseconds: UInt64(1000000*diff))
-            print("lyrics exist: \(!currentlyPlayingLyrics.isEmpty)")
-            print("last index: \(lastIndex)")
-            print("currently playing lryics index: \(currentlyPlayingLyricsIndex)")
             if currentlyPlayingLyrics.count > lastIndex {
                 currentlyPlayingLyricsIndex = lastIndex
             } else {
                 currentlyPlayingLyricsIndex = nil
                 
             }
-            print(currentlyPlayingLyricsIndex ?? "nil")
         } while !Task.isCancelled
     }
     
