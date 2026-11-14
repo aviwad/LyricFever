@@ -658,7 +658,7 @@ struct MenubarWindowView: View {
             .labelsHidden()
             .frame(width: 160)
             ModularSettingsAnimatedValue(text: "\(viewmodel.userDefaultStorage.truncationLength)")
-                .frame(width: 23)
+                .frame(minWidth: 50, alignment: .trailing)
         }
         .tint(sliderTint)
     }
@@ -676,7 +676,7 @@ struct MenubarWindowView: View {
             .frame(width: 160)
             let seconds = Double(viewmodel.userDefaultStorage.spotifyConnectDelayCount) / 1000.0
             ModularSettingsAnimatedValue(text: "\(seconds.formatted(.number.precision(.fractionLength(1))))s")
-                .frame(width: 27)
+                .frame(minWidth: 50, alignment: .trailing)
         }
         .tint(sliderTint)
     }
@@ -714,7 +714,7 @@ struct MenubarWindowView: View {
                 .frame(width: 160)
             }
             ModularSettingsAnimatedValue(text: "\(viewmodel.currentVolume)")
-                .frame(width: 23)
+                .frame(minWidth: 50, alignment: .trailing)
         }
         .tint(sliderTint)
         .disabled(!viewmodel.isPlayerRunning)
