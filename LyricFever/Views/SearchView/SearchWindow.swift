@@ -139,9 +139,14 @@ struct SearchWindow: View {
         for lyricProvider in viewmodel.allNetworkLyricProvidersForSearch {
             if Task.isCancelled { return }
             currentProvider = lyricProvider.providerName
-            let results = try await lyricProvider.search(trackName: trackName, artistName: artistName)
-            if Task.isCancelled { return }
-            searchResults.append(contentsOf: results)
+            do {
+                let results = try await lyricProvider.search(trackName: trackName, artistName: artistName)
+                if Task.isCancelled { return }
+                searchResults.append(contentsOf: results)
+            } catch {
+                if Task.isCancelled { return }
+                print("Search failed for \(lyricProvider.providerName): \(error)")
+            }
         }
     }
     
