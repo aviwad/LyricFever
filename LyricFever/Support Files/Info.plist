@@ -4,6 +4,10 @@
 <dict>
 	<key>ATSApplicationFontsPath</key>
 	<string>Fonts</string>
+	<key>CFBundleIconFile</key>
+	<string>LyricChillIcon</string>
+	<key>CFBundleIconName</key>
+	<string>LyricChillIcon</string>
 	<key></key>
 	<string></string>
 	<key>SUAllowsAutomaticUpdates</key>
