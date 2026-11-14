@@ -22,8 +22,8 @@ enum ButtonState {
                     // Use the color with desired opacity
                     return AnyShapeStyle(bg.opacity(0.8))
                 } else {
-                    // Fall back to a material; set opacity on the shape usage, not here
-                    return AnyShapeStyle(.primary)
+                    // Keep the selected state legible when no album color is available.
+                    return AnyShapeStyle(.thickMaterial)
                 }
             case .disabled:
                 return AnyShapeStyle(.thickMaterial)

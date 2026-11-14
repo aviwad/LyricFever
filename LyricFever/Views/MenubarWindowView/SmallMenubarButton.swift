@@ -34,7 +34,7 @@ public struct SmallMenubarButtonStyle: ButtonStyle {
                     }
                     if disabled {
                         Capsule()
-                            .fill(Color.white)
+                            .fill(.secondary)
                             .frame(width: 32, height: 2)
                             .rotationEffect(.degrees(-45))
                     }
@@ -55,7 +55,6 @@ public struct SmallMenubarButtonStyle: ButtonStyle {
                 .shadow(radius: disabled ? 0 : 7)
         )
         .opacity(configuration.isPressed ? 0.7 : 1)
-        .environment(\.colorScheme, .dark)
     }
 }
 

@@ -17,6 +17,14 @@ struct MenubarWindowView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var currentHoveredItem = MenubarButtonHighlight.none
     @State var supportedLanguages: [Locale.Language] = []
+
+    private var hasCurrentTrack: Bool {
+        guard viewmodel.isPlayerRunning,
+              let name = viewmodel.currentlyPlayingName?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            return false
+        }
+        return !name.isEmpty
+    }
     
     @ViewBuilder
     var profilePicViewHeaderView: some View {
@@ -38,23 +46,23 @@ struct MenubarWindowView: View {
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
                     .shadow(color: viewmodel.currentBackground ?? .clear, radius: 70)
             } else {
-                Image(systemName: "music.note.list")
-                    .resizable()
-                    .shadow(radius: 1)
-                    .scaleEffect(0.5)
-                    .background(.gray)
+                RoundedRectangle(cornerRadius: 9)
+                    .fill(.quaternary)
+                    .overlay {
+                        Image(systemName: "music.note.list")
+                            .font(.system(size: 38, weight: .regular))
+                            .foregroundStyle(.secondary)
+                    }
                     .frame(width: 112, height: 112)
-                    .clipShape(.rect(cornerRadius: 9))
             }
             
             ZStack {
-                if viewmodel.isFetching {
+                if hasCurrentTrack, viewmodel.isFetching {
                     Rectangle()
                         .fill(Color.black.opacity(0.5))
                         .clipShape(.rect(cornerRadius: 9))
                     
                     ProgressView()
-                        .environment(\.colorScheme, .dark)
                 }
             }
             .animation(.smooth(duration: 2), value: viewmodel.isFetching)
@@ -64,15 +72,24 @@ struct MenubarWindowView: View {
     
     @ViewBuilder
     var songDetails: some View {
-        VStack {
-            HStack {
-                MarqueeText(viewmodel.currentlyPlayingName ?? "-", startDelay: 1.5, alignment: .leading, leftFade: 2)
-                .frame(height: 15)
-            }
-            HStack {
-                MarqueeText(viewmodel.currentlyPlayingArtist ?? "-", startDelay: 1.5, alignment: .leading, leftFade: 2)
-                    .font(.caption)
-                    .frame(height: 15)
+        Group {
+            if hasCurrentTrack {
+                VStack {
+                    MarqueeText(viewmodel.currentlyPlayingName ?? "", startDelay: 1.5, alignment: .leading, leftFade: 2)
+                        .frame(height: 15)
+                    MarqueeText(viewmodel.currentlyPlayingArtist ?? "Unknown Artist", startDelay: 1.5, alignment: .leading, leftFade: 2)
+                        .font(.caption)
+                        .frame(height: 15)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("No music playing")
+                        .font(.headline)
+                    Text("Start playback in Spotify or Apple Music")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
             }
         }
     }
@@ -141,17 +158,19 @@ struct MenubarWindowView: View {
                 }
                 songControls
                 
-                ProgressView(value: displayLyrics == .enabled ? viewmodel.currentTime.currentTime : 0, total: Double(viewmodel.duration))
+                ProgressView(
+                    value: hasCurrentTrack && displayLyrics == .enabled ? viewmodel.currentTime.currentTime : 0,
+                    total: max(Double(viewmodel.duration), 1)
+                )
                     .progressViewStyle(ColoredThinProgressViewStyle(color: .secondary, thickness: 4))
                     .frame(height: 4)
                     .padding(.horizontal, 4)
-                    .environment(\.colorScheme, .dark)
                 
                 HStack {
-                    Text(displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
+                    Text(hasCurrentTrack && displayLyrics == .enabled ? viewmodel.formattedCurrentTime : "--:--")
                         .font(.caption2)
                     Spacer()
-                    Text(viewmodel.formattedDuration)
+                    Text(hasCurrentTrack ? viewmodel.formattedDuration : "--:--")
                         .font(.caption2)
                 }
                 .padding(.horizontal, 4)
@@ -547,7 +566,6 @@ struct MenubarWindowView: View {
 
                         Text("...")
                 }
-                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
                 .onHover { isHovering in
                     if isHovering {
@@ -565,7 +583,6 @@ struct MenubarWindowView: View {
                         Text("...")
                 }
                 .frame(width: 30)
-                .environment(\.colorScheme, .dark)
                 .menuIndicator(.hidden)
                 .onHover { isHovering in
                     if isHovering {
@@ -707,18 +724,15 @@ struct MenubarWindowView: View {
             viewSelector
             Divider()
             menubarSizeSlider
-                .environment(\.colorScheme, .dark)
             volumeSlider
-                .environment(\.colorScheme, .dark)
             if viewmodel.spotifyConnectDelay {
                 Divider()
                 spotifyDelaySlider
-                    .environment(\.colorScheme, .dark)
             }
             Divider()
             systemControlView
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(viewmodel.currentBackground == nil ? Color.primary : Color.white)
         .padding(14)
         .background(
             viewmodel.currentBackground
